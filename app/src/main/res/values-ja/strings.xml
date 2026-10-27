@@ -357,4 +357,25 @@
     <string name="tag_exclude">検索から除外</string>
     <string name="tag_blacklist">ブラックリストに追加</string>
     <string name="tag_copy">コピー</string>
+    <string name="settings_risky">リスクのあるオプション</string>
+    <string name="settings_risky_hint">初期設定ではオフ。どれも利便性と引き換えにプライバシーの一部を手放します</string>
+    <string name="settings_risky_intro">これらのオプションは、BooruVault が初期設定で提供している保護を弱めます。オンにする前に、それぞれの動作の説明を読んでください。</string>
+    <string name="settings_hidden_browser">保護されたページを非表示のブラウザで読み取る</string>
+    <string name="settings_hidden_browser_on">オン：ボット対策の確認を通過した後もサイトが確認を求め続ける場合（Tor ではよくあります）、アプリはそのサイトのページを非表示のブラウザで開き、そこから内容を読み取ります。この方法で読み取るページごとに、サイトの JavaScript がトラッカーも含めて通常の訪問と同じように実行され、ブラウザのフィンガープリントを取得することもできます。サードパーティ Cookie は引き続きブロックされ、WebRTC はオフのまま、画像は読み込まれず、Tor がオンのときは通信が Tor を経由し、ブラウザのデータはページを 1 つ読み取るたびに消去されます。動作が遅くなり、バッテリーの消費も増えます。</string>
+    <string name="settings_hidden_browser_off">オフ：サイトがボット対策の確認を求め続ける場合、アプリは処理を中断し、内蔵ブラウザで確認を通過するよう求めます。サイトのコードが実行されるのは、あなたがそのサイトを見ている間だけです。</string>
+    <string name="collections_all">すべて</string>
+    <string name="collection_new">新しいコレクション</string>
+    <string name="collection_edit">コレクションを編集</string>
+    <string name="collection_name">名前</string>
+    <string name="collection_tags">タグ</string>
+    <string name="collection_tags_hint">booru と同じ正確なタグを使います：-tag で除外、~tag でいずれかに一致、* でワイルドカード。type:video、type:gif、type:image、source:名前、rating:general|sensitive|questionable|explicit も使えます。</string>
+    <string name="collection_save">コレクションとして保存</string>
+    <string name="collection_delete_title">コレクション「%1$s」を削除しますか？</string>
+    <string name="collection_delete_text">削除されるのはコレクションだけです。ファイルは保管庫に残ります。</string>
+    <string name="collection_saved">コレクション「%1$s」を保存しました</string>
+    <string name="collection_empty_title">このコレクションにはまだ何もありません</string>
+    <string name="collection_empty_text">タグが「%1$s」に一致する項目は、保存するとここに表示されます。</string>
+    <string name="tag_create_collection">コレクションを作成</string>
+    <string name="action_edit">編集</string>
+    <string name="browse_save_search">検索をコレクションとして保存</string>
 </resources>

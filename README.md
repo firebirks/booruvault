@@ -27,7 +27,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **Encrypted while streaming:** files are sealed as they arrive, so plaintext never touches storage.
 - **Background:** three downloads run in parallel under a foreground service. Its notification shows counts only.
 - **The queue** is sealed in the vault and resumes after a restart.
-- **On lock:** the queue is paused and dropped from memory. It can optionally keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
+- **On lock:** the queue is paused and dropped from memory. A risky option lets it keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
 - **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock.
 
 ### Vault
@@ -35,6 +35,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **Unlocking:** password, plus optional biometric unlock.
 - **Auto-lock:** after a configurable time in the background.
 - **Contents:** grid with filtering (tags, `-tag`, `type:video|gif|image`, `source:name`), viewer, info sheet, delete.
+- **Collections:** bookmarked tag sets shown as chips at the top of the vault. A collection holds every item whose tags match its query (e.g. “Landscapes” = `landscape -rain`), including items saved later. The query uses booru syntax: exact tags, `-tag`, `~tag` alternatives, `*` wildcards, plus `type:`, `source:` and `rating:`. Collections can be created from the vault filter, from a search in Browse, or from a tag in a post's details. Their names and queries are sealed in the vault.
 - **Import** from the device, optionally deleting the originals. **Export** decrypted copies to a folder or a single file.
 - **Screen protection** (no screenshots, hidden in recents), always on while locked.
 
@@ -50,6 +51,10 @@ The interface follows the phone's language, with English as the fallback. See [L
   - Safe Browsing off unless the user turns it on;
   - its storage wiped after each session and at start-up.
 - **Cookies:** only those the user brings back from the built-in browser are kept. Cookies sites set on their own last for the session.
+- **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs:
+  - keep downloading while the vault is locked;
+  - read pages that keep demanding an anti-bot check through a hidden browser. It runs the site's scripts and can be fingerprinted, but loads no images, blocks third-party cookies, has WebRTC off, goes through Tor when Tor is on, and is wiped after each page;
+  - Google Safe Browsing in the built-in browser.
 - **Tor via Orbot:** see [below](#tor).
 - **No Google Play services needed:** the app has no dependency on them. Without them, the Safe Browsing option is shown as unavailable.
 

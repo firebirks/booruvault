@@ -136,6 +136,28 @@ class SecureCookieJar(root: File, private val vault: VaultManager, json: Json, s
         }
     }
 
+    /** The kept cookies for [url], as Set-Cookie strings for the hidden browser. */
+    fun browserCookies(url: HttpUrl): List<String> = synchronized(lock) {
+        if (!loaded) return emptyList()
+        cookies.filter { it.key() in kept && it.matches(url) }.map { it.toString() }
+    }
+
+    /**
+     * Keeps what a hidden visit renewed: cookies already kept and a fresh clearance. Whatever
+     * else the site set during the visit is not kept.
+     */
+    fun renewFromBrowser(host: String, webCookies: List<Cookie>) {
+        val renewed = synchronized(lock) {
+            if (!loaded) return
+            val keptNames = cookies.filter { it.key() in kept }.mapTo(HashSet()) { it.name }
+            webCookies.filter { it.name in keptNames || it.name == "cf_clearance" }.onEach {
+                put(it)
+                kept += it.key()
+            }
+        }
+        if (renewed.isNotEmpty()) saves.trySend(Unit)
+    }
+
     fun clear() {
         synchronized(lock) {
             cookies.clear()

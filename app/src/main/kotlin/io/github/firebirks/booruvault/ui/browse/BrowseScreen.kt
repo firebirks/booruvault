@@ -1,5 +1,9 @@
 package io.github.firebirks.booruvault.ui.browse
 
+import java.util.UUID
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import io.github.firebirks.booruvault.vault.TagCollection
+import io.github.firebirks.booruvault.ui.vault.CollectionDialog
 import androidx.compose.ui.platform.LocalResources
 import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.R
@@ -139,6 +143,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
     var searchFocused by remember { mutableStateOf(false) }
     var showBatch by rememberSaveable { mutableStateOf(false) }
     var showWebPage by rememberSaveable { mutableStateOf(false) }
+    var saveSearch by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
     BackHandler(enabled = searchFocused) { focus.clearFocus() }
@@ -210,6 +215,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     onRefresh = vm::refresh,
                     onDownloadAll = { showBatch = true },
                     onOpenWebPage = { showWebPage = true },
+                    onSaveSearch = { saveSearch = true },
                 )
             }
         },
@@ -278,6 +284,21 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
         }
     }
 
+    if (saveSearch) {
+        CollectionDialog(
+            initial = null,
+            prefillQuery = vm.input.text,
+            onDismiss = { saveSearch = false },
+            onSave = { name, query ->
+                saveSearch = false
+                scope.launch {
+                    container.settings.saveCollection(TagCollection(UUID.randomUUID().toString(), name, query))
+                    snackbar.showSnackbar(resources.getString(R.string.collection_saved, name))
+                }
+            },
+        )
+    }
+
     if (showWebPage) {
         var address by remember { mutableStateOf("") }
         AlertDialog(
@@ -337,6 +358,7 @@ private fun BrowseTopBar(
     onRefresh: () -> Unit,
     onDownloadAll: () -> Unit,
     onOpenWebPage: () -> Unit,
+    onSaveSearch: () -> Unit,
 ) {
     var sourceMenu by remember { mutableStateOf(false) }
     var overflow by remember { mutableStateOf(false) }
@@ -371,6 +393,15 @@ private fun BrowseTopBar(
                             onClick = {
                                 overflow = false
                                 onDownloadAll()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.browse_save_search)) },
+                            leadingIcon = { Icon(Icons.Outlined.BookmarkAdd, null) },
+                            enabled = input.text.isNotBlank(),
+                            onClick = {
+                                overflow = false
+                                onSaveSearch()
                             },
                         )
                         DropdownMenuItem(

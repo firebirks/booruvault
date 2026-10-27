@@ -357,4 +357,25 @@
     <string name="tag_exclude">Loại khỏi tìm kiếm</string>
     <string name="tag_blacklist">Thêm vào danh sách đen</string>
     <string name="tag_copy">Sao chép</string>
+    <string name="settings_risky">Tùy chọn rủi ro</string>
+    <string name="settings_risky_hint">Tắt theo mặc định: mỗi tùy chọn đánh đổi một phần quyền riêng tư để lấy sự tiện lợi</string>
+    <string name="settings_risky_intro">Các tùy chọn này làm suy yếu những biện pháp bảo vệ mà BooruVault cung cấp cho bạn theo mặc định. Hãy đọc tác dụng của từng tùy chọn trước khi bật.</string>
+    <string name="settings_hidden_browser">Đọc các trang được bảo vệ bằng trình duyệt ẩn</string>
+    <string name="settings_hidden_browser_on">Bật: khi một trang web cứ yêu cầu kiểm tra chống bot ngay cả sau khi bạn đã vượt qua (thường gặp khi dùng Tor), ứng dụng sẽ mở các trang của trang web đó trong một trình duyệt ẩn và đọc chúng từ đó. Với mỗi trang được đọc theo cách này, JavaScript của trang web chạy như trong một lần truy cập bình thường, kể cả các trình theo dõi, và có thể lấy dấu vân tay của trình duyệt. Cookie của bên thứ ba vẫn bị chặn, WebRTC vẫn tắt, hình ảnh không được tải, lưu lượng đi qua Tor khi Tor đang bật, và dữ liệu của trình duyệt bị xóa sau mỗi trang. Cách này chậm hơn và tốn pin hơn.</string>
+    <string name="settings_hidden_browser_off">Tắt: khi một trang web cứ yêu cầu kiểm tra chống bot, ứng dụng sẽ dừng lại và yêu cầu bạn vượt qua kiểm tra trong trình duyệt tích hợp. Mã của trang web chỉ chạy trong lúc bạn đang xem trang đó.</string>
+    <string name="collections_all">Tất cả</string>
+    <string name="collection_new">Bộ sưu tập mới</string>
+    <string name="collection_edit">Sửa bộ sưu tập</string>
+    <string name="collection_name">Tên</string>
+    <string name="collection_tags">Thẻ</string>
+    <string name="collection_tags_hint">Thẻ chính xác, như trên các booru: -tag để loại trừ, ~tag cho các lựa chọn thay thế, * làm ký tự đại diện. Ngoài ra còn có type:video, type:gif, type:image, source:tên và rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Lưu thành bộ sưu tập</string>
+    <string name="collection_delete_title">Xóa bộ sưu tập “%1$s”?</string>
+    <string name="collection_delete_text">Chỉ bộ sưu tập bị xóa: các tệp của nó vẫn ở trong kho.</string>
+    <string name="collection_saved">Đã lưu bộ sưu tập “%1$s”</string>
+    <string name="collection_empty_title">Bộ sưu tập này chưa có gì</string>
+    <string name="collection_empty_text">Các mục có thẻ khớp với “%1$s” sẽ xuất hiện ở đây khi bạn lưu chúng.</string>
+    <string name="tag_create_collection">Tạo bộ sưu tập</string>
+    <string name="action_edit">Sửa</string>
+    <string name="browse_save_search">Lưu tìm kiếm thành bộ sưu tập</string>
 </resources>

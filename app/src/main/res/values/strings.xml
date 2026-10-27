@@ -383,4 +383,25 @@
     <string name="tag_exclude">Exclude from the search</string>
     <string name="tag_blacklist">Add to the blacklist</string>
     <string name="tag_copy">Copy</string>
+    <string name="settings_risky">Risky options</string>
+    <string name="settings_risky_hint">Off by default: each one gives up some privacy for convenience</string>
+    <string name="settings_risky_intro">These options weaken the protections BooruVault gives you by default. Read what each one does before turning it on.</string>
+    <string name="settings_hidden_browser">Read protected pages with a hidden browser</string>
+    <string name="settings_hidden_browser_on">On: when a site keeps asking for the anti-bot check even after you passed it (common with Tor), the app opens its pages in a hidden browser and reads them from there. For every page read this way the site\'s JavaScript runs as in a normal visit, trackers included, and can take a fingerprint of the browser. Third-party cookies stay blocked, WebRTC stays off, images are not loaded, traffic goes through Tor when Tor is on, and the browser\'s data is erased after each page. It is slower and uses more battery.</string>
+    <string name="settings_hidden_browser_off">Off: when a site keeps asking for the anti-bot check, the app stops and asks you to pass it in the built-in browser. The site\'s code runs only while you are looking at it.</string>
+    <string name="collections_all">All</string>
+    <string name="collection_new">New collection</string>
+    <string name="collection_edit">Edit collection</string>
+    <string name="collection_name">Name</string>
+    <string name="collection_tags">Tags</string>
+    <string name="collection_tags_hint">Exact tags, as on the boorus: -tag excludes, ~tag for alternatives, * as a wildcard. Also type:video, type:gif, type:image, source:name and rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Save as a collection</string>
+    <string name="collection_delete_title">Delete the collection “%1$s”?</string>
+    <string name="collection_delete_text">Only the collection is removed: its files stay in the vault.</string>
+    <string name="collection_saved">Collection “%1$s” saved</string>
+    <string name="collection_empty_title">Nothing in this collection yet</string>
+    <string name="collection_empty_text">Items whose tags match “%1$s” appear here as you save them.</string>
+    <string name="tag_create_collection">Create a collection</string>
+    <string name="action_edit">Edit</string>
+    <string name="browse_save_search">Save the search as a collection</string>
 </resources>

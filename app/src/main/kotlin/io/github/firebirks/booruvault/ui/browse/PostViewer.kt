@@ -1,5 +1,9 @@
 package io.github.firebirks.booruvault.ui.browse
 
+import java.util.UUID
+import io.github.firebirks.booruvault.vault.TagCollection
+import io.github.firebirks.booruvault.ui.vault.CollectionDialog
+import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.ui.platform.LocalResources
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.ui.common.problemText
@@ -122,6 +126,8 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     val pager = rememberPagerState(initialPage = startIndex.coerceIn(0, posts.lastIndex)) { posts.size }
     var chrome by rememberSaveable { mutableStateOf(true) }
     var info by remember { mutableStateOf<Post?>(null) }
+    var collectionFromTag by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     val videoSource = remember { OkHttpDataSource.Factory(container.http).setUserAgent(USER_AGENT) }
 
     fun close() {
@@ -220,9 +226,28 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 onClose()
                 vm.excludeFromSearch(tag)
             },
+            onCreateCollection = { tag ->
+                info = null
+                collectionFromTag = tag
+            },
             onBlacklist = { tag ->
                 vm.blacklist(tag)
                 Toast.makeText(context, resources.getString(R.string.viewer_blacklisted, tag), Toast.LENGTH_SHORT).show()
+            },
+        )
+    }
+
+    collectionFromTag?.let { tag ->
+        CollectionDialog(
+            initial = null,
+            prefillQuery = tag,
+            onDismiss = { collectionFromTag = null },
+            onSave = { name, query ->
+                collectionFromTag = null
+                scope.launch {
+                    container.settings.saveCollection(TagCollection(UUID.randomUUID().toString(), name, query))
+                    Toast.makeText(context, resources.getString(R.string.collection_saved, name), Toast.LENGTH_SHORT).show()
+                }
             },
         )
     }
@@ -274,6 +299,7 @@ private fun PostInfoSheet(
     onSearch: (String) -> Unit,
     onAddToSearch: (String) -> Unit,
     onExclude: (String) -> Unit,
+    onCreateCollection: (String) -> Unit,
     onBlacklist: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -316,6 +342,7 @@ private fun PostInfoSheet(
                             onSearch = onSearch,
                             onAddToSearch = onAddToSearch,
                             onExclude = onExclude,
+                            onCreateCollection = onCreateCollection,
                             onBlacklist = onBlacklist,
                             onCopy = { text ->
                                 val clip = ClipData.newPlainText("tag", text).apply {
@@ -340,6 +367,7 @@ private fun TagChip(
     onSearch: (String) -> Unit,
     onAddToSearch: (String) -> Unit,
     onExclude: (String) -> Unit,
+    onCreateCollection: (String) -> Unit,
     onBlacklist: (String) -> Unit,
     onCopy: (String) -> Unit,
 ) {
@@ -362,6 +390,10 @@ private fun TagChip(
             DropdownMenuItem(text = { Text(stringResource(R.string.tag_exclude)) }, leadingIcon = { Icon(Icons.Outlined.RemoveCircleOutline, null) }, onClick = {
                 menu = false
                 onExclude(tag.name)
+            })
+            DropdownMenuItem(text = { Text(stringResource(R.string.tag_create_collection)) }, leadingIcon = { Icon(Icons.Outlined.BookmarkAdd, null) }, onClick = {
+                menu = false
+                onCreateCollection(tag.name)
             })
             DropdownMenuItem(text = { Text(stringResource(R.string.tag_blacklist)) }, leadingIcon = { Icon(Icons.Outlined.Block, null) }, onClick = {
                 menu = false

@@ -9,6 +9,7 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.USER_AGENT
 import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.net.Challenge
+import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorUnreachableException
@@ -87,7 +88,8 @@ class AppContainer(private val context: Context) {
 
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
     val transfer = VaultTransfer(context, vaultStore)
-    val downloads = DownloadManager(context, http, json, vaultStore, vault, settings, vaultDir, scope)
+    val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
+    val downloads = DownloadManager(context, { api(it) }, http, vaultStore, vault, settings, json, vaultDir, scope)
     val autoLock = AutoLock(vault, settings, scope)
 
     init {
@@ -116,7 +118,8 @@ class AppContainer(private val context: Context) {
         .crossfade(true)
         .build()
 
-    fun api(source: BooruSource): BooruApi = BooruApiFactory.create(source, http, json)
+    fun api(source: BooruSource): BooruApi =
+        BooruApiFactory.create(source, http, json, hiddenBrowser.takeIf { settings.settings.value.hiddenBrowser })
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(autoLock)

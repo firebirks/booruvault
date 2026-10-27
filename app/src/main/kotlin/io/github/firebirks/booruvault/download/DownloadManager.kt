@@ -3,7 +3,7 @@ package io.github.firebirks.booruvault.download
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import io.github.firebirks.booruvault.booru.BooruApiFactory
+import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.USER_AGENT
@@ -88,11 +88,12 @@ private data class SavedBatch(val source: BooruSource, val tags: String, val tar
  */
 class DownloadManager(
     private val context: Context,
+    private val api: (BooruSource) -> BooruApi,
     private val client: OkHttpClient,
-    private val json: Json,
     private val store: VaultStore,
     private val vault: VaultManager,
     private val settings: SettingsRepository,
+    json: Json,
     root: File,
     private val scope: CoroutineScope,
 ) {
@@ -266,7 +267,7 @@ class DownloadManager(
         startService()
         jobs[batch.key] = scope.launch(Dispatchers.IO) {
             try {
-                val api = BooruApiFactory.create(source, client, json)
+                val api = api(source)
                 val limit = 100
                 var page = startPage
                 var found = alreadyFound
@@ -348,7 +349,7 @@ class DownloadManager(
         val id = store.newId()
         try {
             if (post.needsResolve) {
-                post = BooruApiFactory.create(task.source, client, json).resolve(post)
+                post = api(task.source).resolve(post)
                 val resolved = post
                 set(key) { it.copy(post = resolved) }
             }

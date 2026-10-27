@@ -397,4 +397,25 @@
     <string name="tag_exclude">Escludi dalla ricerca</string>
     <string name="tag_blacklist">Aggiungi alla blacklist</string>
     <string name="tag_copy">Copia</string>
+    <string name="settings_risky">Opzioni rischiose</string>
+    <string name="settings_risky_hint">Spente per impostazione predefinita: ognuna cede un po\' di privacy in cambio di comodità</string>
+    <string name="settings_risky_intro">Queste opzioni riducono le protezioni che BooruVault ti dà per impostazione predefinita. Leggi cosa fa ognuna prima di attivarla.</string>
+    <string name="settings_hidden_browser">Leggi le pagine protette con un browser nascosto</string>
+    <string name="settings_hidden_browser_on">Attivo: quando un sito continua a chiedere la verifica anti-bot anche dopo che l\'hai superata (succede spesso con Tor), l\'app apre le sue pagine in un browser nascosto e le legge da lì. Per ogni pagina letta così il JavaScript del sito viene eseguito come in una visita normale, tracker compresi, e può raccogliere un\'impronta del browser. I cookie di terze parti restano bloccati, WebRTC resta disattivato, le immagini non vengono caricate, il traffico passa da Tor se Tor è attivo e i dati del browser vengono cancellati dopo ogni pagina. È più lento e consuma più batteria.</string>
+    <string name="settings_hidden_browser_off">Spento: quando un sito continua a chiedere la verifica anti-bot, l\'app si ferma e ti chiede di superarla nel browser integrato. Il codice del sito gira solo mentre lo stai guardando.</string>
+    <string name="collections_all">Tutti</string>
+    <string name="collection_new">Nuova collezione</string>
+    <string name="collection_edit">Modifica collezione</string>
+    <string name="collection_name">Nome</string>
+    <string name="collection_tags">Tag</string>
+    <string name="collection_tags_hint">Tag esatti, come sui booru: -tag esclude, ~tag per alternative, * come jolly. Anche type:video, type:gif, type:image, source:nome e rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Salva come collezione</string>
+    <string name="collection_delete_title">Eliminare la collezione «%1$s»?</string>
+    <string name="collection_delete_text">Si elimina solo la collezione: i file restano nel vault.</string>
+    <string name="collection_saved">Collezione «%1$s» salvata</string>
+    <string name="collection_empty_title">Ancora niente in questa collezione</string>
+    <string name="collection_empty_text">Gli elementi i cui tag corrispondono a «%1$s» compaiono qui man mano che li salvi.</string>
+    <string name="tag_create_collection">Crea una collezione</string>
+    <string name="action_edit">Modifica</string>
+    <string name="browse_save_search">Salva la ricerca come collezione</string>
 </resources>

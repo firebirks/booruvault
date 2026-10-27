@@ -1,5 +1,12 @@
 package io.github.firebirks.booruvault.ui.vault
 
+import java.util.UUID
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
+import io.github.firebirks.booruvault.vault.TagQuery
+import io.github.firebirks.booruvault.vault.TagCollection
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.ui.common.UiText
 import io.github.firebirks.booruvault.R
@@ -30,14 +37,29 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     var query by mutableStateOf("")
     var newestFirst by mutableStateOf(true)
 
+    /** The collection being looked at, or null for everything. */
+    var collectionId by mutableStateOf<String?>(null)
+
+    val collections: StateFlow<List<TagCollection>> = c.settings.settings.map { it.collections }.distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
     val items: StateFlow<List<VaultItem>> = combine(
         c.vaultStore.items,
         snapshotFlow { query },
         snapshotFlow { newestFirst },
-    ) { items, query, newest ->
-        val filtered = filter(items, query)
+        snapshotFlow { collectionId },
+        collections,
+    ) { items, query, newest, id, collections ->
+        val collection = collections.firstOrNull { it.id == id }
+        val inCollection = collection?.let { items.filter(TagQuery.matcher(it.query)) } ?: items
+        val filtered = filter(inCollection, query)
         if (newest) filtered else filtered.reversed()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** How many items each collection holds right now. */
+    val counts: StateFlow<Map<String, Int>> = combine(c.vaultStore.items, collections) { items, collections ->
+        collections.associate { collection -> collection.id to items.count(TagQuery.matcher(collection.query)) }
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     private val _selection = MutableStateFlow<Set<String>>(emptySet())
     val selection: StateFlow<Set<String>> = _selection.asStateFlow()
@@ -54,6 +76,7 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
             c.vault.state.collect {
                 _selection.value = emptySet()
                 query = ""
+                collectionId = null
             }
         }
     }
@@ -119,6 +142,20 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     }
 
     fun lock() = c.vault.lock()
+
+    fun saveCollection(existing: TagCollection?, name: String, query: String) {
+        val collection = TagCollection(existing?.id ?: UUID.randomUUID().toString(), name, query, existing?.createdAt ?: System.currentTimeMillis())
+        viewModelScope.launch {
+            c.settings.saveCollection(collection)
+            collectionId = collection.id
+            _messages.tryEmit(UiText.Res(R.string.collection_saved, listOf(name)))
+        }
+    }
+
+    fun deleteCollection(id: String) {
+        if (collectionId == id) collectionId = null
+        viewModelScope.launch { c.settings.deleteCollection(id) }
+    }
 
     private fun exportFailed(e: Throwable): UiText = UiText.Res(R.string.vault_export_failed, listOf(UiText.Of(e.toProblem())))
 

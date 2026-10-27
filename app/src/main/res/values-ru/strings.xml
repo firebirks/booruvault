@@ -417,4 +417,25 @@
     <string name="tag_exclude">Исключить из поиска</string>
     <string name="tag_blacklist">Добавить в чёрный список</string>
     <string name="tag_copy">Копировать</string>
+    <string name="settings_risky">Рискованные опции</string>
+    <string name="settings_risky_hint">По умолчанию выключены: каждая жертвует частью приватности ради удобства</string>
+    <string name="settings_risky_intro">Эти опции ослабляют защиту, которую BooruVault даёт вам по умолчанию. Прежде чем включить любую из них, прочитайте, что она делает.</string>
+    <string name="settings_hidden_browser">Читать защищённые страницы через скрытый браузер</string>
+    <string name="settings_hidden_browser_on">Вкл.: если сайт продолжает требовать антибот-проверку даже после того, как вы её прошли (с Tor такое часто бывает), приложение открывает его страницы в скрытом браузере и читает их оттуда. Для каждой страницы, прочитанной таким образом, JavaScript сайта, включая трекеры, выполняется как при обычном посещении и может снять цифровой отпечаток браузера. Сторонние cookie остаются заблокированными, WebRTC остаётся выключенным, изображения не загружаются, трафик идёт через Tor, когда Tor включён, а данные браузера стираются после каждой страницы. Это медленнее и расходует больше заряда батареи.</string>
+    <string name="settings_hidden_browser_off">Выкл.: если сайт продолжает требовать антибот-проверку, приложение останавливается и просит вас пройти её во встроенном браузере. Код сайта выполняется, только пока вы на него смотрите.</string>
+    <string name="collections_all">Все</string>
+    <string name="collection_new">Новая коллекция</string>
+    <string name="collection_edit">Изменить коллекцию</string>
+    <string name="collection_name">Название</string>
+    <string name="collection_tags">Теги</string>
+    <string name="collection_tags_hint">Точные теги, как на booru-сайтах: -tag исключает, ~tag задаёт альтернативы, * — подстановочный знак. Также type:video, type:gif, type:image, source:название и rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Сохранить как коллекцию</string>
+    <string name="collection_delete_title">Удалить коллекцию «%1$s»?</string>
+    <string name="collection_delete_text">Удаляется только коллекция: её файлы остаются в хранилище.</string>
+    <string name="collection_saved">Коллекция «%1$s» сохранена</string>
+    <string name="collection_empty_title">В этой коллекции пока ничего нет</string>
+    <string name="collection_empty_text">Элементы, теги которых соответствуют «%1$s», будут появляться здесь по мере того, как вы их сохраняете.</string>
+    <string name="tag_create_collection">Создать коллекцию</string>
+    <string name="action_edit">Изменить</string>
+    <string name="browse_save_search">Сохранить поиск как коллекцию</string>
 </resources>

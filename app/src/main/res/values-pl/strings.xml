@@ -417,4 +417,25 @@
     <string name="tag_exclude">Wyklucz z wyszukiwania</string>
     <string name="tag_blacklist">Dodaj do czarnej listy</string>
     <string name="tag_copy">Kopiuj</string>
+    <string name="settings_risky">Ryzykowne opcje</string>
+    <string name="settings_risky_hint">Domyślnie wyłączone: każda z nich poświęca część prywatności na rzecz wygody</string>
+    <string name="settings_risky_intro">Te opcje osłabiają ochronę, którą BooruVault zapewnia Ci domyślnie. Przeczytaj, co robi każda z nich, zanim ją włączysz.</string>
+    <string name="settings_hidden_browser">Odczytuj chronione strony w ukrytej przeglądarce</string>
+    <string name="settings_hidden_browser_on">Włączone: gdy witryna wciąż wymaga weryfikacji antybotowej, nawet po jej zaliczeniu (często się to zdarza przy korzystaniu z sieci Tor), aplikacja otwiera strony tej witryny w ukrytej przeglądarce i odczytuje je stamtąd. Na każdej stronie odczytanej w ten sposób JavaScript witryny działa jak podczas zwykłej wizyty, łącznie z elementami śledzącymi, i może zebrać cyfrowy odcisk palca przeglądarki. Pliki cookie stron trzecich pozostają zablokowane, WebRTC pozostaje wyłączone, obrazy nie są wczytywane, ruch przechodzi przez Tor, gdy Tor jest włączony, a dane przeglądarki są usuwane po każdej stronie. Działa to wolniej i zużywa więcej baterii.</string>
+    <string name="settings_hidden_browser_off">Wyłączone: gdy witryna wciąż wymaga weryfikacji antybotowej, aplikacja zatrzymuje się i prosi Cię o jej ukończenie we wbudowanej przeglądarce. Kod witryny działa tylko wtedy, gdy ją oglądasz.</string>
+    <string name="collections_all">Wszystkie</string>
+    <string name="collection_new">Nowa kolekcja</string>
+    <string name="collection_edit">Edytuj kolekcję</string>
+    <string name="collection_name">Nazwa</string>
+    <string name="collection_tags">Tagi</string>
+    <string name="collection_tags_hint">Dokładne tagi, jak w serwisach booru: -tag wyklucza, ~tag oznacza alternatywy, * to symbol wieloznaczny. Obsługiwane są też type:video, type:gif, type:image, source:nazwa i rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Zapisz jako kolekcję</string>
+    <string name="collection_delete_title">Usunąć kolekcję „%1$s”?</string>
+    <string name="collection_delete_text">Usuwana jest tylko kolekcja: jej pliki pozostają w sejfie.</string>
+    <string name="collection_saved">Zapisano kolekcję „%1$s”</string>
+    <string name="collection_empty_title">W tej kolekcji nie ma jeszcze nic</string>
+    <string name="collection_empty_text">Elementy, których tagi pasują do „%1$s”, pojawiają się tutaj, gdy je zapisujesz.</string>
+    <string name="tag_create_collection">Utwórz kolekcję</string>
+    <string name="action_edit">Edytuj</string>
+    <string name="browse_save_search">Zapisz wyszukiwanie jako kolekcję</string>
 </resources>

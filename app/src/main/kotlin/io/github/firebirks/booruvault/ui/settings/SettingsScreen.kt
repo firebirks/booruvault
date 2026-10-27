@@ -1,5 +1,8 @@
 package io.github.firebirks.booruvault.ui.settings
 
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.WarningAmber
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -72,7 +75,8 @@ fun SettingsTab() {
     var page by rememberSaveable { mutableStateOf("main") }
     BackHandler(enabled = page != "main") { page = if (page.startsWith("source:")) "sources" else "main" }
     when {
-        page == "main" -> SettingsMain(onSources = { page = "sources" })
+        page == "main" -> SettingsMain(onSources = { page = "sources" }, onRisky = { page = "risky" })
+        page == "risky" -> RiskySettings(onBack = { page = "main" })
         page == "sources" -> SourcesScreen(onBack = { page = "main" }, onEdit = { page = "source:$it" })
         else -> SourceEditor(id = page.removePrefix("source:").takeIf { it != NEW_SOURCE }, onDone = { page = "sources" })
     }
@@ -80,7 +84,7 @@ fun SettingsTab() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsMain(onSources: () -> Unit) {
+private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
     val container = LocalContainer.current
     val repo = container.settings
     val settings by repo.settings.collectAsStateWithLifecycle()
@@ -174,11 +178,6 @@ private fun SettingsMain(onSources: () -> Unit) {
                 onSelect = { scope.launch { repo.setAutoLock(it) } },
             )
             SwitchRow(
-                stringResource(R.string.settings_download_locked),
-                stringResource(if (settings.downloadWhileLocked) R.string.settings_download_locked_on else R.string.settings_download_locked_off),
-                settings.downloadWhileLocked,
-            ) { scope.launch { repo.setDownloadWhileLocked(it) } }
-            SwitchRow(
                 stringResource(R.string.settings_secure_screen),
                 stringResource(R.string.settings_secure_screen_hint),
                 settings.secureScreen,
@@ -186,21 +185,13 @@ private fun SettingsMain(onSources: () -> Unit) {
 
             SectionHeader(stringResource(R.string.settings_section_network))
             TorSettings()
-            val gms = remember { hasGooglePlayServices(context) }
-            if (!gms) {
-                SwitchRow(
-                    stringResource(R.string.settings_safe_browsing),
-                    stringResource(R.string.settings_safe_browsing_unavailable),
-                    checked = false,
-                    enabled = false,
-                ) {}
-            } else {
-                SwitchRow(
-                    stringResource(R.string.settings_safe_browsing),
-                    stringResource(if (settings.webSafeBrowsing) R.string.settings_safe_browsing_on else R.string.settings_safe_browsing_off),
-                    settings.webSafeBrowsing,
-                ) { scope.launch { repo.setWebSafeBrowsing(it) } }
-            }
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.settings_risky)) },
+                supportingContent = { Text(stringResource(R.string.settings_risky_hint)) },
+                leadingContent = { Icon(Icons.Outlined.WarningAmber, null, tint = MaterialTheme.colorScheme.error) },
+                trailingContent = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null) },
+                modifier = Modifier.clickable(onClick = onRisky),
+            )
 
             SectionHeader(stringResource(R.string.settings_section_data))
             val cleared = stringResource(R.string.settings_cookies_cleared)
@@ -232,6 +223,65 @@ private fun SettingsMain(onSources: () -> Unit) {
 
     if (changePassword) ChangePasswordDialog(onDismiss = { changePassword = false })
     if (destroy) DestroyVaultDialog(onDismiss = { destroy = false })
+}
+
+/**
+ * Everything that trades protection for convenience, behind one door and off by default, each
+ * with what it costs spelled out.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RiskySettings(onBack: () -> Unit) {
+    val container = LocalContainer.current
+    val repo = container.settings
+    val settings by repo.settings.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val gms = remember { hasGooglePlayServices(context) }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.settings_risky)) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back)) } },
+            )
+        },
+        contentWindowInsets = WindowInsets(0),
+    ) { padding ->
+        Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState())) {
+            Text(
+                stringResource(R.string.settings_risky_intro),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(16.dp),
+            )
+            SwitchRow(
+                stringResource(R.string.settings_download_locked),
+                stringResource(if (settings.downloadWhileLocked) R.string.settings_download_locked_on else R.string.settings_download_locked_off),
+                settings.downloadWhileLocked,
+            ) { scope.launch { repo.setDownloadWhileLocked(it) } }
+            HorizontalDivider()
+            SwitchRow(
+                stringResource(R.string.settings_hidden_browser),
+                stringResource(if (settings.hiddenBrowser) R.string.settings_hidden_browser_on else R.string.settings_hidden_browser_off),
+                settings.hiddenBrowser,
+            ) { scope.launch { repo.setHiddenBrowser(it) } }
+            HorizontalDivider()
+            if (!gms) {
+                SwitchRow(
+                    stringResource(R.string.settings_safe_browsing),
+                    stringResource(R.string.settings_safe_browsing_unavailable),
+                    checked = false,
+                    enabled = false,
+                ) {}
+            } else {
+                SwitchRow(
+                    stringResource(R.string.settings_safe_browsing),
+                    stringResource(if (settings.webSafeBrowsing) R.string.settings_safe_browsing_on else R.string.settings_safe_browsing_off),
+                    settings.webSafeBrowsing,
+                ) { scope.launch { repo.setWebSafeBrowsing(it) } }
+            }
+        }
+    }
 }
 
 @Composable

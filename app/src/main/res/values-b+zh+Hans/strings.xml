@@ -357,4 +357,25 @@
     <string name="tag_exclude">从搜索中排除</string>
     <string name="tag_blacklist">加入黑名单</string>
     <string name="tag_copy">复制</string>
+    <string name="settings_risky">有风险的选项</string>
+    <string name="settings_risky_hint">默认关闭：每一项都会牺牲部分隐私来换取便利</string>
+    <string name="settings_risky_intro">这些选项会削弱 BooruVault 默认为你提供的保护。开启前，请先阅读每一项的作用。</string>
+    <string name="settings_hidden_browser">使用隐藏的浏览器读取受保护的页面</string>
+    <string name="settings_hidden_browser_on">开启：如果网站在你通过反机器人验证后仍不断要求验证（使用 Tor 时很常见），应用会在隐藏的浏览器中打开该网站的页面，并从中读取内容。以这种方式读取的每个页面，网站的 JavaScript（包括跟踪器）都会像正常访问时一样运行，并且可以采集浏览器指纹。第三方 Cookie 仍会被阻止，WebRTC 保持关闭，不加载图片，开启 Tor 时流量会经过 Tor，并且每读取完一个页面都会清除浏览器的数据。速度更慢，也更耗电。</string>
+    <string name="settings_hidden_browser_off">关闭：如果网站不断要求反机器人验证，应用会停下来，并请你在内置浏览器中通过验证。网站的代码只在你查看该网站时运行。</string>
+    <string name="collections_all">全部</string>
+    <string name="collection_new">新建合集</string>
+    <string name="collection_edit">编辑合集</string>
+    <string name="collection_name">名称</string>
+    <string name="collection_tags">标签</string>
+    <string name="collection_tags_hint">与 booru 上一致的精确标签：-tag 表示排除，~tag 表示备选（满足其一即可），* 为通配符。还支持 type:video、type:gif、type:image、source:名称 和 rating:general|sensitive|questionable|explicit。</string>
+    <string name="collection_save">保存为合集</string>
+    <string name="collection_delete_title">删除合集“%1$s”？</string>
+    <string name="collection_delete_text">只会删除合集：其中的文件仍保留在保险库中。</string>
+    <string name="collection_saved">已保存合集“%1$s”</string>
+    <string name="collection_empty_title">此合集中还没有内容</string>
+    <string name="collection_empty_text">标签与“%1$s”匹配的项目保存后会显示在这里。</string>
+    <string name="tag_create_collection">创建合集</string>
+    <string name="action_edit">编辑</string>
+    <string name="browse_save_search">将搜索保存为合集</string>
 </resources>

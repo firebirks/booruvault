@@ -377,4 +377,25 @@
     <string name="tag_exclude">Uitsluiten van zoekopdracht</string>
     <string name="tag_blacklist">Toevoegen aan zwarte lijst</string>
     <string name="tag_copy">Kopiëren</string>
+    <string name="settings_risky">Risicovolle opties</string>
+    <string name="settings_risky_hint">Standaard uit: elke optie ruilt wat privacy in voor gemak</string>
+    <string name="settings_risky_intro">Deze opties verzwakken de bescherming die BooruVault je standaard biedt. Lees wat elke optie doet voordat je die aanzet.</string>
+    <string name="settings_hidden_browser">Beschermde pagina\'s lezen met een verborgen browser</string>
+    <string name="settings_hidden_browser_on">Aan: als een site om de anti-botcontrole blijft vragen, ook nadat je die hebt doorstaan (vaak het geval met Tor), opent de app de pagina\'s van die site in een verborgen browser en leest ze daar uit. Voor elke pagina die zo wordt gelezen, draait het JavaScript van de site zoals bij een normaal bezoek, trackers inbegrepen, en kan het een vingerafdruk van de browser nemen. Cookies van derden blijven geblokkeerd, WebRTC blijft uit, afbeeldingen worden niet geladen, het verkeer gaat via Tor als Tor aan staat, en de gegevens van de browser worden na elke pagina gewist. Het is trager en verbruikt meer batterij.</string>
+    <string name="settings_hidden_browser_off">Uit: als een site om de anti-botcontrole blijft vragen, stopt de app en vraagt je die in de ingebouwde browser te voltooien. De code van de site draait alleen terwijl je ernaar kijkt.</string>
+    <string name="collections_all">Alle</string>
+    <string name="collection_new">Nieuwe verzameling</string>
+    <string name="collection_edit">Verzameling bewerken</string>
+    <string name="collection_name">Naam</string>
+    <string name="collection_tags">Tags</string>
+    <string name="collection_tags_hint">Exacte tags, zoals op de boorus: -tag sluit uit, ~tag voor alternatieven, * als jokerteken. Ook type:video, type:gif, type:image, source:naam en rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Opslaan als verzameling</string>
+    <string name="collection_delete_title">Verzameling ‘%1$s’ verwijderen?</string>
+    <string name="collection_delete_text">Alleen de verzameling wordt verwijderd: de bestanden ervan blijven in de kluis.</string>
+    <string name="collection_saved">Verzameling ‘%1$s’ opgeslagen</string>
+    <string name="collection_empty_title">Nog niets in deze verzameling</string>
+    <string name="collection_empty_text">Items waarvan de tags overeenkomen met ‘%1$s’ verschijnen hier zodra je ze opslaat.</string>
+    <string name="tag_create_collection">Verzameling maken</string>
+    <string name="action_edit">Bewerken</string>
+    <string name="browse_save_search">Zoekopdracht opslaan als verzameling</string>
 </resources>

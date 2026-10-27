@@ -1,5 +1,13 @@
 package io.github.firebirks.booruvault.ui.vault
 
+import androidx.compose.material.icons.outlined.CollectionsBookmark
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyRow
+import io.github.firebirks.booruvault.vault.TagCollection
 import io.github.firebirks.booruvault.ui.common.resolve
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.pluralStringResource
@@ -112,6 +120,11 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     var confirmDelete by remember { mutableStateOf(false) }
     var releaseHold by remember { mutableStateOf<(() -> Unit)?>(null) }
     var exportIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+    val collections by vm.collections.collectAsStateWithLifecycle()
+    val counts by vm.counts.collectAsStateWithLifecycle()
+    var creating by remember { mutableStateOf<String?>(null) }
+    var editing by remember { mutableStateOf<TagCollection?>(null) }
+    val selectedCollection = collections.firstOrNull { it.id == vm.collectionId }
 
     LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it.resolve(context)) } }
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
@@ -184,13 +197,49 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     placeholder = { Text(stringResource(R.string.vault_filter_hint)) },
                     leadingIcon = { Icon(Icons.Outlined.Search, null) },
                     trailingIcon = {
-                        if (vm.query.isNotEmpty()) IconButton(onClick = { vm.query = "" }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear)) }
+                        if (vm.query.isNotEmpty()) {
+                            Row {
+                                IconButton(onClick = { creating = vm.query }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
+                                IconButton(onClick = { vm.query = "" }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear)) }
+                            }
+                        }
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search, autoCorrectEnabled = false),
                     shape = RoundedCornerShape(28.dp),
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
                 )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    item(key = "all") {
+                        FilterChip(selected = vm.collectionId == null, onClick = { vm.collectionId = null }, label = { Text(stringResource(R.string.collections_all)) })
+                    }
+                    items(collections, key = { it.id }) { collection ->
+                        FilterChip(
+                            selected = vm.collectionId == collection.id,
+                            onClick = { vm.collectionId = if (vm.collectionId == collection.id) null else collection.id },
+                            label = { Text("${collection.name} · ${counts[collection.id] ?: 0}") },
+                        )
+                    }
+                    selectedCollection?.let { collection ->
+                        item(key = "edit") {
+                            AssistChip(
+                                onClick = { editing = collection },
+                                label = { Text(stringResource(R.string.action_edit)) },
+                                leadingIcon = { Icon(Icons.Outlined.Edit, null) },
+                            )
+                        }
+                    }
+                    item(key = "new") {
+                        AssistChip(
+                            onClick = { creating = vm.query },
+                            label = { Text(stringResource(R.string.collection_new)) },
+                            leadingIcon = { Icon(Icons.Outlined.Add, null) },
+                        )
+                    }
+                }
             }
             transfer?.let { t ->
                 Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -209,6 +258,11 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                 total.isEmpty() -> MessageState(
                     Icons.Outlined.Inventory2, stringResource(R.string.vault_empty_title),
                     stringResource(R.string.vault_empty_text),
+                )
+                items.isEmpty() && selectedCollection != null && vm.query.isBlank() -> MessageState(
+                    Icons.Outlined.CollectionsBookmark,
+                    stringResource(R.string.collection_empty_title),
+                    stringResource(R.string.collection_empty_text, selectedCollection.query),
                 )
                 items.isEmpty() -> MessageState(Icons.Outlined.SearchOff, stringResource(R.string.vault_no_match))
                 else -> LazyVerticalGrid(
@@ -231,6 +285,34 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                 }
             }
         }
+    }
+
+    creating?.let { prefill ->
+        CollectionDialog(
+            initial = null,
+            prefillQuery = prefill,
+            onDismiss = { creating = null },
+            onSave = { name, query ->
+                creating = null
+                vm.query = ""
+                vm.saveCollection(null, name, query)
+            },
+        )
+    }
+    editing?.let { collection ->
+        CollectionDialog(
+            initial = collection,
+            prefillQuery = collection.query,
+            onDismiss = { editing = null },
+            onSave = { name, query ->
+                editing = null
+                vm.saveCollection(collection, name, query)
+            },
+            onDelete = {
+                editing = null
+                vm.deleteCollection(collection.id)
+            },
+        )
     }
 
     if (pendingImport.isNotEmpty()) {

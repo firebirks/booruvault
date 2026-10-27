@@ -13,6 +13,11 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/** Reads a page some other way when the HTTP client keeps being sent to an anti-bot check. */
+fun interface HtmlFetcher {
+    suspend fun fetch(url: String): String
+}
+
 interface BooruApi {
     /** [page] starts at 1. */
     suspend fun posts(tags: String, page: Int, limit: Int): List<Post>
@@ -42,7 +47,14 @@ abstract class BaseBooruApi(
 
     protected suspend fun get(url: HttpUrl) = client.getJson(request(url), json)
 
-    protected suspend fun getHtml(url: HttpUrl): String = client.getText(request(url), json)
+    /** Set by the factory when the user lets challenged pages be read in a hidden browser. */
+    internal var pages: HtmlFetcher? = null
+
+    protected suspend fun getHtml(url: HttpUrl): String = try {
+        client.getText(request(url), json)
+    } catch (e: BooruChallengeException) {
+        pages?.fetch(url.toString()) ?: throw e
+    }
 
     /** Some sites hand out protocol-relative or root-relative links. */
     protected fun absolute(url: String?): String? = when {
@@ -58,7 +70,8 @@ abstract class BaseBooruApi(
 }
 
 object BooruApiFactory {
-    fun create(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = OffMainThread(engine(source, client, json))
+    fun create(source: BooruSource, client: OkHttpClient, json: Json, pages: HtmlFetcher? = null): BooruApi =
+        OffMainThread(engine(source, client, json).also { (it as? BaseBooruApi)?.pages = pages })
 
     private fun engine(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = when (source.engine) {
         BooruEngine.DANBOORU -> DanbooruApi(source, client, json)

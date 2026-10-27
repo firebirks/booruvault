@@ -357,4 +357,25 @@
     <string name="tag_exclude">Kecualikan dari pencarian</string>
     <string name="tag_blacklist">Tambahkan ke daftar hitam</string>
     <string name="tag_copy">Salin</string>
+    <string name="settings_risky">Opsi berisiko</string>
+    <string name="settings_risky_hint">Nonaktif secara default: masing-masing mengorbankan sebagian privasi demi kenyamanan</string>
+    <string name="settings_risky_intro">Opsi-opsi ini melemahkan perlindungan yang diberikan BooruVault kepada Anda secara default. Baca apa yang dilakukan masing-masing opsi sebelum mengaktifkannya.</string>
+    <string name="settings_hidden_browser">Baca halaman yang dilindungi dengan browser tersembunyi</string>
+    <string name="settings_hidden_browser_on">Aktif: jika suatu situs terus meminta pemeriksaan anti-bot meskipun Anda sudah menyelesaikannya (sering terjadi dengan Tor), aplikasi membuka halaman situs tersebut di browser tersembunyi dan membacanya dari sana. Untuk setiap halaman yang dibaca dengan cara ini, JavaScript situs, termasuk pelacak, berjalan seperti pada kunjungan biasa dan dapat mengambil sidik jari browser. Cookie pihak ketiga tetap diblokir, WebRTC tetap nonaktif, gambar tidak dimuat, lalu lintas melewati Tor saat Tor aktif, dan data browser dihapus setelah setiap halaman. Cara ini lebih lambat dan lebih boros baterai.</string>
+    <string name="settings_hidden_browser_off">Nonaktif: jika suatu situs terus meminta pemeriksaan anti-bot, aplikasi berhenti dan meminta Anda menyelesaikannya di browser bawaan. Kode situs hanya berjalan selama Anda melihatnya.</string>
+    <string name="collections_all">Semua</string>
+    <string name="collection_new">Koleksi baru</string>
+    <string name="collection_edit">Edit koleksi</string>
+    <string name="collection_name">Nama</string>
+    <string name="collection_tags">Tag</string>
+    <string name="collection_tags_hint">Tag persis seperti di booru: -tag untuk mengecualikan, ~tag untuk alternatif, * sebagai wildcard. Juga type:video, type:gif, type:image, source:nama, dan rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Simpan sebagai koleksi</string>
+    <string name="collection_delete_title">Hapus koleksi “%1$s”?</string>
+    <string name="collection_delete_text">Hanya koleksinya yang dihapus: file di dalamnya tetap ada di brankas.</string>
+    <string name="collection_saved">Koleksi “%1$s” disimpan</string>
+    <string name="collection_empty_title">Belum ada apa pun di koleksi ini</string>
+    <string name="collection_empty_text">Item yang tag-nya cocok dengan “%1$s” akan muncul di sini saat Anda menyimpannya.</string>
+    <string name="tag_create_collection">Buat koleksi</string>
+    <string name="action_edit">Edit</string>
+    <string name="browse_save_search">Simpan pencarian sebagai koleksi</string>
 </resources>

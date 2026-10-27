@@ -457,4 +457,25 @@
     <string name="tag_exclude">استبعاد من البحث</string>
     <string name="tag_blacklist">إضافة إلى القائمة السوداء</string>
     <string name="tag_copy">نسخ</string>
+    <string name="settings_risky">خيارات محفوفة بالمخاطر</string>
+    <string name="settings_risky_hint">متوقفة افتراضيًا: كل منها يتنازل عن قدر من الخصوصية مقابل الراحة</string>
+    <string name="settings_risky_intro">تُضعف هذه الخيارات الحماية التي يوفرها لك BooruVault افتراضيًا. اقرأ ما يفعله كل خيار منها قبل تفعيله.</string>
+    <string name="settings_hidden_browser">قراءة الصفحات المحمية باستخدام متصفح مخفي</string>
+    <string name="settings_hidden_browser_on">مفعّل: عندما يستمر موقع في طلب التحقق المضاد للروبوتات حتى بعد أن تجتازه (وهذا شائع مع Tor)، يفتح التطبيق صفحاته في متصفح مخفي ويقرؤها من هناك. في كل صفحة تُقرأ بهذه الطريقة، يعمل JavaScript الخاص بالموقع، بما في ذلك أدوات التتبع، كما في الزيارة العادية، ويمكنه أخذ بصمة رقمية للمتصفح. تبقى ملفات تعريف الارتباط التابعة لجهات خارجية محظورة، ويبقى WebRTC متوقفًا، ولا تُحمَّل الصور، وتمرّ حركة البيانات عبر Tor عندما يكون Tor مفعّلًا، وتُمحى بيانات المتصفح بعد كل صفحة. هذه الطريقة أبطأ وتستهلك المزيد من البطارية.</string>
+    <string name="settings_hidden_browser_off">متوقف: عندما يستمر موقع في طلب التحقق المضاد للروبوتات، يتوقف التطبيق ويطلب منك إكماله في المتصفح المدمج. لا تعمل التعليمات البرمجية للموقع إلا بينما تشاهده.</string>
+    <string name="collections_all">الكل</string>
+    <string name="collection_new">مجموعة جديدة</string>
+    <string name="collection_edit">تعديل المجموعة</string>
+    <string name="collection_name">الاسم</string>
+    <string name="collection_tags">الوسوم</string>
+    <string name="collection_tags_hint">وسوم بصيغتها الدقيقة كما في مواقع booru: &#x200E;-tag للاستبعاد، و&#x200E;~tag للبدائل، و* كحرف بدل. ويمكن أيضًا استخدام type:video وtype:gif وtype:image وsource:name وrating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">حفظ كمجموعة</string>
+    <string name="collection_delete_title">حذف المجموعة «%1$s»؟</string>
+    <string name="collection_delete_text">تُزال المجموعة وحدها: تبقى ملفاتها في الخزنة.</string>
+    <string name="collection_saved">تم حفظ المجموعة «%1$s»</string>
+    <string name="collection_empty_title">لا يوجد شيء في هذه المجموعة بعد</string>
+    <string name="collection_empty_text">ستظهر هنا العناصر التي تطابق وسومها «%1$s» عندما تحفظها.</string>
+    <string name="tag_create_collection">إنشاء مجموعة</string>
+    <string name="action_edit">تعديل</string>
+    <string name="browse_save_search">حفظ البحث كمجموعة</string>
 </resources>

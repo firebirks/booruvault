@@ -357,4 +357,25 @@
     <string name="tag_exclude">從搜尋中排除</string>
     <string name="tag_blacklist">加入黑名單</string>
     <string name="tag_copy">複製</string>
+    <string name="settings_risky">有風險的選項</string>
+    <string name="settings_risky_hint">預設為關閉：每一項都會犧牲部分隱私權來換取便利</string>
+    <string name="settings_risky_intro">這些選項會削弱 BooruVault 預設為你提供的保護。開啟前，請先閱讀每一項的作用。</string>
+    <string name="settings_hidden_browser">使用隱藏的瀏覽器讀取受保護的網頁</string>
+    <string name="settings_hidden_browser_on">開啟：如果網站在你通過防機器人驗證後仍不斷要求驗證（使用 Tor 時很常見），應用程式會在隱藏的瀏覽器中開啟該網站的網頁，並從中讀取內容。以這種方式讀取的每個網頁，網站的 JavaScript（包括追蹤器）都會像一般造訪時一樣執行，並能擷取瀏覽器指紋。第三方 Cookie 仍會遭到封鎖，WebRTC 維持關閉，不會載入圖片，開啟 Tor 時流量會經由 Tor，而且每讀取完一個網頁就會清除瀏覽器的資料。速度較慢，也較耗電。</string>
+    <string name="settings_hidden_browser_off">關閉：如果網站不斷要求防機器人驗證，應用程式會停下來，並請你在內建瀏覽器中通過驗證。網站的程式碼只會在你瀏覽該網站時執行。</string>
+    <string name="collections_all">全部</string>
+    <string name="collection_new">新增收藏集</string>
+    <string name="collection_edit">編輯收藏集</string>
+    <string name="collection_name">名稱</string>
+    <string name="collection_tags">標籤</string>
+    <string name="collection_tags_hint">與 booru 上相同的精確標籤：-tag 表示排除，~tag 表示替代選項（符合其一即可），* 為萬用字元。另外也支援 type:video、type:gif、type:image、source:名稱 和 rating:general|sensitive|questionable|explicit。</string>
+    <string name="collection_save">儲存為收藏集</string>
+    <string name="collection_delete_title">要刪除收藏集「%1$s」嗎？</string>
+    <string name="collection_delete_text">只會刪除收藏集：其中的檔案仍會保留在保險庫中。</string>
+    <string name="collection_saved">已儲存收藏集「%1$s」</string>
+    <string name="collection_empty_title">這個收藏集裡還沒有任何項目</string>
+    <string name="collection_empty_text">標籤符合「%1$s」的項目在儲存後會顯示在這裡。</string>
+    <string name="tag_create_collection">建立收藏集</string>
+    <string name="action_edit">編輯</string>
+    <string name="browse_save_search">將搜尋儲存為收藏集</string>
 </resources>

@@ -377,4 +377,25 @@
     <string name="tag_exclude">Von der Suche ausschließen</string>
     <string name="tag_blacklist">Zur Sperrliste hinzufügen</string>
     <string name="tag_copy">Kopieren</string>
+    <string name="settings_risky">Riskante Optionen</string>
+    <string name="settings_risky_hint">Standardmäßig aus: Jede tauscht ein Stück Privatsphäre gegen Komfort ein</string>
+    <string name="settings_risky_intro">Diese Optionen schwächen die Schutzmaßnahmen, die BooruVault dir standardmäßig bietet. Lies, was jede einzelne bewirkt, bevor du sie aktivierst.</string>
+    <string name="settings_hidden_browser">Geschützte Seiten mit einem versteckten Browser lesen</string>
+    <string name="settings_hidden_browser_on">An: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, obwohl du sie bestanden hast (häufig mit Tor), öffnet die App ihre Seiten in einem versteckten Browser und liest sie dort aus. Bei jeder so gelesenen Seite läuft das JavaScript der Website wie bei einem normalen Besuch, Tracker eingeschlossen, und kann einen Fingerabdruck des Browsers erstellen. Drittanbieter-Cookies bleiben blockiert, WebRTC bleibt deaktiviert, Bilder werden nicht geladen, der Datenverkehr läuft über Tor, wenn Tor aktiv ist, und die Daten des Browsers werden nach jeder Seite gelöscht. Es ist langsamer und verbraucht mehr Akku.</string>
+    <string name="settings_hidden_browser_off">Aus: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, hält die App an und bittet dich, sie im integrierten Browser abzuschließen. Der Code der Website läuft nur, während du sie dir ansiehst.</string>
+    <string name="collections_all">Alle</string>
+    <string name="collection_new">Neue Sammlung</string>
+    <string name="collection_edit">Sammlung bearbeiten</string>
+    <string name="collection_name">Name</string>
+    <string name="collection_tags">Tags</string>
+    <string name="collection_tags_hint">Exakte Tags wie auf den Boorus: -tag schließt aus, ~tag für Alternativen, * als Platzhalter. Außerdem type:video, type:gif, type:image, source:name und rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_save">Als Sammlung speichern</string>
+    <string name="collection_delete_title">Sammlung „%1$s“ löschen?</string>
+    <string name="collection_delete_text">Nur die Sammlung wird gelöscht: Die Dateien darin bleiben im Tresor.</string>
+    <string name="collection_saved">Sammlung „%1$s“ gespeichert</string>
+    <string name="collection_empty_title">Noch nichts in dieser Sammlung</string>
+    <string name="collection_empty_text">Elemente, deren Tags zu „%1$s“ passen, erscheinen hier, sobald du sie speicherst.</string>
+    <string name="tag_create_collection">Sammlung erstellen</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="browse_save_search">Suche als Sammlung speichern</string>
 </resources>

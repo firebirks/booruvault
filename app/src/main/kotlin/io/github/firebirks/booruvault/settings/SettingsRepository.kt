@@ -4,6 +4,7 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Presets
 import io.github.firebirks.booruvault.booru.Rating
 import io.github.firebirks.booruvault.vault.SealedJson
+import io.github.firebirks.booruvault.vault.TagCollection
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.VaultState
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +47,10 @@ data class AppSettings(
     val downloadWhileLocked: Boolean = false,
     /** Google Safe Browsing in the built-in browser. Off: no URL hashes go to Google. */
     val webSafeBrowsing: Boolean = false,
+    /** Read pages that keep demanding an anti-bot check through a hidden WebView. */
+    val hiddenBrowser: Boolean = false,
+    /** Bookmarked tag sets, shown as collections in the vault. */
+    val collections: List<TagCollection> = emptyList(),
     val secureScreen: Boolean = true,
 ) {
     val selectedSource: BooruSource?
@@ -109,6 +114,15 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     suspend fun setSecureScreen(value: Boolean) = edit { it.copy(secureScreen = value) }
     suspend fun setDownloadWhileLocked(value: Boolean) = edit { it.copy(downloadWhileLocked = value) }
     suspend fun setWebSafeBrowsing(value: Boolean) = edit { it.copy(webSafeBrowsing = value) }
+    suspend fun setHiddenBrowser(value: Boolean) = edit { it.copy(hiddenBrowser = value) }
+
+    suspend fun saveCollection(collection: TagCollection) = edit { current ->
+        val others = current.collections.filterNot { it.id == collection.id }
+        val index = current.collections.indexOfFirst { it.id == collection.id }
+        current.copy(collections = if (index < 0) others + collection else others.toMutableList().apply { add(index, collection) })
+    }
+
+    suspend fun deleteCollection(id: String) = edit { current -> current.copy(collections = current.collections.filterNot { it.id == id }) }
 
     suspend fun addToBlacklist(tag: String) = edit { current ->
         if (current.blacklist.lines().any { it.trim() == tag }) current
