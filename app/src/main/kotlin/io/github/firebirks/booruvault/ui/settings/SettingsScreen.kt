@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -148,6 +149,21 @@ private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
                 leadingContent = { Icon(Icons.Outlined.Password, null) },
                 modifier = Modifier.clickable { changePassword = true },
             )
+            val rekey by container.rekeyer.progress.collectAsStateWithLifecycle()
+            rekey?.let { progress ->
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.rekey_title)) },
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(stringResource(R.string.rekey_progress, progress.done, progress.total))
+                            LinearProgressIndicator(
+                                progress = { if (progress.total == 0) 0f else progress.done.toFloat() / progress.total },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    },
+                )
+            }
             val activity = context.findActivity() as? FragmentActivity
             if (activity != null && BiometricKey.isAvailable(context)) {
                 SwitchRow(stringResource(R.string.settings_biometric), stringResource(R.string.settings_biometric_hint), biometricOn) { on ->
@@ -325,6 +341,7 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
         title = { Text(stringResource(R.string.settings_change_password)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.password_change_rekey_note), style = MaterialTheme.typography.bodySmall)
                 PasswordField(
                     old, { old = it; wrong = false }, stringResource(R.string.password_current), imeAction = ImeAction.Next,
                     isError = wrong, supportingText = if (wrong) stringResource(R.string.password_current_wrong) else null, enabled = !working,
@@ -347,6 +364,8 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
                     val ok = vault.changePassword(old.toCharArray(), new.toCharArray())
                     working = false
                     if (ok) {
+                        // The biometric copy held the old key; the Keystore key goes with it.
+                        BiometricKey.delete()
                         Toast.makeText(context, changed, Toast.LENGTH_SHORT).show()
                         onDismiss()
                     } else {

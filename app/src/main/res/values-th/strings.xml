@@ -118,6 +118,9 @@
     <string name="password_new_confirm">ยืนยันรหัสผ่านใหม่</string>
     <string name="password_too_short">อย่างน้อย %d ตัวอักษร</string>
     <string name="password_changed">อัปเดตรหัสผ่านแล้ว</string>
+    <string name="password_change_rekey_note">กุญแจของห้องนิรภัยจะถูกเปลี่ยนด้วย จากนั้นทุกไฟล์จะถูกผนึกใหม่ด้วยกุญแจใหม่ในเบื้องหลัง จนกว่าจะเสร็จ สำเนาเก่าของห้องนิรภัยที่เปิดด้วยรหัสผ่านเดิมยังอ่านไฟล์ที่ยังไม่ได้ผนึกใหม่ได้ การปลดล็อกด้วยชีวมิติจะถูกปิดและเปิดใหม่ได้</string>
+    <string name="rekey_title">กำลังผนึกห้องนิรภัยใหม่ด้วยกุญแจใหม่</string>
+    <string name="rekey_progress">%1$d จาก %2$d ไฟล์ การล็อกจะหยุดชั่วคราว การปลดล็อกครั้งถัดไปจะทำต่อ</string>
     <string name="password_current_wrong">รหัสผ่านปัจจุบันไม่ถูกต้อง</string>
     <string name="delete_vault_title">ลบคลังนิรภัยใช่ไหม</string>
     <string name="delete_vault_text">ไฟล์ทั้งหมดในคลังนิรภัยและคีย์ของคลังจะถูกลบ และไม่มีทางกู้คืนได้</string>

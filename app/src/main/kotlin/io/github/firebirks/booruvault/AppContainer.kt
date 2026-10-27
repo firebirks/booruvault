@@ -18,6 +18,7 @@ import io.github.firebirks.booruvault.vault.AutoLock
 import io.github.firebirks.booruvault.vault.VaultImageFetcher
 import io.github.firebirks.booruvault.vault.VaultImageKeyer
 import io.github.firebirks.booruvault.vault.VaultManager
+import io.github.firebirks.booruvault.vault.VaultRekeyer
 import io.github.firebirks.booruvault.vault.VaultState
 import io.github.firebirks.booruvault.vault.VaultStore
 import io.github.firebirks.booruvault.vault.VaultTransfer
@@ -91,6 +92,7 @@ class AppContainer(private val context: Context) {
         .build()
 
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
+    val rekeyer = VaultRekeyer(vaultDir, vault, vaultStore, scope)
     val transfer = VaultTransfer(context, vaultStore)
     val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
     val downloads = DownloadManager(context, { api(it) }, http, vaultStore, vault, settings, json, vaultDir, scope)

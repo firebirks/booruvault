@@ -118,6 +118,9 @@
     <string name="password_new_confirm">确认新密码</string>
     <string name="password_too_short">至少 %d 个字符</string>
     <string name="password_changed">密码已更新</string>
+    <string name="password_change_rekey_note">保险库的密钥也会被替换。之后每个文件都会在后台用新密钥重新密封；在完成之前，用旧密码打开的旧保险库副本仍能读取尚未重新密封的文件。生物识别解锁会被关闭，可以再次开启。</string>
+    <string name="rekey_title">正在用新密钥重新密封保险库</string>
+    <string name="rekey_progress">%2$d 个文件中的 %1$d 个。锁定会暂停，下次解锁时继续。</string>
     <string name="password_current_wrong">当前密码错误</string>
     <string name="delete_vault_title">删除保险库？</string>
     <string name="delete_vault_text">保险库中的所有文件及其密钥都将被清除，且无法恢复。</string>

@@ -64,6 +64,11 @@ class VaultStore(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
+    private val inFlight = java.util.concurrent.atomic.AtomicInteger()
+
+    /** Writes begun and not yet renamed into place; each seals to the recipient of its start. */
+    val writesInFlight: Int get() = inFlight.get()
+
     init {
         scope.launch(Dispatchers.IO) {
             // Leftovers of writes interrupted by a crash; new writes wait until this is done.
@@ -113,40 +118,55 @@ class VaultStore(
     /** Seals what [block] writes as the media of item [id]. Returns the plaintext size. */
     suspend fun writeMedia(id: String, block: suspend (OutputStream) -> Unit): Long = withContext(Dispatchers.IO) {
         cleaned.await()
-        val recipient = recipient()
-        mediaDir.mkdirs()
-        val part = File(mediaDir, "$id.part")
+        inFlight.incrementAndGet()
         try {
-            val sealed = SealedOutputStream(part.outputStream().buffered(256 * 1024), recipient)
-            sealed.use { block(it) }
-            if (!part.renameTo(File(mediaDir, id))) throw IOException("cannot store media")
-            sealed.bytesWritten
-        } catch (e: Throwable) {
-            part.delete()
-            throw e
+            val recipient = recipient()
+            mediaDir.mkdirs()
+            val part = File(mediaDir, "$id.part")
+            try {
+                val sealed = SealedOutputStream(part.outputStream().buffered(256 * 1024), recipient)
+                sealed.use { block(it) }
+                if (!part.renameTo(File(mediaDir, id))) throw IOException("cannot store media")
+                sealed.bytesWritten
+            } catch (e: Throwable) {
+                part.delete()
+                throw e
+            }
+        } finally {
+            inFlight.decrementAndGet()
         }
     }
 
     suspend fun writeThumbnail(id: String, jpeg: ByteArray) = withContext(Dispatchers.IO) {
         cleaned.await()
-        thumbDir.mkdirs()
-        val part = File(thumbDir, "$id.part")
-        SealedOutputStream(part.outputStream().buffered(), recipient()).use { it.write(jpeg) }
-        if (!part.renameTo(File(thumbDir, id))) throw IOException("cannot store thumbnail")
+        inFlight.incrementAndGet()
+        try {
+            thumbDir.mkdirs()
+            val part = File(thumbDir, "$id.part")
+            SealedOutputStream(part.outputStream().buffered(), recipient()).use { it.write(jpeg) }
+            if (!part.renameTo(File(thumbDir, id))) throw IOException("cannot store thumbnail")
+        } finally {
+            inFlight.decrementAndGet()
+        }
     }
 
     /** Makes an item whose media is already written visible. */
     suspend fun commit(item: VaultItem) = withContext(Dispatchers.IO) {
         cleaned.await()
-        metaDir.mkdirs()
-        val tmp = File(metaDir, "${item.id}.tmp")
-        val bytes = json.encodeToString(VaultItem.serializer(), item).toByteArray()
+        inFlight.incrementAndGet()
         try {
-            SealedOutputStream(tmp.outputStream().buffered(), recipient()).use { it.write(bytes) }
+            metaDir.mkdirs()
+            val tmp = File(metaDir, "${item.id}.tmp")
+            val bytes = json.encodeToString(VaultItem.serializer(), item).toByteArray()
+            try {
+                SealedOutputStream(tmp.outputStream().buffered(), recipient()).use { it.write(bytes) }
+            } finally {
+                bytes.fill(0)
+            }
+            if (!tmp.renameTo(File(metaDir, item.id))) throw IOException("cannot store metadata")
         } finally {
-            bytes.fill(0)
+            inFlight.decrementAndGet()
         }
-        if (!tmp.renameTo(File(metaDir, item.id))) throw IOException("cannot store metadata")
         reconcileRequests.trySend(Unit)
     }
 

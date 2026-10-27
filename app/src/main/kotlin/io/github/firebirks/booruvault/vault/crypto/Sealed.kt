@@ -22,7 +22,11 @@ class Recipient(val key: PublicKey, val encoded: ByteArray) {
     }
 }
 
-class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey)
+/**
+ * The vault's key pair, plus any [retired] pairs whose files are still being re-sealed after a
+ * password change. A reader tries the current pair first, then the retired ones.
+ */
+class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retired: List<VaultKeys> = emptyList())
 
 /**
  * A file sealed to the vault's public key: ECIES (P-256 ECDH, HKDF-SHA256) wrapping a chunked
@@ -171,7 +175,7 @@ class SealedOutputStream(
 class SealedFile(file: File, keys: VaultKeys) : Closeable {
     private val raf = RandomAccessFile(file, "r")
     private val header: SealedFormat.Header
-    private val streamKey: SealedFormat.StreamKey
+    private var streamKey: SealedFormat.StreamKey
     private val cipher = Cipher.getInstance("AES/GCM/NoPadding")
     private val cipherChunk: Int
     private val chunkCount: Long
@@ -184,11 +188,13 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
     /** Plaintext length in bytes. */
     val size: Long
 
+    /** The key pair this file is sealed to: the vault's current one, or a retired one. */
+    val sealedTo: Recipient
+
     init {
         try {
             header = SealedFormat.readHeader(raf)
             val ephemeral = EcKeys.publicKey(header.ephemeralKey)
-            streamKey = SealedFormat.streamKey(EcKeys.agree(keys.privateKey, ephemeral), header, keys.recipient)
             cipherChunk = header.chunkSize + SealedFormat.TAG
             fileLength = raf.length()
             val body = fileLength - header.bytes.size
@@ -199,11 +205,24 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
             size = body - chunkCount * SealedFormat.TAG
             ciphertext = ByteArray(cipherChunk)
             plain = ByteArray(header.chunkSize)
+            streamKey = streamKeyFor(keys, ephemeral)
+            sealedTo = if (keys.retired.isEmpty()) {
+                keys.recipient
+            } else {
+                // Nothing in the header says which pair a file is sealed to; the first chunk tells.
+                (listOf(keys) + keys.retired).firstOrNull { candidate ->
+                    streamKey = streamKeyFor(candidate, ephemeral)
+                    runCatching { load(0) }.isSuccess
+                }?.recipient ?: throw GeneralSecurityException("sealed to a key the vault no longer has")
+            }
         } catch (e: Exception) {
             raf.close()
             throw e
         }
     }
+
+    private fun streamKeyFor(candidate: VaultKeys, ephemeral: PublicKey): SealedFormat.StreamKey =
+        SealedFormat.streamKey(EcKeys.agree(candidate.privateKey, ephemeral), header, candidate.recipient)
 
     /** Reads up to [length] bytes at [position]; returns -1 at the end. */
     @Synchronized

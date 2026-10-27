@@ -118,6 +118,9 @@
     <string name="password_new_confirm">確認新密碼</string>
     <string name="password_too_short">至少需要 %d 個字元</string>
     <string name="password_changed">密碼已更新</string>
+    <string name="password_change_rekey_note">保險庫的金鑰也會被更換。之後每個檔案都會在背景以新金鑰重新密封；在完成之前，以舊密碼開啟的舊保險庫副本仍能讀取尚未重新密封的檔案。生物辨識解鎖會被關閉，可以再次開啟。</string>
+    <string name="rekey_title">正在以新金鑰重新密封保險庫</string>
+    <string name="rekey_progress">%2$d 個檔案中的 %1$d 個。鎖定會暫停，下次解鎖時繼續。</string>
     <string name="password_current_wrong">目前的密碼錯誤</string>
     <string name="delete_vault_title">要刪除保險庫嗎？</string>
     <string name="delete_vault_text">保險庫中的所有檔案及其金鑰都會遭到清除，而且無法復原。</string>

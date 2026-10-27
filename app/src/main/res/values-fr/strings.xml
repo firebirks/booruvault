@@ -122,6 +122,9 @@
     <string name="password_new_confirm">Confirmer le nouveau mot de passe</string>
     <string name="password_too_short">Au moins %d caractères</string>
     <string name="password_changed">Mot de passe modifié</string>
+    <string name="password_change_rekey_note">La clé du coffre est également remplacée. Chaque fichier est ensuite rescellé avec la nouvelle clé en arrière-plan ; tant que ce n\'est pas terminé, une ancienne copie du coffre ouverte avec l\'ancien mot de passe peut encore lire les fichiers pas encore rescellés. Le déverrouillage biométrique est désactivé et peut être réactivé.</string>
+    <string name="rekey_title">Rescellement du coffre avec sa nouvelle clé</string>
+    <string name="rekey_progress">%1$d fichiers sur %2$d. Le verrouillage le suspend ; le prochain déverrouillage le reprend.</string>
     <string name="password_current_wrong">Le mot de passe actuel est incorrect</string>
     <string name="delete_vault_title">Supprimer le coffre ?</string>
     <string name="delete_vault_text">Tous les fichiers du coffre et sa clé seront effacés. Il est impossible de les récupérer.</string>

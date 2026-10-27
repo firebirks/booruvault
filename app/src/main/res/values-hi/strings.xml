@@ -120,6 +120,9 @@
     <string name="password_new_confirm">नए पासवर्ड की पुष्टि करें</string>
     <string name="password_too_short">कम से कम %d वर्ण</string>
     <string name="password_changed">पासवर्ड अपडेट हो गया</string>
+    <string name="password_change_rekey_note">वॉल्ट की कुंजी भी बदल दी जाती है। फिर हर फ़ाइल पृष्ठभूमि में नई कुंजी से दोबारा सील की जाती है; जब तक यह पूरा नहीं होता, पुराने पासवर्ड से खोली गई वॉल्ट की पुरानी प्रति उन फ़ाइलों को पढ़ सकती है जो अभी दोबारा सील नहीं हुईं। बायोमेट्रिक अनलॉक बंद हो जाता है और फिर से चालू किया जा सकता है।</string>
+    <string name="rekey_title">वॉल्ट को नई कुंजी से दोबारा सील किया जा रहा है</string>
+    <string name="rekey_progress">%2$d में से %1$d फ़ाइलें। लॉक करने पर रुकता है; अगला अनलॉक इसे फिर शुरू करता है।</string>
     <string name="password_current_wrong">मौजूदा पासवर्ड गलत है</string>
     <string name="delete_vault_title">तिजोरी मिटाएं?</string>
     <string name="delete_vault_text">तिजोरी की सभी फ़ाइलें और उसकी कुंजी मिटा दी जाएंगी। उन्हें वापस पाने का कोई तरीका नहीं है।</string>

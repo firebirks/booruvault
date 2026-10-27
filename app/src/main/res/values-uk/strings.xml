@@ -124,6 +124,9 @@
     <string name="password_new_confirm">Підтвердьте новий пароль</string>
     <string name="password_too_short">Щонайменше %d символів</string>
     <string name="password_changed">Пароль оновлено</string>
+    <string name="password_change_rekey_note">Ключ сховища також замінюється. Потім кожен файл у фоні запечатується заново новим ключем; доки це не завершиться, стара копія сховища, відкрита старим паролем, усе ще може прочитати ще не перезапечатані файли. Біометричне розблокування вимикається, його можна увімкнути знову.</string>
+    <string name="rekey_title">Перезапечатування сховища новим ключем</string>
+    <string name="rekey_progress">%1$d із %2$d файлів. Блокування призупиняє; наступне розблокування продовжує.</string>
     <string name="password_current_wrong">Поточний пароль неправильний</string>
     <string name="delete_vault_title">Видалити сховище?</string>
     <string name="delete_vault_text">Усі файли сховища та його ключ буде стерто. Відновити їх неможливо.</string>

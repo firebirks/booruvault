@@ -120,6 +120,9 @@
     <string name="password_new_confirm">Nieuw wachtwoord bevestigen</string>
     <string name="password_too_short">Minimaal %d tekens</string>
     <string name="password_changed">Wachtwoord bijgewerkt</string>
+    <string name="password_change_rekey_note">Ook de sleutel van de kluis wordt vervangen. Elk bestand wordt daarna op de achtergrond opnieuw verzegeld met de nieuwe sleutel; tot dat klaar is, kan een oude kopie van de kluis die met het oude wachtwoord is geopend de nog niet opnieuw verzegelde bestanden lezen. Biometrisch ontgrendelen wordt uitgeschakeld en kan opnieuw worden ingeschakeld.</string>
+    <string name="rekey_title">Kluis wordt opnieuw verzegeld met de nieuwe sleutel</string>
+    <string name="rekey_progress">%1$d van %2$d bestanden. Vergrendelen pauzeert het; de volgende ontgrendeling hervat het.</string>
     <string name="password_current_wrong">Het huidige wachtwoord is onjuist</string>
     <string name="delete_vault_title">Kluis verwijderen?</string>
     <string name="delete_vault_text">Alle bestanden van de kluis en de sleutel worden gewist. Ze kunnen op geen enkele manier worden hersteld.</string>

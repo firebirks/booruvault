@@ -130,4 +130,22 @@ class SealedFormatTest {
         } catch (_: java.io.IOException) {
         }
     }
+
+    @Test
+    fun retiredPairStillReadsAndIsReported() {
+        val data = Random(11).nextBytes(5_000)
+        val file = seal(data)
+        val newPair = EcKeys.generate()
+        val newKeys = VaultKeys(Recipient.fromEncoded(newPair.public.encoded), newPair.private, retired = listOf(keys))
+        SealedFile(file, newKeys).use { sealed ->
+            assertArrayEquals(data, sealed.readAll())
+            assertArrayEquals(keys.recipient.encoded, sealed.sealedTo.encoded)
+        }
+        SealedFile(file, keys).use { assertArrayEquals(keys.recipient.encoded, it.sealedTo.encoded) }
+        try {
+            SealedFile(file, VaultKeys(newKeys.recipient, newKeys.privateKey)).use { it.readAll() }
+            fail("a pair the file was not sealed to must not read it")
+        } catch (_: GeneralSecurityException) {
+        }
+    }
 }

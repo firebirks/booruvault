@@ -124,6 +124,9 @@
     <string name="password_new_confirm">Potwierdź nowe hasło</string>
     <string name="password_too_short">Minimalna liczba znaków: %d</string>
     <string name="password_changed">Zmieniono hasło</string>
+    <string name="password_change_rekey_note">Klucz sejfu również zostaje zastąpiony. Każdy plik jest potem w tle pieczętowany ponownie nowym kluczem; dopóki to się nie skończy, stara kopia sejfu otwarta starym hasłem wciąż może odczytać pliki jeszcze nieprzepieczętowane. Odblokowanie biometryczne zostaje wyłączone i można je włączyć ponownie.</string>
+    <string name="rekey_title">Ponowne pieczętowanie sejfu nowym kluczem</string>
+    <string name="rekey_progress">%1$d z %2$d plików. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</string>
     <string name="password_current_wrong">Obecne hasło jest nieprawidłowe</string>
     <string name="delete_vault_title">Usunąć sejf?</string>
     <string name="delete_vault_text">Wszystkie pliki sejfu i jego klucz zostaną usunięte. Nie ma możliwości ich odzyskania.</string>

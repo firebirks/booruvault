@@ -1,6 +1,7 @@
 package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Kdf
+import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -14,6 +15,7 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -46,22 +48,78 @@ class VaultTest {
     }
 
     @Test
-    fun changePasswordKeepsContent() = runBlocking {
+    fun changePasswordReplacesTheKeyPair() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
         vault.create("first".toCharArray(), fastKdf)
         val store = VaultStore(root, vault, json, scope)
+        val rekeyer = VaultRekeyer(root, vault, store, scope)
         val data = Random(1).nextBytes(10_000)
         add(store, data, "a")
         awaitItems(store, 1)
+        val oldHeader = File(root, "vault.json").readBytes()
 
         assertFalse(vault.changePassword("nope".toCharArray(), "second".toCharArray()))
         assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        assertTrue(vault.rekeyPending.value)
+        // Readable throughout, first through the retired pair and then through the new one.
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+        withTimeout(20_000) { vault.rekeyPending.first { !it } }
+        assertFalse(File(root, "vault.json").readText().contains("boxedPrivateKey"))
         vault.lock()
         assertFalse(vault.unlock("first".toCharArray()))
         assertTrue(vault.unlock("second".toCharArray()))
         awaitItems(store, 1)
-        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+        val item = store.items.value.single()
+        assertArrayEquals(data, store.openMedia(item.id).use { it.readAll() })
+        assertEquals(1, File(root, "media").listFiles()!!.size)
+
+        // An old copy of the header with the old password opens, but reads nothing.
+        val stale = tmp.newFolder()
+        root.copyRecursively(stale)
+        File(stale, "vault.json").writeBytes(oldHeader)
+        val staleVault = VaultManager(stale, json)
+        assertTrue(staleVault.unlock("first".toCharArray()))
+        try {
+            SealedFile(File(stale, "media/${item.id}"), staleVault.keys!!).use { it.readAll() }
+            fail("the re-sealed file must not open with the retired key")
+        } catch (_: java.security.GeneralSecurityException) {
+        }
+        Unit
+    }
+
+    @Test
+    fun rekeyingResumesAfterRestart() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        val contents = List(3) { Random(it).nextBytes(3_000) }
+        contents.forEachIndexed { i, data -> add(store, data, "f$i") }
+        awaitItems(store, 3)
+        // No rekeyer here: the change is recorded, nothing is re-sealed, and the app "restarts".
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        vault.lock()
+
+        val restarted = VaultManager(root, json)
+        assertTrue(restarted.rekeyPending.value)
+        val restartedStore = VaultStore(root, restarted, json, scope)
+        val rekeyer = VaultRekeyer(root, restarted, restartedStore, scope)
+        assertTrue(restarted.unlock("second".toCharArray()))
+        awaitItems(restartedStore, 3)
+        withTimeout(20_000) { restarted.rekeyPending.first { !it } }
+        restarted.lock()
+
+        // Everything reads with the new pair alone.
+        val fresh = VaultManager(root, json)
+        assertFalse(fresh.rekeyPending.value)
+        val freshStore = VaultStore(root, fresh, json, scope)
+        assertTrue(fresh.unlock("second".toCharArray()))
+        awaitItems(freshStore, 3)
+        assertTrue(fresh.keys!!.retired.isEmpty())
+        freshStore.items.value.sortedBy { it.fileName }.forEachIndexed { i, item ->
+            assertArrayEquals(contents[i], freshStore.openMedia(item.id).use { it.readAll() })
+        }
     }
 
     @Test

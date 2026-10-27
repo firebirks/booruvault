@@ -118,6 +118,9 @@
     <string name="password_new_confirm">Konfirmasi sandi baru</string>
     <string name="password_too_short">Minimal %d karakter</string>
     <string name="password_changed">Sandi diperbarui</string>
+    <string name="password_change_rekey_note">Kunci brankas juga diganti. Setiap berkas lalu disegel ulang dengan kunci baru di latar belakang; sampai selesai, salinan lama brankas yang dibuka dengan sandi lama masih dapat membaca berkas yang belum disegel ulang. Buka kunci biometrik dimatikan dan dapat diaktifkan kembali.</string>
+    <string name="rekey_title">Menyegel ulang brankas dengan kunci barunya</string>
+    <string name="rekey_progress">%1$d dari %2$d berkas. Mengunci menjedanya; buka kunci berikutnya melanjutkannya.</string>
     <string name="password_current_wrong">Sandi saat ini salah</string>
     <string name="delete_vault_title">Hapus brankas?</string>
     <string name="delete_vault_text">Semua file di brankas beserta kuncinya akan dihapus. Tidak ada cara untuk memulihkannya.</string>

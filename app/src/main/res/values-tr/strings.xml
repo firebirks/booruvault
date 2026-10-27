@@ -120,6 +120,9 @@
     <string name="password_new_confirm">Yeni parolayı onaylayın</string>
     <string name="password_too_short">En az %d karakter</string>
     <string name="password_changed">Parola güncellendi</string>
+    <string name="password_change_rekey_note">Kasanın anahtarı da değiştirilir. Ardından her dosya arka planda yeni anahtarla yeniden mühürlenir; bu bitene kadar eski parolayla açılan eski bir kasa kopyası, henüz yeniden mühürlenmemiş dosyaları okuyabilir. Biyometrik kilit açma kapatılır ve yeniden açılabilir.</string>
+    <string name="rekey_title">Kasa yeni anahtarıyla yeniden mühürleniyor</string>
+    <string name="rekey_progress">%2$d dosyadan %1$d. Kilitlemek duraklatır; sonraki kilit açma sürdürür.</string>
     <string name="password_current_wrong">Mevcut parola yanlış</string>
     <string name="delete_vault_title">Kasa silinsin mi?</string>
     <string name="delete_vault_text">Kasadaki tüm dosyalar ve kasanın anahtarı silinecek. Bunları kurtarmanın hiçbir yolu yok.</string>

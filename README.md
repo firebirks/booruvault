@@ -77,6 +77,7 @@ biometric Keystore key (optional) ─────────────AES-256
 - **The private key** is the vault's root of trust. It is in memory only while the vault is unlocked.
 - **The Argon2id parameters** are stored with the vault, so they can be raised later.
 - **The biometric key** is an Android Keystore AES key that requires strong biometric authentication for every use. Enrolling a new fingerprint invalidates it.
+- **Changing the password replaces the key pair.** The old private key is kept in the header, boxed to the new public key, while every file is re-sealed to the new pair in the background; then it is dropped. Once that is done, an old copy of the header opened with the old password reads nothing. Locking pauses the re-sealing and the next unlock resumes it. The biometric copy, which held the old key, is removed and must be enrolled again.
 
 ### Sealed files
 
@@ -94,7 +95,7 @@ All files live in the app's private storage, under `files/vault/`:
 
 | File | Content |
 |---|---|
-| `vault.json` | Header: KDF parameters, public key, wrapped private key. **Clear**, holds no user data. |
+| `vault.json` | Header: KDF parameters, public key, wrapped private key, and during a re-keying the retired key boxed to the new one. **Clear**, holds no user data. |
 | `meta/<id>` | Item metadata (source of truth). Sealed. |
 | `media/<id>`, `thumbs/<id>` | File and thumbnail. Sealed. |
 | `index.bin` | Cache of all metadata, rebuilt from `meta/` if lost. Sealed. |

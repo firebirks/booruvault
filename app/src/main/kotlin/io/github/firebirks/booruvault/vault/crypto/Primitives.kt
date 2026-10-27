@@ -94,6 +94,47 @@ object Aead {
     }
 }
 
+/**
+ * A small secret sealed to a public key: ECIES with a fresh P-256 pair, ECDH, HKDF-SHA256 and
+ * AES-256-GCM. Output is ephemeralKeyLength(2) || ephemeralKey(X.509) || nonce || ciphertext || tag.
+ */
+object EciesBox {
+    private val INFO = "BooruVault key box v1".toByteArray()
+
+    fun seal(recipient: Recipient, plaintext: ByteArray, aad: ByteArray): ByteArray {
+        val ephemeral = EcKeys.generate()
+        val ephemeralKey = ephemeral.public.encoded
+        val key = boxKey(EcKeys.agree(ephemeral.private, recipient.key), ephemeralKey, recipient)
+        val box = try {
+            Aead.seal(key, plaintext, aad + ephemeralKey)
+        } finally {
+            key.fill(0)
+        }
+        return java.nio.ByteBuffer.allocate(2 + ephemeralKey.size + box.size)
+            .putShort(ephemeralKey.size.toShort()).put(ephemeralKey).put(box).array()
+    }
+
+    /** Throws [GeneralSecurityException] when [keys] are not the pair the box was sealed to. */
+    fun open(keys: VaultKeys, blob: ByteArray, aad: ByteArray): ByteArray {
+        if (blob.size < 2) throw GeneralSecurityException("box too short")
+        val length = ((blob[0].toInt() and 0xff) shl 8) or (blob[1].toInt() and 0xff)
+        if (length !in 1..512 || blob.size < 2 + length) throw GeneralSecurityException("bad box")
+        val ephemeralKey = blob.copyOfRange(2, 2 + length)
+        val key = boxKey(EcKeys.agree(keys.privateKey, EcKeys.publicKey(ephemeralKey)), ephemeralKey, keys.recipient)
+        return try {
+            Aead.open(key, blob.copyOfRange(2 + length, blob.size), aad + ephemeralKey)
+        } finally {
+            key.fill(0)
+        }
+    }
+
+    private fun boxKey(shared: ByteArray, ephemeralKey: ByteArray, recipient: Recipient): ByteArray = try {
+        Hkdf.derive(shared, ByteArray(0), INFO + ephemeralKey + recipient.encoded, 32)
+    } finally {
+        shared.fill(0)
+    }
+}
+
 /** P-256 key handling for the vault's sealing key pair. */
 object EcKeys {
     fun generate(): KeyPair = KeyPairGenerator.getInstance("EC").apply {

@@ -120,6 +120,9 @@
     <string name="password_new_confirm">Neues Passwort bestätigen</string>
     <string name="password_too_short">Mindestens %d Zeichen</string>
     <string name="password_changed">Passwort geändert</string>
+    <string name="password_change_rekey_note">Auch der Schlüssel des Tresors wird ersetzt. Jede Datei wird danach im Hintergrund mit dem neuen Schlüssel neu versiegelt; bis das abgeschlossen ist, kann eine alte Kopie des Tresors mit dem alten Passwort die noch nicht neu versiegelten Dateien lesen. Die biometrische Entsperrung wird ausgeschaltet und kann wieder aktiviert werden.</string>
+    <string name="rekey_title">Tresor wird mit dem neuen Schlüssel neu versiegelt</string>
+    <string name="rekey_progress">%1$d von %2$d Dateien. Sperren hält es an; das nächste Entsperren setzt es fort.</string>
     <string name="password_current_wrong">Das aktuelle Passwort ist falsch</string>
     <string name="delete_vault_title">Tresor löschen?</string>
     <string name="delete_vault_text">Alle Dateien des Tresors und sein Schlüssel werden gelöscht. Es gibt keine Möglichkeit, sie wiederherzustellen.</string>

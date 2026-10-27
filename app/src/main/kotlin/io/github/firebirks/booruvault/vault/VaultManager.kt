@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Aead
 import io.github.firebirks.booruvault.vault.crypto.EcKeys
+import io.github.firebirks.booruvault.vault.crypto.EciesBox
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.KdfParams
 import io.github.firebirks.booruvault.vault.crypto.Recipient
@@ -36,7 +37,13 @@ data class VaultHeader(
     /** The same private key under a biometric-gated Keystore key, when enabled. */
     val biometricWrapped: String? = null,
     val biometricIv: String? = null,
+    /** Pairs replaced by a password change whose files are still being re-sealed. */
+    val retired: List<RetiredKey> = emptyList(),
 )
+
+/** A replaced key pair: its private key is boxed to the current public key, so any unlock recovers it. */
+@Serializable
+data class RetiredKey(val publicKey: String, val boxedPrivateKey: String)
 
 sealed interface VaultState {
     data object Missing : VaultState
@@ -63,6 +70,11 @@ class VaultManager(private val root: File, private val json: Json) {
     val keys: VaultKeys? get() = (_state.value as? VaultState.Unlocked)?.keys
 
     private val _biometric = MutableStateFlow(header?.biometricWrapped != null)
+
+    private val _rekeyPending = MutableStateFlow(header?.retired?.isNotEmpty() == true)
+
+    /** True while files sealed to a retired pair may remain; [VaultRekeyer] clears it. */
+    val rekeyPending: StateFlow<Boolean> = _rekeyPending.asStateFlow()
 
     /** Whether a biometric copy of the key exists; observed by the settings switch. */
     val biometric: StateFlow<Boolean> = _biometric.asStateFlow()
@@ -121,30 +133,98 @@ class VaultManager(private val root: File, private val json: Json) {
         (unlocked.keys.privateKey as? Destroyable)?.let { runCatching { it.destroy() } }
     }
 
+    /**
+     * Changes the password and replaces the key pair with it, so that an old copy of the header
+     * opened with the old password is worth nothing once every file is re-sealed. The old pair is
+     * kept boxed to the new public key until [VaultRekeyer] has re-sealed everything. The
+     * biometric copy, which held the old key, is dropped; the user can enrol again.
+     */
     suspend fun changePassword(old: CharArray, new: CharArray): Boolean = mutex.withLock {
         withContext(Dispatchers.Default) {
             val current = header ?: return@withContext false.also {
                 Secrets.wipe(old)
                 Secrets.wipe(new)
             }
-            val pkcs8 = unwrapWithPassword(current, old) ?: return@withContext false.also { Secrets.wipe(new) }
+            val oldPkcs8 = unwrapWithPassword(current, old) ?: return@withContext false.also { Secrets.wipe(new) }
+            val oldKeys = try {
+                withRetired(current, VaultKeys(Recipient.fromEncoded(current.publicKey.fromBase64()), EcKeys.privateKey(oldPkcs8)))
+            } finally {
+                oldPkcs8.fill(0)
+            }
+            val pair = EcKeys.generate()
+            val recipient = Recipient.fromEncoded(pair.public.encoded)
             val kdf = Kdf.newParams()
             val kek = try {
                 Kdf.derive(new, kdf)
             } finally {
                 Secrets.wipe(new)
             }
+            val pkcs8 = pair.private.encoded
             val wrapped = try {
                 Aead.seal(kek, pkcs8, PASSWORD_AAD)
             } finally {
                 kek.fill(0)
                 pkcs8.fill(0)
             }
-            val updated = current.copy(kdf = kdf, wrappedPrivateKey = wrapped.toBase64())
+            val retiredKeys = listOf(VaultKeys(oldKeys.recipient, oldKeys.privateKey)) + oldKeys.retired
+            val retired = retiredKeys.map { boxRetired(recipient, it) }
+            val updated = current.copy(
+                kdf = kdf,
+                publicKey = pair.public.encoded.toBase64(),
+                wrappedPrivateKey = wrapped.toBase64(),
+                biometricWrapped = null,
+                biometricIv = null,
+                retired = retired,
+            )
             writeHeader(updated)
             header = updated
+            _biometric.value = false
+            _rekeyPending.value = true
+            if (_state.value is VaultState.Unlocked) _state.value = VaultState.Unlocked(VaultKeys(recipient, pair.private, retiredKeys))
             true
         }
+    }
+
+    /** Called once no file is sealed to a retired pair any more: the pairs are forgotten. */
+    suspend fun retireFinished() = mutex.withLock {
+        withContext(Dispatchers.IO) {
+            val current = header ?: return@withContext
+            if (current.retired.isEmpty()) return@withContext
+            val updated = current.copy(retired = emptyList())
+            writeHeader(updated)
+            header = updated
+            _rekeyPending.value = false
+            (_state.value as? VaultState.Unlocked)?.let { _state.value = VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey)) }
+        }
+    }
+
+    private fun boxRetired(recipient: Recipient, keys: VaultKeys): RetiredKey {
+        val pkcs8 = keys.privateKey.encoded
+        val boxed = try {
+            EciesBox.seal(recipient, pkcs8, RETIRED_AAD)
+        } finally {
+            pkcs8.fill(0)
+        }
+        return RetiredKey(keys.recipient.encoded.toBase64(), boxed.toBase64())
+    }
+
+    /** [keys] together with the retired pairs of [current] that they can recover. */
+    private fun withRetired(current: VaultHeader, keys: VaultKeys): VaultKeys {
+        if (current.retired.isEmpty()) return keys
+        val retired = current.retired.mapNotNull { entry ->
+            val pkcs8 = try {
+                EciesBox.open(keys, entry.boxedPrivateKey.fromBase64(), RETIRED_AAD)
+            } catch (_: GeneralSecurityException) {
+                // A damaged entry: its files are unreadable either way.
+                return@mapNotNull null
+            }
+            try {
+                VaultKeys(Recipient.fromEncoded(entry.publicKey.fromBase64()), EcKeys.privateKey(pkcs8))
+            } finally {
+                pkcs8.fill(0)
+            }
+        }
+        return VaultKeys(keys.recipient, keys.privateKey, retired)
     }
 
     /** Stores the private key under [cipher], an ENCRYPT_MODE cipher the user just authorised. */
@@ -197,6 +277,7 @@ class VaultManager(private val root: File, private val json: Json) {
             _state.value = VaultState.Missing
             header = null
             _biometric.value = false
+            _rekeyPending.value = false
             root.deleteRecursively()
         }
     }
@@ -223,7 +304,7 @@ class VaultManager(private val root: File, private val json: Json) {
             pkcs8.fill(0)
         }
         val recipient = Recipient.fromEncoded(current.publicKey.fromBase64())
-        _state.value = VaultState.Unlocked(VaultKeys(recipient, privateKey))
+        _state.value = VaultState.Unlocked(withRetired(current, VaultKeys(recipient, privateKey)))
     }
 
     private fun readHeader(): VaultHeader? =
@@ -240,5 +321,6 @@ class VaultManager(private val root: File, private val json: Json) {
 
     private companion object {
         val PASSWORD_AAD = "BooruVault private key v1".toByteArray()
+        val RETIRED_AAD = "BooruVault retired key v1".toByteArray()
     }
 }

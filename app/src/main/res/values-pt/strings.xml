@@ -122,6 +122,9 @@
     <string name="password_new_confirm">Confirmar nova senha</string>
     <string name="password_too_short">Pelo menos %d caracteres</string>
     <string name="password_changed">Senha atualizada</string>
+    <string name="password_change_rekey_note">A chave do cofre também é substituída. Cada arquivo é então selado de novo com a nova chave em segundo plano; até terminar, uma cópia antiga do cofre aberta com a senha antiga ainda pode ler os arquivos que faltam. O desbloqueio biométrico é desativado e pode ser ativado de novo.</string>
+    <string name="rekey_title">Selando o cofre de novo com a nova chave</string>
+    <string name="rekey_progress">%1$d de %2$d arquivos. Bloquear pausa; o próximo desbloqueio retoma.</string>
     <string name="password_current_wrong">A senha atual está incorreta</string>
     <string name="delete_vault_title">Excluir o cofre?</string>
     <string name="delete_vault_text">Todos os arquivos do cofre e a chave dele serão apagados. Não há como recuperá-los.</string>

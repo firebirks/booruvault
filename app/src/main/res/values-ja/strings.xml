@@ -118,6 +118,9 @@
     <string name="password_new_confirm">新しいパスワード（確認）</string>
     <string name="password_too_short">%d 文字以上</string>
     <string name="password_changed">パスワードを更新しました</string>
+    <string name="password_change_rekey_note">保管庫の鍵も置き換えられます。その後、すべてのファイルがバックグラウンドで新しい鍵で封印し直されます。完了するまでは、古いパスワードで開いた保管庫の古いコピーから、まだ封印し直されていないファイルを読める可能性があります。生体認証によるロック解除はオフになり、再度オンにできます。</string>
+    <string name="rekey_title">保管庫を新しい鍵で封印し直しています</string>
+    <string name="rekey_progress">%2$d件中%1$d件。ロックすると一時停止し、次のロック解除で再開します。</string>
     <string name="password_current_wrong">現在のパスワードが正しくありません</string>
     <string name="delete_vault_title">保管庫を削除しますか？</string>
     <string name="delete_vault_text">保管庫のすべてのファイルとその鍵が消去されます。復元する方法はありません。</string>

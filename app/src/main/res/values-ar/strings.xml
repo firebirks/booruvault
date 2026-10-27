@@ -128,6 +128,9 @@
     <string name="password_new_confirm">تأكيد كلمة المرور الجديدة</string>
     <string name="password_too_short">%d أحرف على الأقل</string>
     <string name="password_changed">تم تحديث كلمة المرور</string>
+    <string name="password_change_rekey_note">يُستبدل مفتاح الخزنة أيضًا. ثم يُعاد ختم كل ملف بالمفتاح الجديد في الخلفية؛ وحتى يكتمل ذلك، يمكن لنسخة قديمة من الخزنة فُتحت بكلمة المرور القديمة أن تقرأ الملفات التي لم يُعَد ختمها بعد. يُعطَّل فتح القفل بالقياسات الحيوية ويمكن تفعيله مجددًا.</string>
+    <string name="rekey_title">إعادة ختم الخزنة بمفتاحها الجديد</string>
+    <string name="rekey_progress">%1$d من %2$d ملفًا. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</string>
     <string name="password_current_wrong">كلمة المرور الحالية غير صحيحة</string>
     <string name="delete_vault_title">حذف الخزنة؟</string>
     <string name="delete_vault_text">سيتم محو جميع ملفات الخزنة ومفتاحها. ولا توجد أي طريقة لاستعادتها.</string>

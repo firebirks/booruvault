@@ -124,6 +124,9 @@
     <string name="password_new_confirm">Подтвердите новый пароль</string>
     <string name="password_too_short">Не менее %d символов</string>
     <string name="password_changed">Пароль обновлён</string>
+    <string name="password_change_rekey_note">Ключ хранилища тоже заменяется. Затем каждый файл в фоне запечатывается заново новым ключом; пока это не завершится, старая копия хранилища, открытая старым паролем, всё ещё может прочитать файлы, которые ещё не перезапечатаны. Биометрическая разблокировка отключается, её можно включить снова.</string>
+    <string name="rekey_title">Перезапечатывание хранилища новым ключом</string>
+    <string name="rekey_progress">%1$d из %2$d файлов. Блокировка приостанавливает; следующая разблокировка продолжает.</string>
     <string name="password_current_wrong">Текущий пароль неверен</string>
     <string name="delete_vault_title">Удалить хранилище?</string>
     <string name="delete_vault_text">Все файлы хранилища и его ключ будут стёрты. Восстановить их будет невозможно.</string>

@@ -118,6 +118,9 @@
     <string name="password_new_confirm">Xác nhận mật khẩu mới</string>
     <string name="password_too_short">Ít nhất %d ký tự</string>
     <string name="password_changed">Đã cập nhật mật khẩu</string>
+    <string name="password_change_rekey_note">Khóa của kho cũng được thay. Sau đó mọi tệp được niêm phong lại bằng khóa mới ở chế độ nền; cho đến khi xong, một bản sao cũ của kho mở bằng mật khẩu cũ vẫn có thể đọc các tệp chưa được niêm phong lại. Mở khóa sinh trắc học bị tắt và có thể bật lại.</string>
+    <string name="rekey_title">Đang niêm phong lại kho bằng khóa mới</string>
+    <string name="rekey_progress">%1$d trên %2$d tệp. Khóa sẽ tạm dừng; lần mở khóa tiếp theo sẽ tiếp tục.</string>
     <string name="password_current_wrong">Mật khẩu hiện tại không đúng</string>
     <string name="delete_vault_title">Xóa kho?</string>
     <string name="delete_vault_text">Mọi tệp trong kho và khóa mã hóa của kho sẽ bị xóa. Không có cách nào khôi phục.</string>
