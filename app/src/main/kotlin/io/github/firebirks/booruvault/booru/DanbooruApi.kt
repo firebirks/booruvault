@@ -3,24 +3,24 @@ package io.github.firebirks.booruvault.booru
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import okhttp3.Credentials
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.Request
 
+/** Danbooru and its forks. Credentials travel as HTTP Basic auth, so the key never sits in a URL. */
 class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
 
-    private fun HttpUrl.Builder.auth(): HttpUrl.Builder = apply {
-        if (source.hasCredentials) {
-            addQueryParameter("login", source.login.trim())
-            addQueryParameter("api_key", source.apiKey.trim())
-        }
-    }
+    override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
+        .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim())) }
+        .build()
 
     override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
         val url = base.newBuilder().addPathSegment("posts.json")
             .addQueryParameter("tags", tags.trim())
             .addQueryParameter("page", page.toString())
             .addQueryParameter("limit", limit.toString())
-            .auth().build()
+            .build()
         val element = get(url)
         // Errors come back as {"success": false, "message": ...}.
         element.obj()?.let { o -> throw BooruException(Problem.Code.SITE_MESSAGE, o.str("message")) }
@@ -82,7 +82,7 @@ class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseB
             .addQueryParameter("search[order]", "count")
             .addQueryParameter("search[hide_empty]", "true")
             .addQueryParameter("limit", "12")
-            .auth().build()
+            .build()
         return get(url).arr().orEmpty().mapNotNull { it.obj() }.mapNotNull { o ->
             TagSuggestion(o.str("name") ?: return@mapNotNull null, o.long("post_count"), danbooruCategory(o.int("category")))
         }

@@ -57,7 +57,10 @@ class ParsingTest {
         val url = requests.single().url
         assertEquals("landscape", url.queryParameter("tags"))
         assertEquals("2", url.queryParameter("page"))
-        assertEquals("me", url.queryParameter("login"))
+        // Credentials ride in a header, never in the URL.
+        assertNull(url.queryParameter("login"))
+        assertNull(url.queryParameter("api_key"))
+        assertEquals(okhttp3.Credentials.basic("me", "k"), requests.single().header("Authorization"))
     }
 
     @Test
