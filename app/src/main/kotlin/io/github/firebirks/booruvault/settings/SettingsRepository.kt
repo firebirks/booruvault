@@ -85,8 +85,9 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
                         _settings.value = store.read(state.keys) ?: AppSettings()
                         _ready.value = true
                     } else {
-                        _ready.value = false
+                        // Forgotten first: whoever sees ready drop must not find the old values.
                         _settings.value = AppSettings()
+                        _ready.value = false
                     }
                 }
             }
