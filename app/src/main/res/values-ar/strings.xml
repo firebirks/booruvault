@@ -179,9 +179,10 @@
     <string name="source_user_name">اسم المستخدم</string>
     <string name="source_user_id">معرّف المستخدم (رقمي)</string>
     <string name="source_api_key">مفتاح API</string>
-    <string name="source_password_hash">تجزئة كلمة المرور</string>
+    <string name="source_password">كلمة المرور</string>
+    <string name="source_password_keep">اتركه فارغًا للإبقاء على التجزئة المخزّنة.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. بدون حساب، يمكنك البحث عن وسمين على الأكثر.</string>
-    <string name="source_hint_account_moebooru">تجزئة SHA-1 لكلمة المرور مع الملح (salt) الخاص بالموقع. اختياري.</string>
+    <string name="source_hint_account_moebooru">تُحوَّل كلمة المرور إلى تجزئة على هذا الهاتف كما يتوقع الموقع (SHA-1 مع ملحه)؛ لا تُخزَّن سوى التجزئة. اختياري.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. بدونها، تتم قراءة gelbooru.com و rule34.xxx من صفحات الويب الخاصة بهما.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. مطلوب أيضًا لرؤية بعض المنشورات.</string>
     <string name="source_site_title">الموقع</string>

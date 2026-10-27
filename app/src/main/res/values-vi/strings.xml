@@ -169,9 +169,10 @@
     <string name="source_user_name">Tên người dùng</string>
     <string name="source_user_id">ID người dùng (dạng số)</string>
     <string name="source_api_key">Khóa API</string>
-    <string name="source_password_hash">Mã băm mật khẩu</string>
+    <string name="source_password">Mật khẩu</string>
+    <string name="source_password_keep">Để trống để giữ giá trị băm đã lưu.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Không có tài khoản thì chỉ tìm được tối đa 2 thẻ.</string>
-    <string name="source_hint_account_moebooru">SHA-1 của mật khẩu kèm salt của trang web. Không bắt buộc.</string>
+    <string name="source_hint_account_moebooru">Mật khẩu được băm trên điện thoại này theo cách trang web yêu cầu (SHA-1 với salt của trang); chỉ lưu giá trị băm. Không bắt buộc.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Nếu không có, gelbooru.com và rule34.xxx sẽ được đọc từ các trang web.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Cũng cần để xem một số bài đăng.</string>
     <string name="source_site_title">Trang web</string>

@@ -169,9 +169,10 @@
     <string name="source_user_name">ชื่อผู้ใช้</string>
     <string name="source_user_id">ID ผู้ใช้ (ตัวเลข)</string>
     <string name="source_api_key">คีย์ API</string>
-    <string name="source_password_hash">แฮชรหัสผ่าน</string>
+    <string name="source_password">รหัสผ่าน</string>
+    <string name="source_password_keep">เว้นว่างไว้เพื่อคงค่าแฮชที่เก็บไว้</string>
     <string name="source_hint_account_danbooru">Profile → API Keys หากไม่มีบัญชี จะค้นหาได้ไม่เกิน 2 แท็ก</string>
-    <string name="source_hint_account_moebooru">SHA-1 ของรหัสผ่านที่ใส่ salt ของเว็บไซต์ ไม่บังคับ</string>
+    <string name="source_hint_account_moebooru">รหัสผ่านจะถูกแฮชบนโทรศัพท์เครื่องนี้ตามที่เว็บไซต์ต้องการ (SHA-1 กับ salt ของเว็บไซต์) และเก็บเฉพาะค่าแฮช ไม่บังคับ</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials หากไม่มี จะอ่าน gelbooru.com และ rule34.xxx จากหน้าเว็บ</string>
     <string name="source_hint_account_e621">Account → Manage API Access จำเป็นสำหรับการดูบางโพสต์ด้วย</string>
     <string name="source_site_title">เว็บไซต์</string>

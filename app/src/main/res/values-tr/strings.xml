@@ -171,9 +171,10 @@
     <string name="source_user_name">Kullanıcı adı</string>
     <string name="source_user_id">Kullanıcı kimliği (sayısal)</string>
     <string name="source_api_key">API anahtarı</string>
-    <string name="source_password_hash">Parola hash\'i</string>
+    <string name="source_password">Parola</string>
+    <string name="source_password_keep">Kayıtlı özeti korumak için boş bırakın.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Hesap olmadan en fazla 2 etiketle arama yapabilirsiniz.</string>
-    <string name="source_hint_account_moebooru">Parolanın, sitenin salt değeriyle alınmış SHA-1\'i. İsteğe bağlı.</string>
+    <string name="source_hint_account_moebooru">Parola bu telefonda sitenin beklediği biçimde özetlenir (sitenin tuzuyla SHA-1); yalnızca özet saklanır. İsteğe bağlı.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Bunlar olmadan gelbooru.com ve rule34.xxx web sayfalarından okunur.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Bazı gönderileri görmek için de gereklidir.</string>
     <string name="source_site_title">Site</string>

@@ -6,8 +6,18 @@ import kotlinx.serialization.json.JsonObject
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 
-/** yande.re, konachan and other Moebooru sites. Credentials are the user name and password hash. */
+/**
+ * yande.re, konachan and other Moebooru sites. Credentials are the user name and the password
+ * hash the site expects, which [passwordHash] computes; the password itself is never kept.
+ */
 class MoebooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+
+    companion object {
+        /** Moebooru's `password_hash`: SHA-1 of the password inside the salt every Moebooru site uses. */
+        fun passwordHash(password: String): String =
+            java.security.MessageDigest.getInstance("SHA-1").digest("choujin-steiner--$password--".toByteArray())
+                .joinToString("") { "%02x".format(it) }
+    }
 
     private fun HttpUrl.Builder.auth(): HttpUrl.Builder = apply {
         if (source.hasCredentials) {

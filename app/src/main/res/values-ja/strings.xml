@@ -169,9 +169,10 @@
     <string name="source_user_name">ユーザー名</string>
     <string name="source_user_id">ユーザー ID（数値）</string>
     <string name="source_api_key">API キー</string>
-    <string name="source_password_hash">パスワードハッシュ</string>
+    <string name="source_password">パスワード</string>
+    <string name="source_password_keep">空のままにすると保存済みのハッシュを維持します。</string>
     <string name="source_hint_account_danbooru">Profile → API Keys。アカウントなしでは、一度に検索できるタグは 2 つまでです。</string>
-    <string name="source_hint_account_moebooru">サイトのソルトを付けたパスワードの SHA-1 です。任意です。</string>
+    <string name="source_hint_account_moebooru">パスワードはサイトが求める形式（サイトのソルト付きSHA-1）でこの端末上でハッシュ化され、ハッシュのみが保存されます。任意。</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials。ない場合、gelbooru.com と rule34.xxx はウェブページから読み込みます。</string>
     <string name="source_hint_account_e621">Account → Manage API Access。一部の投稿を表示するためにも必要です。</string>
     <string name="source_site_title">サイト</string>

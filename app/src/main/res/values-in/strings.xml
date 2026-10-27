@@ -169,9 +169,10 @@
     <string name="source_user_name">Nama pengguna</string>
     <string name="source_user_id">ID pengguna (angka)</string>
     <string name="source_api_key">Kunci API</string>
-    <string name="source_password_hash">Hash sandi</string>
+    <string name="source_password">Kata sandi</string>
+    <string name="source_password_keep">Biarkan kosong untuk mempertahankan hash yang tersimpan.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Tanpa akun, Anda hanya dapat mencari maksimal 2 tag.</string>
-    <string name="source_hint_account_moebooru">SHA-1 dari sandi dengan salt situs. Opsional.</string>
+    <string name="source_hint_account_moebooru">Kata sandi di-hash di ponsel ini sesuai yang diharapkan situs (SHA-1 dengan salt-nya); hanya hash yang disimpan. Opsional.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Tanpa itu, gelbooru.com dan rule34.xxx dibaca dari halaman webnya.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Juga diperlukan untuk melihat beberapa postingan.</string>
     <string name="source_site_title">Situs</string>

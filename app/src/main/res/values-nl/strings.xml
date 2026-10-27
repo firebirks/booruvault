@@ -171,9 +171,10 @@
     <string name="source_user_name">Gebruikersnaam</string>
     <string name="source_user_id">Gebruikers-ID (numeriek)</string>
     <string name="source_api_key">API-sleutel</string>
-    <string name="source_password_hash">Wachtwoordhash</string>
+    <string name="source_password">Wachtwoord</string>
+    <string name="source_password_keep">Laat leeg om de opgeslagen hash te behouden.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Zonder account kun je op maximaal 2 tags zoeken.</string>
-    <string name="source_hint_account_moebooru">SHA-1 van het wachtwoord met de salt van de site. Optioneel.</string>
+    <string name="source_hint_account_moebooru">Het wachtwoord wordt op deze telefoon gehasht zoals de site verwacht (SHA-1 met zijn salt); alleen de hash wordt bewaard. Optioneel.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Zonder deze gegevens worden gelbooru.com en rule34.xxx via hun webpagina\'s gelezen.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Ook nodig om sommige posts te zien.</string>
     <string name="source_site_title">Site</string>

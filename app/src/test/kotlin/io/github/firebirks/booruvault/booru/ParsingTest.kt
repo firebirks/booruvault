@@ -194,4 +194,10 @@ class ParsingTest {
         assertEquals("" to "abc", autocompleteToken("abc"))
         assertEquals("~" to "x", autocompleteToken("a b ~x"))
     }
+
+    @Test
+    fun moebooruPasswordHashMatchesTheSite() {
+        // SHA-1("choujin-steiner--password--"), the hash every Moebooru site expects as password_hash.
+        assertEquals("b3c976b76ba4505518baa3dd35fd5d335069963c", MoebooruApi.passwordHash("password"))
+    }
 }

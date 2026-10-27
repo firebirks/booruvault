@@ -173,9 +173,10 @@
     <string name="source_user_name">Nom d\'utilisateur</string>
     <string name="source_user_id">ID utilisateur (numérique)</string>
     <string name="source_api_key">Clé API</string>
-    <string name="source_password_hash">Hash du mot de passe</string>
+    <string name="source_password">Mot de passe</string>
+    <string name="source_password_keep">Laissez vide pour conserver le hachage enregistré.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Sans compte, vous pouvez chercher au plus 2 tags.</string>
-    <string name="source_hint_account_moebooru">SHA-1 du mot de passe avec le sel du site. Facultatif.</string>
+    <string name="source_hint_account_moebooru">Le mot de passe est haché sur ce téléphone comme le site l\'attend (SHA-1 avec son sel) ; seul le hachage est conservé. Facultatif.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Sans identifiants, gelbooru.com et rule34.xxx sont lus depuis leurs pages web.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Également nécessaire pour voir certains posts.</string>
     <string name="source_site_title">Site</string>

@@ -175,9 +175,10 @@
     <string name="source_user_name">Nazwa użytkownika</string>
     <string name="source_user_id">ID użytkownika (liczbowe)</string>
     <string name="source_api_key">Klucz API</string>
-    <string name="source_password_hash">Hash hasła</string>
+    <string name="source_password">Hasło</string>
+    <string name="source_password_keep">Zostaw puste, aby zachować zapisany hasz.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Bez konta można wyszukiwać maksymalnie 2 tagi.</string>
-    <string name="source_hint_account_moebooru">SHA-1 hasła z solą witryny. Opcjonalne.</string>
+    <string name="source_hint_account_moebooru">Hasło jest haszowane na tym telefonie tak, jak oczekuje strona (SHA-1 z jej solą); zapisywany jest tylko hasz. Opcjonalne.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Bez tych danych gelbooru.com i rule34.xxx są odczytywane ze stron WWW.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Potrzebne także do wyświetlania niektórych postów.</string>
     <string name="source_site_title">Witryna</string>

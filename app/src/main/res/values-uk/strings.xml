@@ -175,9 +175,10 @@
     <string name="source_user_name">Ім\'я користувача</string>
     <string name="source_user_id">ID користувача (число)</string>
     <string name="source_api_key">API-ключ</string>
-    <string name="source_password_hash">Хеш пароля</string>
+    <string name="source_password">Пароль</string>
+    <string name="source_password_keep">Залиште порожнім, щоб зберегти наявний хеш.</string>
     <string name="source_hint_account_danbooru">Profile → API Keys. Без акаунта можна шукати щонайбільше за 2 тегами.</string>
-    <string name="source_hint_account_moebooru">SHA-1 пароля із сіллю сайту. Необов\'язково.</string>
+    <string name="source_hint_account_moebooru">Пароль хешується на цьому телефоні так, як очікує сайт (SHA-1 з його сіллю); зберігається лише хеш. Необов\'язково.</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Без них gelbooru.com і rule34.xxx читаються через вебсторінки.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Також потрібно, щоб бачити деякі дописи.</string>
     <string name="source_site_title">Сайт</string>

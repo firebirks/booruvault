@@ -10,7 +10,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 
 ### Browsing
 
-- **Sites:** Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 and its forks (Safebooru.org, Rule34.xxx, Xbooru, TBIB…) and e621/e926, through their APIs.
+- **Sites:** Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 and its forks (Safebooru.org, Rule34.xxx, Xbooru, TBIB…) and e621/e926, through their APIs. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
 - **Sites without a usable API**, read from their web pages:
   - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com or rule34.xxx without an API key.
   - Gelbooru 0.1 sites (booru.org).

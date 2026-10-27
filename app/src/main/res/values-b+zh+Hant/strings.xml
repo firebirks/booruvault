@@ -169,9 +169,10 @@
     <string name="source_user_name">使用者名稱</string>
     <string name="source_user_id">使用者 ID（數字）</string>
     <string name="source_api_key">API 金鑰</string>
-    <string name="source_password_hash">密碼雜湊</string>
+    <string name="source_password">密碼</string>
+    <string name="source_password_keep">留空則保留已保存的雜湊值。</string>
     <string name="source_hint_account_danbooru">Profile → API Keys。沒有帳號時，每次最多只能搜尋 2 個標籤。</string>
-    <string name="source_hint_account_moebooru">以網站鹽值計算的密碼 SHA-1。選填。</string>
+    <string name="source_hint_account_moebooru">密碼會在本機依網站要求的方式進行雜湊（帶其鹽值的 SHA-1），只保存雜湊值。選填。</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials。沒有憑證時，會從網頁讀取 gelbooru.com 和 rule34.xxx。</string>
     <string name="source_hint_account_e621">Account → Manage API Access。查看部分貼文時也需要。</string>
     <string name="source_site_title">網站</string>

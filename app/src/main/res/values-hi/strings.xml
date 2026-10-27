@@ -171,9 +171,10 @@
     <string name="source_user_name">यूज़र नेम</string>
     <string name="source_user_id">यूज़र ID (संख्या)</string>
     <string name="source_api_key">API कुंजी</string>
-    <string name="source_password_hash">पासवर्ड हैश</string>
+    <string name="source_password">पासवर्ड</string>
+    <string name="source_password_keep">संग्रहीत हैश रखने के लिए खाली छोड़ें।</string>
     <string name="source_hint_account_danbooru">Profile → API Keys। बिना खाते के आप ज़्यादा से ज़्यादा 2 टैग खोज सकते हैं।</string>
-    <string name="source_hint_account_moebooru">साइट के सॉल्ट के साथ पासवर्ड का SHA-1। वैकल्पिक।</string>
+    <string name="source_hint_account_moebooru">पासवर्ड को इसी फ़ोन पर साइट की अपेक्षा के अनुसार हैश किया जाता है (उसके salt के साथ SHA-1); केवल हैश संग्रहीत होता है। वैकल्पिक।</string>
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials। इसके बिना gelbooru.com और rule34.xxx को उनके वेब पेजों से पढ़ा जाता है।</string>
     <string name="source_hint_account_e621">Account → Manage API Access। कुछ पोस्ट देखने के लिए भी ज़रूरी है।</string>
     <string name="source_site_title">साइट</string>

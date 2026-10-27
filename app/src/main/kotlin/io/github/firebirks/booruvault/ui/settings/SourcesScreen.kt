@@ -63,6 +63,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.booru.BooruChallengeException
 import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
+import io.github.firebirks.booruvault.booru.MoebooruApi
 import io.github.firebirks.booruvault.booru.Presets
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalContainer
@@ -158,7 +159,7 @@ fun SourcesScreen(onBack: () -> Unit, onEdit: (String) -> Unit) {
 /** Labels of the two account fields and a hint, or null for engines that use no API account. */
 private fun credentialLabels(engine: BooruEngine): Triple<Int, Int, Int>? = when (engine) {
     BooruEngine.DANBOORU -> Triple(R.string.source_user_name, R.string.source_api_key, R.string.source_hint_account_danbooru)
-    BooruEngine.MOEBOORU -> Triple(R.string.source_user_name, R.string.source_password_hash, R.string.source_hint_account_moebooru)
+    BooruEngine.MOEBOORU -> Triple(R.string.source_user_name, R.string.source_password, R.string.source_hint_account_moebooru)
     BooruEngine.GELBOORU -> Triple(R.string.source_user_id, R.string.source_api_key, R.string.source_hint_account_gelbooru)
     BooruEngine.E621 -> Triple(R.string.source_user_name, R.string.source_api_key, R.string.source_hint_account_e621)
     BooruEngine.GELBOORU_HTML, BooruEngine.SHIMMIE, BooruEngine.HTML_GENERIC -> null
@@ -194,7 +195,9 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     var engine by rememberSaveable(existing?.id) { mutableStateOf(existing?.engine ?: BooruEngine.DANBOORU) }
     var url by rememberSaveable(existing?.id) { mutableStateOf(existing?.baseUrl ?: "https://") }
     var login by rememberSaveable(existing?.id) { mutableStateOf(existing?.login ?: "") }
-    var apiKey by remember(existing?.id) { mutableStateOf(existing?.apiKey ?: "") }
+    // For Moebooru the stored key is a hash of the password; the field starts empty and a blank
+    // entry keeps what is stored, so the hash never shows in a text field.
+    var apiKey by remember(existing?.id) { mutableStateOf(if (existing?.engine == BooruEngine.MOEBOORU) "" else existing?.apiKey ?: "") }
     var engineMenu by remember { mutableStateOf(false) }
     var testing by remember { mutableStateOf(false) }
     var testResult by remember { mutableStateOf<UiText?>(null) }
@@ -204,13 +207,20 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     val credentials = credentialLabels(engine)
     val valid = name.isNotBlank() && url.trim().matches(Regex("https?://[^\\s/]+.*"))
 
+    fun key(): String = when {
+        engine != BooruEngine.MOEBOORU -> apiKey.trim()
+        apiKey.isNotBlank() -> MoebooruApi.passwordHash(apiKey)
+        existing?.engine == BooruEngine.MOEBOORU -> existing.apiKey
+        else -> ""
+    }
+
     fun draft() = BooruSource(
         id = existing?.id ?: "custom-" + UUID.randomUUID().toString().take(8),
         name = name.trim(),
         engine = engine,
         baseUrl = url.trim().trimEnd('/'),
         login = login.trim(),
-        apiKey = apiKey.trim(),
+        apiKey = key(),
     )
 
     Scaffold(
@@ -261,10 +271,12 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                     keyboardOptions = KeyboardOptions(autoCorrectEnabled = false),
                     modifier = Modifier.fillMaxWidth(),
                 )
+                val keepsHash = engine == BooruEngine.MOEBOORU && existing?.engine == BooruEngine.MOEBOORU && existing.apiKey.isNotBlank()
                 OutlinedTextField(
                     apiKey, { apiKey = it }, label = { Text(stringResource(keyLabel)) }, singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false),
+                    supportingText = if (keepsHash) ({ Text(stringResource(R.string.source_password_keep)) }) else null,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
