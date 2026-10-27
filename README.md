@@ -104,7 +104,7 @@ All files live in the app's private storage, under `files/vault/`:
 
 File names are random UUIDs. The number of files and their approximate sizes remain visible.
 
-The one other clear-text setting is the Tor on/off switch (`shared_prefs/network.xml`). It must hold from process start, before any unlock, so that no connection can go out directly. It reveals only that the app is set to use Tor.
+The other clear-text settings are the Tor on/off switch and Orbot's port (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only that the app is set to use Tor, and on which local port.
 
 ### Memory
 
@@ -121,9 +121,10 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 
 - **The app's network traffic** goes through a single HTTP client: API calls, images, video and downloads.
 - **Orbot only:** that client reaches the network through Orbot's SOCKS port and nothing else. If Orbot is not running, every request fails; there is no direct fallback.
+- **The port is a setting** (default 9050), never taken from Orbot's status messages. Those broadcasts carry no proof of their sender, so any app on the phone could send one naming a port it listens on. They are shown for information; whether traffic really leaves through Tor is told by the exit check below.
 - **No local DNS:** host names are passed to Orbot unresolved, and any local DNS lookup is refused. A unit test drives a fake SOCKS5 server to check that names travel as domains.
 - **Built-in browser:** goes through Orbot via a WebView proxy override with no direct rule, and WebRTC is removed before page scripts run. If the WebView cannot do either, the built-in browser does not open while Tor is on.
-- **Orbot integration:** Orbot is started and queried with its standard intents. The settings screen shows its status and port, and a check against `check.torproject.org` reports the exit address.
+- **Orbot integration:** Orbot is started and queried with its standard intents. The settings screen shows the status Orbot reports, and a check against `check.torproject.org` reports the exit address.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
 - **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, a warning explains that a normal browser would expose your IP and keep the visit. Its "open anyway" button unlocks only after a few seconds; it also offers to copy the link instead.

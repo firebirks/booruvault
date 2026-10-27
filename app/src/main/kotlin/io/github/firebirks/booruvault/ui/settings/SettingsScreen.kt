@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.DeleteForever
@@ -46,7 +48,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -430,6 +434,7 @@ private fun TorSettings() {
                 }
             },
         )
+        TorPortField(tor, state.socksPort, state.reportedPort)
         Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { tor.requestStart() }) { Text(stringResource(R.string.tor_start_orbot)) }
             OutlinedButton(onClick = { tor.orbotLaunchIntent()?.let { context.startActivity(it) } }) { Text(stringResource(R.string.tor_open_orbot)) }
@@ -463,6 +468,38 @@ private fun TorSettings() {
             },
         )
     }
+}
+
+/**
+ * The local port the app connects to Orbot on. It is applied when the field is left or confirmed,
+ * not at every keystroke: each change drops the connections opened along the old route.
+ */
+@Composable
+private fun TorPortField(tor: TorManager, port: Int, reported: Int?) {
+    var text by remember(port) { mutableStateOf(port.toString()) }
+    val valid = text.toIntOrNull()?.let { it in 1..65535 } == true
+    fun commit() {
+        text.toIntOrNull()?.let(tor::setSocksPort)
+    }
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it.filter(Char::isDigit).take(5) },
+        label = { Text(stringResource(R.string.tor_port)) },
+        supportingText = {
+            Text(
+                when {
+                    !valid -> stringResource(R.string.tor_port_invalid)
+                    reported != null && reported != port -> stringResource(R.string.tor_port_reported, reported)
+                    else -> stringResource(R.string.tor_port_hint)
+                },
+            )
+        },
+        isError = !valid,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { commit() }),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).onFocusChanged { if (!it.isFocused) commit() },
+    )
 }
 
 private const val ORBOT_DOWNLOAD = "https://orbot.app/download/"

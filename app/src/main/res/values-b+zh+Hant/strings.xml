@@ -127,6 +127,10 @@
     <string name="tor_use">使用 Tor（透過 Orbot）</string>
     <string name="tor_use_hint">應用程式的所有連線都會透過 Orbot 經由 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的位址，網站名稱也會在 Tor 內部解析（不會發出明文 DNS 要求）。如果 Orbot 沒有執行，就無法載入任何內容：應用程式絕不會改用直接連線。速度會比較慢，有些網站會封鎖 Tor 或更常要求防機器人驗證，而且對於你已登入或正在使用其 Cookie 的網站，它無法隱藏你的身分。</string>
     <string name="tor_status_on">Orbot 執行中 · SOCKS 代理伺服器 127.0.0.1:%1$d</string>
+    <string name="tor_port">Orbot SOCKS 連接埠</string>
+    <string name="tor_port_hint">預設 9050。應用程式只會連線到本機上的這個連接埠，不會從 Orbot 的狀態訊息取得連接埠，因為任何應用程式都能發送這類訊息。</string>
+    <string name="tor_port_reported">Orbot 回報的連接埠為 %1$d。如果 Orbot 確實在該連接埠監聽，請在此填寫。</string>
+    <string name="tor_port_invalid">請輸入 1 到 65535 之間的連接埠。</string>
     <string name="tor_status_starting">正在啟動 Orbot…</string>
     <string name="tor_status_not_installed">未安裝 Orbot：無法建立任何連線</string>
     <string name="tor_status_starts_disabled">Orbot 不接受由其他應用程式啟動：請開啟 Orbot 並啟動它，或在其設定中開啟「Allow Background Starts」</string>

@@ -127,6 +127,10 @@
     <string name="tor_use">Tor を使用（Orbot 経由）</string>
     <string name="tor_use_hint">アプリのすべての接続（検索、画像、動画、ダウンロード、内蔵ブラウザ）は、Orbot を介して Tor ネットワークを経由します。サイトにはあなたのアドレスではなく Tor ノードのアドレスが見え、サイト名の解決も Tor 内で行われます（平文の DNS リクエストは発生しません）。Orbot が起動していない場合は何も読み込まれません。アプリが直接接続に切り替えることは決してありません。速度は遅くなり、Tor をブロックしたり、ボット対策の確認をより頻繁に求めたりするサイトもあります。また、ログインしているサイトや、Cookie を使用しているサイトからあなたを隠すことはできません。</string>
     <string name="tor_status_on">Orbot 起動中 · SOCKS プロキシ 127.0.0.1:%1$d</string>
+    <string name="tor_port">OrbotのSOCKSポート</string>
+    <string name="tor_port_hint">既定は9050。アプリはこの端末のこのポートにのみ接続します。どのアプリでも送信できるOrbotの状態通知からポートを取得することはありません。</string>
+    <string name="tor_port_reported">Orbotはポート%1$dを報告しています。Orbotがそのポートで待ち受けているなら、ここに入力してください。</string>
+    <string name="tor_port_invalid">1から65535までのポートを入力してください。</string>
     <string name="tor_status_starting">Orbot を起動中…</string>
     <string name="tor_status_not_installed">Orbot がインストールされていないため、接続できません</string>
     <string name="tor_status_starts_disabled">Orbot が他のアプリからの起動を受け付けていません。Orbot を開いて起動するか、Orbot の設定で「Allow Background Starts」をオンにしてください</string>

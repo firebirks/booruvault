@@ -127,6 +127,10 @@
     <string name="tor_use">Tor 사용(Orbot 경유)</string>
     <string name="tor_use_hint">앱의 모든 연결(검색, 이미지, 동영상, 다운로드, 내장 브라우저)은 Orbot을 통해 Tor 네트워크를 거칩니다. 사이트에는 사용자의 주소 대신 Tor 노드의 주소가 보이며, 사이트 이름도 Tor 안에서 확인됩니다(평문 DNS 요청 없음). Orbot이 실행 중이 아니면 아무것도 로드되지 않으며, 앱은 절대 직접 연결로 전환하지 않습니다. 속도가 느려지고, 일부 사이트는 Tor를 차단하거나 봇 방지 확인을 더 자주 요구합니다. 또한 로그인한 사이트나 쿠키를 사용하는 사이트로부터는 사용자를 숨겨 주지 않습니다.</string>
     <string name="tor_status_on">Orbot 실행 중 · SOCKS 프록시 127.0.0.1:%1$d</string>
+    <string name="tor_port">Orbot SOCKS 포트</string>
+    <string name="tor_port_hint">기본값 9050. 앱은 이 휴대전화의 이 포트에만 연결합니다. 어떤 앱이든 보낼 수 있는 Orbot 상태 메시지에서 포트를 가져오지 않습니다.</string>
+    <string name="tor_port_reported">Orbot이 포트 %1$d을(를) 보고했습니다. Orbot이 실제로 그 포트에서 수신 대기한다면 여기에 입력하세요.</string>
+    <string name="tor_port_invalid">1에서 65535 사이의 포트를 입력하세요.</string>
     <string name="tor_status_starting">Orbot 시작 중…</string>
     <string name="tor_status_not_installed">Orbot이 설치되어 있지 않아 연결할 수 없습니다</string>
     <string name="tor_status_starts_disabled">Orbot이 다른 앱에서의 시작을 허용하지 않습니다. Orbot을 열어 시작하거나, Orbot 설정에서 ‘Allow Background Starts’를 켜세요</string>

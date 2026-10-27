@@ -129,6 +129,10 @@
     <string name="tor_use">Tor gebruiken (via Orbot)</string>
     <string name="tor_use_hint">Alle verbindingen van de app gaan via Orbot over het Tor-netwerk: zoekopdrachten, afbeeldingen, video\'s, downloads en de ingebouwde browser. Sites zien het adres van een Tor-node in plaats van het jouwe, en ook de namen van sites worden binnen Tor omgezet (geen onversleuteld DNS-verzoek). Als Orbot niet actief is, laadt er niets: de app valt nooit terug op een directe verbinding. Het is trager, sommige sites blokkeren Tor of vragen vaker om de anti-botcontrole, en het verbergt je niet voor een site waarop je bent ingelogd of waarvan je de cookies gebruikt.</string>
     <string name="tor_status_on">Orbot actief · SOCKS-proxy 127.0.0.1:%1$d</string>
+    <string name="tor_port">SOCKS-poort van Orbot</string>
+    <string name="tor_port_hint">Standaard 9050. De app maakt alleen verbinding met deze poort op deze telefoon. De poort wordt niet overgenomen uit de statusberichten van Orbot, die elke app zou kunnen versturen.</string>
+    <string name="tor_port_reported">Orbot meldt poort %1$d. Vul die hier in als Orbot daar luistert.</string>
+    <string name="tor_port_invalid">Voer een poort tussen 1 en 65535 in.</string>
     <string name="tor_status_starting">Orbot wordt gestart…</string>
     <string name="tor_status_not_installed">Orbot is niet geïnstalleerd: geen verbinding mogelijk</string>
     <string name="tor_status_starts_disabled">Orbot accepteert geen starts vanuit andere apps: open en start Orbot, of zet ‘Allow Background Starts’ aan in de instellingen van Orbot</string>

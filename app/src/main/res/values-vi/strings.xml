@@ -127,6 +127,10 @@
     <string name="tor_use">Dùng Tor (qua Orbot)</string>
     <string name="tor_use_hint">Mọi kết nối của ứng dụng đều đi qua mạng Tor thông qua Orbot: tìm kiếm, hình ảnh, video, tải xuống và trình duyệt tích hợp. Các trang web thấy địa chỉ của một nút Tor thay vì địa chỉ của bạn, và tên trang web cũng được phân giải bên trong Tor (không có truy vấn DNS không mã hóa). Nếu Orbot không chạy thì không gì tải được: ứng dụng không bao giờ chuyển sang kết nối trực tiếp. Tốc độ chậm hơn, một số trang web chặn Tor hoặc yêu cầu kiểm tra chống bot thường xuyên hơn, và Tor không che giấu bạn với trang web mà bạn đã đăng nhập hoặc đang dùng cookie của nó.</string>
     <string name="tor_status_on">Orbot đang chạy · Proxy SOCKS 127.0.0.1:%1$d</string>
+    <string name="tor_port">Cổng SOCKS của Orbot</string>
+    <string name="tor_port_hint">Mặc định 9050. Ứng dụng chỉ kết nối tới cổng này trên điện thoại này. Cổng không được lấy từ thông báo trạng thái của Orbot, vốn ứng dụng nào cũng có thể gửi.</string>
+    <string name="tor_port_reported">Orbot báo cổng %1$d. Hãy nhập vào đây nếu Orbot thực sự lắng nghe ở cổng đó.</string>
+    <string name="tor_port_invalid">Nhập một cổng từ 1 đến 65535.</string>
     <string name="tor_status_starting">Đang khởi động Orbot…</string>
     <string name="tor_status_not_installed">Chưa cài đặt Orbot: không thể kết nối</string>
     <string name="tor_status_starts_disabled">Orbot không chấp nhận lệnh khởi động từ ứng dụng khác: hãy mở và khởi động Orbot, hoặc bật “Allow Background Starts” trong cài đặt của Orbot</string>

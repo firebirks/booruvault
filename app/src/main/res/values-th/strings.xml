@@ -127,6 +127,10 @@
     <string name="tor_use">ใช้ Tor (ผ่าน Orbot)</string>
     <string name="tor_use_hint">การเชื่อมต่อทั้งหมดของแอปจะผ่านเครือข่าย Tor โดยใช้ Orbot ได้แก่ การค้นหา รูปภาพ วิดีโอ การดาวน์โหลด และเบราว์เซอร์ในตัว เว็บไซต์จะเห็นที่อยู่ของโหนด Tor แทนที่อยู่ของคุณ และชื่อเว็บไซต์ก็จะถูกแปลงภายใน Tor ด้วย (ไม่มีคำขอ DNS แบบไม่เข้ารหัส) หาก Orbot ไม่ทำงาน จะไม่มีสิ่งใดโหลดได้เลย: แอปจะไม่กลับไปใช้การเชื่อมต่อโดยตรงเด็ดขาด การเชื่อมต่อจะช้าลง บางเว็บไซต์บล็อก Tor หรือขอให้ผ่านการตรวจสอบป้องกันบอทบ่อยขึ้น และจะไม่ซ่อนตัวตนของคุณจากเว็บไซต์ที่คุณเข้าสู่ระบบอยู่หรือที่คุณใช้คุกกี้ของเว็บไซต์นั้น</string>
     <string name="tor_status_on">Orbot กำลังทำงาน · พร็อกซี SOCKS 127.0.0.1:%1$d</string>
+    <string name="tor_port">พอร์ต SOCKS ของ Orbot</string>
+    <string name="tor_port_hint">ค่าเริ่มต้น 9050 แอปจะเชื่อมต่อกับพอร์ตนี้บนโทรศัพท์เครื่องนี้เท่านั้น และจะไม่นำพอร์ตมาจากข้อความสถานะของ Orbot ซึ่งแอปใดก็ส่งได้</string>
+    <string name="tor_port_reported">Orbot รายงานพอร์ต %1$d หาก Orbot รับฟังที่พอร์ตนั้นจริง ให้กรอกที่นี่</string>
+    <string name="tor_port_invalid">กรอกพอร์ตระหว่าง 1 ถึง 65535</string>
     <string name="tor_status_starting">กำลังเริ่ม Orbot…</string>
     <string name="tor_status_not_installed">ไม่ได้ติดตั้ง Orbot: เชื่อมต่อไม่ได้</string>
     <string name="tor_status_starts_disabled">Orbot ไม่ยอมให้แอปอื่นสั่งเริ่มทำงาน: เปิด Orbot แล้วเริ่มด้วยตนเอง หรือเปิด “Allow Background Starts” ในการตั้งค่าของ Orbot</string>

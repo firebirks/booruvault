@@ -127,6 +127,10 @@
     <string name="tor_use">Gunakan Tor (melalui Orbot)</string>
     <string name="tor_use_hint">Semua koneksi aplikasi melewati jaringan Tor melalui Orbot: pencarian, gambar, video, unduhan, dan browser bawaan. Situs melihat alamat node Tor, bukan alamat Anda, dan nama situs juga diterjemahkan di dalam Tor (tidak ada permintaan DNS tanpa enkripsi). Jika Orbot tidak berjalan, tidak ada yang dimuat: aplikasi tidak pernah beralih ke koneksi langsung. Koneksi menjadi lebih lambat, beberapa situs memblokir Tor atau lebih sering meminta pemeriksaan anti-bot, dan Tor tidak menyembunyikan Anda dari situs tempat Anda login atau yang cookie-nya Anda gunakan.</string>
     <string name="tor_status_on">Orbot berjalan · proxy SOCKS 127.0.0.1:%1$d</string>
+    <string name="tor_port">Port SOCKS Orbot</string>
+    <string name="tor_port_hint">Bawaan 9050. Aplikasi hanya terhubung ke port ini di ponsel ini. Port tidak diambil dari pesan status Orbot, yang bisa dikirim oleh aplikasi mana pun.</string>
+    <string name="tor_port_reported">Orbot melaporkan port %1$d. Masukkan di sini jika Orbot memang mendengarkan di port itu.</string>
+    <string name="tor_port_invalid">Masukkan port antara 1 dan 65535.</string>
     <string name="tor_status_starting">Memulai Orbot…</string>
     <string name="tor_status_not_installed">Orbot tidak terpasang: tidak ada koneksi yang bisa dibuat</string>
     <string name="tor_status_starts_disabled">Orbot tidak menerima perintah mulai dari aplikasi lain: buka dan jalankan Orbot, atau aktifkan “Allow Background Starts” di setelannya</string>

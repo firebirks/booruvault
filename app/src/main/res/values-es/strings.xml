@@ -131,6 +131,10 @@
     <string name="tor_use">Usar Tor (mediante Orbot)</string>
     <string name="tor_use_hint">Todas las conexiones de la app pasan por la red Tor a través de Orbot: búsquedas, imágenes, videos, descargas y el navegador integrado. Los sitios ven la dirección de un nodo de Tor en lugar de la tuya, y los nombres de los sitios también se resuelven dentro de Tor (ninguna solicitud DNS en claro). Si Orbot no está en ejecución, no se carga nada: la app nunca recurre a una conexión directa. Es más lento, algunos sitios bloquean Tor o piden la verificación antibots más a menudo, y no te oculta de un sitio en el que has iniciado sesión o cuyas cookies usas.</string>
     <string name="tor_status_on">Orbot en ejecución · proxy SOCKS 127.0.0.1:%1$d</string>
+    <string name="tor_port">Puerto SOCKS de Orbot</string>
+    <string name="tor_port_hint">Por defecto 9050. La app solo se conecta a este puerto en este teléfono. No toma el puerto de los mensajes de estado de Orbot, que cualquier app podría enviar.</string>
+    <string name="tor_port_reported">Orbot informa el puerto %1$d. Escríbelo aquí si es el que usa.</string>
+    <string name="tor_port_invalid">Introduce un puerto entre 1 y 65535.</string>
     <string name="tor_status_starting">Iniciando Orbot…</string>
     <string name="tor_status_not_installed">Orbot no está instalado: no es posible ninguna conexión</string>
     <string name="tor_status_starts_disabled">Orbot no acepta inicios desde otras apps: ábrelo e inícialo, o activa “Allow Background Starts” en sus ajustes</string>

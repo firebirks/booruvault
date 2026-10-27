@@ -127,6 +127,10 @@
     <string name="tor_use">使用 Tor（通过 Orbot）</string>
     <string name="tor_use_hint">应用的所有连接都会通过 Orbot 经由 Tor 网络：搜索、图片、视频、下载和内置浏览器。网站看到的是 Tor 节点的地址而不是你的地址，网站域名也在 Tor 内部解析（不会发出明文 DNS 请求）。如果 Orbot 未运行，任何内容都无法加载：应用绝不会回退到直接连接。速度会更慢，部分网站会屏蔽 Tor 或更频繁地要求反机器人验证，而且对于你已登录或正在使用其 Cookie 的网站，它无法隐藏你的身份。</string>
     <string name="tor_status_on">Orbot 正在运行 · SOCKS 代理 127.0.0.1:%1$d</string>
+    <string name="tor_port">Orbot SOCKS 端口</string>
+    <string name="tor_port_hint">默认 9050。应用只连接本机上的这个端口，不会从 Orbot 的状态消息中获取端口，因为任何应用都能发送这类消息。</string>
+    <string name="tor_port_reported">Orbot 报告的端口是 %1$d。如果 Orbot 确实在该端口监听，请在此填写。</string>
+    <string name="tor_port_invalid">请输入 1 到 65535 之间的端口。</string>
     <string name="tor_status_starting">正在启动 Orbot…</string>
     <string name="tor_status_not_installed">未安装 Orbot：无法建立任何连接</string>
     <string name="tor_status_starts_disabled">Orbot 不接受由其他应用启动：请打开 Orbot 并启动它，或在其设置中开启“Allow Background Starts”</string>

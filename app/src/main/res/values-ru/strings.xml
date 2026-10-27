@@ -133,6 +133,10 @@
     <string name="tor_use">Использовать Tor (через Orbot)</string>
     <string name="tor_use_hint">Все соединения приложения идут через сеть Tor с помощью Orbot: поиск, изображения, видео, загрузки и встроенный браузер. Сайты видят адрес узла Tor вместо вашего, а имена сайтов тоже разрешаются внутри Tor (никаких DNS-запросов в открытом виде). Если Orbot не запущен, ничего не загружается: приложение никогда не переключается на прямое соединение. Это медленнее, некоторые сайты блокируют Tor или чаще требуют антибот-проверку, и это не скрывает вас от сайта, на котором вы вошли в аккаунт или чьи cookie используете.</string>
     <string name="tor_status_on">Orbot запущен · SOCKS-прокси 127.0.0.1:%1$d</string>
+    <string name="tor_port">SOCKS-порт Orbot</string>
+    <string name="tor_port_hint">По умолчанию 9050. Приложение подключается только к этому порту на этом телефоне. Порт не берётся из сообщений о состоянии Orbot, которые может отправить любое приложение.</string>
+    <string name="tor_port_reported">Orbot сообщает порт %1$d. Укажите его здесь, если Orbot слушает именно его.</string>
+    <string name="tor_port_invalid">Введите порт от 1 до 65535.</string>
     <string name="tor_status_starting">Запуск Orbot…</string>
     <string name="tor_status_not_installed">Orbot не установлен: подключение невозможно</string>
     <string name="tor_status_starts_disabled">Orbot не принимает запуск из других приложений: откройте и запустите его или включите «Allow Background Starts» в его настройках</string>

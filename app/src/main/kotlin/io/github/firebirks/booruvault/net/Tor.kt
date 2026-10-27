@@ -35,7 +35,10 @@ enum class TorStatus { DISABLED, NOT_INSTALLED, STARTING, ON, OFF, STARTS_DISABL
 data class TorState(
     val enabled: Boolean,
     val status: TorStatus,
+    /** The port the app connects to: a setting, never taken from a broadcast. */
     val socksPort: Int = DEFAULT_SOCKS_PORT,
+    /** The port Orbot's last status message named. Shown to the user only; it is not trusted. */
+    val reportedPort: Int? = null,
     /** Result of the last check against check.torproject.org: exit address, or null if unchecked. */
     val verifiedExit: String? = null,
     val verifyError: Problem? = null,
@@ -50,16 +53,24 @@ const val DEFAULT_SOCKS_PORT = 9050
  * fallback, so if Orbot is not running every connection fails instead of going out in clear.
  * Host names reach the proxy unresolved, so DNS goes through Tor as well.
  *
- * The on/off flag is the one setting kept outside the vault (`network.xml`): it must hold from
- * process start, before any unlock, so that no connection can ever slip out directly. It
- * reveals only that the app is set to use Tor.
+ * The on/off flag and the port are the settings kept outside the vault (`network.xml`): they
+ * must hold from process start, before any unlock, so that no connection can ever slip out
+ * directly. They reveal only that the app is set to use Tor, and where.
+ *
+ * Orbot's status broadcasts are not protected by a permission, so any app on the phone can send
+ * one. They are therefore taken as information for the user only: the port the app connects
+ * to is the configured one, and the status shown is confirmed only by the exit check.
  */
 class TorManager(private val context: Context) {
     private val prefs = context.getSharedPreferences("network", Context.MODE_PRIVATE)
 
     private val _state = MutableStateFlow(
         prefs.getBoolean(KEY_ENABLED, false).let { enabled ->
-            TorState(enabled, if (enabled) TorStatus.STARTING else TorStatus.DISABLED)
+            TorState(
+                enabled,
+                if (enabled) TorStatus.STARTING else TorStatus.DISABLED,
+                socksPort = prefs.getInt(KEY_PORT, DEFAULT_SOCKS_PORT).takeIf { it in 1..65535 } ?: DEFAULT_SOCKS_PORT,
+            )
         },
     )
     val state: StateFlow<TorState> = _state.asStateFlow()
@@ -82,16 +93,15 @@ class TorManager(private val context: Context) {
                 "STARTS_DISABLED" -> TorStatus.STARTS_DISABLED
                 else -> TorStatus.OFF
             }
+            // The sender cannot be verified, so the port named here is only shown, never used.
             val port = when (val value = intent.extras?.get(EXTRA_SOCKS_PORT)) {
                 is Int -> value
                 is String -> value.toIntOrNull()
                 else -> null
             }?.takeIf { it in 1..65535 }
-            val before = _state.value.socksPort
             _state.update {
-                if (!it.enabled) it else it.copy(status = status, socksPort = port ?: it.socksPort)
+                if (!it.enabled) it else it.copy(status = status, reportedPort = port ?: it.reportedPort)
             }
-            if (port != null && port != before) onRouteChanged()
         }
     }
 
@@ -109,9 +119,19 @@ class TorManager(private val context: Context) {
 
     fun setEnabled(value: Boolean) {
         prefs.edit().putBoolean(KEY_ENABLED, value).commit()
-        _state.value = TorState(value, if (value) TorStatus.STARTING else TorStatus.DISABLED)
+        _state.value = TorState(value, if (value) TorStatus.STARTING else TorStatus.DISABLED, socksPort = _state.value.socksPort)
         onRouteChanged()
         if (value) requestStart()
+    }
+
+    /** Sets the local port the app connects to Orbot on. Returns false for an invalid port. */
+    fun setSocksPort(port: Int): Boolean {
+        if (port !in 1..65535) return false
+        if (port == _state.value.socksPort) return true
+        prefs.edit().putInt(KEY_PORT, port).commit()
+        _state.update { it.copy(socksPort = port, verifiedExit = null, verifyError = null) }
+        onRouteChanged()
+        return true
     }
 
     /** Asks Orbot to start and to report its status and ports. */
@@ -149,6 +169,7 @@ class TorManager(private val context: Context) {
     companion object {
         const val ORBOT_PACKAGE = "org.torproject.android"
         private const val KEY_ENABLED = "tor"
+        private const val KEY_PORT = "socks_port"
 
         // Orbot's integration protocol (as used by Guardian Project's NetCipher).
         private const val ACTION_START = "org.torproject.android.intent.action.START"

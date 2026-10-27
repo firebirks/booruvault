@@ -129,6 +129,10 @@
     <string name="tor_use">Tor इस्तेमाल करें (Orbot के ज़रिए)</string>
     <string name="tor_use_hint">ऐप के सभी कनेक्शन Orbot के ज़रिए Tor नेटवर्क से होकर जाते हैं: खोजें, इमेज, वीडियो, डाउनलोड और बिल्ट-इन ब्राउज़र। साइटों को आपके पते की जगह किसी Tor नोड का पता दिखता है, और साइटों के नाम भी Tor के अंदर ही रिज़ॉल्व होते हैं (बिना एन्क्रिप्शन वाला कोई DNS अनुरोध नहीं)। अगर Orbot नहीं चल रहा है, तो कुछ भी लोड नहीं होता: ऐप कभी भी सीधे कनेक्शन पर वापस नहीं जाता। यह धीमा है, कुछ साइटें Tor को ब्लॉक करती हैं या ज़्यादा बार एंटी-बॉट जांच मांगती हैं, और यह आपको उस साइट से नहीं छिपाता जिसमें आपने लॉग इन किया है या जिसकी कुकी आप इस्तेमाल करते हैं।</string>
     <string name="tor_status_on">Orbot चल रहा है · SOCKS प्रॉक्सी 127.0.0.1:%1$d</string>
+    <string name="tor_port">Orbot का SOCKS पोर्ट</string>
+    <string name="tor_port_hint">डिफ़ॉल्ट 9050. ऐप इस फ़ोन पर केवल इसी पोर्ट से जुड़ता है। यह पोर्ट Orbot के स्थिति संदेशों से नहीं लेता, जिन्हें कोई भी ऐप भेज सकता है।</string>
+    <string name="tor_port_reported">Orbot पोर्ट %1$d बता रहा है। यदि Orbot उसी पर सुन रहा है तो उसे यहाँ दर्ज करें।</string>
+    <string name="tor_port_invalid">1 और 65535 के बीच का पोर्ट दर्ज करें।</string>
     <string name="tor_status_starting">Orbot शुरू हो रहा है…</string>
     <string name="tor_status_not_installed">Orbot इंस्टॉल नहीं है: कोई कनेक्शन संभव नहीं</string>
     <string name="tor_status_starts_disabled">Orbot दूसरे ऐप्स से शुरू किए जाने की अनुमति नहीं देता: उसे खोलकर शुरू करें, या उसकी सेटिंग में “Allow Background Starts” चालू करें</string>
