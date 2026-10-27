@@ -378,4 +378,10 @@
     <string name="tag_create_collection">สร้างคอลเลกชัน</string>
     <string name="action_edit">แก้ไข</string>
     <string name="browse_save_search">บันทึกการค้นหาเป็นคอลเลกชัน</string>
+    <string name="external_warning_title">เปิดนอก Tor หรือไม่</string>
+    <string name="external_warning_text">Tor เปิดอยู่ แต่ไม่ได้ติดตั้ง Tor Browser ลิงก์นี้จึงจะเปิดในเบราว์เซอร์ทั่วไปที่ไม่ผ่าน Tor เว็บไซต์จะเห็นที่อยู่ IP จริงของคุณ และเบราว์เซอร์อาจเก็บการเข้าชมไว้ในประวัติ คุกกี้ และแคช หรือซิงค์กับบัญชี\n\nหากต้องการใช้ Tor ต่อ ให้ติดตั้ง Tor Browser หรือคัดลอกลิงก์แล้วเปิดในเบราว์เซอร์ที่ผ่าน Orbot</string>
+    <string name="external_open_anyway_wait">เปิดต่อไป (%1$d)</string>
+    <string name="external_open_anyway">เปิดต่อไป</string>
+    <string name="external_copy_link">คัดลอกลิงก์</string>
+    <string name="external_link_copied">คัดลอกลิงก์แล้ว</string>
 </resources>

@@ -478,4 +478,10 @@
     <string name="tag_create_collection">إنشاء مجموعة</string>
     <string name="action_edit">تعديل</string>
     <string name="browse_save_search">حفظ البحث كمجموعة</string>
+    <string name="external_warning_title">هل تريد الفتح خارج Tor؟</string>
+    <string name="external_warning_text">Tor مفعّل، لكن Tor Browser غير مثبّت، لذا سيُفتح هذا الرابط في متصفح عادي لا يمر عبر Tor. سيرى الموقع عنوان IP الحقيقي الخاص بك، وقد يحتفظ المتصفح بالزيارة في السجل وملفات تعريف الارتباط وذاكرة التخزين المؤقت، أو يزامنها مع حساب.\n\nللبقاء على Tor، ثبّت Tor Browser، أو انسخ الرابط وافتحه في متصفح يمر عبر Orbot.</string>
+    <string name="external_open_anyway_wait">افتح على أي حال (%1$d)</string>
+    <string name="external_open_anyway">افتح على أي حال</string>
+    <string name="external_copy_link">نسخ الرابط</string>
+    <string name="external_link_copied">تم نسخ الرابط</string>
 </resources>

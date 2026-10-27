@@ -398,4 +398,10 @@
     <string name="tag_create_collection">Koleksiyon oluştur</string>
     <string name="action_edit">Düzenle</string>
     <string name="browse_save_search">Aramayı koleksiyon olarak kaydet</string>
+    <string name="external_warning_title">Tor dışında açılsın mı?</string>
+    <string name="external_warning_text">Tor açık ama Tor Browser yüklü değil; bu bağlantı Tor\'dan geçmeyen normal bir tarayıcıda açılır. Site gerçek IP adresinizi görür ve tarayıcı ziyareti geçmişte, çerezlerde ve önbellekte saklayabilir ya da bir hesapla eşitleyebilir.\n\nTor\'da kalmak için Tor Browser\'ı yükleyin veya bağlantıyı kopyalayıp Orbot üzerinden geçen bir tarayıcıda açın.</string>
+    <string name="external_open_anyway_wait">Yine de aç (%1$d)</string>
+    <string name="external_open_anyway">Yine de aç</string>
+    <string name="external_copy_link">Bağlantıyı kopyala</string>
+    <string name="external_link_copied">Bağlantı kopyalandı</string>
 </resources>

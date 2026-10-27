@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.ui
 
+import io.github.firebirks.booruvault.ui.common.ProvideLinkOpener
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.LocalContentColor
@@ -96,7 +97,9 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
             is VaultState.Unlocked -> if (!ready) {
                 CenteredProgress(stringResource(R.string.opening_vault))
             } else {
-                MainScaffold(requestedTab)
+                ProvideLinkOpener {
+                    MainScaffold(requestedTab)
+                }
                 if (offerBiometric) BiometricOffer(onDone = { offerBiometric = false })
             }
         }

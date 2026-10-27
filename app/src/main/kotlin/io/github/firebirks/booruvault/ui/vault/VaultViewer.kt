@@ -66,7 +66,7 @@ import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
 import io.github.firebirks.booruvault.ui.common.containerViewModel
-import io.github.firebirks.booruvault.ui.common.openUrl
+import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.util.formatBytes
 import io.github.firebirks.booruvault.util.formatDate
 import io.github.firebirks.booruvault.vault.SealedDataSource
@@ -195,6 +195,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
 @Composable
 private fun VaultInfoSheet(item: VaultItem, onDismiss: () -> Unit, onTag: (String) -> Unit) {
     val context = LocalContext.current
+    val links = LocalLinkOpener.current
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 16.dp),
@@ -212,7 +213,7 @@ private fun VaultInfoSheet(item: VaultItem, onDismiss: () -> Unit, onTag: (Strin
             }
             Text(facts.joinToString(" · "), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             item.postUrl?.let { url ->
-                TextButton(onClick = { context.openUrl(url) }) {
+                TextButton(onClick = { links.open(url) }) {
                     Icon(Icons.Outlined.OpenInBrowser, null)
                     Text("  ${item.sourceName ?: stringResource(R.string.vault_source_fallback)} #${item.postId ?: ""}")
                 }

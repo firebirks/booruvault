@@ -404,4 +404,10 @@
     <string name="tag_create_collection">Create a collection</string>
     <string name="action_edit">Edit</string>
     <string name="browse_save_search">Save the search as a collection</string>
+    <string name="external_warning_title">Open outside Tor?</string>
+    <string name="external_warning_text">Tor is on, but Tor Browser is not installed, so this link would open in a normal browser that does not go through Tor. The site would see your real IP address, and the browser may keep the visit in its history, cookies and cache, or sync it to an account.\n\nTo stay on Tor, install Tor Browser, or copy the link and open it in a browser that goes through Orbot.</string>
+    <string name="external_open_anyway_wait">Open anyway (%1$d)</string>
+    <string name="external_open_anyway">Open anyway</string>
+    <string name="external_copy_link">Copy link</string>
+    <string name="external_link_copied">Link copied</string>
 </resources>

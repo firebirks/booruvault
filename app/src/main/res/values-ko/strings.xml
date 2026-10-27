@@ -378,4 +378,10 @@
     <string name="tag_create_collection">컬렉션 만들기</string>
     <string name="action_edit">편집</string>
     <string name="browse_save_search">검색을 컬렉션으로 저장</string>
+    <string name="external_warning_title">Tor 밖에서 열까요?</string>
+    <string name="external_warning_text">Tor가 켜져 있지만 Tor Browser가 설치되어 있지 않아 이 링크는 Tor를 거치지 않는 일반 브라우저에서 열립니다. 사이트에 실제 IP 주소가 보이고, 브라우저가 방문을 기록·쿠키·캐시에 남기거나 계정에 동기화할 수 있습니다.\n\nTor를 계속 사용하려면 Tor Browser를 설치하거나, 링크를 복사해 Orbot을 거치는 브라우저에서 여세요.</string>
+    <string name="external_open_anyway_wait">그래도 열기 (%1$d)</string>
+    <string name="external_open_anyway">그래도 열기</string>
+    <string name="external_copy_link">링크 복사</string>
+    <string name="external_link_copied">링크를 복사했습니다</string>
 </resources>

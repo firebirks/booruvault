@@ -418,4 +418,10 @@
     <string name="tag_create_collection">Criar uma coleção</string>
     <string name="action_edit">Editar</string>
     <string name="browse_save_search">Salvar a pesquisa como coleção</string>
+    <string name="external_warning_title">Abrir fora do Tor?</string>
+    <string name="external_warning_text">O Tor está ativado, mas o Tor Browser não está instalado, então este link seria aberto em um navegador comum, que não passa pelo Tor. O site veria seu endereço IP real, e o navegador poderia guardar a visita no histórico, nos cookies e no cache, ou sincronizá-la com uma conta.\n\nPara continuar no Tor, instale o Tor Browser ou copie o link e abra-o em um navegador que passe pelo Orbot.</string>
+    <string name="external_open_anyway_wait">Abrir mesmo assim (%1$d)</string>
+    <string name="external_open_anyway">Abrir mesmo assim</string>
+    <string name="external_copy_link">Copiar link</string>
+    <string name="external_link_copied">Link copiado</string>
 </resources>

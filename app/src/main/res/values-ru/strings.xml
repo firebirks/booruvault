@@ -438,4 +438,10 @@
     <string name="tag_create_collection">Создать коллекцию</string>
     <string name="action_edit">Изменить</string>
     <string name="browse_save_search">Сохранить поиск как коллекцию</string>
+    <string name="external_warning_title">Открыть вне Tor?</string>
+    <string name="external_warning_text">Tor включён, но Tor Browser не установлен, поэтому ссылка откроется в обычном браузере, который не использует Tor. Сайт увидит ваш настоящий IP-адрес, а браузер может сохранить посещение в истории, cookie и кэше или синхронизировать его с аккаунтом.\n\nЧтобы остаться в Tor, установите Tor Browser или скопируйте ссылку и откройте её в браузере, который работает через Orbot.</string>
+    <string name="external_open_anyway_wait">Всё равно открыть (%1$d)</string>
+    <string name="external_open_anyway">Всё равно открыть</string>
+    <string name="external_copy_link">Копировать ссылку</string>
+    <string name="external_link_copied">Ссылка скопирована</string>
 </resources>

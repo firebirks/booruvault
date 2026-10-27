@@ -12,6 +12,9 @@
     <queries>
         <package android:name="org.torproject.android" />
         <package android:name="com.google.android.gms" />
+        <!-- Tor Browser: external links open there while Tor is on. -->
+        <package android:name="org.torproject.torbrowser" />
+        <package android:name="org.torproject.torbrowser_alpha" />
         <!-- App stores (F-Droid, Droid-ify, Aurora, Play...) that can show Orbot's page. -->
         <intent>
             <action android:name="android.intent.action.VIEW" />

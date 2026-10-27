@@ -398,4 +398,10 @@
     <string name="tag_create_collection">संग्रह बनाएं</string>
     <string name="action_edit">बदलें</string>
     <string name="browse_save_search">खोज को संग्रह के रूप में सेव करें</string>
+    <string name="external_warning_title">Tor के बाहर खोलें?</string>
+    <string name="external_warning_text">Tor चालू है, लेकिन Tor Browser इंस्टॉल नहीं है, इसलिए यह लिंक एक सामान्य ब्राउज़र में खुलेगा जो Tor से होकर नहीं जाता। साइट आपका असली IP पता देख सकेगी, और ब्राउज़र इस विज़िट को इतिहास, कुकी और कैश में रख सकता है या किसी खाते से सिंक कर सकता है।\n\nTor पर बने रहने के लिए Tor Browser इंस्टॉल करें, या लिंक कॉपी करके उसे ऐसे ब्राउज़र में खोलें जो Orbot से होकर जाता है।</string>
+    <string name="external_open_anyway_wait">फिर भी खोलें (%1$d)</string>
+    <string name="external_open_anyway">फिर भी खोलें</string>
+    <string name="external_copy_link">लिंक कॉपी करें</string>
+    <string name="external_link_copied">लिंक कॉपी हो गया</string>
 </resources>

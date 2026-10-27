@@ -398,4 +398,10 @@
     <string name="tag_create_collection">Verzameling maken</string>
     <string name="action_edit">Bewerken</string>
     <string name="browse_save_search">Zoekopdracht opslaan als verzameling</string>
+    <string name="external_warning_title">Buiten Tor openen?</string>
+    <string name="external_warning_text">Tor staat aan, maar Tor Browser is niet geïnstalleerd, dus deze link zou openen in een gewone browser die niet via Tor gaat. De website zou je echte IP-adres zien, en de browser kan het bezoek bewaren in de geschiedenis, cookies en cache, of het met een account synchroniseren.\n\nOm bij Tor te blijven, installeer je Tor Browser, of kopieer je de link en open je die in een browser die via Orbot gaat.</string>
+    <string name="external_open_anyway_wait">Toch openen (%1$d)</string>
+    <string name="external_open_anyway">Toch openen</string>
+    <string name="external_copy_link">Link kopiëren</string>
+    <string name="external_link_copied">Link gekopieerd</string>
 </resources>

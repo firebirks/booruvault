@@ -378,4 +378,10 @@
     <string name="tag_create_collection">Tạo bộ sưu tập</string>
     <string name="action_edit">Sửa</string>
     <string name="browse_save_search">Lưu tìm kiếm thành bộ sưu tập</string>
+    <string name="external_warning_title">Mở bên ngoài Tor?</string>
+    <string name="external_warning_text">Tor đang bật nhưng Tor Browser chưa được cài đặt, nên liên kết này sẽ mở trong một trình duyệt thông thường không đi qua Tor. Trang web sẽ thấy địa chỉ IP thật của bạn, và trình duyệt có thể lưu lượt truy cập trong lịch sử, cookie và bộ nhớ đệm, hoặc đồng bộ với một tài khoản.\n\nĐể tiếp tục dùng Tor, hãy cài Tor Browser, hoặc sao chép liên kết và mở bằng một trình duyệt đi qua Orbot.</string>
+    <string name="external_open_anyway_wait">Vẫn mở (%1$d)</string>
+    <string name="external_open_anyway">Vẫn mở</string>
+    <string name="external_copy_link">Sao chép liên kết</string>
+    <string name="external_link_copied">Đã sao chép liên kết</string>
 </resources>

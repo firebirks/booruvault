@@ -378,4 +378,10 @@
     <string name="tag_create_collection">コレクションを作成</string>
     <string name="action_edit">編集</string>
     <string name="browse_save_search">検索をコレクションとして保存</string>
+    <string name="external_warning_title">Tor を使わずに開きますか？</string>
+    <string name="external_warning_text">Tor はオンですが Tor Browser がインストールされていないため、このリンクは Tor を経由しない通常のブラウザで開かれます。サイトにはあなたの実際の IP アドレスが見え、ブラウザは閲覧を履歴・Cookie・キャッシュに残したり、アカウントに同期したりする可能性があります。\n\nTor を使い続けるには、Tor Browser をインストールするか、リンクをコピーして Orbot を経由するブラウザで開いてください。</string>
+    <string name="external_open_anyway_wait">それでも開く（%1$d）</string>
+    <string name="external_open_anyway">それでも開く</string>
+    <string name="external_copy_link">リンクをコピー</string>
+    <string name="external_link_copied">リンクをコピーしました</string>
 </resources>

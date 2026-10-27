@@ -378,4 +378,10 @@
     <string name="tag_create_collection">建立收藏集</string>
     <string name="action_edit">編輯</string>
     <string name="browse_save_search">將搜尋儲存為收藏集</string>
+    <string name="external_warning_title">要在 Tor 之外開啟嗎？</string>
+    <string name="external_warning_text">Tor 已開啟，但未安裝 Tor Browser，因此此連結將在不經過 Tor 的一般瀏覽器中開啟。網站將看到你的真實 IP 位址，瀏覽器也可能將此次造訪保存在歷史記錄、Cookie 和快取中，或同步到帳號。\n\n如要繼續使用 Tor，請安裝 Tor Browser，或複製連結並在透過 Orbot 的瀏覽器中開啟。</string>
+    <string name="external_open_anyway_wait">仍要開啟（%1$d）</string>
+    <string name="external_open_anyway">仍要開啟</string>
+    <string name="external_copy_link">複製連結</string>
+    <string name="external_link_copied">已複製連結</string>
 </resources>

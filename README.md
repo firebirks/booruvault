@@ -126,6 +126,8 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 - **Orbot integration:** Orbot is started and queried with its standard intents. The settings screen shows its status and port, and a check against `check.torproject.org` reports the exit address.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
+- **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, a warning explains that a normal browser would expose your IP and keep the visit. Its "open anyway" button unlocks only after a few seconds; it also offers to copy the link instead.
+
 **Orbot's VPN mode** with BooruVault selected is an extra, system-level safety net, mainly for the WebView.
 
 Tor hides your IP address from the sites. It does not hide you from a site you are logged in to, or whose cookies you use.

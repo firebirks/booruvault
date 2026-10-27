@@ -93,7 +93,7 @@ import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
 import io.github.firebirks.booruvault.ui.common.categoryColor
 import io.github.firebirks.booruvault.ui.common.containerViewModel
-import io.github.firebirks.booruvault.ui.common.openUrl
+import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
 import io.github.firebirks.booruvault.util.formatBytes
 import io.github.firebirks.booruvault.util.formatDate
@@ -118,6 +118,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     val vaultState by container.vault.state.collectAsStateWithLifecycle()
     val askNotifications = rememberNotificationPermission()
     val resources = LocalResources.current
+    val links = LocalLinkOpener.current
     val posts = state.posts
     if (posts.isEmpty()) {
         LaunchedEffect(Unit) { onClose() }
@@ -184,7 +185,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                         color = Color.White.copy(alpha = 0.75f), style = MaterialTheme.typography.labelMedium,
                     )
                 }
-                IconButton(onClick = { context.openUrl(post.postUrl) }) { Icon(Icons.Outlined.OpenInBrowser, stringResource(R.string.viewer_open_browser), tint = Color.White) }
+                IconButton(onClick = { links.open(post.postUrl) }) { Icon(Icons.Outlined.OpenInBrowser, stringResource(R.string.viewer_open_browser), tint = Color.White) }
                 IconButton(onClick = { info = post }) { Icon(Icons.Outlined.Info, stringResource(R.string.viewer_details), tint = Color.White) }
                 val alreadySaved = stringResource(R.string.problem_already_in_vault)
                 when (saveState) {
@@ -303,6 +304,7 @@ private fun PostInfoSheet(
     onBlacklist: (String) -> Unit,
 ) {
     val context = LocalContext.current
+    val links = LocalLinkOpener.current
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
     ModalBottomSheet(onDismissRequest = onDismiss) {
@@ -325,7 +327,7 @@ private fun PostInfoSheet(
             post.source?.let { source ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.viewer_source), style = MaterialTheme.typography.bodyMedium)
-                    TextButton(onClick = { if (source.startsWith("http")) context.openUrl(source) }) {
+                    TextButton(onClick = { if (source.startsWith("http")) links.open(source) }) {
                         Text(source, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }

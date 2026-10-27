@@ -438,4 +438,10 @@
     <string name="tag_create_collection">Utwórz kolekcję</string>
     <string name="action_edit">Edytuj</string>
     <string name="browse_save_search">Zapisz wyszukiwanie jako kolekcję</string>
+    <string name="external_warning_title">Otworzyć poza siecią Tor?</string>
+    <string name="external_warning_text">Tor jest włączony, ale Tor Browser nie jest zainstalowany, więc ten link otworzy się w zwykłej przeglądarce, która nie korzysta z sieci Tor. Witryna zobaczy Twój prawdziwy adres IP, a przeglądarka może zapisać wizytę w historii, plikach cookie i pamięci podręcznej lub zsynchronizować ją z kontem.\n\nAby pozostać w sieci Tor, zainstaluj Tor Browser albo skopiuj link i otwórz go w przeglądarce korzystającej z aplikacji Orbot.</string>
+    <string name="external_open_anyway_wait">Otwórz mimo to (%1$d)</string>
+    <string name="external_open_anyway">Otwórz mimo to</string>
+    <string name="external_copy_link">Kopiuj link</string>
+    <string name="external_link_copied">Skopiowano link</string>
 </resources>

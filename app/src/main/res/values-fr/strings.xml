@@ -418,4 +418,10 @@
     <string name="tag_create_collection">Créer une collection</string>
     <string name="action_edit">Modifier</string>
     <string name="browse_save_search">Enregistrer la recherche comme collection</string>
+    <string name="external_warning_title">Ouvrir hors de Tor ?</string>
+    <string name="external_warning_text">Tor est activé, mais Tor Browser n’est pas installé : ce lien s’ouvrirait dans un navigateur ordinaire, qui ne passe pas par Tor. Le site verrait votre véritable adresse IP, et le navigateur pourrait conserver la visite dans son historique, ses cookies et son cache, ou la synchroniser avec un compte.\n\nPour rester sur Tor, installez Tor Browser, ou copiez le lien et ouvrez-le dans un navigateur qui passe par Orbot.</string>
+    <string name="external_open_anyway_wait">Ouvrir quand même (%1$d)</string>
+    <string name="external_open_anyway">Ouvrir quand même</string>
+    <string name="external_copy_link">Copier le lien</string>
+    <string name="external_link_copied">Lien copié</string>
 </resources>

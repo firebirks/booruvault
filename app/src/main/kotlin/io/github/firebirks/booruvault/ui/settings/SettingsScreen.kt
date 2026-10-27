@@ -60,7 +60,7 @@ import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
 import io.github.firebirks.booruvault.ui.common.findActivity
 import io.github.firebirks.booruvault.ui.common.labelRes
-import io.github.firebirks.booruvault.ui.common.openUrl
+import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.vault.MIN_PASSWORD
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
@@ -411,6 +411,7 @@ private fun TorSettings() {
     val scope = rememberCoroutineScope()
     var askInstall by remember { mutableStateOf(false) }
     var verifying by remember { mutableStateOf(false) }
+    val links = LocalLinkOpener.current
 
     SwitchRow(stringResource(R.string.tor_use), stringResource(R.string.tor_use_hint), state.enabled) { on ->
         if (on && !tor.isOrbotInstalled()) askInstall = true else tor.setEnabled(on)
@@ -455,13 +456,13 @@ private fun TorSettings() {
             confirmButton = {
                 TextButton(onClick = {
                     askInstall = false
-                    openStoreFor(context, TorManager.ORBOT_PACKAGE, chooserTitle, fallbackUrl = ORBOT_DOWNLOAD)
+                    openStoreFor(context, TorManager.ORBOT_PACKAGE, chooserTitle) { links.open(ORBOT_DOWNLOAD) }
                 }) { Text(stringResource(R.string.tor_search_stores)) }
             },
             dismissButton = {
                 TextButton(onClick = {
                     askInstall = false
-                    context.openUrl(ORBOT_DOWNLOAD)
+                    links.open(ORBOT_DOWNLOAD)
                 }) { Text(stringResource(R.string.tor_orbot_site)) }
             },
         )
@@ -474,11 +475,11 @@ private const val ORBOT_DOWNLOAD = "https://orbot.app/download/"
  * Opens [packageName]'s page in an installed app store, letting the user choose when there are
  * several (F-Droid, Droid-ify, Aurora, Play...), or [fallbackUrl] when there is none.
  */
-private fun openStoreFor(context: android.content.Context, packageName: String, chooserTitle: String, fallbackUrl: String) {
+private fun openStoreFor(context: android.content.Context, packageName: String, chooserTitle: String, fallback: () -> Unit) {
     val market = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=$packageName"))
     val stores = context.packageManager.queryIntentActivities(market, 0)
     when {
-        stores.isEmpty() -> context.openUrl(fallbackUrl)
+        stores.isEmpty() -> fallback()
         stores.size == 1 -> context.startActivity(market)
         else -> context.startActivity(android.content.Intent.createChooser(market, chooserTitle))
     }

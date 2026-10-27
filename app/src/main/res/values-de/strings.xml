@@ -398,4 +398,10 @@
     <string name="tag_create_collection">Sammlung erstellen</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="browse_save_search">Suche als Sammlung speichern</string>
+    <string name="external_warning_title">Außerhalb von Tor öffnen?</string>
+    <string name="external_warning_text">Tor ist an, aber Tor Browser ist nicht installiert. Dieser Link würde sich daher in einem normalen Browser öffnen, der nicht über Tor läuft. Die Website sähe deine echte IP-Adresse, und der Browser könnte den Besuch in Verlauf, Cookies und Cache speichern oder mit einem Konto synchronisieren.\n\nUm bei Tor zu bleiben, installiere Tor Browser oder kopiere den Link und öffne ihn in einem Browser, der über Orbot läuft.</string>
+    <string name="external_open_anyway_wait">Trotzdem öffnen (%1$d)</string>
+    <string name="external_open_anyway">Trotzdem öffnen</string>
+    <string name="external_copy_link">Link kopieren</string>
+    <string name="external_link_copied">Link kopiert</string>
 </resources>

@@ -378,4 +378,10 @@
     <string name="tag_create_collection">Buat koleksi</string>
     <string name="action_edit">Edit</string>
     <string name="browse_save_search">Simpan pencarian sebagai koleksi</string>
+    <string name="external_warning_title">Buka di luar Tor?</string>
+    <string name="external_warning_text">Tor aktif, tetapi Tor Browser tidak terpasang, jadi tautan ini akan terbuka di browser biasa yang tidak melewati Tor. Situs akan melihat alamat IP asli Anda, dan browser dapat menyimpan kunjungan ini di riwayat, cookie, dan cache, atau menyinkronkannya ke akun.\n\nAgar tetap di Tor, pasang Tor Browser, atau salin tautan dan buka di browser yang melewati Orbot.</string>
+    <string name="external_open_anyway_wait">Tetap buka (%1$d)</string>
+    <string name="external_open_anyway">Tetap buka</string>
+    <string name="external_copy_link">Salin tautan</string>
+    <string name="external_link_copied">Tautan disalin</string>
 </resources>
