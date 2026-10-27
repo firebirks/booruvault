@@ -138,15 +138,11 @@
     <string name="tor_status_on">Orbot запущено · SOCKS-проксі 127.0.0.1:%1$d</string>
     <string name="tor_port">SOCKS-порт Orbot</string>
     <string name="tor_port_hint">Типово 9050. Застосунок під\'єднується лише до цього порту на цьому телефоні. Порт не береться з повідомлень про стан Orbot, які може надіслати будь-який застосунок.</string>
-    <string name="tor_port_reported">Orbot повідомляє порт %1$d. Введіть його тут, якщо Orbot слухає саме його.</string>
     <string name="tor_port_invalid">Введіть порт від 1 до 65535.</string>
-    <string name="tor_status_starting">Запуск Orbot…</string>
     <string name="tor_status_not_installed">Orbot не встановлено: підключення неможливе</string>
-    <string name="tor_status_starts_disabled">Orbot не приймає запуск з інших застосунків: відкрийте й запустіть його або ввімкніть «Allow Background Starts» у його налаштуваннях</string>
     <string name="tor_status_off">Orbot не запущено: підключення неможливе, доки ви його не запустите</string>
     <string name="tor_verified">Перевірено: з\'єднання виходить через Tor (IP %1$s)</string>
     <string name="tor_vpn_hint">Для максимального охоплення також увімкніть в Orbot режим VPN з вибраним BooruVault: він перехоплює кожен пакет на рівні системи, навіть поза проксі.</string>
-    <string name="tor_start_orbot">Запустити Orbot</string>
     <string name="tor_open_orbot">Відкрити Orbot</string>
     <string name="tor_verify">Перевірити</string>
     <string name="tor_verifying">Перевірка…</string>

@@ -452,11 +452,17 @@ private fun TorSettings() {
         if (on && !tor.isOrbotInstalled()) askInstall = true else tor.setEnabled(on)
     }
     if (state.enabled) {
+        // Orbot tells nothing by itself; while this is on screen the port is greeted every few seconds.
+        LaunchedEffect(Unit) {
+            while (true) {
+                tor.refreshStatus()
+                delay(3000)
+            }
+        }
         val status = when (state.status) {
             TorStatus.ON -> stringResource(R.string.tor_status_on, state.socksPort)
-            TorStatus.STARTING -> stringResource(R.string.tor_status_starting)
+            TorStatus.CHECKING -> stringResource(R.string.tor_verifying)
             TorStatus.NOT_INSTALLED -> stringResource(R.string.tor_status_not_installed)
-            TorStatus.STARTS_DISABLED -> stringResource(R.string.tor_status_starts_disabled)
             TorStatus.OFF, TorStatus.DISABLED -> stringResource(R.string.tor_status_off)
         }
         ListItem(
@@ -469,9 +475,8 @@ private fun TorSettings() {
                 }
             },
         )
-        TorPortField(tor, state.socksPort, state.reportedPort)
+        TorPortField(tor, state.socksPort)
         Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { tor.requestStart() }) { Text(stringResource(R.string.tor_start_orbot)) }
             OutlinedButton(onClick = { tor.orbotLaunchIntent()?.let { context.startActivity(it) } }) { Text(stringResource(R.string.tor_open_orbot)) }
             OutlinedButton(enabled = !verifying, onClick = {
                 verifying = true
@@ -510,7 +515,7 @@ private fun TorSettings() {
  * not at every keystroke: each change drops the connections opened along the old route.
  */
 @Composable
-private fun TorPortField(tor: TorManager, port: Int, reported: Int?) {
+private fun TorPortField(tor: TorManager, port: Int) {
     var text by remember(port) { mutableStateOf(port.toString()) }
     val valid = text.toIntOrNull()?.let { it in 1..65535 } == true
     fun commit() {
@@ -522,11 +527,7 @@ private fun TorPortField(tor: TorManager, port: Int, reported: Int?) {
         label = { Text(stringResource(R.string.tor_port)) },
         supportingText = {
             Text(
-                when {
-                    !valid -> stringResource(R.string.tor_port_invalid)
-                    reported != null && reported != port -> stringResource(R.string.tor_port_reported, reported)
-                    else -> stringResource(R.string.tor_port_hint)
-                },
+                stringResource(if (valid) R.string.tor_port_hint else R.string.tor_port_invalid),
             )
         },
         isError = !valid,

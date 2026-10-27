@@ -136,15 +136,11 @@
     <string name="tor_status_on">Orbot attivo · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Porta SOCKS di Orbot</string>
     <string name="tor_port_hint">Predefinita 9050. L\'app si collega solo a questa porta su questo telefono. Non prende la porta dai messaggi di stato di Orbot, che qualsiasi app potrebbe inviare.</string>
-    <string name="tor_port_reported">Orbot segnala la porta %1$d. Inseriscila qui se è quella su cui è in ascolto.</string>
     <string name="tor_port_invalid">Inserisci una porta tra 1 e 65535.</string>
-    <string name="tor_status_starting">Avvio di Orbot in corso…</string>
     <string name="tor_status_not_installed">Orbot non è installato: nessuna connessione possibile</string>
-    <string name="tor_status_starts_disabled">Orbot non accetta avvii da altre app: aprilo e avvialo, oppure abilita «Consenti avvii in background» nelle sue impostazioni</string>
     <string name="tor_status_off">Orbot non è attivo: nessuna connessione possibile finché non lo avvii</string>
     <string name="tor_verified">Verificato: la connessione esce da Tor (IP %1$s)</string>
     <string name="tor_vpn_hint">Per la massima copertura attiva anche la modalità VPN di Orbot con BooruVault selezionata: intercetta a livello di sistema qualsiasi pacchetto, anche fuori dal proxy.</string>
-    <string name="tor_start_orbot">Avvia Orbot</string>
     <string name="tor_open_orbot">Apri Orbot</string>
     <string name="tor_verify">Verifica</string>
     <string name="tor_verifying">Verifica…</string>

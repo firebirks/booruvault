@@ -134,15 +134,11 @@
     <string name="tor_status_on">Orbot चल रहा है · SOCKS प्रॉक्सी 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot का SOCKS पोर्ट</string>
     <string name="tor_port_hint">डिफ़ॉल्ट 9050. ऐप इस फ़ोन पर केवल इसी पोर्ट से जुड़ता है। यह पोर्ट Orbot के स्थिति संदेशों से नहीं लेता, जिन्हें कोई भी ऐप भेज सकता है।</string>
-    <string name="tor_port_reported">Orbot पोर्ट %1$d बता रहा है। यदि Orbot उसी पर सुन रहा है तो उसे यहाँ दर्ज करें।</string>
     <string name="tor_port_invalid">1 और 65535 के बीच का पोर्ट दर्ज करें।</string>
-    <string name="tor_status_starting">Orbot शुरू हो रहा है…</string>
     <string name="tor_status_not_installed">Orbot इंस्टॉल नहीं है: कोई कनेक्शन संभव नहीं</string>
-    <string name="tor_status_starts_disabled">Orbot दूसरे ऐप्स से शुरू किए जाने की अनुमति नहीं देता: उसे खोलकर शुरू करें, या उसकी सेटिंग में “Allow Background Starts” चालू करें</string>
     <string name="tor_status_off">Orbot नहीं चल रहा है: जब तक आप उसे शुरू नहीं करते, कोई कनेक्शन संभव नहीं</string>
     <string name="tor_verified">पुष्टि हो गई: कनेक्शन Tor से होकर बाहर जाता है (IP %1$s)</string>
     <string name="tor_vpn_hint">ज़्यादा से ज़्यादा कवरेज के लिए Orbot का VPN मोड भी चालू करें और उसमें BooruVault चुनें: यह सिस्टम स्तर पर हर पैकेट को पकड़ता है, प्रॉक्सी के बाहर वाले भी।</string>
-    <string name="tor_start_orbot">Orbot शुरू करें</string>
     <string name="tor_open_orbot">Orbot खोलें</string>
     <string name="tor_verify">जांचें</string>
     <string name="tor_verifying">जांच हो रही है…</string>

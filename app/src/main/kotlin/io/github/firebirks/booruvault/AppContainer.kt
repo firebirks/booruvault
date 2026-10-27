@@ -62,7 +62,7 @@ class AppContainer(private val context: Context) {
     val settings = SettingsRepository(vaultDir, vault, json, scope)
     val cookies = SecureCookieJar(vaultDir, vault, json, scope)
 
-    val tor = TorManager(context)
+    val tor = TorManager(context, scope)
 
     /**
      * The app's only HTTP client: API calls, images (Coil), video (Media3), downloads. With Tor on

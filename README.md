@@ -124,10 +124,10 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 
 - **The app's network traffic** goes through a single HTTP client: API calls, images, video and downloads.
 - **Orbot only:** that client reaches the network through Orbot's SOCKS port and nothing else. If Orbot is not running, every request fails; there is no direct fallback.
-- **The port is a setting** (default 9050), never taken from Orbot's status messages. Those broadcasts carry no proof of their sender, so any app on the phone could send one naming a port it listens on. They are shown for information; whether traffic really leaves through Tor is told by the exit check below.
+- **The port is a setting** (default 9050). It is never taken from a broadcast: Orbot's status messages carried no proof of their sender, so any app could have sent one naming a port it listens on, and current Orbot sends none at all.
 - **No local DNS:** host names are passed to Orbot unresolved, and any local DNS lookup is refused. A unit test drives a fake SOCKS5 server to check that names travel as domains.
 - **Built-in browser:** goes through Orbot via a WebView proxy override with no direct rule, and WebRTC is removed before page scripts run. If the WebView cannot do either, the built-in browser does not open while Tor is on.
-- **Orbot integration:** Orbot is started and queried with its standard intents. The settings screen shows the status Orbot reports, and a check against `check.torproject.org` reports the exit address.
+- **Orbot integration:** since Orbot 17.9.6 other apps can neither start it nor hear its status, so the app finds out by itself whether a SOCKS5 server answers on the port, offers to open Orbot when none does, and a check against `check.torproject.org` reports the exit address.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
 - **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, the link can only be copied, to paste in a browser that goes through Orbot. Opening it in a normal browser is possible only with the risky option "Open links outside Tor" on, and then behind a warning that explains what a normal browser exposes and keeps; its "open anyway" button unlocks after a few seconds.

@@ -132,15 +132,11 @@
     <string name="tor_status_on">Orbot berjalan · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS Orbot</string>
     <string name="tor_port_hint">Bawaan 9050. Aplikasi hanya terhubung ke port ini di ponsel ini. Port tidak diambil dari pesan status Orbot, yang bisa dikirim oleh aplikasi mana pun.</string>
-    <string name="tor_port_reported">Orbot melaporkan port %1$d. Masukkan di sini jika Orbot memang mendengarkan di port itu.</string>
     <string name="tor_port_invalid">Masukkan port antara 1 dan 65535.</string>
-    <string name="tor_status_starting">Memulai Orbot…</string>
     <string name="tor_status_not_installed">Orbot tidak terpasang: tidak ada koneksi yang bisa dibuat</string>
-    <string name="tor_status_starts_disabled">Orbot tidak menerima perintah mulai dari aplikasi lain: buka dan jalankan Orbot, atau aktifkan “Allow Background Starts” di setelannya</string>
     <string name="tor_status_off">Orbot tidak berjalan: tidak ada koneksi yang bisa dibuat sampai Anda menjalankannya</string>
     <string name="tor_verified">Terverifikasi: koneksi keluar melalui Tor (IP %1$s)</string>
     <string name="tor_vpn_hint">Untuk cakupan maksimal, aktifkan juga mode VPN Orbot dengan BooruVault dipilih: mode ini menangkap setiap paket di tingkat sistem, bahkan di luar proxy.</string>
-    <string name="tor_start_orbot">Jalankan Orbot</string>
     <string name="tor_open_orbot">Buka Orbot</string>
     <string name="tor_verify">Periksa</string>
     <string name="tor_verifying">Memeriksa…</string>

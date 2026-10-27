@@ -132,15 +132,11 @@
     <string name="tor_status_on">Orbot đang chạy · Proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Cổng SOCKS của Orbot</string>
     <string name="tor_port_hint">Mặc định 9050. Ứng dụng chỉ kết nối tới cổng này trên điện thoại này. Cổng không được lấy từ thông báo trạng thái của Orbot, vốn ứng dụng nào cũng có thể gửi.</string>
-    <string name="tor_port_reported">Orbot báo cổng %1$d. Hãy nhập vào đây nếu Orbot thực sự lắng nghe ở cổng đó.</string>
     <string name="tor_port_invalid">Nhập một cổng từ 1 đến 65535.</string>
-    <string name="tor_status_starting">Đang khởi động Orbot…</string>
     <string name="tor_status_not_installed">Chưa cài đặt Orbot: không thể kết nối</string>
-    <string name="tor_status_starts_disabled">Orbot không chấp nhận lệnh khởi động từ ứng dụng khác: hãy mở và khởi động Orbot, hoặc bật “Allow Background Starts” trong cài đặt của Orbot</string>
     <string name="tor_status_off">Orbot không chạy: không thể kết nối cho đến khi bạn khởi động Orbot</string>
     <string name="tor_verified">Đã xác minh: kết nối đi ra qua Tor (IP %1$s)</string>
     <string name="tor_vpn_hint">Để bảo vệ tối đa, hãy bật thêm chế độ VPN của Orbot và chọn BooruVault: chế độ này bắt mọi gói tin ở cấp hệ thống, kể cả bên ngoài proxy.</string>
-    <string name="tor_start_orbot">Khởi động Orbot</string>
     <string name="tor_open_orbot">Mở Orbot</string>
     <string name="tor_verify">Kiểm tra</string>
     <string name="tor_verifying">Đang kiểm tra…</string>

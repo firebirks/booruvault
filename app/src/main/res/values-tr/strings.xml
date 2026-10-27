@@ -134,15 +134,11 @@
     <string name="tor_status_on">Orbot çalışıyor · SOCKS proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS bağlantı noktası</string>
     <string name="tor_port_hint">Varsayılan 9050. Uygulama bu telefonda yalnızca bu bağlantı noktasına bağlanır. Bağlantı noktasını, herhangi bir uygulamanın gönderebileceği Orbot durum iletilerinden almaz.</string>
-    <string name="tor_port_reported">Orbot %1$d numaralı bağlantı noktasını bildiriyor. Orbot orada dinliyorsa buraya girin.</string>
     <string name="tor_port_invalid">1 ile 65535 arasında bir bağlantı noktası girin.</string>
-    <string name="tor_status_starting">Orbot başlatılıyor…</string>
     <string name="tor_status_not_installed">Orbot yüklü değil: bağlantı mümkün değil</string>
-    <string name="tor_status_starts_disabled">Orbot diğer uygulamalardan başlatılmayı kabul etmiyor: onu açıp başlatın veya ayarlarında “Allow Background Starts” seçeneğini açın</string>
     <string name="tor_status_off">Orbot çalışmıyor: siz başlatana kadar bağlantı mümkün değil</string>
     <string name="tor_verified">Doğrulandı: bağlantı Tor üzerinden çıkıyor (IP %1$s)</string>
     <string name="tor_vpn_hint">En geniş kapsam için Orbot\'un VPN modunu da BooruVault seçili olarak açın: proxy dışındakiler dahil her paketi sistem düzeyinde yakalar.</string>
-    <string name="tor_start_orbot">Orbot\'u başlat</string>
     <string name="tor_open_orbot">Orbot\'u aç</string>
     <string name="tor_verify">Kontrol et</string>
     <string name="tor_verifying">Kontrol ediliyor…</string>

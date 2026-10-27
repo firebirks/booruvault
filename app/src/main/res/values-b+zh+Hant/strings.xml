@@ -132,15 +132,11 @@
     <string name="tor_status_on">Orbot 執行中 · SOCKS 代理伺服器 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS 連接埠</string>
     <string name="tor_port_hint">預設 9050。應用程式只會連線到本機上的這個連接埠，不會從 Orbot 的狀態訊息取得連接埠，因為任何應用程式都能發送這類訊息。</string>
-    <string name="tor_port_reported">Orbot 回報的連接埠為 %1$d。如果 Orbot 確實在該連接埠監聽，請在此填寫。</string>
     <string name="tor_port_invalid">請輸入 1 到 65535 之間的連接埠。</string>
-    <string name="tor_status_starting">正在啟動 Orbot…</string>
     <string name="tor_status_not_installed">未安裝 Orbot：無法建立任何連線</string>
-    <string name="tor_status_starts_disabled">Orbot 不接受由其他應用程式啟動：請開啟 Orbot 並啟動它，或在其設定中開啟「Allow Background Starts」</string>
     <string name="tor_status_off">Orbot 未執行：在你啟動它之前，無法建立任何連線</string>
     <string name="tor_verified">已驗證：連線經由 Tor 對外（IP %1$s）</string>
     <string name="tor_vpn_hint">如要獲得最完整的涵蓋範圍，請一併開啟 Orbot 的 VPN 模式並選取 BooruVault：它會在系統層級攔截所有封包，即使是代理伺服器以外的封包也一樣。</string>
-    <string name="tor_start_orbot">啟動 Orbot</string>
     <string name="tor_open_orbot">開啟 Orbot</string>
     <string name="tor_verify">檢查</string>
     <string name="tor_verifying">正在檢查…</string>

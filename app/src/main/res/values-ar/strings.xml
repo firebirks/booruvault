@@ -142,15 +142,11 @@
     <string name="tor_status_on">Orbot قيد التشغيل · وكيل SOCKS على 127.0.0.1:%1$d</string>
     <string name="tor_port">منفذ SOCKS لـ Orbot</string>
     <string name="tor_port_hint">الافتراضي 9050. لا يتصل التطبيق إلا بهذا المنفذ على هذا الهاتف، ولا يأخذ المنفذ من رسائل حالة Orbot التي يمكن لأي تطبيق إرسالها.</string>
-    <string name="tor_port_reported">يبلّغ Orbot عن المنفذ %1$d. أدخله هنا إن كان هو المنفذ الذي يستمع عليه.</string>
     <string name="tor_port_invalid">أدخل منفذًا بين 1 و65535.</string>
-    <string name="tor_status_starting">جارٍ تشغيل Orbot…</string>
     <string name="tor_status_not_installed">Orbot غير مثبّت: لا يمكن إجراء أي اتصال</string>
-    <string name="tor_status_starts_disabled">لا يقبل Orbot التشغيل من تطبيقات أخرى: افتحه وشغّله، أو فعّل «Allow Background Starts» في إعداداته</string>
     <string name="tor_status_off">Orbot ليس قيد التشغيل: لا يمكن إجراء أي اتصال حتى تشغّله</string>
     <string name="tor_verified">تم التحقق: يخرج الاتصال عبر Tor (عنوان IP: %1$s)</string>
     <string name="tor_vpn_hint">لأقصى تغطية، فعّل أيضًا وضع VPN في Orbot مع تحديد BooruVault: فهو يلتقط كل حزمة على مستوى النظام، حتى خارج الوكيل.</string>
-    <string name="tor_start_orbot">تشغيل Orbot</string>
     <string name="tor_open_orbot">فتح Orbot</string>
     <string name="tor_verify">تحقّق</string>
     <string name="tor_verifying">جارٍ التحقق…</string>

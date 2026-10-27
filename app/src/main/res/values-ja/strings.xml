@@ -132,15 +132,11 @@
     <string name="tor_status_on">Orbot 起動中 · SOCKS プロキシ 127.0.0.1:%1$d</string>
     <string name="tor_port">OrbotのSOCKSポート</string>
     <string name="tor_port_hint">既定は9050。アプリはこの端末のこのポートにのみ接続します。どのアプリでも送信できるOrbotの状態通知からポートを取得することはありません。</string>
-    <string name="tor_port_reported">Orbotはポート%1$dを報告しています。Orbotがそのポートで待ち受けているなら、ここに入力してください。</string>
     <string name="tor_port_invalid">1から65535までのポートを入力してください。</string>
-    <string name="tor_status_starting">Orbot を起動中…</string>
     <string name="tor_status_not_installed">Orbot がインストールされていないため、接続できません</string>
-    <string name="tor_status_starts_disabled">Orbot が他のアプリからの起動を受け付けていません。Orbot を開いて起動するか、Orbot の設定で「Allow Background Starts」をオンにしてください</string>
     <string name="tor_status_off">Orbot が起動していません。起動するまで接続できません</string>
     <string name="tor_verified">確認済み：接続は Tor を経由しています（IP %1$s）</string>
     <string name="tor_vpn_hint">最大限に保護するには、BooruVault を選択した状態で Orbot の VPN モードもオンにしてください。プロキシの外も含め、すべてのパケットをシステムレベルで捕捉します。</string>
-    <string name="tor_start_orbot">Orbot を起動</string>
     <string name="tor_open_orbot">Orbot を開く</string>
     <string name="tor_verify">確認</string>
     <string name="tor_verifying">確認中…</string>

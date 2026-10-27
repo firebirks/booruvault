@@ -1,22 +1,21 @@
 package io.github.firebirks.booruvault.net
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import io.github.firebirks.booruvault.booru.USER_AGENT
 import io.github.firebirks.booruvault.booru.await
 import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.toProblem
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -30,15 +29,13 @@ import java.net.ProxySelector
 import java.net.SocketAddress
 import java.net.URI
 
-enum class TorStatus { DISABLED, NOT_INSTALLED, STARTING, ON, OFF, STARTS_DISABLED }
+enum class TorStatus { DISABLED, NOT_INSTALLED, CHECKING, ON, OFF }
 
 data class TorState(
     val enabled: Boolean,
     val status: TorStatus,
-    /** The port the app connects to: a setting, never taken from a broadcast. */
+    /** The port the app connects to: a setting. */
     val socksPort: Int = DEFAULT_SOCKS_PORT,
-    /** The port Orbot's last status message named. Shown to the user only; it is not trusted. */
-    val reportedPort: Int? = null,
     /** Result of the last check against check.torproject.org: exit address, or null if unchecked. */
     val verifiedExit: String? = null,
     val verifyError: Problem? = null,
@@ -57,18 +54,19 @@ const val DEFAULT_SOCKS_PORT = 9050
  * must hold from process start, before any unlock, so that no connection can ever slip out
  * directly. They reveal only that the app is set to use Tor, and where.
  *
- * Orbot's status broadcasts are not protected by a permission, so any app on the phone can send
- * one. They are therefore taken as information for the user only: the port the app connects
- * to is the configured one, and the status shown is confirmed only by the exit check.
+ * Orbot is neither started nor asked anything: since Orbot 17.9.6 other apps cannot start it,
+ * and its status broadcasts, which any app could forge, are gone with that. Whether it listens
+ * is found out by greeting the port as a SOCKS5 client; whether traffic really leaves through
+ * Tor, by the exit check.
  */
-class TorManager(private val context: Context) {
+class TorManager(private val context: Context, private val scope: CoroutineScope) {
     private val prefs = context.getSharedPreferences("network", Context.MODE_PRIVATE)
 
     private val _state = MutableStateFlow(
         prefs.getBoolean(KEY_ENABLED, false).let { enabled ->
             TorState(
                 enabled,
-                if (enabled) TorStatus.STARTING else TorStatus.DISABLED,
+                if (enabled) TorStatus.CHECKING else TorStatus.DISABLED,
                 socksPort = prefs.getInt(KEY_PORT, DEFAULT_SOCKS_PORT).takeIf { it in 1..65535 } ?: DEFAULT_SOCKS_PORT,
             )
         },
@@ -84,30 +82,8 @@ class TorManager(private val context: Context) {
     /** Called when the route changes, so pooled connections opened the other way are dropped. */
     var onRouteChanged: () -> Unit = {}
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action != ACTION_STATUS) return
-            val status = when (intent.getStringExtra(EXTRA_STATUS)) {
-                "ON" -> TorStatus.ON
-                "STARTING" -> TorStatus.STARTING
-                "STARTS_DISABLED" -> TorStatus.STARTS_DISABLED
-                else -> TorStatus.OFF
-            }
-            // The sender cannot be verified, so the port named here is only shown, never used.
-            val port = when (val value = intent.extras?.get(EXTRA_SOCKS_PORT)) {
-                is Int -> value
-                is String -> value.toIntOrNull()
-                else -> null
-            }?.takeIf { it in 1..65535 }
-            _state.update {
-                if (!it.enabled) it else it.copy(status = status, reportedPort = port ?: it.reportedPort)
-            }
-        }
-    }
-
     init {
-        ContextCompat.registerReceiver(context, receiver, IntentFilter(ACTION_STATUS), ContextCompat.RECEIVER_EXPORTED)
-        if (enabled) requestStart()
+        if (enabled) refreshStatus()
     }
 
     fun isOrbotInstalled(): Boolean = try {
@@ -119,9 +95,9 @@ class TorManager(private val context: Context) {
 
     fun setEnabled(value: Boolean) {
         prefs.edit().putBoolean(KEY_ENABLED, value).commit()
-        _state.value = TorState(value, if (value) TorStatus.STARTING else TorStatus.DISABLED, socksPort = _state.value.socksPort)
+        _state.value = TorState(value, if (value) TorStatus.CHECKING else TorStatus.DISABLED, socksPort = _state.value.socksPort)
         onRouteChanged()
-        if (value) requestStart()
+        if (value) refreshStatus()
     }
 
     /** Sets the local port the app connects to Orbot on. Returns false for an invalid port. */
@@ -131,20 +107,21 @@ class TorManager(private val context: Context) {
         prefs.edit().putInt(KEY_PORT, port).commit()
         _state.update { it.copy(socksPort = port, verifiedExit = null, verifyError = null) }
         onRouteChanged()
+        refreshStatus()
         return true
     }
 
-    /** Asks Orbot to start and to report its status and ports. */
-    fun requestStart() {
+    /** Finds out whether Orbot is installed and a SOCKS5 server answers on the port. */
+    fun refreshStatus() {
         if (!enabled) return
-        if (!isOrbotInstalled()) {
-            _state.update { it.copy(status = TorStatus.NOT_INSTALLED) }
-            return
+        scope.launch(Dispatchers.IO) {
+            val status = when {
+                !isOrbotInstalled() -> TorStatus.NOT_INSTALLED
+                socks5Listening(_state.value.socksPort) -> TorStatus.ON
+                else -> TorStatus.OFF
+            }
+            _state.update { if (it.enabled) it.copy(status = status) else it }
         }
-        _state.update { if (it.status == TorStatus.ON) it else it.copy(status = TorStatus.STARTING) }
-        context.sendBroadcast(
-            Intent(ACTION_START).setPackage(ORBOT_PACKAGE).putExtra(EXTRA_PACKAGE_NAME, context.packageName),
-        )
     }
 
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
@@ -170,15 +147,23 @@ class TorManager(private val context: Context) {
         const val ORBOT_PACKAGE = "org.torproject.android"
         private const val KEY_ENABLED = "tor"
         private const val KEY_PORT = "socks_port"
-
-        // Orbot's integration protocol (as used by Guardian Project's NetCipher).
-        private const val ACTION_START = "org.torproject.android.intent.action.START"
-        private const val ACTION_STATUS = "org.torproject.android.intent.action.STATUS"
-        private const val EXTRA_PACKAGE_NAME = "org.torproject.android.intent.extra.PACKAGE_NAME"
-        private const val EXTRA_STATUS = "org.torproject.android.intent.extra.STATUS"
-        private const val EXTRA_SOCKS_PORT = "org.torproject.android.intent.extra.SOCKS_PROXY_PORT"
     }
 }
+
+/**
+ * Whether a SOCKS5 server answers on 127.0.0.1:[port]: the client greeting offering "no
+ * authentication" must come back accepted. Any other listener, or none, counts as not running.
+ */
+fun socks5Listening(port: Int, timeoutMs: Int = 1500): Boolean = runCatching {
+    java.net.Socket().use { socket ->
+        socket.connect(InetSocketAddress("127.0.0.1", port), timeoutMs)
+        socket.soTimeout = timeoutMs
+        socket.getOutputStream().apply { write(byteArrayOf(5, 1, 0)); flush() }
+        val reply = ByteArray(2)
+        java.io.DataInputStream(socket.getInputStream()).readFully(reply)
+        reply[0] == 5.toByte() && reply[1] == 0.toByte()
+    }
+}.getOrDefault(false)
 
 /**
  * DNS for the app's HTTP client. Through Orbot's SOCKS proxy host names are never looked up

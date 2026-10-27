@@ -107,4 +107,30 @@ class TorRoutingTest {
         assertEquals("127.0.0.1", dns.lookup("127.0.0.1").single().hostAddress)
         assertEquals(Proxy.NO_PROXY, TorProxySelector({ false }, { 9050 }).select(URI("https://example.com/")).single())
     }
+
+    @Test
+    fun socks5GreetingTellsOrbotFromNothing() {
+        // A listener that accepts the greeting.
+        val socks = ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))
+        thread(isDaemon = true) {
+            socks.accept().use { socket ->
+                val input = DataInputStream(socket.getInputStream())
+                check(input.readUnsignedByte() == 5)
+                repeat(input.readUnsignedByte()) { input.readUnsignedByte() }
+                socket.getOutputStream().write(byteArrayOf(5, 0))
+                socket.getOutputStream().flush()
+            }
+        }
+        // A listener that speaks something else.
+        val other = ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))
+        thread(isDaemon = true) { other.accept().use { it.getOutputStream().write("HTTP/1.1 400\r\n\r\n".toByteArray()) } }
+        // A port nobody listens on.
+        val closed = ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).let { val port = it.localPort; it.close(); port }
+
+        assertTrue(socks5Listening(socks.localPort))
+        assertTrue(!socks5Listening(other.localPort))
+        assertTrue(!socks5Listening(closed))
+        socks.close()
+        other.close()
+    }
 }
