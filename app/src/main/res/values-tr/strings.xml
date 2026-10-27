@@ -130,7 +130,7 @@
     <string name="delete_vault_type_to_confirm">Onaylamak için %1$s yazın</string>
     <string name="delete_vault_confirm">Her şeyi sil</string>
     <string name="tor_use">Tor kullan (Orbot ile)</string>
-    <string name="tor_use_hint">Uygulamanın tüm bağlantıları Orbot aracılığıyla Tor ağından geçer: aramalar, görseller, videolar, indirmeler ve yerleşik tarayıcı. Siteler sizin adresiniz yerine bir Tor düğümünün adresini görür ve site adları da Tor içinde çözümlenir (açık metin DNS isteği yok). Orbot çalışmıyorsa hiçbir şey yüklenmez: uygulama asla doğrudan bağlantıya geri dönmez. Daha yavaştır, bazı siteler Tor\'u engeller veya anti-bot doğrulamasını daha sık ister ve oturum açtığınız ya da çerezlerini kullandığınız bir siteden sizi gizlemez.</string>
+    <string name="tor_use_hint">Uygulamanın tüm bağlantıları Orbot aracılığıyla Tor ağından geçer: aramalar, görseller, videolar, indirmeler ve yerleşik tarayıcı. Siteler sizinki yerine bir Tor düğümünün adresini görür ve site adları da Tor içinde çözümlenir (açık DNS isteği yok). Orbot çalışmıyorsa hiçbir şey yüklenmez: uygulama asla doğrudan bağlantıya dönmez. Daha yavaştır ve bazı siteler Tor\'u engeller ya da bot denetimini daha sık ister. Tor nereden bağlandığınızı gizler, kim olduğunuzu değil: oturum açtığınız ya da kendi çerezlerini tanıyan bir site hesabınızı yine bilir; geri kalan her şey ise yalnızca bir Tor kullanıcısı daha görür. Bir hesaptan ayrı kalması gereken gezinti için oturum açmayın ya da Veriler bölümünden sitenin çerezlerini silin.</string>
     <string name="tor_status_on">Orbot çalışıyor · SOCKS proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS bağlantı noktası</string>
     <string name="tor_port_hint">Varsayılan 9050. Uygulama bu telefonda yalnızca bu bağlantı noktasına bağlanır. Bağlantı noktasını, herhangi bir uygulamanın gönderebileceği Orbot durum iletilerinden almaz.</string>
@@ -391,6 +391,9 @@
     <string name="settings_hidden_browser">Korumalı sayfaları gizli bir tarayıcıyla oku</string>
     <string name="settings_hidden_browser_on">Açık: bir site, siz anti-bot doğrulamasını tamamladıktan sonra bile onu istemeye devam ederse (Tor ile sık görülür), uygulama sitenin sayfalarını gizli bir tarayıcıda açar ve onları oradan okur. Bu şekilde okunan her sayfada sitenin JavaScript\'i, izleyiciler dahil, normal bir ziyaretteki gibi çalışır ve tarayıcının parmak izini çıkarabilir. Üçüncü taraf çerezleri engellenmeye devam eder, WebRTC kapalı kalır, görseller yüklenmez, Tor açıkken trafik Tor üzerinden geçer ve tarayıcının verileri her sayfadan sonra silinir. Daha yavaştır ve daha fazla pil tüketir.</string>
     <string name="settings_hidden_browser_off">Kapalı: bir site anti-bot doğrulamasını istemeye devam ederse uygulama durur ve sizden doğrulamayı yerleşik tarayıcıda tamamlamanızı ister. Sitenin kodu yalnızca siz ona bakarken çalışır.</string>
+    <string name="settings_links_outside_tor">Tor Browser yoksa bağlantıları Tor dışında aç</string>
+    <string name="settings_links_outside_tor_on">Açık: Tor açıkken ve Tor Browser yokken bir bağlantı, düğmeyi birkaç saniye kilitleyen bir uyarıdan sonra yine de normal bir tarayıcıda açılabilir. O tarayıcı Tor kullanmaz: site gerçek IP adresinizi görür ve ziyaret geçmişte, çerezlerde ve önbellekte kalabilir ya da bir hesapla eşitlenebilir.</string>
+    <string name="settings_links_outside_tor_off">Kapalı: Tor açıkken bağlantılar Tor Browser\'da açılır. O yoksa bir bağlantı yalnızca kopyalanabilir; Orbot üzerinden çalışan bir tarayıcıya yapıştırmak için.</string>
     <string name="collections_all">Tümü</string>
     <string name="collection_new">Yeni koleksiyon</string>
     <string name="collection_edit">Koleksiyonu düzenle</string>
@@ -412,4 +415,6 @@
     <string name="external_open_anyway">Yine de aç</string>
     <string name="external_copy_link">Bağlantıyı kopyala</string>
     <string name="external_link_copied">Bağlantı kopyalandı</string>
+    <string name="external_blocked_title">Tor Browser yüklü değil</string>
+    <string name="external_blocked_text">Tor açık ve bağlantılar uygulamadan yalnızca yüklü olmayan Tor Browser üzerinden çıkar. Onu yükleyin ya da bağlantıyı kopyalayıp Orbot üzerinden çalışan bir tarayıcıya yapıştırın.\n\nGerçek IP adresinizi açığa çıkararak bağlantıları yine de normal bir tarayıcıda açabilmek için riskli seçeneklerde “Tor Browser yoksa bağlantıları Tor dışında aç” seçeneğini açın.</string>
 </resources>

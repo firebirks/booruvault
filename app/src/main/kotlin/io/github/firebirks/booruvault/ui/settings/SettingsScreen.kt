@@ -283,6 +283,12 @@ private fun RiskySettings(onBack: () -> Unit) {
                 settings.hiddenBrowser,
             ) { scope.launch { repo.setHiddenBrowser(it) } }
             HorizontalDivider()
+            SwitchRow(
+                stringResource(R.string.settings_links_outside_tor),
+                stringResource(if (settings.linksOutsideTor) R.string.settings_links_outside_tor_on else R.string.settings_links_outside_tor_off),
+                settings.linksOutsideTor,
+            ) { scope.launch { repo.setLinksOutsideTor(it) } }
+            HorizontalDivider()
             if (!gms) {
                 SwitchRow(
                     stringResource(R.string.settings_safe_browsing),

@@ -49,6 +49,8 @@ data class AppSettings(
     val webSafeBrowsing: Boolean = false,
     /** Read pages that keep demanding an anti-bot check through a hidden WebView. */
     val hiddenBrowser: Boolean = false,
+    /** With Tor on and no Tor Browser, let a link open in a normal browser after a warning. */
+    val linksOutsideTor: Boolean = false,
     /** Bookmarked tag sets, shown as collections in the vault. */
     val collections: List<TagCollection> = emptyList(),
     val secureScreen: Boolean = true,
@@ -116,6 +118,7 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     suspend fun setDownloadWhileLocked(value: Boolean) = edit { it.copy(downloadWhileLocked = value) }
     suspend fun setWebSafeBrowsing(value: Boolean) = edit { it.copy(webSafeBrowsing = value) }
     suspend fun setHiddenBrowser(value: Boolean) = edit { it.copy(hiddenBrowser = value) }
+    suspend fun setLinksOutsideTor(value: Boolean) = edit { it.copy(linksOutsideTor = value) }
 
     suspend fun saveCollection(collection: TagCollection) = edit { current ->
         val others = current.collections.filterNot { it.id == collection.id }

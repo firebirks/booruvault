@@ -132,7 +132,7 @@
     <string name="delete_vault_type_to_confirm">Saisissez %1$s pour confirmer</string>
     <string name="delete_vault_confirm">Tout supprimer</string>
     <string name="tor_use">Utiliser Tor (via Orbot)</string>
-    <string name="tor_use_hint">Toutes les connexions de l\'appli passent par le réseau Tor via Orbot : recherches, images, vidéos, téléchargements et navigateur intégré. Les sites voient l\'adresse d\'un nœud Tor au lieu de la vôtre, et les noms des sites sont aussi résolus à l\'intérieur de Tor (aucune requête DNS en clair). Si Orbot n\'est pas lancé, rien ne se charge : l\'appli ne se rabat jamais sur une connexion directe. C\'est plus lent, certains sites bloquent Tor ou demandent plus souvent la vérification anti-bot, et cela ne vous cache pas d\'un site auquel vous êtes connecté ou dont vous utilisez les cookies.</string>
+    <string name="tor_use_hint">Toutes les connexions de l\'application passent par le réseau Tor via Orbot : recherches, images, vidéos, téléchargements et navigateur intégré. Les sites voient l\'adresse d\'un nœud Tor au lieu de la vôtre, et les noms des sites sont aussi résolus dans Tor (aucune requête DNS en clair). Si Orbot ne tourne pas, rien ne se charge : l\'application ne se rabat jamais sur une connexion directe. C\'est plus lent, et certains sites bloquent Tor ou demandent plus souvent la vérification anti-robot. Tor cache d\'où vous vous connectez, pas qui vous êtes : un site où vous êtes connecté, ou qui reconnaît ses propres cookies, connaît toujours votre compte, tandis que tout le reste ne voit qu\'un utilisateur de Tor parmi d\'autres. Pour une navigation séparée d\'un compte, restez déconnecté ou effacez les cookies du site dans la section Données.</string>
     <string name="tor_status_on">Orbot lancé · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS d\'Orbot</string>
     <string name="tor_port_hint">Par défaut 9050. L\'application ne se connecte qu\'à ce port sur ce téléphone. Elle ne prend pas le port dans les messages d\'état d\'Orbot, que n\'importe quelle application pourrait envoyer.</string>
@@ -411,6 +411,9 @@
     <string name="settings_hidden_browser">Lire les pages protégées avec un navigateur caché</string>
     <string name="settings_hidden_browser_on">Activé : quand un site continue de demander la vérification anti-bot même après que vous l\'avez réussie (fréquent avec Tor), l\'appli ouvre ses pages dans un navigateur caché et les lit à partir de là. Pour chaque page lue ainsi, le JavaScript du site s\'exécute comme lors d\'une visite normale, traceurs compris, et peut relever une empreinte numérique du navigateur. Les cookies tiers restent bloqués, WebRTC reste désactivé, les images ne sont pas chargées, le trafic passe par Tor quand Tor est activé, et les données du navigateur sont effacées après chaque page. C\'est plus lent et cela consomme plus de batterie.</string>
     <string name="settings_hidden_browser_off">Désactivé : quand un site continue de demander la vérification anti-bot, l\'appli s\'arrête et vous demande de l\'effectuer dans le navigateur intégré. Le code du site ne s\'exécute que pendant que vous le regardez.</string>
+    <string name="settings_links_outside_tor">Ouvrir les liens hors de Tor si Tor Browser manque</string>
+    <string name="settings_links_outside_tor_on">Activé : avec Tor actif et sans Tor Browser, un lien peut quand même s\'ouvrir dans un navigateur normal après un avertissement qui bloque le bouton quelques secondes. Ce navigateur n\'utilise pas Tor : le site voit votre vraie adresse IP, et la visite peut rester dans son historique, ses cookies et son cache, ou être synchronisée avec un compte.</string>
+    <string name="settings_links_outside_tor_off">Désactivé : avec Tor actif, les liens s\'ouvrent dans Tor Browser. Sans lui, un lien peut seulement être copié, pour le coller dans un navigateur qui passe par Orbot.</string>
     <string name="collections_all">Tous</string>
     <string name="collection_new">Nouvelle collection</string>
     <string name="collection_edit">Modifier la collection</string>
@@ -432,4 +435,6 @@
     <string name="external_open_anyway">Ouvrir quand même</string>
     <string name="external_copy_link">Copier le lien</string>
     <string name="external_link_copied">Lien copié</string>
+    <string name="external_blocked_title">Tor Browser n\'est pas installé</string>
+    <string name="external_blocked_text">Tor est actif et les liens ne quittent l\'application que par Tor Browser, qui n\'est pas installé. Installez-le, ou copiez le lien et collez-le dans un navigateur qui passe par Orbot.\n\nPour pouvoir quand même ouvrir les liens dans un navigateur normal, en exposant votre vraie adresse IP, activez « Ouvrir les liens hors de Tor » dans les options risquées.</string>
 </resources>

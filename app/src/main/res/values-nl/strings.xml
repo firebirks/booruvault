@@ -130,7 +130,7 @@
     <string name="delete_vault_type_to_confirm">Typ %1$s om te bevestigen</string>
     <string name="delete_vault_confirm">Alles wissen</string>
     <string name="tor_use">Tor gebruiken (via Orbot)</string>
-    <string name="tor_use_hint">Alle verbindingen van de app gaan via Orbot over het Tor-netwerk: zoekopdrachten, afbeeldingen, video\'s, downloads en de ingebouwde browser. Sites zien het adres van een Tor-node in plaats van het jouwe, en ook de namen van sites worden binnen Tor omgezet (geen onversleuteld DNS-verzoek). Als Orbot niet actief is, laadt er niets: de app valt nooit terug op een directe verbinding. Het is trager, sommige sites blokkeren Tor of vragen vaker om de anti-botcontrole, en het verbergt je niet voor een site waarop je bent ingelogd of waarvan je de cookies gebruikt.</string>
+    <string name="tor_use_hint">Alle verbindingen van de app gaan via Orbot door het Tor-netwerk: zoekopdrachten, afbeeldingen, video\'s, downloads en de ingebouwde browser. Sites zien het adres van een Tor-knooppunt in plaats van het jouwe, en sitenamen worden ook binnen Tor opgezocht (geen DNS-verzoek in het klare). Als Orbot niet draait, laadt er niets: de app valt nooit terug op een directe verbinding. Het is trager, en sommige sites blokkeren Tor of vragen vaker om de anti-botcontrole. Tor verbergt waarvandaan je verbindt, niet wie je bent: een site waarop je bent ingelogd, of die zijn eigen cookies herkent, kent nog steeds je account, terwijl al het andere alleen een zoveelste Tor-gebruiker ziet. Blijf voor browsen dat los van een account moet blijven uitgelogd, of wis de cookies van de site in het onderdeel Gegevens.</string>
     <string name="tor_status_on">Orbot actief · SOCKS-proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">SOCKS-poort van Orbot</string>
     <string name="tor_port_hint">Standaard 9050. De app maakt alleen verbinding met deze poort op deze telefoon. De poort wordt niet overgenomen uit de statusberichten van Orbot, die elke app zou kunnen versturen.</string>
@@ -391,6 +391,9 @@
     <string name="settings_hidden_browser">Beschermde pagina\'s lezen met een verborgen browser</string>
     <string name="settings_hidden_browser_on">Aan: als een site om de anti-botcontrole blijft vragen, ook nadat je die hebt doorstaan (vaak het geval met Tor), opent de app de pagina\'s van die site in een verborgen browser en leest ze daar uit. Voor elke pagina die zo wordt gelezen, draait het JavaScript van de site zoals bij een normaal bezoek, trackers inbegrepen, en kan het een vingerafdruk van de browser nemen. Cookies van derden blijven geblokkeerd, WebRTC blijft uit, afbeeldingen worden niet geladen, het verkeer gaat via Tor als Tor aan staat, en de gegevens van de browser worden na elke pagina gewist. Het is trager en verbruikt meer batterij.</string>
     <string name="settings_hidden_browser_off">Uit: als een site om de anti-botcontrole blijft vragen, stopt de app en vraagt je die in de ingebouwde browser te voltooien. De code van de site draait alleen terwijl je ernaar kijkt.</string>
+    <string name="settings_links_outside_tor">Links buiten Tor openen als Tor Browser ontbreekt</string>
+    <string name="settings_links_outside_tor_on">Aan: met Tor aan en zonder Tor Browser kan een link toch in een gewone browser worden geopend, na een waarschuwing die de knop enkele seconden blokkeert. Die browser gebruikt geen Tor: de site ziet je echte IP-adres, en het bezoek kan in de geschiedenis, cookies en cache blijven of met een account worden gesynchroniseerd.</string>
+    <string name="settings_links_outside_tor_off">Uit: met Tor aan openen links in Tor Browser. Zonder Tor Browser kan een link alleen worden gekopieerd, om te plakken in een browser die via Orbot gaat.</string>
     <string name="collections_all">Alle</string>
     <string name="collection_new">Nieuwe verzameling</string>
     <string name="collection_edit">Verzameling bewerken</string>
@@ -412,4 +415,6 @@
     <string name="external_open_anyway">Toch openen</string>
     <string name="external_copy_link">Link kopiëren</string>
     <string name="external_link_copied">Link gekopieerd</string>
+    <string name="external_blocked_title">Tor Browser is niet geïnstalleerd</string>
+    <string name="external_blocked_text">Tor staat aan en links verlaten de app alleen via Tor Browser, die niet is geïnstalleerd. Installeer die, of kopieer de link en plak hem in een browser die via Orbot gaat.\n\nOm links toch in een gewone browser te kunnen openen, waarbij je echte IP-adres zichtbaar wordt, zet je “Links buiten Tor openen” aan bij de riskante opties.</string>
 </resources>

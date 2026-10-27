@@ -136,7 +136,7 @@
     <string name="delete_vault_type_to_confirm">Type %1$s to confirm</string>
     <string name="delete_vault_confirm">Delete everything</string>
     <string name="tor_use">Use Tor (through Orbot)</string>
-    <string name="tor_use_hint">All of the app\'s connections go through the Tor network via Orbot: searches, images, videos, downloads and the built-in browser. Sites see the address of a Tor node instead of yours, and site names are resolved inside Tor too (no DNS request in clear). If Orbot is not running nothing loads: the app never falls back to a direct connection. It is slower, some sites block Tor or ask for the anti-bot check more often, and it does not hide you from a site you are logged in to or whose cookies you use.</string>
+    <string name="tor_use_hint">All of the app\'s connections go through the Tor network via Orbot: searches, images, videos, downloads and the built-in browser. Sites see the address of a Tor node instead of yours, and site names are resolved inside Tor too (no DNS request in clear). If Orbot is not running nothing loads: the app never falls back to a direct connection. It is slower, and some sites block Tor or ask for the anti-bot check more often. Tor hides where you connect from, not who you are: a site you are logged in to, or that recognises its own cookies, still knows your account, while everything else just sees another Tor user. For browsing that should stay apart from an account, stay logged out, or clear the site\'s cookies in the Data section.</string>
     <string name="tor_status_on">Orbot running · SOCKS proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS port</string>
     <string name="tor_port_hint">Default 9050. The app connects only to this port on this phone. It does not take the port from Orbot\'s status messages, which any app could send.</string>
@@ -397,6 +397,9 @@
     <string name="settings_hidden_browser">Read protected pages with a hidden browser</string>
     <string name="settings_hidden_browser_on">On: when a site keeps asking for the anti-bot check even after you passed it (common with Tor), the app opens its pages in a hidden browser and reads them from there. For every page read this way the site\'s JavaScript runs as in a normal visit, trackers included, and can take a fingerprint of the browser. Third-party cookies stay blocked, WebRTC stays off, images are not loaded, traffic goes through Tor when Tor is on, and the browser\'s data is erased after each page. It is slower and uses more battery.</string>
     <string name="settings_hidden_browser_off">Off: when a site keeps asking for the anti-bot check, the app stops and asks you to pass it in the built-in browser. The site\'s code runs only while you are looking at it.</string>
+    <string name="settings_links_outside_tor">Open links outside Tor when Tor Browser is missing</string>
+    <string name="settings_links_outside_tor_on">On: with Tor on and no Tor Browser, a link can still be opened in a normal browser after a warning that holds the button for a few seconds. That browser does not use Tor: the site sees your real IP address, and the visit may stay in its history, cookies and cache, or be synced to an account.</string>
+    <string name="settings_links_outside_tor_off">Off: with Tor on, links open in Tor Browser. Without it, a link can only be copied, to paste in a browser that goes through Orbot.</string>
     <string name="collections_all">All</string>
     <string name="collection_new">New collection</string>
     <string name="collection_edit">Edit collection</string>
@@ -418,4 +421,6 @@
     <string name="external_open_anyway">Open anyway</string>
     <string name="external_copy_link">Copy link</string>
     <string name="external_link_copied">Link copied</string>
+    <string name="external_blocked_title">Tor Browser is not installed</string>
+    <string name="external_blocked_text">Tor is on, and links leave the app only through Tor Browser, which is not installed. Install it, or copy the link and paste it in a browser that goes through Orbot.\n\nTo be able to open links in a normal browser anyway, exposing your real IP address, turn on “Open links outside Tor” in the risky options.</string>
 </resources>

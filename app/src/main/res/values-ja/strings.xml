@@ -128,7 +128,7 @@
     <string name="delete_vault_type_to_confirm">確認のため「%1$s」と入力してください</string>
     <string name="delete_vault_confirm">すべて削除</string>
     <string name="tor_use">Tor を使用（Orbot 経由）</string>
-    <string name="tor_use_hint">アプリのすべての接続（検索、画像、動画、ダウンロード、内蔵ブラウザ）は、Orbot を介して Tor ネットワークを経由します。サイトにはあなたのアドレスではなく Tor ノードのアドレスが見え、サイト名の解決も Tor 内で行われます（平文の DNS リクエストは発生しません）。Orbot が起動していない場合は何も読み込まれません。アプリが直接接続に切り替えることは決してありません。速度は遅くなり、Tor をブロックしたり、ボット対策の確認をより頻繁に求めたりするサイトもあります。また、ログインしているサイトや、Cookie を使用しているサイトからあなたを隠すことはできません。</string>
+    <string name="tor_use_hint">アプリのすべての通信はOrbot経由でTorネットワークを通ります。検索、画像、動画、ダウンロード、内蔵ブラウザーも同様です。サイトにはあなたのアドレスではなくTorノードのアドレスが見え、サイト名の解決もTor内で行われます（平文のDNS要求はありません）。Orbotが動いていなければ何も読み込まれません。アプリが直接接続に切り替えることは決してありません。速度は落ち、Torを遮断したりボット対策の確認を頻繁に求めたりするサイトもあります。Torが隠すのは「どこから接続しているか」であって「誰であるか」ではありません。ログイン中のサイトや、自分のCookieを認識するサイトは引き続きあなたのアカウントを知っていますが、それ以外にはただのTor利用者の一人として見えます。アカウントと切り離したい閲覧では、ログアウトしたままにするか、「データ」セクションでそのサイトのCookieを消去してください。</string>
     <string name="tor_status_on">Orbot 起動中 · SOCKS プロキシ 127.0.0.1:%1$d</string>
     <string name="tor_port">OrbotのSOCKSポート</string>
     <string name="tor_port_hint">既定は9050。アプリはこの端末のこのポートにのみ接続します。どのアプリでも送信できるOrbotの状態通知からポートを取得することはありません。</string>
@@ -371,6 +371,9 @@
     <string name="settings_hidden_browser">保護されたページを非表示のブラウザで読み取る</string>
     <string name="settings_hidden_browser_on">オン：ボット対策の確認を通過した後もサイトが確認を求め続ける場合（Tor ではよくあります）、アプリはそのサイトのページを非表示のブラウザで開き、そこから内容を読み取ります。この方法で読み取るページごとに、サイトの JavaScript がトラッカーも含めて通常の訪問と同じように実行され、ブラウザのフィンガープリントを取得することもできます。サードパーティ Cookie は引き続きブロックされ、WebRTC はオフのまま、画像は読み込まれず、Tor がオンのときは通信が Tor を経由し、ブラウザのデータはページを 1 つ読み取るたびに消去されます。動作が遅くなり、バッテリーの消費も増えます。</string>
     <string name="settings_hidden_browser_off">オフ：サイトがボット対策の確認を求め続ける場合、アプリは処理を中断し、内蔵ブラウザで確認を通過するよう求めます。サイトのコードが実行されるのは、あなたがそのサイトを見ている間だけです。</string>
+    <string name="settings_links_outside_tor">Tor Browserがない場合にリンクをTorの外で開く</string>
+    <string name="settings_links_outside_tor_on">オン：Torがオンでも、Tor Browserがない場合は、ボタンを数秒間押せなくする警告の後に通常のブラウザーでリンクを開けます。そのブラウザーはTorを使いません。サイトには実際のIPアドレスが見え、訪問が履歴・Cookie・キャッシュに残ったり、アカウントに同期されたりすることがあります。</string>
+    <string name="settings_links_outside_tor_off">オフ：Torがオンのとき、リンクはTor Browserで開きます。Tor Browserがない場合はリンクをコピーすることしかできず、Orbotを経由するブラウザーに貼り付けて使います。</string>
     <string name="collections_all">すべて</string>
     <string name="collection_new">新しいコレクション</string>
     <string name="collection_edit">コレクションを編集</string>
@@ -392,4 +395,6 @@
     <string name="external_open_anyway">それでも開く</string>
     <string name="external_copy_link">リンクをコピー</string>
     <string name="external_link_copied">リンクをコピーしました</string>
+    <string name="external_blocked_title">Tor Browserがインストールされていません</string>
+    <string name="external_blocked_text">Torがオンのため、リンクはTor Browserを通じてのみアプリの外に出ますが、Tor Browserがインストールされていません。インストールするか、リンクをコピーしてOrbotを経由するブラウザーに貼り付けてください。\n\n実際のIPアドレスを晒してでも通常のブラウザーでリンクを開けるようにするには、リスクのあるオプションで「リンクをTorの外で開く」をオンにしてください。</string>
 </resources>

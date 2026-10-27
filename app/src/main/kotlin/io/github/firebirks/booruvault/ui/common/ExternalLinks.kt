@@ -43,9 +43,10 @@ private val TOR_BROWSERS = listOf("org.torproject.torbrowser", "org.torproject.t
 private const val WARNING_SECONDS = 5
 
 /**
- * With Tor off, links open in the default browser. With Tor on they open in Tor Browser; if it
- * is missing, a warning explains what leaving Tor exposes and holds the way out for a few
- * seconds, so it is read rather than dismissed.
+ * With Tor off, links open in the default browser. With Tor on they open in Tor Browser. If it
+ * is missing, the link can be copied; opening it in a normal browser is possible only with the
+ * risky option on, and then behind a warning that holds the way out for a few seconds, so it is
+ * read rather than dismissed.
  */
 @Composable
 fun ProvideLinkOpener(content: @Composable () -> Unit) {
@@ -62,18 +63,42 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
     }
     CompositionLocalProvider(LocalLinkOpener provides opener) { content() }
     pending?.let { url ->
-        OutsideTorWarning(
-            onOpen = {
-                pending = null
-                context.openUrl(url)
-            },
-            onCopy = {
-                pending = null
-                copySensitive(context, url)
-            },
-            onDismiss = { pending = null },
-        )
+        val allowed = container.settings.settings.value.linksOutsideTor
+        if (allowed) {
+            OutsideTorWarning(
+                onOpen = {
+                    pending = null
+                    context.openUrl(url)
+                },
+                onCopy = {
+                    pending = null
+                    copySensitive(context, url)
+                },
+                onDismiss = { pending = null },
+            )
+        } else {
+            NoTorBrowserDialog(
+                onCopy = {
+                    pending = null
+                    copySensitive(context, url)
+                },
+                onDismiss = { pending = null },
+            )
+        }
     }
+}
+
+/** Tor Browser is missing and leaving Tor is not allowed: the link can only be copied. */
+@Composable
+private fun NoTorBrowserDialog(onCopy: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { Icon(Icons.Outlined.WarningAmber, null) },
+        title = { Text(stringResource(R.string.external_blocked_title)) },
+        text = { Text(stringResource(R.string.external_blocked_text)) },
+        confirmButton = { TextButton(onClick = onCopy) { Text(stringResource(R.string.external_copy_link)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }
 
 @Composable

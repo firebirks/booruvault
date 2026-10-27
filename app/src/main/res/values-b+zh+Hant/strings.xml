@@ -128,7 +128,7 @@
     <string name="delete_vault_type_to_confirm">輸入「%1$s」以確認</string>
     <string name="delete_vault_confirm">全部刪除</string>
     <string name="tor_use">使用 Tor（透過 Orbot）</string>
-    <string name="tor_use_hint">應用程式的所有連線都會透過 Orbot 經由 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的位址，網站名稱也會在 Tor 內部解析（不會發出明文 DNS 要求）。如果 Orbot 沒有執行，就無法載入任何內容：應用程式絕不會改用直接連線。速度會比較慢，有些網站會封鎖 Tor 或更常要求防機器人驗證，而且對於你已登入或正在使用其 Cookie 的網站，它無法隱藏你的身分。</string>
+    <string name="tor_use_hint">應用程式的所有連線都經由 Orbot 走 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的，站點名稱也在 Tor 內解析（沒有明文 DNS 請求）。Orbot 未執行時什麼都不會載入：應用程式絕不會退回直接連線。速度較慢，有些網站會封鎖 Tor 或更常要求反機器人驗證。Tor 隱藏的是你從哪裡連線，而不是你是誰：你已登入的網站，或認得自己 Cookie 的網站，仍然知道你的帳戶；其他一切只會看到又一個 Tor 使用者。若瀏覽需要與帳戶分開，請保持未登入，或在「資料」部分清除該網站的 Cookie。</string>
     <string name="tor_status_on">Orbot 執行中 · SOCKS 代理伺服器 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS 連接埠</string>
     <string name="tor_port_hint">預設 9050。應用程式只會連線到本機上的這個連接埠，不會從 Orbot 的狀態訊息取得連接埠，因為任何應用程式都能發送這類訊息。</string>
@@ -371,6 +371,9 @@
     <string name="settings_hidden_browser">使用隱藏的瀏覽器讀取受保護的網頁</string>
     <string name="settings_hidden_browser_on">開啟：如果網站在你通過防機器人驗證後仍不斷要求驗證（使用 Tor 時很常見），應用程式會在隱藏的瀏覽器中開啟該網站的網頁，並從中讀取內容。以這種方式讀取的每個網頁，網站的 JavaScript（包括追蹤器）都會像一般造訪時一樣執行，並能擷取瀏覽器指紋。第三方 Cookie 仍會遭到封鎖，WebRTC 維持關閉，不會載入圖片，開啟 Tor 時流量會經由 Tor，而且每讀取完一個網頁就會清除瀏覽器的資料。速度較慢，也較耗電。</string>
     <string name="settings_hidden_browser_off">關閉：如果網站不斷要求防機器人驗證，應用程式會停下來，並請你在內建瀏覽器中通過驗證。網站的程式碼只會在你瀏覽該網站時執行。</string>
+    <string name="settings_links_outside_tor">沒有 Tor Browser 時在 Tor 之外開啟連結</string>
+    <string name="settings_links_outside_tor_on">開啟：Tor 開啟但沒有 Tor Browser 時，經過一個讓按鈕鎖定數秒的警告後，仍可在一般瀏覽器中開啟連結。該瀏覽器不經過 Tor：網站會看到你的真實 IP 位址，造訪也可能留在其歷史記錄、Cookie 和快取中，或同步到帳戶。</string>
+    <string name="settings_links_outside_tor_off">關閉：Tor 開啟時，連結在 Tor Browser 中開啟。沒有 Tor Browser 時只能複製連結，貼到經過 Orbot 的瀏覽器中。</string>
     <string name="collections_all">全部</string>
     <string name="collection_new">新增收藏集</string>
     <string name="collection_edit">編輯收藏集</string>
@@ -392,4 +395,6 @@
     <string name="external_open_anyway">仍要開啟</string>
     <string name="external_copy_link">複製連結</string>
     <string name="external_link_copied">已複製連結</string>
+    <string name="external_blocked_title">未安裝 Tor Browser</string>
+    <string name="external_blocked_text">Tor 已開啟，連結只能透過 Tor Browser 離開應用程式，但它未安裝。請安裝它，或複製連結並貼到經過 Orbot 的瀏覽器中。\n\n若仍要在一般瀏覽器中開啟連結並暴露真實 IP 位址，請在風險選項中開啟「在 Tor 之外開啟連結」。</string>
 </resources>

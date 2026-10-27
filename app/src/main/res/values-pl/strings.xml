@@ -134,7 +134,7 @@
     <string name="delete_vault_type_to_confirm">Wpisz %1$s, aby potwierdzić</string>
     <string name="delete_vault_confirm">Usuń wszystko</string>
     <string name="tor_use">Używaj sieci Tor (przez Orbot)</string>
-    <string name="tor_use_hint">Wszystkie połączenia aplikacji przechodzą przez Orbot do sieci Tor: wyszukiwania, obrazy, filmy, pobierania i wbudowana przeglądarka. Witryny widzą adres węzła Tor zamiast Twojego, a nazwy witryn również są rozwiązywane wewnątrz sieci Tor (żadne zapytanie DNS nie jest wysyłane w postaci jawnej). Jeśli Orbot nie działa, nic się nie wczytuje: aplikacja nigdy nie przełącza się na połączenie bezpośrednie. Działa to wolniej, niektóre witryny blokują Tor lub częściej wymagają weryfikacji antybotowej, a Tor nie ukrywa Cię przed witryną, na której masz zalogowane konto lub której plików cookie używasz.</string>
+    <string name="tor_use_hint">Wszystkie połączenia aplikacji przechodzą przez sieć Tor za pośrednictwem Orbota: wyszukiwania, obrazy, filmy, pobierania i wbudowana przeglądarka. Strony widzą adres węzła Tor zamiast twojego, a nazwy stron są rozwiązywane wewnątrz Tora (bez zapytań DNS jawnym tekstem). Jeśli Orbot nie działa, nic się nie ładuje: aplikacja nigdy nie przechodzi na połączenie bezpośrednie. Jest wolniej, a niektóre strony blokują Tor albo częściej wymagają weryfikacji anty-bot. Tor ukrywa, skąd się łączysz, a nie kim jesteś: strona, na której jesteś zalogowany lub która rozpoznaje własne ciasteczka, nadal zna twoje konto, a cała reszta widzi tylko kolejnego użytkownika Tora. Aby przeglądać niezależnie od konta, pozostań wylogowany albo usuń ciasteczka strony w sekcji Dane.</string>
     <string name="tor_status_on">Orbot działa · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS Orbota</string>
     <string name="tor_port_hint">Domyślnie 9050. Aplikacja łączy się tylko z tym portem na tym telefonie. Nie pobiera portu z komunikatów o stanie Orbota, które mogłaby wysłać dowolna aplikacja.</string>
@@ -431,6 +431,9 @@
     <string name="settings_hidden_browser">Odczytuj chronione strony w ukrytej przeglądarce</string>
     <string name="settings_hidden_browser_on">Włączone: gdy witryna wciąż wymaga weryfikacji antybotowej, nawet po jej zaliczeniu (często się to zdarza przy korzystaniu z sieci Tor), aplikacja otwiera strony tej witryny w ukrytej przeglądarce i odczytuje je stamtąd. Na każdej stronie odczytanej w ten sposób JavaScript witryny działa jak podczas zwykłej wizyty, łącznie z elementami śledzącymi, i może zebrać cyfrowy odcisk palca przeglądarki. Pliki cookie stron trzecich pozostają zablokowane, WebRTC pozostaje wyłączone, obrazy nie są wczytywane, ruch przechodzi przez Tor, gdy Tor jest włączony, a dane przeglądarki są usuwane po każdej stronie. Działa to wolniej i zużywa więcej baterii.</string>
     <string name="settings_hidden_browser_off">Wyłączone: gdy witryna wciąż wymaga weryfikacji antybotowej, aplikacja zatrzymuje się i prosi Cię o jej ukończenie we wbudowanej przeglądarce. Kod witryny działa tylko wtedy, gdy ją oglądasz.</string>
+    <string name="settings_links_outside_tor">Otwieraj linki poza Torem, gdy brakuje Tor Browser</string>
+    <string name="settings_links_outside_tor_on">Włączone: przy włączonym Torze i bez Tor Browser link może mimo to otworzyć się w zwykłej przeglądarce po ostrzeżeniu, które blokuje przycisk na kilka sekund. Ta przeglądarka nie używa Tora: strona widzi twój prawdziwy adres IP, a wizyta może zostać w historii, ciasteczkach i pamięci podręcznej lub zsynchronizować się z kontem.</string>
+    <string name="settings_links_outside_tor_off">Wyłączone: przy włączonym Torze linki otwierają się w Tor Browser. Bez niego link można tylko skopiować, aby wkleić go w przeglądarce działającej przez Orbota.</string>
     <string name="collections_all">Wszystkie</string>
     <string name="collection_new">Nowa kolekcja</string>
     <string name="collection_edit">Edytuj kolekcję</string>
@@ -452,4 +455,6 @@
     <string name="external_open_anyway">Otwórz mimo to</string>
     <string name="external_copy_link">Kopiuj link</string>
     <string name="external_link_copied">Skopiowano link</string>
+    <string name="external_blocked_title">Tor Browser nie jest zainstalowany</string>
+    <string name="external_blocked_text">Tor jest włączony, a linki opuszczają aplikację tylko przez Tor Browser, który nie jest zainstalowany. Zainstaluj go albo skopiuj link i wklej go w przeglądarce działającej przez Orbota.\n\nAby mimo to móc otwierać linki w zwykłej przeglądarce, ujawniając swój prawdziwy adres IP, włącz „Otwieraj linki poza Torem” w opcjach ryzykownych.</string>
 </resources>

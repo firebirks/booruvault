@@ -128,7 +128,7 @@
     <string name="delete_vault_type_to_confirm">Ketik %1$s untuk mengonfirmasi</string>
     <string name="delete_vault_confirm">Hapus semuanya</string>
     <string name="tor_use">Gunakan Tor (melalui Orbot)</string>
-    <string name="tor_use_hint">Semua koneksi aplikasi melewati jaringan Tor melalui Orbot: pencarian, gambar, video, unduhan, dan browser bawaan. Situs melihat alamat node Tor, bukan alamat Anda, dan nama situs juga diterjemahkan di dalam Tor (tidak ada permintaan DNS tanpa enkripsi). Jika Orbot tidak berjalan, tidak ada yang dimuat: aplikasi tidak pernah beralih ke koneksi langsung. Koneksi menjadi lebih lambat, beberapa situs memblokir Tor atau lebih sering meminta pemeriksaan anti-bot, dan Tor tidak menyembunyikan Anda dari situs tempat Anda login atau yang cookie-nya Anda gunakan.</string>
+    <string name="tor_use_hint">Semua koneksi aplikasi lewat jaringan Tor melalui Orbot: pencarian, gambar, video, unduhan, dan peramban bawaan. Situs melihat alamat sebuah node Tor, bukan alamat Anda, dan nama situs juga diselesaikan di dalam Tor (tanpa permintaan DNS terbuka). Jika Orbot tidak berjalan, tidak ada yang dimuat: aplikasi tidak pernah beralih ke koneksi langsung. Lebih lambat, dan beberapa situs memblokir Tor atau lebih sering meminta pemeriksaan anti-bot. Tor menyembunyikan dari mana Anda terhubung, bukan siapa Anda: situs tempat Anda masuk, atau yang mengenali cookie-nya sendiri, tetap tahu akun Anda, sementara yang lain hanya melihat satu lagi pengguna Tor. Untuk penjelajahan yang harus terpisah dari akun, jangan masuk, atau hapus cookie situs di bagian Data.</string>
     <string name="tor_status_on">Orbot berjalan · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS Orbot</string>
     <string name="tor_port_hint">Bawaan 9050. Aplikasi hanya terhubung ke port ini di ponsel ini. Port tidak diambil dari pesan status Orbot, yang bisa dikirim oleh aplikasi mana pun.</string>
@@ -371,6 +371,9 @@
     <string name="settings_hidden_browser">Baca halaman yang dilindungi dengan browser tersembunyi</string>
     <string name="settings_hidden_browser_on">Aktif: jika suatu situs terus meminta pemeriksaan anti-bot meskipun Anda sudah menyelesaikannya (sering terjadi dengan Tor), aplikasi membuka halaman situs tersebut di browser tersembunyi dan membacanya dari sana. Untuk setiap halaman yang dibaca dengan cara ini, JavaScript situs, termasuk pelacak, berjalan seperti pada kunjungan biasa dan dapat mengambil sidik jari browser. Cookie pihak ketiga tetap diblokir, WebRTC tetap nonaktif, gambar tidak dimuat, lalu lintas melewati Tor saat Tor aktif, dan data browser dihapus setelah setiap halaman. Cara ini lebih lambat dan lebih boros baterai.</string>
     <string name="settings_hidden_browser_off">Nonaktif: jika suatu situs terus meminta pemeriksaan anti-bot, aplikasi berhenti dan meminta Anda menyelesaikannya di browser bawaan. Kode situs hanya berjalan selama Anda melihatnya.</string>
+    <string name="settings_links_outside_tor">Buka tautan di luar Tor jika Tor Browser tidak ada</string>
+    <string name="settings_links_outside_tor_on">Aktif: dengan Tor menyala dan tanpa Tor Browser, tautan tetap bisa dibuka di peramban biasa setelah peringatan yang menahan tombol beberapa detik. Peramban itu tidak memakai Tor: situs melihat alamat IP asli Anda, dan kunjungan bisa tersimpan di riwayat, cookie, dan cache, atau disinkronkan ke akun.</string>
+    <string name="settings_links_outside_tor_off">Nonaktif: dengan Tor menyala, tautan dibuka di Tor Browser. Tanpanya, tautan hanya bisa disalin, untuk ditempel di peramban yang lewat Orbot.</string>
     <string name="collections_all">Semua</string>
     <string name="collection_new">Koleksi baru</string>
     <string name="collection_edit">Edit koleksi</string>
@@ -392,4 +395,6 @@
     <string name="external_open_anyway">Tetap buka</string>
     <string name="external_copy_link">Salin tautan</string>
     <string name="external_link_copied">Tautan disalin</string>
+    <string name="external_blocked_title">Tor Browser tidak terpasang</string>
+    <string name="external_blocked_text">Tor menyala dan tautan keluar dari aplikasi hanya lewat Tor Browser, yang tidak terpasang. Pasang, atau salin tautan dan tempel di peramban yang lewat Orbot.\n\nAgar tetap bisa membuka tautan di peramban biasa, dengan memperlihatkan alamat IP asli Anda, aktifkan “Buka tautan di luar Tor” di opsi berisiko.</string>
 </resources>

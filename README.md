@@ -54,7 +54,8 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs:
   - keep downloading while the vault is locked;
   - read pages that keep demanding an anti-bot check through a hidden browser. It runs the site's scripts and can be fingerprinted, but loads no images, blocks third-party cookies, has WebRTC off, goes through Tor when Tor is on, and is wiped after each page;
-  - Google Safe Browsing in the built-in browser.
+  - Google Safe Browsing in the built-in browser;
+  - open links in a normal browser when Tor is on but Tor Browser is missing.
 - **Tor via Orbot:** see [below](#tor).
 - **No Google Play services needed:** the app has no dependency on them. Without them, the Safe Browsing option is shown as unavailable.
 
@@ -129,11 +130,11 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 - **Orbot integration:** Orbot is started and queried with its standard intents. The settings screen shows the status Orbot reports, and a check against `check.torproject.org` reports the exit address.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
-- **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, a warning explains that a normal browser would expose your IP and keep the visit. Its "open anyway" button unlocks only after a few seconds; it also offers to copy the link instead.
+- **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, the link can only be copied, to paste in a browser that goes through Orbot. Opening it in a normal browser is possible only with the risky option "Open links outside Tor" on, and then behind a warning that explains what a normal browser exposes and keeps; its "open anyway" button unlocks after a few seconds.
 
 **Orbot's VPN mode** with BooruVault selected is an extra, system-level safety net, mainly for the WebView.
 
-Tor hides your IP address from the sites. It does not hide you from a site you are logged in to, or whose cookies you use.
+Tor hides where you connect from, not who you are. To every site you are not logged in to, you are just another Tor user. A site you are logged in to, or that recognises its own cookies, still knows which account is browsing, exactly as it would without Tor; what it no longer sees is your address. If some browsing should stay apart from an account, do it logged out, or clear that site's cookies in the Data section first.
 
 ## Building
 

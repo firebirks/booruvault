@@ -132,7 +132,7 @@
     <string name="delete_vault_type_to_confirm">Escribe %1$s para confirmar</string>
     <string name="delete_vault_confirm">Eliminar todo</string>
     <string name="tor_use">Usar Tor (mediante Orbot)</string>
-    <string name="tor_use_hint">Todas las conexiones de la app pasan por la red Tor a través de Orbot: búsquedas, imágenes, videos, descargas y el navegador integrado. Los sitios ven la dirección de un nodo de Tor en lugar de la tuya, y los nombres de los sitios también se resuelven dentro de Tor (ninguna solicitud DNS en claro). Si Orbot no está en ejecución, no se carga nada: la app nunca recurre a una conexión directa. Es más lento, algunos sitios bloquean Tor o piden la verificación antibots más a menudo, y no te oculta de un sitio en el que has iniciado sesión o cuyas cookies usas.</string>
+    <string name="tor_use_hint">Todas las conexiones de la app pasan por la red Tor a través de Orbot: búsquedas, imágenes, vídeos, descargas y el navegador integrado. Los sitios ven la dirección de un nodo Tor en lugar de la tuya, y los nombres de los sitios también se resuelven dentro de Tor (sin consultas DNS en claro). Si Orbot no está en marcha no se carga nada: la app nunca recurre a una conexión directa. Es más lento, y algunos sitios bloquean Tor o piden la verificación anti-bot más a menudo. Tor oculta desde dónde te conectas, no quién eres: un sitio en el que has iniciado sesión, o que reconoce sus propias cookies, sigue sabiendo cuál es tu cuenta, mientras que todo lo demás solo ve a otro usuario de Tor. Para navegar al margen de una cuenta, no inicies sesión o borra las cookies del sitio en la sección Datos.</string>
     <string name="tor_status_on">Orbot en ejecución · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Puerto SOCKS de Orbot</string>
     <string name="tor_port_hint">Por defecto 9050. La app solo se conecta a este puerto en este teléfono. No toma el puerto de los mensajes de estado de Orbot, que cualquier app podría enviar.</string>
@@ -411,6 +411,9 @@
     <string name="settings_hidden_browser">Leer las páginas protegidas con un navegador oculto</string>
     <string name="settings_hidden_browser_on">Activado: cuando un sitio sigue pidiendo la verificación antibots incluso después de que la hayas superado (algo habitual con Tor), la app abre sus páginas en un navegador oculto y las lee desde allí. En cada página leída de esta forma, el JavaScript del sitio se ejecuta como en una visita normal, rastreadores incluidos, y puede tomar una huella digital del navegador. Las cookies de terceros siguen bloqueadas, WebRTC sigue desactivado, las imágenes no se cargan, el tráfico pasa por Tor cuando Tor está activado y los datos del navegador se borran después de cada página. Es más lento y consume más batería.</string>
     <string name="settings_hidden_browser_off">Desactivado: cuando un sitio sigue pidiendo la verificación antibots, la app se detiene y te pide que la superes en el navegador integrado. El código del sitio solo se ejecuta mientras lo estás viendo.</string>
+    <string name="settings_links_outside_tor">Abrir enlaces fuera de Tor si falta Tor Browser</string>
+    <string name="settings_links_outside_tor_on">Activado: con Tor encendido y sin Tor Browser, un enlace aún puede abrirse en un navegador normal tras un aviso que bloquea el botón unos segundos. Ese navegador no usa Tor: el sitio ve tu IP real y la visita puede quedar en su historial, cookies y caché, o sincronizarse con una cuenta.</string>
+    <string name="settings_links_outside_tor_off">Desactivado: con Tor encendido, los enlaces se abren en Tor Browser. Sin él, un enlace solo puede copiarse, para pegarlo en un navegador que pase por Orbot.</string>
     <string name="collections_all">Todos</string>
     <string name="collection_new">Nueva colección</string>
     <string name="collection_edit">Editar colección</string>
@@ -432,4 +435,6 @@
     <string name="external_open_anyway">Abrir de todos modos</string>
     <string name="external_copy_link">Copiar enlace</string>
     <string name="external_link_copied">Enlace copiado</string>
+    <string name="external_blocked_title">Tor Browser no está instalado</string>
+    <string name="external_blocked_text">Tor está encendido y los enlaces salen de la app solo a través de Tor Browser, que no está instalado. Instálalo, o copia el enlace y pégalo en un navegador que pase por Orbot.\n\nPara poder abrir enlaces en un navegador normal de todos modos, exponiendo tu IP real, activa “Abrir enlaces fuera de Tor” en las opciones arriesgadas.</string>
 </resources>
