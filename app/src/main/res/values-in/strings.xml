@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">Masukkan sandi brankas untuk melanjutkan.</string>
     <string name="password">Sandi</string>
     <string name="password_wrong">Sandi salah</string>
+    <string name="vault_header_mismatch">Header brankas tidak konsisten: kunci publiknya bukan milik kunci privat. Berkas telah diubah atau rusak, sehingga brankas tidak dapat dibuka.</string>
     <string name="biometric_changed">Data biometrik perangkat berubah: gunakan sandi, lalu aktifkan sidik jari lagi.</string>
     <string name="unlock_failed">Gagal membuka kunci</string>
     <string name="unlock_deriving">Menurunkan kunci…</string>

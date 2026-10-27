@@ -207,6 +207,7 @@
     <string name="unlock_subtitle_app">Wpisz hasło sejfu, aby kontynuować.</string>
     <string name="password">Hasło</string>
     <string name="password_wrong">Nieprawidłowe hasło</string>
+    <string name="vault_header_mismatch">Nagłówek sejfu jest niespójny: klucz publiczny nie pasuje do prywatnego. Plik został zmieniony lub uszkodzony, więc sejfu nie można otworzyć.</string>
     <string name="biometric_changed">Dane biometryczne urządzenia uległy zmianie: użyj hasła i ponownie włącz odblokowywanie odciskiem palca.</string>
     <string name="unlock_failed">Nie udało się odblokować</string>
     <string name="unlock_deriving">Wyprowadzanie klucza…</string>

@@ -48,6 +48,7 @@ import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
 import io.github.firebirks.booruvault.ui.common.findActivity
 import io.github.firebirks.booruvault.vault.BiometricKey
+import io.github.firebirks.booruvault.vault.VaultHeaderException
 import io.github.firebirks.booruvault.vault.VaultManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -109,6 +110,7 @@ fun UnlockScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var prompted by rememberSaveable { mutableStateOf(false) }
     val wrongPassword = stringResource(R.string.password_wrong)
+    val headerMismatch = stringResource(R.string.vault_header_mismatch)
     val biometricChanged = stringResource(R.string.biometric_changed)
     val unlockFailed = stringResource(R.string.unlock_failed)
     val promptTitle = stringResource(R.string.biometric_unlock_title)
@@ -119,7 +121,13 @@ fun UnlockScreen(
         working = true
         error = null
         scope.launch {
-            val ok = vault.unlock(password.toCharArray())
+            val ok = try {
+                vault.unlock(password.toCharArray())
+            } catch (_: VaultHeaderException) {
+                working = false
+                error = headerMismatch
+                return@launch
+            }
             working = false
             if (ok) password = "" else error = wrongPassword
         }
@@ -137,7 +145,11 @@ fun UnlockScreen(
             if (authorized != null) {
                 working = true
                 scope.launch {
-                    if (!vault.unlockWithBiometric(authorized)) error = unlockFailed
+                    try {
+                        if (!vault.unlockWithBiometric(authorized)) error = unlockFailed
+                    } catch (_: VaultHeaderException) {
+                        error = headerMismatch
+                    }
                     working = false
                 }
             } else if (message != null) {

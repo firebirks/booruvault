@@ -71,6 +71,7 @@ import io.github.firebirks.booruvault.ui.vault.MIN_PASSWORD
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
 import io.github.firebirks.booruvault.util.hasGooglePlayServices
 import io.github.firebirks.booruvault.vault.BiometricKey
+import io.github.firebirks.booruvault.vault.VaultHeaderException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -335,6 +336,7 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
     var wrong by remember { mutableStateOf(false) }
     val valid = old.isNotEmpty() && new.length >= MIN_PASSWORD && new == confirm
     val changed = stringResource(R.string.password_changed)
+    val headerMismatch = stringResource(R.string.vault_header_mismatch)
     val tooShort = new.isNotEmpty() && new.length < MIN_PASSWORD
     AlertDialog(
         onDismissRequest = { if (!working) onDismiss() },
@@ -361,7 +363,14 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
             TextButton(enabled = valid && !working, onClick = {
                 working = true
                 scope.launch {
-                    val ok = vault.changePassword(old.toCharArray(), new.toCharArray())
+                    val ok = try {
+                        vault.changePassword(old.toCharArray(), new.toCharArray())
+                    } catch (_: VaultHeaderException) {
+                        working = false
+                        Toast.makeText(context, headerMismatch, Toast.LENGTH_LONG).show()
+                        onDismiss()
+                        return@launch
+                    }
                     working = false
                     if (ok) {
                         // The biometric copy held the old key; the Keystore key goes with it.

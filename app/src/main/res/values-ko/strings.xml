@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">계속하려면 보관함 비밀번호를 입력하세요.</string>
     <string name="password">비밀번호</string>
     <string name="password_wrong">비밀번호가 틀렸습니다</string>
+    <string name="vault_header_mismatch">금고 헤더가 일치하지 않습니다. 공개 키가 개인 키의 것이 아닙니다. 파일이 변조되었거나 손상되어 금고를 열 수 없습니다.</string>
     <string name="biometric_changed">기기의 생체 인식 데이터가 변경되었습니다. 비밀번호를 사용한 후 지문을 다시 켜세요.</string>
     <string name="unlock_failed">잠금 해제 실패</string>
     <string name="unlock_deriving">키 도출 중…</string>

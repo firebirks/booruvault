@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException
 import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.MessageDigest
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -153,4 +154,18 @@ object EcKeys {
             doPhase(publicKey, true)
             generateSecret()
         }
+
+    /**
+     * Whether [publicKey] is [privateKey]'s, without reaching into either: ECDH with a throwaway
+     * pair agrees from both sides only when the two belong together.
+     */
+    fun isPair(privateKey: PrivateKey, publicKey: PublicKey): Boolean {
+        val probe = generate()
+        val fromPrivate = agree(privateKey, probe.public)
+        val fromPublic = agree(probe.private, publicKey)
+        val same = MessageDigest.isEqual(fromPrivate, fromPublic)
+        fromPrivate.fill(0)
+        fromPublic.fill(0)
+        return same
+    }
 }

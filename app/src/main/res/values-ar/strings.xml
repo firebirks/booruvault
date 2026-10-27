@@ -213,6 +213,7 @@
     <string name="unlock_subtitle_app">أدخل كلمة مرور الخزنة للمتابعة.</string>
     <string name="password">كلمة المرور</string>
     <string name="password_wrong">كلمة المرور غير صحيحة</string>
+    <string name="vault_header_mismatch">ترويسة الخزنة غير متسقة: المفتاح العام لا يطابق المفتاح الخاص. تم تعديل الملف أو تلف، لذا لا يمكن فتح الخزنة.</string>
     <string name="biometric_changed">تغيّرت البيانات البيومترية للجهاز: استخدم كلمة المرور وفعّل بصمة الإصبع مجددًا.</string>
     <string name="unlock_failed">تعذّر فتح القفل</string>
     <string name="unlock_deriving">جارٍ اشتقاق المفتاح…</string>

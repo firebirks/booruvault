@@ -207,6 +207,7 @@
     <string name="unlock_subtitle_app">Введіть пароль сховища, щоб продовжити.</string>
     <string name="password">Пароль</string>
     <string name="password_wrong">Неправильний пароль</string>
+    <string name="vault_header_mismatch">Заголовок сховища неузгоджений: відкритий ключ не відповідає закритому. Файл було змінено або пошкоджено, тому сховище не можна відкрити.</string>
     <string name="biometric_changed">Біометричні дані пристрою змінилися: скористайтеся паролем і знову ввімкніть відбиток.</string>
     <string name="unlock_failed">Не вдалося розблокувати</string>
     <string name="unlock_deriving">Обчислення ключа…</string>

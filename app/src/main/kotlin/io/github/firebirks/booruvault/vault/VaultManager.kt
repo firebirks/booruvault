@@ -45,6 +45,9 @@ data class VaultHeader(
 @Serializable
 data class RetiredKey(val publicKey: String, val boxedPrivateKey: String)
 
+/** The header's public key is not the private key's: the header was altered or damaged. */
+class VaultHeaderException : GeneralSecurityException("vault header public key does not match the private key")
+
 sealed interface VaultState {
     data object Missing : VaultState
     data object Locked : VaultState
@@ -151,6 +154,7 @@ class VaultManager(private val root: File, private val json: Json) {
             } finally {
                 oldPkcs8.fill(0)
             }
+            if (!EcKeys.isPair(oldKeys.privateKey, oldKeys.recipient.key)) throw VaultHeaderException()
             val pair = EcKeys.generate()
             val recipient = Recipient.fromEncoded(pair.public.encoded)
             val kdf = Kdf.newParams()
@@ -218,11 +222,12 @@ class VaultManager(private val root: File, private val json: Json) {
                 // A damaged entry: its files are unreadable either way.
                 return@mapNotNull null
             }
-            try {
+            val pair = try {
                 VaultKeys(Recipient.fromEncoded(entry.publicKey.fromBase64()), EcKeys.privateKey(pkcs8))
             } finally {
                 pkcs8.fill(0)
             }
+            pair.takeIf { EcKeys.isPair(it.privateKey, it.recipient.key) }
         }
         return VaultKeys(keys.recipient, keys.privateKey, retired)
     }
@@ -297,6 +302,7 @@ class VaultManager(private val root: File, private val json: Json) {
         }
     }
 
+    /** Throws [VaultHeaderException] when the header's public key is not this private key's. */
     private fun finishUnlock(current: VaultHeader, pkcs8: ByteArray) {
         val privateKey = try {
             EcKeys.privateKey(pkcs8)
@@ -304,6 +310,7 @@ class VaultManager(private val root: File, private val json: Json) {
             pkcs8.fill(0)
         }
         val recipient = Recipient.fromEncoded(current.publicKey.fromBase64())
+        if (!EcKeys.isPair(privateKey, recipient.key)) throw VaultHeaderException()
         _state.value = VaultState.Unlocked(withRetired(current, VaultKeys(recipient, privateKey)))
     }
 

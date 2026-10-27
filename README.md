@@ -50,7 +50,7 @@ The interface follows the phone's language, with English as the fallback. See [L
   - no WebView metrics;
   - Safe Browsing off unless the user turns it on;
   - its storage wiped after each session and at start-up.
-- **Cookies:** only those the user brings back from the built-in browser are kept. Cookies sites set on their own last for the session.
+- **Cookies:** only those the user brings back from the built-in browser are kept, scoped to the site's registrable domain (public suffix list), so a login on one `github.io` site is never sent to another. Cookies sites set on their own last for the session.
 - **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs:
   - keep downloading while the vault is locked;
   - read pages that keep demanding an anti-bot check through a hidden browser. It runs the site's scripts and can be fingerprinted, but loads no images, blocks third-party cookies, has WebRTC off, goes through Tor when Tor is on, and is wiped after each page;
@@ -75,6 +75,7 @@ biometric Keystore key (optional) ─────────────AES-256
 ```
 
 - **The private key** is the vault's root of trust. It is in memory only while the vault is unlocked.
+- **The header is checked on every unlock:** the public key must be the unwrapped private key's, so a header whose public key was swapped (which would seal new files to someone else's key) is refused instead of used.
 - **The Argon2id parameters** are stored with the vault, so they can be raised later.
 - **The biometric key** is an Android Keystore AES key that requires strong biometric authentication for every use. Enrolling a new fingerprint invalidates it.
 - **Changing the password replaces the key pair.** The old private key is kept in the header, boxed to the new public key, while every file is re-sealed to the new pair in the background; then it is dropped. Once that is done, an old copy of the header opened with the old password reads nothing. Locking pauses the re-sealing and the next unlock resumes it. The biometric copy, which held the old key, is removed and must be enrolled again.

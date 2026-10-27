@@ -204,6 +204,7 @@
     <string name="unlock_subtitle_app">Inserisci la password del vault per continuare.</string>
     <string name="password">Password</string>
     <string name="password_wrong">Password errata</string>
+    <string name="vault_header_mismatch">L\'header del vault è incoerente: la chiave pubblica non corrisponde a quella privata. Il file è stato alterato o danneggiato, quindi il vault non può essere aperto.</string>
     <string name="biometric_changed">I dati biometrici del dispositivo sono cambiati: usa la password e riattiva l\'impronta.</string>
     <string name="unlock_failed">Sblocco non riuscito</string>
     <string name="unlock_deriving">Derivazione chiave…</string>

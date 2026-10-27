@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">輸入保險庫密碼以繼續。</string>
     <string name="password">密碼</string>
     <string name="password_wrong">密碼錯誤</string>
+    <string name="vault_header_mismatch">保險庫標頭不一致：公鑰與私鑰不相符。檔案已被竄改或損壞，因此無法開啟保險庫。</string>
     <string name="biometric_changed">裝置的生物辨識資料已變更：請使用密碼，然後重新開啟指紋解鎖。</string>
     <string name="unlock_failed">解鎖失敗</string>
     <string name="unlock_deriving">正在衍生金鑰…</string>

@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">続行するには保管庫のパスワードを入力してください。</string>
     <string name="password">パスワード</string>
     <string name="password_wrong">パスワードが違います</string>
+    <string name="vault_header_mismatch">保管庫のヘッダーが整合していません。公開鍵が秘密鍵のものではありません。ファイルが改変または破損しているため、保管庫を開けません。</string>
     <string name="biometric_changed">デバイスの生体認証データが変更されました。パスワードを使用して、指紋認証をもう一度オンにしてください。</string>
     <string name="unlock_failed">ロックを解除できませんでした</string>
     <string name="unlock_deriving">鍵を導出中…</string>

@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.toBase64
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -211,6 +212,27 @@ class VaultTest {
         assertTrue(reopened.unlockWithBiometric(decrypt))
         reopened.disableBiometric()
         assertFalse(reopened.biometric.value)
+    }
+
+    @Test
+    fun tamperedPublicKeyIsRefused() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("pw".toCharArray(), fastKdf)
+        vault.lock()
+        // Someone with write access swaps the public key for their own, keeping the wrapped private key.
+        val headerFile = File(root, "vault.json")
+        val header = json.decodeFromString(VaultHeader.serializer(), headerFile.readText())
+        val foreign = io.github.firebirks.booruvault.vault.crypto.EcKeys.generate().public.encoded
+        headerFile.writeText(json.encodeToString(VaultHeader.serializer(), header.copy(publicKey = foreign.toBase64())))
+
+        val reopened = VaultManager(root, json)
+        try {
+            reopened.unlock("pw".toCharArray())
+            fail("a header whose public key is not the private key's must not unlock")
+        } catch (_: VaultHeaderException) {
+        }
+        assertTrue(reopened.state.value is VaultState.Locked)
     }
 
     private suspend fun add(store: VaultStore, data: ByteArray, name: String, postId: Long? = null) {

@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">Nhập mật khẩu của kho để tiếp tục.</string>
     <string name="password">Mật khẩu</string>
     <string name="password_wrong">Sai mật khẩu</string>
+    <string name="vault_header_mismatch">Phần đầu của kho không nhất quán: khóa công khai không thuộc về khóa riêng. Tệp đã bị sửa đổi hoặc hỏng, nên không thể mở kho.</string>
     <string name="biometric_changed">Dữ liệu sinh trắc học của thiết bị đã thay đổi: hãy dùng mật khẩu và bật lại vân tay.</string>
     <string name="unlock_failed">Mở khóa không thành công</string>
     <string name="unlock_deriving">Đang dẫn xuất khóa…</string>

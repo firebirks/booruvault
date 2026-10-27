@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">ป้อนรหัสผ่านของคลังนิรภัยเพื่อดำเนินการต่อ</string>
     <string name="password">รหัสผ่าน</string>
     <string name="password_wrong">รหัสผ่านไม่ถูกต้อง</string>
+    <string name="vault_header_mismatch">ส่วนหัวของห้องนิรภัยไม่สอดคล้องกัน: กุญแจสาธารณะไม่ตรงกับกุญแจส่วนตัว ไฟล์ถูกแก้ไขหรือเสียหาย จึงเปิดห้องนิรภัยไม่ได้</string>
     <string name="biometric_changed">ข้อมูลไบโอเมตริกของอุปกรณ์มีการเปลี่ยนแปลง: ใช้รหัสผ่าน แล้วเปิดการปลดล็อกด้วยลายนิ้วมืออีกครั้ง</string>
     <string name="unlock_failed">ปลดล็อกไม่สำเร็จ</string>
     <string name="unlock_deriving">กำลังสร้างคีย์…</string>

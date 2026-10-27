@@ -204,6 +204,7 @@
     <string name="unlock_subtitle_app">Introduce la contraseña de la bóveda para continuar.</string>
     <string name="password">Contraseña</string>
     <string name="password_wrong">Contraseña incorrecta</string>
+    <string name="vault_header_mismatch">La cabecera de la bóveda es incoherente: la clave pública no corresponde a la privada. El archivo fue alterado o dañado, así que la bóveda no puede abrirse.</string>
     <string name="biometric_changed">Los datos biométricos del dispositivo han cambiado: usa la contraseña y vuelve a activar la huella.</string>
     <string name="unlock_failed">No se pudo desbloquear</string>
     <string name="unlock_deriving">Derivando la clave…</string>

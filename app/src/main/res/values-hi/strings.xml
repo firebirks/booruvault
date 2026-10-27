@@ -201,6 +201,7 @@
     <string name="unlock_subtitle_app">जारी रखने के लिए तिजोरी का पासवर्ड डालें।</string>
     <string name="password">पासवर्ड</string>
     <string name="password_wrong">गलत पासवर्ड</string>
+    <string name="vault_header_mismatch">वॉल्ट का हेडर असंगत है: सार्वजनिक कुंजी निजी कुंजी से मेल नहीं खाती। फ़ाइल बदली या क्षतिग्रस्त हुई है, इसलिए वॉल्ट नहीं खोला जा सकता।</string>
     <string name="biometric_changed">डिवाइस का बायोमेट्रिक डेटा बदल गया है: पासवर्ड इस्तेमाल करें और फ़िंगरप्रिंट फिर से चालू करें।</string>
     <string name="unlock_failed">अनलॉक नहीं हो सका</string>
     <string name="unlock_deriving">कुंजी डिराइव की जा रही है…</string>

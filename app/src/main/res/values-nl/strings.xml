@@ -201,6 +201,7 @@
     <string name="unlock_subtitle_app">Voer het wachtwoord van de kluis in om door te gaan.</string>
     <string name="password">Wachtwoord</string>
     <string name="password_wrong">Onjuist wachtwoord</string>
+    <string name="vault_header_mismatch">De kluisheader is inconsistent: de publieke sleutel hoort niet bij de privésleutel. Het bestand is gewijzigd of beschadigd, dus de kluis kan niet worden geopend.</string>
     <string name="biometric_changed">De biometrische gegevens van het apparaat zijn gewijzigd: gebruik het wachtwoord en zet de vingerafdruk opnieuw aan.</string>
     <string name="unlock_failed">Ontgrendelen mislukt</string>
     <string name="unlock_deriving">Sleutel afleiden…</string>

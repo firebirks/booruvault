@@ -198,6 +198,7 @@
     <string name="unlock_subtitle_app">输入保险库密码以继续。</string>
     <string name="password">密码</string>
     <string name="password_wrong">密码错误</string>
+    <string name="vault_header_mismatch">保险库头部不一致：公钥与私钥不匹配。文件已被篡改或损坏，因此无法打开保险库。</string>
     <string name="biometric_changed">设备的生物识别数据已更改：请使用密码，然后重新开启指纹解锁。</string>
     <string name="unlock_failed">解锁失败</string>
     <string name="unlock_deriving">正在派生密钥…</string>

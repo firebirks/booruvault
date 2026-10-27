@@ -201,6 +201,7 @@
     <string name="unlock_subtitle_app">Devam etmek için kasanın parolasını girin.</string>
     <string name="password">Parola</string>
     <string name="password_wrong">Yanlış parola</string>
+    <string name="vault_header_mismatch">Kasa başlığı tutarsız: genel anahtar, özel anahtara ait değil. Dosya değiştirilmiş veya bozulmuş, bu yüzden kasa açılamıyor.</string>
     <string name="biometric_changed">Cihazın biyometrik verileri değişti: parolayı kullanın ve parmak izini yeniden açın.</string>
     <string name="unlock_failed">Kilit açılamadı</string>
     <string name="unlock_deriving">Anahtar türetiliyor…</string>

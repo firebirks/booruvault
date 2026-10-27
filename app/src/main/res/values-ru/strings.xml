@@ -207,6 +207,7 @@
     <string name="unlock_subtitle_app">Введите пароль хранилища, чтобы продолжить.</string>
     <string name="password">Пароль</string>
     <string name="password_wrong">Неверный пароль</string>
+    <string name="vault_header_mismatch">Заголовок хранилища несогласован: открытый ключ не соответствует закрытому. Файл был изменён или повреждён, поэтому хранилище нельзя открыть.</string>
     <string name="biometric_changed">Биометрические данные устройства изменились: войдите по паролю и снова включите отпечаток.</string>
     <string name="unlock_failed">Не удалось разблокировать</string>
     <string name="unlock_deriving">Вычисление ключа…</string>

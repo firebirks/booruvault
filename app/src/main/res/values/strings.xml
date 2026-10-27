@@ -207,6 +207,7 @@
     <string name="unlock_subtitle_app">Enter the vault\'s password to continue.</string>
     <string name="password">Password</string>
     <string name="password_wrong">Wrong password</string>
+    <string name="vault_header_mismatch">The vault header is inconsistent: its public key is not the private key\'s. The file was altered or damaged, so the vault cannot be opened.</string>
     <string name="biometric_changed">The device\'s biometric data changed: use the password and turn the fingerprint on again.</string>
     <string name="unlock_failed">Unlock failed</string>
     <string name="unlock_deriving">Deriving the key…</string>

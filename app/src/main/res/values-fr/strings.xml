@@ -204,6 +204,7 @@
     <string name="unlock_subtitle_app">Saisissez le mot de passe du coffre pour continuer.</string>
     <string name="password">Mot de passe</string>
     <string name="password_wrong">Mot de passe incorrect</string>
+    <string name="vault_header_mismatch">L\'en-tête du coffre est incohérent : la clé publique ne correspond pas à la clé privée. Le fichier a été modifié ou endommagé, le coffre ne peut donc pas être ouvert.</string>
     <string name="biometric_changed">Les données biométriques de l\'appareil ont changé : utilisez le mot de passe et réactivez l\'empreinte.</string>
     <string name="unlock_failed">Échec du déverrouillage</string>
     <string name="unlock_deriving">Dérivation de la clé…</string>

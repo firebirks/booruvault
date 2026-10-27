@@ -204,6 +204,7 @@
     <string name="unlock_subtitle_app">Digite a senha do cofre para continuar.</string>
     <string name="password">Senha</string>
     <string name="password_wrong">Senha incorreta</string>
+    <string name="vault_header_mismatch">O cabeçalho do cofre está inconsistente: a chave pública não corresponde à privada. O arquivo foi alterado ou danificado, então o cofre não pode ser aberto.</string>
     <string name="biometric_changed">Os dados biométricos do dispositivo mudaram: use a senha e ative a digital novamente.</string>
     <string name="unlock_failed">Falha no desbloqueio</string>
     <string name="unlock_deriving">Derivando a chave…</string>

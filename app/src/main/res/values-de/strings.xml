@@ -201,6 +201,7 @@
     <string name="unlock_subtitle_app">Gib das Passwort des Tresors ein, um fortzufahren.</string>
     <string name="password">Passwort</string>
     <string name="password_wrong">Falsches Passwort</string>
+    <string name="vault_header_mismatch">Der Tresor-Header ist inkonsistent: Der öffentliche Schlüssel gehört nicht zum privaten. Die Datei wurde verändert oder beschädigt, daher kann der Tresor nicht geöffnet werden.</string>
     <string name="biometric_changed">Die biometrischen Daten des Geräts haben sich geändert: Verwende das Passwort und aktiviere den Fingerabdruck erneut.</string>
     <string name="unlock_failed">Entsperren fehlgeschlagen</string>
     <string name="unlock_deriving">Schlüssel wird abgeleitet…</string>
