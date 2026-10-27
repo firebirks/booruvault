@@ -1,7 +1,9 @@
 package io.github.firebirks.booruvault.booru
 
 import io.github.firebirks.booruvault.util.Problem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -32,7 +34,7 @@ suspend fun Call.await(): Response = suspendCancellableCoroutine { cont ->
 }
 
 /** GETs a page as text, turning the usual booru failure modes into readable messages. */
-suspend fun OkHttpClient.getText(request: Request, json: Json): String {
+suspend fun OkHttpClient.getText(request: Request, json: Json): String = withContext(Dispatchers.IO) {
     val response = try {
         newCall(request).await()
     } catch (e: IOException) {
@@ -60,7 +62,7 @@ suspend fun OkHttpClient.getText(request: Request, json: Json): String {
             }
             throw BooruHttpException(it.code, Problem(code, it.code.toString()))
         }
-        return body
+        body
     }
 }
 

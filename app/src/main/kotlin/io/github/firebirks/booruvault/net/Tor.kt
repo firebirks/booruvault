@@ -11,7 +11,9 @@ import io.github.firebirks.booruvault.booru.await
 import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.toProblem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -128,7 +130,7 @@ class TorManager(private val context: Context) {
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
 
     /** Asks the Tor Project whether requests reach it through Tor. */
-    suspend fun verify(client: OkHttpClient, json: Json) {
+    suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
         _state.update { it.copy(verifiedExit = null, verifyError = null) }
         try {
             val request = Request.Builder().url("https://check.torproject.org/api/ip").header("User-Agent", USER_AGENT).build()

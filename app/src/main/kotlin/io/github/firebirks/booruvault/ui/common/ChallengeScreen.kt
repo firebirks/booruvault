@@ -94,7 +94,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
     var title by remember { mutableStateOf("") }
 
     fun finish(solved: Boolean) {
-        if (solved) cookies.recordClearance(host, userAgent, Challenge.cookiesFor(origin))
+        if (solved) cookies.recordClearance(host, userAgent, Challenge.cookiesFor(origin, request.url, webView?.url ?: origin))
         // The WebView's own stores are in clear; once the clearance is sealed, they are emptied.
         Challenge.wipe(context, webView)
         onClose(solved)

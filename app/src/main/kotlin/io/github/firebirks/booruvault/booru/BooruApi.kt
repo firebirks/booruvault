@@ -1,6 +1,8 @@
 package io.github.firebirks.booruvault.booru
 
 import io.github.firebirks.booruvault.util.Problem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -56,7 +58,9 @@ abstract class BaseBooruApi(
 }
 
 object BooruApiFactory {
-    fun create(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = when (source.engine) {
+    fun create(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = OffMainThread(engine(source, client, json))
+
+    private fun engine(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = when (source.engine) {
         BooruEngine.DANBOORU -> DanbooruApi(source, client, json)
         BooruEngine.MOEBOORU -> MoebooruApi(source, client, json)
         BooruEngine.GELBOORU -> GelbooruApi(source, client, json)
@@ -65,6 +69,16 @@ object BooruApiFactory {
         BooruEngine.SHIMMIE -> ShimmieApi(source, client, json)
         BooruEngine.HTML_GENERIC -> GenericHtmlApi(source, client, json)
     }
+}
+
+/**
+ * Runs every call on the IO dispatcher. Callers are often view models on the main thread, and
+ * reading a response body or parsing a page there is refused by Android (NetworkOnMainThread).
+ */
+private class OffMainThread(private val api: BooruApi) : BooruApi {
+    override suspend fun posts(tags: String, page: Int, limit: Int) = withContext(Dispatchers.IO) { api.posts(tags, page, limit) }
+    override suspend fun autocomplete(query: String) = withContext(Dispatchers.IO) { api.autocomplete(query) }
+    override suspend fun resolve(post: Post) = withContext(Dispatchers.IO) { api.resolve(post) }
 }
 
 /** The tag being typed: the last word, without a leading exclusion or "or" marker. */

@@ -39,17 +39,23 @@ object Challenge {
      * hides their real expiry, so they are kept for six months: a session or clearance the site
      * has expired by then is simply refused, and a preference stays as long as the user expects.
      */
-    fun cookiesFor(url: String): List<Cookie> {
-        val httpUrl = url.toHttpUrlOrNull() ?: return emptyList()
-        val header = runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull() ?: return emptyList()
-        val site = SecureCookieJar.siteOf(httpUrl.host)
+    fun cookiesFor(vararg urls: String): List<Cookie> {
+        val found = LinkedHashMap<String, Cookie>()
         val expires = System.currentTimeMillis() + 180L * 24 * 60 * 60 * 1000
-        return header.split(';').mapNotNull { part ->
-            val name = part.substringBefore('=').trim()
-            val value = part.substringAfter('=', "").trim()
-            if (name.isEmpty()) return@mapNotNull null
-            runCatching { Cookie.Builder().name(name).value(value).domain(site).path("/").expiresAt(expires).secure().build() }.getOrNull()
+        // A site may scope its pass to the challenged path; asking for each page gathers it too.
+        for (url in urls) {
+            val httpUrl = url.toHttpUrlOrNull() ?: continue
+            val header = runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull() ?: continue
+            val site = SecureCookieJar.siteOf(httpUrl.host)
+            header.split(';').forEach { part ->
+                val name = part.substringBefore('=').trim()
+                val value = part.substringAfter('=', "").trim()
+                if (name.isEmpty()) return@forEach
+                runCatching { Cookie.Builder().name(name).value(value).domain(site).path("/").expiresAt(expires).secure().build() }
+                    .getOrNull()?.let { found[name] = it }
+            }
         }
+        return found.values.toList()
     }
 
     /**
