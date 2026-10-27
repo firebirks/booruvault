@@ -348,7 +348,8 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
         onDismissRequest = { if (!working) onDismiss() },
         title = { Text(stringResource(R.string.settings_change_password)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Four blocks of content and a keyboard: on a small phone only scrolling fits them.
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.password_change_rekey_note), style = MaterialTheme.typography.bodySmall)
                 PasswordField(
                     old, { old = it; wrong = false }, stringResource(R.string.password_current), imeAction = ImeAction.Next,
