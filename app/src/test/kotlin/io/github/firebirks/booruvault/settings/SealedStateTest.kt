@@ -30,6 +30,10 @@ import java.io.File
 
 /** Settings, API keys and cookies are sealed on disk and gone from memory while locked. */
 class SealedStateTest {
+    init {
+        check(io.github.firebirks.booruvault.net.TestPublicSuffixes.installed)
+    }
+
     @get:Rule
     val tmp = TemporaryFolder()
 

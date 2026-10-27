@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
+import okhttp3.internal.publicsuffix.PublicSuffixDatabase
 import java.io.File
 
 @Serializable
@@ -195,7 +196,21 @@ class SecureCookieJar(root: File, private val vault: VaultManager, json: Json, s
     }.getOrNull()
 
     companion object {
-        /** "static1.e621.net" and "e621.net" share their clearance. */
-        fun siteOf(host: String): String = host.lowercase().split('.').takeLast(2).joinToString(".")
+        /**
+         * The registrable domain of [host]: "static1.e621.net" and "e621.net" share their
+         * clearance, while "a.github.io" and "b.github.io" share nothing. A host that is itself a
+         * public suffix, or an address, stands alone.
+         */
+        fun siteOf(host: String): String {
+            val lower = host.lowercase()
+            // The list knows names only: an address would come back as its last two numbers.
+            if (TorAwareDns.isIpLiteral(lower)) return lower
+            return runCatching { suffixes?.getEffectiveTldPlusOne(lower) }.getOrNull() ?: lower
+        }
+
+        /** OkHttp's public suffix list, from its Android assets. Null if it cannot load: every host then stands alone. */
+        private val suffixes: PublicSuffixDatabase? by lazy {
+            runCatching { PublicSuffixDatabase.get().also { it.getEffectiveTldPlusOne("example.com") } }.getOrNull()
+        }
     }
 }
