@@ -203,6 +203,8 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     sourceName = state.source?.name ?: stringResource(R.string.browse_no_source),
                     sources = settings.sources.map { it.id to it.name },
                     selectedId = state.source?.id,
+                    // A plain page has nothing to search; its address stands where the field would be.
+                    pageAddress = state.source?.takeIf { !it.searchable }?.baseUrl,
                     onSelectSource = vm::selectSource,
                     input = vm.input,
                     onInput = vm::onInput,
@@ -349,6 +351,7 @@ private fun BrowseTopBar(
     sourceName: String,
     sources: List<Pair<String, String>>,
     selectedId: String?,
+    pageAddress: String?,
     onSelectSource: (String) -> Unit,
     input: androidx.compose.ui.text.input.TextFieldValue,
     onInput: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
@@ -422,6 +425,17 @@ private fun BrowseTopBar(
                         )
                     }
                 }
+            }
+            if (pageAddress != null) {
+                Text(
+                    pageAddress,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                )
+                return@Column
             }
             TextField(
                 value = input,

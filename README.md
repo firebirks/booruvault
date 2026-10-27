@@ -15,7 +15,7 @@ The interface follows the phone's language, with English as the fallback. See [L
   - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com or rule34.xxx without an API key.
   - Gelbooru 0.1 sites (booru.org).
   - Shimmie2 sites.
-  - **Any web page:** its images and videos are extracted. The address may contain `{tags}` and `{page}`.
+  - **Any web page:** its images and videos are extracted. The address may contain `{tags}` and `{page}`. A page opened from the Browse menu is browsed on the spot and not added to the sources.
 - **Search:** tag autocomplete, infinite scrolling grid, pull to refresh.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
 - **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source.

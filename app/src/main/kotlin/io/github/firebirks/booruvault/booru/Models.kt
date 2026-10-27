@@ -92,6 +92,9 @@ data class BooruSource(
     val apiKey: String = "",
 ) {
     val hasCredentials: Boolean get() = login.isNotBlank() && apiKey.isNotBlank()
+
+    /** Whether a search changes what this source returns: a plain page without `{tags}` ignores it. */
+    val searchable: Boolean get() = engine != BooruEngine.HTML_GENERIC || "{tags}" in baseUrl
 }
 
 data class TagSuggestion(val name: String, val count: Long?, val category: TagCategory)

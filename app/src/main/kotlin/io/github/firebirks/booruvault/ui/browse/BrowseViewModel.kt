@@ -88,6 +88,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
+    /** A web page opened on the spot: browsed like a source, never saved among the sources. */
+    private val webPage = MutableStateFlow<BooruSource?>(null)
+
     private val _resolveErrors = MutableStateFlow<Map<Long, Problem>>(emptyMap())
 
     /** Posts from HTML lists whose page could not be read, with the reason. */
@@ -107,12 +110,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                     forget()
                     return@collectLatest
                 }
+                // Early builds saved the opened page as a source; it no longer belongs there.
+                val sources = c.settings.settings.value.sources
+                if (sources.any { it.id == WEB_PAGE_SOURCE }) c.settings.setSources(sources.filterNot { it.id == WEB_PAGE_SOURCE })
                 coroutineScope {
                     launch {
-                        c.settings.settings.map { it.selectedSource }.distinctUntilChanged().collect { source ->
-                            _state.update { it.copy(source = source) }
-                            restart(refreshing = false)
-                        }
+                        combine(c.settings.settings.map { it.selectedSource }, webPage) { selected, page -> page ?: selected }
+                            .distinctUntilChanged().collect { source ->
+                                _state.update { it.copy(source = source) }
+                                restart(refreshing = false)
+                            }
                     }
                     launch {
                         // Changing what is allowed re-runs the search rather than filtering what is
@@ -139,6 +146,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         _selection.value = emptySet()
         resolving.clear()
         _resolveErrors.value = emptyMap()
+        webPage.value = null
         _state.value = BrowseState(generation = _state.value.generation + 1)
     }
 
@@ -220,17 +228,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         }
     }
 
-    /** Shows the images of any page, through a source kept for the purpose. */
+    /** Shows the images of any page, as a source of the moment that is not saved. */
     fun openWebPage(address: String) {
         val url = address.trim().let { if (it.startsWith("http://") || it.startsWith("https://")) it else "https://$it" }
-        viewModelScope.launch {
-            val current = c.settings.settings.value.sources
-            val host = url.substringAfter("://").substringBefore('/').removePrefix("www.")
-            val source = BooruSource(WEB_PAGE_SOURCE, host, BooruEngine.HTML_GENERIC, url)
-            c.settings.setSources(current.filterNot { it.id == WEB_PAGE_SOURCE } + source)
-            c.settings.selectSource(WEB_PAGE_SOURCE)
-            search("")
-        }
+        val host = url.substringAfter("://").substringBefore('/').removePrefix("www.")
+        val source = BooruSource(WEB_PAGE_SOURCE, host, BooruEngine.HTML_GENERIC, url)
+        input = TextFieldValue("")
+        _suggestions.value = emptyList()
+        _state.update { it.copy(query = "") }
+        // The same page again: the collector sees no change, so reload it here.
+        if (webPage.value == source) refresh() else webPage.value = source
     }
 
     companion object {
@@ -248,6 +255,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     fun submit() = search(input.text)
 
     fun selectSource(id: String) {
+        webPage.value = null
         viewModelScope.launch { c.settings.selectSource(id) }
     }
 
