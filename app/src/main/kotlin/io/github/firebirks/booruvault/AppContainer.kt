@@ -77,8 +77,12 @@ class AppContainer(private val context: Context) {
             val request = chain.request()
             // A site whose anti-bot check the user passed only honours the browser that passed it.
             val agent = cookies.userAgentFor(request.url.host) ?: request.header("User-Agent") ?: USER_AGENT
+            val builder = request.newBuilder().header("User-Agent", agent)
+            // Some image hosts (img*.gelbooru.com) redirect a request without a Referer to an HTML
+            // hotlink page. Their own origin satisfies them and says nothing about the user.
+            if (request.header("Referer") == null) builder.header("Referer", "${request.url.scheme}://${request.url.host}/")
             try {
-                chain.proceed(request.newBuilder().header("User-Agent", agent).build())
+                chain.proceed(builder.build())
             } catch (e: IOException) {
                 if (tor.enabled && !chain.call().isCanceled() && e !is TorUnreachableException) throw TorUnreachableException(e)
                 throw e
