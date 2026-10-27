@@ -133,6 +133,28 @@ class VaultTest {
         assertTrue(File(root, "meta").listFiles()!!.isEmpty())
     }
 
+    @Test
+    fun biometricCopyIsReportedAndUnlocks() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("pw".toCharArray(), fastKdf)
+        assertFalse(vault.biometric.value)
+        // A plain AES key stands in for the Keystore one, which only exists on a device.
+        val key = javax.crypto.KeyGenerator.getInstance("AES").apply { init(256) }.generateKey()
+        val encrypt = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding").apply { init(javax.crypto.Cipher.ENCRYPT_MODE, key) }
+        vault.enableBiometric(encrypt)
+        assertTrue(vault.biometric.value)
+        vault.lock()
+
+        val reopened = VaultManager(root, json)
+        assertTrue("the setting must survive a restart", reopened.biometric.value)
+        val decrypt = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+            .apply { init(javax.crypto.Cipher.DECRYPT_MODE, key, javax.crypto.spec.GCMParameterSpec(128, reopened.biometricIv)) }
+        assertTrue(reopened.unlockWithBiometric(decrypt))
+        reopened.disableBiometric()
+        assertFalse(reopened.biometric.value)
+    }
+
     private suspend fun add(store: VaultStore, data: ByteArray, name: String, postId: Long? = null) {
         val id = store.newId()
         val size = store.writeMedia(id) { it.write(data) }

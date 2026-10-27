@@ -62,7 +62,12 @@ class VaultManager(private val root: File, private val json: Json) {
 
     val keys: VaultKeys? get() = (_state.value as? VaultState.Unlocked)?.keys
 
-    val biometricEnabled: Boolean get() = header?.biometricWrapped != null
+    private val _biometric = MutableStateFlow(header?.biometricWrapped != null)
+
+    /** Whether a biometric copy of the key exists; observed by the settings switch. */
+    val biometric: StateFlow<Boolean> = _biometric.asStateFlow()
+
+    val biometricEnabled: Boolean get() = _biometric.value
 
     val biometricIv: ByteArray? get() = header?.biometricIv?.fromBase64()
 
@@ -156,6 +161,7 @@ class VaultManager(private val root: File, private val json: Json) {
             val updated = current.copy(biometricWrapped = wrapped.toBase64(), biometricIv = cipher.iv.toBase64())
             writeHeader(updated)
             header = updated
+            _biometric.value = true
         }
     }
 
@@ -181,6 +187,7 @@ class VaultManager(private val root: File, private val json: Json) {
             val updated = current.copy(biometricWrapped = null, biometricIv = null)
             writeHeader(updated)
             header = updated
+            _biometric.value = false
         }
     }
 
@@ -189,6 +196,7 @@ class VaultManager(private val root: File, private val json: Json) {
         withContext(Dispatchers.IO) {
             _state.value = VaultState.Missing
             header = null
+            _biometric.value = false
             root.deleteRecursively()
         }
     }

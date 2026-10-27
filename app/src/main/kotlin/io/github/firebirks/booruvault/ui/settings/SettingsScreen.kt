@@ -92,8 +92,7 @@ private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
     val scope = rememberCoroutineScope()
     var changePassword by remember { mutableStateOf(false) }
     var destroy by remember { mutableStateOf(false) }
-    // Recomposition after a biometric change: the flag lives in the vault header, not in a flow.
-    var biometricVersion by remember { mutableStateOf(0) }
+    val biometricOn by container.vault.biometric.collectAsStateWithLifecycle()
 
     Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.settings_title)) }) }, contentWindowInsets = WindowInsets(0)) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState())) {
@@ -147,18 +146,15 @@ private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
             )
             val activity = context.findActivity() as? FragmentActivity
             if (activity != null && BiometricKey.isAvailable(context)) {
-                val enabled = remember(biometricVersion) { container.vault.biometricEnabled }
-                SwitchRow(stringResource(R.string.settings_biometric), stringResource(R.string.settings_biometric_hint), enabled) { on ->
+                SwitchRow(stringResource(R.string.settings_biometric), stringResource(R.string.settings_biometric_hint), biometricOn) { on ->
                     if (on) {
-                        enrollBiometric(activity, container.vault, scope) { message ->
-                            biometricVersion++
+                        enrollBiometric(activity, container.vault, container.scope) { message ->
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        scope.launch {
+                        container.scope.launch {
                             container.vault.disableBiometric()
                             BiometricKey.delete()
-                            biometricVersion++
                         }
                     }
                 }

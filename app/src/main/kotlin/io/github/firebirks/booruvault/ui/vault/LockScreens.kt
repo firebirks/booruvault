@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.ui.vault
 
+import kotlinx.coroutines.Dispatchers
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +54,10 @@ import kotlinx.coroutines.launch
 
 const val MIN_PASSWORD = 6
 
-/** Asks for a fingerprint and stores a biometric copy of the vault key. */
+/**
+ * Asks for a fingerprint and stores a biometric copy of the vault key. [scope] must outlive the
+ * prompt: a screen that closes when the prompt opens would cancel the storing with it.
+ */
 fun enrollBiometric(activity: FragmentActivity, vault: VaultManager, scope: CoroutineScope, onResult: (String) -> Unit) {
     val cipher = try {
         BiometricKey.encryptCipher()
@@ -63,7 +67,7 @@ fun enrollBiometric(activity: FragmentActivity, vault: VaultManager, scope: Coro
     }
     BiometricKey.authenticate(activity, activity.getString(R.string.biometric_enable_title), cipher) { authorized, error ->
         when {
-            authorized != null -> scope.launch {
+            authorized != null -> scope.launch(Dispatchers.Main) {
                 runCatching { vault.enableBiometric(authorized) }
                     .onSuccess { onResult(activity.getString(R.string.biometric_enabled)) }
                     .onFailure { onResult(activity.getString(R.string.biometric_enable_failed, it.message.orEmpty())) }

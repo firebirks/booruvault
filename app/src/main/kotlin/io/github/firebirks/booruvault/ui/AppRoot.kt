@@ -122,7 +122,6 @@ private fun TabLabel(text: String) {
 private fun BiometricOffer(onDone: () -> Unit) {
     val container = LocalContainer.current
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val activity = context.findActivity() as? FragmentActivity
     if (activity == null || !BiometricKey.isAvailable(context)) {
         LaunchedEffect(Unit) { onDone() }
@@ -136,7 +135,8 @@ private fun BiometricOffer(onDone: () -> Unit) {
         confirmButton = {
             TextButton(onClick = {
                 onDone()
-                enrollBiometric(activity, container.vault, scope) { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+                // The dialog is gone by the time the prompt answers; the app's scope is not.
+                enrollBiometric(activity, container.vault, container.scope) { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
             }) { Text(stringResource(R.string.action_turn_on)) }
         },
         dismissButton = { TextButton(onClick = onDone) { Text(stringResource(R.string.action_not_now)) } },
