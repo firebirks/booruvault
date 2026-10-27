@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "app.booruvault"
+    namespace = "io.github.firebirks.booruvault"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.booruvault"
+        applicationId = "io.github.firebirks.booruvault"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

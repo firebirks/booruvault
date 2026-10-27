@@ -144,7 +144,7 @@ Requirements:
 ## Project layout
 
 ```
-app/src/main/kotlin/app/booruvault/
+app/src/main/kotlin/io/github/firebirks/booruvault/
 ├── booru/      site engines: JSON APIs, HTML parsers, models, presets
 ├── download/   download queue and foreground service
 ├── net/        sealed cookie jar, Tor/Orbot, built-in browser hardening
