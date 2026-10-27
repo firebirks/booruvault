@@ -97,7 +97,7 @@
     <string name="settings_biometric">Odblokowywanie odciskiem palca</string>
     <string name="settings_biometric_hint">Hasło też zawsze działa.</string>
     <string name="settings_auto_lock">Automatyczna blokada</string>
-    <string name="settings_auto_lock_hint">Jak długo aplikacja może pozostawać w tle, zanim się zablokuje.</string>
+    <string name="settings_auto_lock_hint">Jak długo aplikacja może pozostawać w tle, zanim się zablokuje. Zablokowanie zapomina też wyszukiwanie, otwarte ekrany i wszystko, co było załadowane.</string>
     <string name="auto_lock_immediately">Natychmiast</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

@@ -101,7 +101,7 @@
     <string name="settings_biometric">فتح القفل ببصمة الإصبع</string>
     <string name="settings_biometric_hint">تعمل كلمة المرور دائمًا أيضًا.</string>
     <string name="settings_auto_lock">القفل التلقائي</string>
-    <string name="settings_auto_lock_hint">المدة التي يمكن أن يبقى فيها التطبيق في الخلفية قبل أن يُقفَل.</string>
+    <string name="settings_auto_lock_hint">كم يمكن أن يبقى التطبيق في الخلفية قبل أن يُقفل. القفل ينسى أيضًا البحث والشاشات المفتوحة وكل ما تم تحميله.</string>
     <string name="auto_lock_immediately">فورًا</string>
     <string name="auto_lock_seconds">%d ث</string>
     <string name="auto_lock_minutes">%d د</string>

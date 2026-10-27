@@ -97,7 +97,7 @@
     <string name="settings_biometric">Разблокировка отпечатком</string>
     <string name="settings_biometric_hint">Пароль тоже всегда работает.</string>
     <string name="settings_auto_lock">Автоблокировка</string>
-    <string name="settings_auto_lock_hint">Сколько времени приложение может оставаться в фоне, прежде чем заблокируется.</string>
+    <string name="settings_auto_lock_hint">Сколько приложение может оставаться в фоне до блокировки. Блокировка также забывает поиск, открытые экраны и всё загруженное.</string>
     <string name="auto_lock_immediately">Сразу</string>
     <string name="auto_lock_seconds">%d с</string>
     <string name="auto_lock_minutes">%d мин</string>

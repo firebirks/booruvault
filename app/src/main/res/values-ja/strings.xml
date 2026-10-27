@@ -91,7 +91,7 @@
     <string name="settings_biometric">指紋でロック解除</string>
     <string name="settings_biometric_hint">パスワードも常に使用できます。</string>
     <string name="settings_auto_lock">自動ロック</string>
-    <string name="settings_auto_lock_hint">アプリがバックグラウンドに移ってからロックされるまでの時間です。</string>
+    <string name="settings_auto_lock_hint">ロックされるまでアプリがバックグラウンドに留まれる時間。ロックすると検索、開いていた画面、読み込んだ内容もすべて忘れられます。</string>
     <string name="auto_lock_immediately">すぐに</string>
     <string name="auto_lock_seconds">%d 秒</string>
     <string name="auto_lock_minutes">%d 分</string>

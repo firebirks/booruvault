@@ -97,7 +97,7 @@
     <string name="settings_biometric">Розблокування відбитком</string>
     <string name="settings_biometric_hint">Пароль теж завжди працює.</string>
     <string name="settings_auto_lock">Автоблокування</string>
-    <string name="settings_auto_lock_hint">Скільки часу застосунок може бути у фоні, перш ніж заблокується.</string>
+    <string name="settings_auto_lock_hint">Скільки застосунок може лишатися у фоні до блокування. Блокування також забуває пошук, відкриті екрани й усе завантажене.</string>
     <string name="auto_lock_immediately">Одразу</string>
     <string name="auto_lock_seconds">%d с</string>
     <string name="auto_lock_minutes">%d хв</string>

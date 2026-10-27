@@ -93,7 +93,7 @@
     <string name="settings_biometric">Parmak iziyle kilit açma</string>
     <string name="settings_biometric_hint">Parola da her zaman çalışır.</string>
     <string name="settings_auto_lock">Otomatik kilit</string>
-    <string name="settings_auto_lock_hint">Uygulamanın kilitlenmeden önce arka planda ne kadar süre kalabileceği.</string>
+    <string name="settings_auto_lock_hint">Uygulamanın kilitlenmeden önce arka planda ne kadar kalabileceği. Kilitlemek aramayı, açık ekranları ve yüklenen her şeyi de unutur.</string>
     <string name="auto_lock_immediately">Hemen</string>
     <string name="auto_lock_seconds">%d sn</string>
     <string name="auto_lock_minutes">%d dk</string>

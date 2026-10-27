@@ -91,7 +91,7 @@
     <string name="settings_biometric">Buka kunci dengan sidik jari</string>
     <string name="settings_biometric_hint">Sandi juga selalu berfungsi.</string>
     <string name="settings_auto_lock">Kunci otomatis</string>
-    <string name="settings_auto_lock_hint">Berapa lama aplikasi boleh berada di latar belakang sebelum terkunci.</string>
+    <string name="settings_auto_lock_hint">Berapa lama aplikasi boleh berada di latar belakang sebelum terkunci. Mengunci juga melupakan pencarian, layar yang terbuka, dan semua yang sudah dimuat.</string>
     <string name="auto_lock_immediately">Segera</string>
     <string name="auto_lock_seconds">%d dtk</string>
     <string name="auto_lock_minutes">%d mnt</string>

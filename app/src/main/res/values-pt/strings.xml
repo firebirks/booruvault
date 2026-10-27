@@ -95,7 +95,7 @@
     <string name="settings_biometric">Desbloqueio por digital</string>
     <string name="settings_biometric_hint">A senha também funciona sempre.</string>
     <string name="settings_auto_lock">Bloqueio automático</string>
-    <string name="settings_auto_lock_hint">Quanto tempo o app pode ficar em segundo plano antes de ser bloqueado.</string>
+    <string name="settings_auto_lock_hint">Por quanto tempo o app pode ficar em segundo plano antes de bloquear. O bloqueio também esquece a busca, as telas abertas e tudo o que estava carregado.</string>
     <string name="auto_lock_immediately">Imediatamente</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

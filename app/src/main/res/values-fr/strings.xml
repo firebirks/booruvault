@@ -95,7 +95,7 @@
     <string name="settings_biometric">Déverrouillage par empreinte</string>
     <string name="settings_biometric_hint">Le mot de passe fonctionne toujours aussi.</string>
     <string name="settings_auto_lock">Verrouillage automatique</string>
-    <string name="settings_auto_lock_hint">Durée pendant laquelle l\'appli peut rester en arrière-plan avant de se verrouiller.</string>
+    <string name="settings_auto_lock_hint">Combien de temps l\'application peut rester en arrière-plan avant de se verrouiller. Le verrouillage oublie aussi la recherche, les écrans ouverts et tout ce qui était chargé.</string>
     <string name="auto_lock_immediately">Immédiatement</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

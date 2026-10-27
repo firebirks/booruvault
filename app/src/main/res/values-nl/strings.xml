@@ -93,7 +93,7 @@
     <string name="settings_biometric">Ontgrendelen met vingerafdruk</string>
     <string name="settings_biometric_hint">Het wachtwoord werkt ook altijd.</string>
     <string name="settings_auto_lock">Automatisch vergrendelen</string>
-    <string name="settings_auto_lock_hint">Hoe lang de app op de achtergrond mag blijven voordat hij vergrendelt.</string>
+    <string name="settings_auto_lock_hint">Hoe lang de app op de achtergrond mag blijven voordat hij vergrendelt. Vergrendelen vergeet ook de zoekopdracht, de open schermen en alles wat geladen was.</string>
     <string name="auto_lock_immediately">Meteen</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

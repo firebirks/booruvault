@@ -95,7 +95,7 @@
     <string name="settings_biometric">Desbloqueo con huella</string>
     <string name="settings_biometric_hint">La contraseña también funciona siempre.</string>
     <string name="settings_auto_lock">Bloqueo automático</string>
-    <string name="settings_auto_lock_hint">Cuánto tiempo puede estar la app en segundo plano antes de bloquearse.</string>
+    <string name="settings_auto_lock_hint">Cuánto tiempo puede estar la app en segundo plano antes de bloquearse. Al bloquearse también se olvidan la búsqueda, las pantallas abiertas y todo lo cargado.</string>
     <string name="auto_lock_immediately">Inmediatamente</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

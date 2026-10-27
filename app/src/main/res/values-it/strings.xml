@@ -95,7 +95,7 @@
     <string name="settings_biometric">Sblocco con impronta</string>
     <string name="settings_biometric_hint">La password resta sempre valida.</string>
     <string name="settings_auto_lock">Blocco automatico</string>
-    <string name="settings_auto_lock_hint">Dopo quanto tempo in background l\'app si blocca.</string>
+    <string name="settings_auto_lock_hint">Per quanto tempo l\'app può restare in background prima di bloccarsi. Il blocco dimentica anche la ricerca, le schermate aperte e tutto ciò che era caricato.</string>
     <string name="auto_lock_immediately">Subito</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

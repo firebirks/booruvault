@@ -93,7 +93,7 @@
     <string name="settings_biometric">फ़िंगरप्रिंट से अनलॉक</string>
     <string name="settings_biometric_hint">पासवर्ड भी हमेशा काम करता है।</string>
     <string name="settings_auto_lock">ऑटो-लॉक</string>
-    <string name="settings_auto_lock_hint">लॉक होने से पहले ऐप कितनी देर बैकग्राउंड में रह सकता है।</string>
+    <string name="settings_auto_lock_hint">लॉक होने से पहले ऐप कितनी देर पृष्ठभूमि में रह सकता है। लॉक होने पर खोज, खुली स्क्रीनें और लोड हुआ सब कुछ भी भुला दिया जाता है।</string>
     <string name="auto_lock_immediately">तुरंत</string>
     <string name="auto_lock_seconds">%d सेकंड</string>
     <string name="auto_lock_minutes">%d मिनट</string>

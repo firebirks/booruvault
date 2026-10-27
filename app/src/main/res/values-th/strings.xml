@@ -91,7 +91,7 @@
     <string name="settings_biometric">ปลดล็อกด้วยลายนิ้วมือ</string>
     <string name="settings_biometric_hint">ยังคงใช้รหัสผ่านได้เสมอ</string>
     <string name="settings_auto_lock">ล็อกอัตโนมัติ</string>
-    <string name="settings_auto_lock_hint">ระยะเวลาที่แอปอยู่ในเบื้องหลังได้ก่อนจะล็อก</string>
+    <string name="settings_auto_lock_hint">แอปอยู่ในพื้นหลังได้นานเท่าใดก่อนจะล็อก การล็อกยังลืมการค้นหา หน้าจอที่เปิดอยู่ และทุกอย่างที่โหลดไว้ด้วย</string>
     <string name="auto_lock_immediately">ทันที</string>
     <string name="auto_lock_seconds">%d วินาที</string>
     <string name="auto_lock_minutes">%d นาที</string>

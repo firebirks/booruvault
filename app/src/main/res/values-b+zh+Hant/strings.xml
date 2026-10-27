@@ -91,7 +91,7 @@
     <string name="settings_biometric">指紋解鎖</string>
     <string name="settings_biometric_hint">仍可隨時使用密碼。</string>
     <string name="settings_auto_lock">自動鎖定</string>
-    <string name="settings_auto_lock_hint">應用程式在背景停留多久後鎖定。</string>
+    <string name="settings_auto_lock_hint">應用程式在背景停留多久後鎖定。鎖定時也會忘記搜尋、開啟的畫面和已載入的一切。</string>
     <string name="auto_lock_immediately">立即</string>
     <string name="auto_lock_seconds">%d 秒</string>
     <string name="auto_lock_minutes">%d 分鐘</string>

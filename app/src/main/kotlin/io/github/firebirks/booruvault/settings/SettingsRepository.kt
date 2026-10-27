@@ -39,7 +39,7 @@ data class AppSettings(
     val downloadOriginal: Boolean = true,
     val pageSize: Int = 40,
     /** Seconds in background before the app locks; 0 locks at once. */
-    val autoLockSeconds: Int = 60,
+    val autoLockSeconds: Int = 300,
     /**
      * Keep downloading after the vault locks. Off by default: the queue, the sources it uses and
      * their cookies must then stay in memory until it drains.

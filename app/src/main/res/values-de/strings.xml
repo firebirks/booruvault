@@ -93,7 +93,7 @@
     <string name="settings_biometric">Mit Fingerabdruck entsperren</string>
     <string name="settings_biometric_hint">Das Passwort funktioniert weiterhin immer.</string>
     <string name="settings_auto_lock">Automatische Sperre</string>
-    <string name="settings_auto_lock_hint">Wie lange die App im Hintergrund bleiben darf, bevor sie sich sperrt.</string>
+    <string name="settings_auto_lock_hint">Wie lange die App im Hintergrund bleiben darf, bevor sie sperrt. Das Sperren vergisst auch die Suche, die offenen Bildschirme und alles Geladene.</string>
     <string name="auto_lock_immediately">Sofort</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d Min.</string>

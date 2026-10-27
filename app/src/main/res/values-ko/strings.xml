@@ -91,7 +91,7 @@
     <string name="settings_biometric">지문으로 잠금 해제</string>
     <string name="settings_biometric_hint">비밀번호도 항상 사용할 수 있습니다.</string>
     <string name="settings_auto_lock">자동 잠금</string>
-    <string name="settings_auto_lock_hint">앱이 백그라운드에 있을 때 잠기기까지의 시간입니다.</string>
+    <string name="settings_auto_lock_hint">앱이 잠기기 전까지 백그라운드에 머물 수 있는 시간입니다. 잠기면 검색, 열려 있던 화면, 불러온 내용도 모두 잊습니다.</string>
     <string name="auto_lock_immediately">즉시</string>
     <string name="auto_lock_seconds">%d초</string>
     <string name="auto_lock_minutes">%d분</string>

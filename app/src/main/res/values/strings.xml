@@ -98,7 +98,7 @@
     <string name="settings_biometric">Fingerprint unlock</string>
     <string name="settings_biometric_hint">The password always works too.</string>
     <string name="settings_auto_lock">Auto-lock</string>
-    <string name="settings_auto_lock_hint">How long the app can stay in the background before it locks.</string>
+    <string name="settings_auto_lock_hint">How long the app can stay in the background before it locks. Locking also forgets the search, the open screens and everything loaded.</string>
     <string name="auto_lock_immediately">Immediately</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>

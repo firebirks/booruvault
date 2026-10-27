@@ -91,7 +91,7 @@
     <string name="settings_biometric">Mở khóa bằng vân tay</string>
     <string name="settings_biometric_hint">Mật khẩu vẫn luôn dùng được.</string>
     <string name="settings_auto_lock">Tự động khóa</string>
-    <string name="settings_auto_lock_hint">Thời gian ứng dụng có thể chạy nền trước khi bị khóa.</string>
+    <string name="settings_auto_lock_hint">Ứng dụng có thể ở nền bao lâu trước khi khóa. Khóa cũng xóa tìm kiếm, các màn hình đang mở và mọi thứ đã tải.</string>
     <string name="auto_lock_immediately">Ngay lập tức</string>
     <string name="auto_lock_seconds">%d giây</string>
     <string name="auto_lock_minutes">%d phút</string>
