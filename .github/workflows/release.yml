@@ -1,0 +1,63 @@
+# Every v* tag becomes a GitHub release carrying the APK signed with the project's own key, for
+# Obtainium and for direct installs. F-Droid ignores this and builds the same tag itself.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Check that the tag names the version being built
+        id: version
+        run: |
+          name=$(sed -n 's/^ *versionName = "\(.*\)"/\1/p' app/build.gradle.kts)
+          code=$(sed -n 's/^ *versionCode = \([0-9]*\)/\1/p' app/build.gradle.kts)
+          if [ "v$name" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME does not match versionName $name" >&2
+            exit 1
+          fi
+          test -s "fastlane/metadata/android/en-US/changelogs/$code.txt"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Put the signing key where the build reads it
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          cat > keystore.properties <<EOF
+          storeFile=$RUNNER_TEMP/release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=booruvault
+          keyPassword=$KEY_PASSWORD
+          EOF
+      - name: Test and build the signed release APK
+        run: ./gradlew testDebugUnitTest assembleRelease
+      - name: Remove the signing key
+        if: always()
+        run: rm -f keystore.properties "$RUNNER_TEMP/release.jks"
+      - name: Name the APK and write its checksum
+        run: |
+          mkdir dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/booruvault-${{ steps.version.outputs.name }}.apk"
+          cd dist && sha256sum *.apk > "booruvault-${{ steps.version.outputs.name }}.apk.sha256"
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "BooruVault ${{ steps.version.outputs.name }}" \
+            --notes-file "fastlane/metadata/android/en-US/changelogs/${{ steps.version.outputs.code }}.txt"

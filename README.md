@@ -157,15 +157,17 @@ Requirements:
 
 ## Releasing
 
-The app is meant for F-Droid, which builds every version itself from a git tag and signs it with its own key; no signing key of ours is involved. A release is therefore a commit and a tag:
+A release is a commit and a tag:
 
 1. Raise `versionCode` (always by one) and `versionName` in `app/build.gradle.kts`.
-2. Write `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`, at least for `en-US`.
-3. Commit, tag `v<versionName>` and push the tag. F-Droid's `UpdateCheckMode: Tags` picks it up.
+2. Write `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
+3. Commit, tag `v<versionName>` and push the tag.
 
-`fdroid/io.github.firebirks.booruvault.yml` is the reference copy of the F-Droid metadata; the first version is submitted to [fdroiddata](https://gitlab.com/fdroid/fdroiddata) as a merge request, later ones are picked up automatically. The repository has to be public for F-Droid to build it. `fastlane/metadata/android/` holds the store texts F-Droid shows; the icon and screenshots are taken from the APK when not provided there.
+The tag starts the `Release` workflow, which checks that the tag matches `versionName`, runs the tests, builds the APK signed with the project's key (kept in the repository secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD` and `KEY_PASSWORD`) and publishes it, with its SHA-256, as a GitHub release whose notes are the changelog. Obtainium and direct installs use that APK.
 
-To sign a release yourself, for a GitHub release or a test on a phone, put a `keystore.properties` next to this file with `storeFile`, `storePassword`, `keyAlias` and `keyPassword`; it is ignored by git, and `assembleRelease` then produces a signed APK. Without it the release build is unsigned, exactly as F-Droid makes it.
+F-Droid builds every version itself from the same tag and signs it with its own key; `fdroid/io.github.firebirks.booruvault.yml` is the reference copy of its metadata. The first version is submitted to [fdroiddata](https://gitlab.com/fdroid/fdroiddata) as a merge request, later ones are picked up through `UpdateCheckMode: Tags`. `fastlane/metadata/android/` holds the store texts; the icon and screenshots are taken from the APK when not provided there.
+
+To sign a release build locally, put a `keystore.properties` next to this file with `storeFile`, `storePassword`, `keyAlias` and `keyPassword`; it is ignored by git, and `assembleRelease` then produces a signed APK. Without it the release build is unsigned, exactly as F-Droid makes it.
 
 See [PRIVACY.md](PRIVACY.md) for what the app sends and keeps, in one page.
 
