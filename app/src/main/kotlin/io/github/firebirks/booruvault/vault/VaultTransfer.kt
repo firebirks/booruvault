@@ -31,7 +31,8 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
                 onProgress(index, uris.size)
                 val id = store.newId()
                 try {
-                    val (name, _) = describe(uri)
+                    val (name, declared) = describe(uri)
+                    if (declared != null && declared > VaultStore.MAX_MEDIA_BYTES) throw MediaTooLargeException()
                     val mime = resolver.getType(uri)?.takeIf { it != "application/octet-stream" }
                         ?: Mime.fromExtension(name.substringAfterLast('.', ""))
                     val size = store.writeMedia(id) { out ->

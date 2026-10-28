@@ -20,6 +20,23 @@ data class KdfParams(
 
 object Kdf {
     /**
+     * Whether [params] are ones this app would have written. The header is in clear, and a
+     * memory or pass count altered by whoever can write it would make Argon2 eat the process
+     * at the next unlock; a vault that asks for more than this is refused as damaged.
+     */
+    fun sane(params: KdfParams): Boolean =
+        params.algorithm == KdfParams.ALGORITHM &&
+            params.memoryKiB in MIN_MEMORY_KIB..MAX_MEMORY_KIB &&
+            params.iterations in 1..MAX_ITERATIONS &&
+            params.parallelism in 1..MAX_PARALLELISM &&
+            runCatching { params.salt.fromBase64().size >= 8 }.getOrDefault(false)
+
+    const val MIN_MEMORY_KIB = 1024
+    const val MAX_MEMORY_KIB = 1 shl 20
+    const val MAX_ITERATIONS = 50
+    const val MAX_PARALLELISM = 8
+
+    /**
      * 64 MiB and three passes: OWASP's recommendation sits well below this, and BouncyCastle's
      * pure-Java Argon2 still finishes in one to three seconds on a current phone.
      */

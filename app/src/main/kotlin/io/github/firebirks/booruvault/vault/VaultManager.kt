@@ -288,6 +288,10 @@ class VaultManager(private val root: File, private val json: Json) {
     }
 
     private fun unwrapWithPassword(current: VaultHeader, password: CharArray): ByteArray? {
+        if (!Kdf.sane(current.kdf)) {
+            Secrets.wipe(password)
+            throw VaultHeaderException()
+        }
         val kek = try {
             Kdf.derive(password, current.kdf)
         } finally {

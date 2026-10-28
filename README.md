@@ -20,7 +20,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **Search:** tag autocomplete, infinite scrolling grid, pull to refresh. Under an empty search field each source offers its favourite tags, starred from a post's tag sheet or from the shelf itself, followed by the tags searched most often on it; both are kept with the settings in the vault.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
 - **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source.
-- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences such as Gelbooru's "Display all site content". The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings.
+- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences such as Gelbooru's "Display all site content". The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
 
 ### Downloads
 
@@ -33,11 +33,11 @@ The interface follows the phone's language, with English as the fallback. See [L
 
 ### Vault
 
-- **Unlocking:** password, plus optional biometric unlock.
+- **Unlocking:** password of at least eight characters, plus optional biometric unlock. The key-derivation parameters in the header are checked against what the app would write, so an altered header cannot make the unlock eat the memory.
 - **Auto-lock:** after a configurable time in the background, five minutes by default. Locking also forgets the search and the open screens.
 - **Contents:** grid with filtering (tags, `-tag`, `type:video|gif|image`, `source:name`), viewer, info sheet, delete.
 - **Collections:** bookmarked tag sets shown as chips at the top of the vault. A collection holds every item whose tags match its query (e.g. “Landscapes” = `landscape -rain`), including items saved later. The query uses booru syntax: exact tags, `-tag`, `~tag` alternatives, `*` wildcards, plus `type:`, `source:` and `rating:`. Collections can be created from the vault filter, from a search in Browse, or from a tag in a post's details. Their names and queries are sealed in the vault.
-- **Import** from the device, optionally deleting the originals. **Export** decrypted copies to a folder or a single file.
+- **Import** from the device, optionally deleting the originals. **Export** decrypted copies to a folder or a single file. A single file, downloaded or imported, may hold up to 2 GB.
 - **Screen protection** (no screenshots, hidden in recents), always on while locked.
 
 ### Privacy and network
@@ -52,7 +52,7 @@ The interface follows the phone's language, with English as the fallback. See [L
   - no WebView metrics;
   - Safe Browsing off unless the user turns it on;
   - its storage wiped after each session and at start-up.
-- **Cookies:** only those the user brings back from the built-in browser are kept, scoped to the site's registrable domain (public suffix list), so a login on one `github.io` site is never sent to another. Cookies sites set on their own last for the session.
+- **Cookies:** only those the user brings back from the built-in browser are kept, for thirty days at most. Cloudflare's clearance is kept for the site's registrable domain (public suffix list), since its image hosts check it too; every other cookie, a login above all, is bound to the one host it was read from, so it never travels to a sibling host or to another `github.io` site. Cookies sites set on their own last for the session.
 - **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs:
   - keep downloading while the vault is locked;
   - read pages that keep demanding an anti-bot check through a hidden browser. It runs the site's scripts and can be fingerprinted, but loads no images, blocks third-party cookies, has WebRTC off, goes through Tor when Tor is on, and is wiped after each page;
@@ -129,7 +129,8 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 - **The port is a setting** (default 9050). It is never taken from a broadcast: Orbot's status messages carried no proof of their sender, so any app could have sent one naming a port it listens on, and current Orbot sends none at all.
 - **No local DNS:** host names are passed to Orbot unresolved, and any local DNS lookup is refused. A unit test drives a fake SOCKS5 server to check that names travel as domains.
 - **Built-in browser:** goes through Orbot via a WebView proxy override with no direct rule, and WebRTC is removed before page scripts run. If the WebView cannot do either, the built-in browser does not open while Tor is on.
-- **Orbot integration:** since Orbot 17.9.6 other apps can neither start it nor hear its status, so the app finds out by itself whether a SOCKS5 server answers on the port, offers to open Orbot when none does, and a check against `check.torproject.org` reports the exit address.
+- **Orbot integration:** since Orbot 17.9.6 other apps can neither start it nor hear its status, so the app finds out by itself whether a SOCKS5 server answers on the port, and offers to open Orbot when none does.
+- **The listener is not Tor until proven:** any local process that took the port first would answer the SOCKS5 greeting too, see every host name and go out in clear. So as soon as the port answers, and again whenever it stops and comes back, the app asks `check.torproject.org` whether its connections really exit through Tor; until that check passes, nothing but the check itself leaves, and the built-in browser does not open. A proxy that does forward to Tor while logging destinations cannot be told apart this way.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
 - **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, the link can only be copied, to paste in a browser that goes through Orbot. Opening it in a normal browser is possible only with the risky option "Open links outside Tor" on, and then behind a warning that explains what a normal browser exposes and keeps; its "open anyway" button unlocks after a few seconds.

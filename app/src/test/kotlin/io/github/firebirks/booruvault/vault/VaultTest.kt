@@ -249,4 +249,49 @@ class VaultTest {
     private suspend fun awaitItems(store: VaultStore, count: Int) {
         withTimeout(10_000) { store.items.first { it.size == count } }
     }
+
+    @Test
+    fun absurdKdfParametersAreRefusedAsDamage() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("pw".toCharArray(), fastKdf)
+        vault.lock()
+        // Whoever can write the header could ask Argon2 for memory the process does not have.
+        val headerFile = File(root, "vault.json")
+        val header = json.decodeFromString(VaultHeader.serializer(), headerFile.readText())
+        headerFile.writeText(json.encodeToString(VaultHeader.serializer(), header.copy(kdf = header.kdf.copy(memoryKiB = 16 shl 20))))
+
+        val reopened = VaultManager(root, json)
+        try {
+            reopened.unlock("pw".toCharArray())
+            fail("a header asking for 16 GiB must be refused, not attempted")
+        } catch (_: VaultHeaderException) {
+        }
+        assertTrue(reopened.state.value is VaultState.Locked)
+    }
+
+    @Test
+    fun aMetaFileNamingAnotherIdIsIgnored() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("pw".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        add(store, byteArrayOf(1, 2, 3), "a.jpg")
+        awaitItems(store, 1)
+        val real = store.items.value.single()
+        // A forged meta file, sealed to the public key, that names a path outside the vault.
+        val forged = real.copy(id = "../../escape")
+        val metaDir = File(root, "meta")
+        val bytes = json.encodeToString(VaultItem.serializer(), forged).toByteArray()
+        io.github.firebirks.booruvault.vault.crypto.SealedBlob.write(File(metaDir, "forged"), vault.recipient!!, bytes)
+        vault.lock()
+        vault.unlock("pw".toCharArray())
+        awaitItems(store, 1)
+        assertEquals(listOf(real.id), store.items.value.map { it.id })
+        try {
+            store.openMedia("../../escape")
+            fail("an id that is not a UUID must be refused")
+        } catch (_: IllegalArgumentException) {
+        }
+    }
 }

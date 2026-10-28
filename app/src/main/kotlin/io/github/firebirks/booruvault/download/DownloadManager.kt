@@ -18,6 +18,7 @@ import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.util.safeFileName
+import io.github.firebirks.booruvault.vault.MediaTooLargeException
 import io.github.firebirks.booruvault.vault.SealedJson
 import io.github.firebirks.booruvault.vault.VaultItem
 import io.github.firebirks.booruvault.vault.VaultManager
@@ -366,6 +367,7 @@ class DownloadManager(
                 val body = response.body
                 contentType = body.contentType()?.let { "${it.type}/${it.subtype}" }
                 val total = body.contentLength()
+                if (total > VaultStore.MAX_MEDIA_BYTES) throw MediaTooLargeException()
                 set(key) { it.copy(total = total) }
                 store.writeMedia(id) { out ->
                     body.byteStream().use { input ->

@@ -28,6 +28,9 @@ import java.util.UUID
 class VaultMissingException : ProblemException(Problem.Code.NO_VAULT)
 class VaultLockedException : ProblemException(Problem.Code.VAULT_LOCKED)
 
+/** A download or import longer than [VaultStore.MAX_MEDIA_BYTES]: stopped where it stood. */
+class MediaTooLargeException : ProblemException(Problem.Code.TOO_LARGE)
+
 /**
  * The vault's contents. Every item is three sealed files named by a random id:
  * `media/<id>`, `thumbs/<id>` and `meta/<id>`. The meta files are the source of truth;
@@ -106,6 +109,16 @@ class VaultStore(
 
     fun newId(): String = UUID.randomUUID().toString()
 
+    /**
+     * An id names a file in the vault's folders; only the UUIDs the app makes are accepted, so a
+     * forged meta file, sealed to the public key that sits in clear in the header, cannot name
+     * a path outside them.
+     */
+    private fun checkId(id: String): String {
+        if (!ID.matches(id)) throw IllegalArgumentException("not a vault id")
+        return id
+    }
+
     fun containsPost(sourceId: String, postId: Long): Boolean =
         _items.value.any { it.postId == postId && it.sourceId == sourceId }
 
@@ -117,6 +130,7 @@ class VaultStore(
 
     /** Seals what [block] writes as the media of item [id]. Returns the plaintext size. */
     suspend fun writeMedia(id: String, block: suspend (OutputStream) -> Unit): Long = withContext(Dispatchers.IO) {
+        checkId(id)
         cleaned.await()
         inFlight.incrementAndGet()
         try {
@@ -125,7 +139,7 @@ class VaultStore(
             val part = File(mediaDir, "$id.part")
             try {
                 val sealed = SealedOutputStream(part.outputStream().buffered(256 * 1024), recipient)
-                sealed.use { block(it) }
+                sealed.use { block(CappedOutputStream(it, MAX_MEDIA_BYTES)) }
                 if (!part.renameTo(File(mediaDir, id))) throw IOException("cannot store media")
                 sealed.bytesWritten
             } catch (e: Throwable) {
@@ -138,6 +152,7 @@ class VaultStore(
     }
 
     suspend fun writeThumbnail(id: String, jpeg: ByteArray) = withContext(Dispatchers.IO) {
+        checkId(id)
         cleaned.await()
         inFlight.incrementAndGet()
         try {
@@ -152,6 +167,7 @@ class VaultStore(
 
     /** Makes an item whose media is already written visible. */
     suspend fun commit(item: VaultItem) = withContext(Dispatchers.IO) {
+        checkId(item.id)
         cleaned.await()
         inFlight.incrementAndGet()
         try {
@@ -172,6 +188,7 @@ class VaultStore(
 
     /** Removes whatever was written for an item that will not be committed. */
     fun discard(id: String) {
+        checkId(id)
         File(metaDir, id).delete()
         File(mediaDir, id).delete()
         File(mediaDir, "$id.part").delete()
@@ -180,6 +197,7 @@ class VaultStore(
 
     suspend fun delete(ids: Set<String>) = withContext(Dispatchers.IO) {
         mutex.withLock {
+            ids.forEach(::checkId)
             // Meta first: an item without meta is gone even if the rest outlives a crash.
             ids.forEach { File(metaDir, it).delete() }
             ids.forEach { discard(it) }
@@ -189,9 +207,9 @@ class VaultStore(
         }
     }
 
-    fun openMedia(id: String): SealedFile = SealedFile(File(mediaDir, id), requireKeys())
+    fun openMedia(id: String): SealedFile = SealedFile(File(mediaDir, checkId(id)), requireKeys())
 
-    fun openThumbnail(id: String): SealedFile = SealedFile(File(thumbDir, id), requireKeys())
+    fun openThumbnail(id: String): SealedFile = SealedFile(File(thumbDir, checkId(id)), requireKeys())
 
     fun item(id: String): VaultItem? = _items.value.firstOrNull { it.id == id }
 
@@ -224,6 +242,8 @@ class VaultStore(
             } catch (e: Exception) {
                 continue
             }
+            // The item must be the file it sits in: a meta file naming another id is not trusted.
+            if (item.id != id || !ID.matches(id)) continue
             val postKey = item.postKey()
             val md5 = item.md5?.lowercase()
             if ((postKey != null && postKey in seenPosts) || (md5 != null && md5 in seenMd5)) {
@@ -261,4 +281,28 @@ class VaultStore(
     }
 
     private fun VaultItem.postKey(): String? = if (sourceId != null && postId != null) "$sourceId/$postId" else null
+
+    companion object {
+        /** The most one media file may hold; a download or import past it is dropped. */
+        const val MAX_MEDIA_BYTES = 2L shl 30
+
+        private val ID = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+    }
+}
+
+/** Passes bytes through up to [max] in all, then refuses the rest. */
+private class CappedOutputStream(private val out: OutputStream, private val max: Long) : OutputStream() {
+    private var written = 0L
+
+    override fun write(b: Int) = write(byteArrayOf(b.toByte()), 0, 1)
+
+    override fun write(b: ByteArray, off: Int, len: Int) {
+        written += len
+        if (written > max) throw MediaTooLargeException()
+        out.write(b, off, len)
+    }
+
+    override fun flush() = out.flush()
+
+    override fun close() = out.close()
 }

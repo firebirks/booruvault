@@ -21,9 +21,11 @@ data class RekeyProgress(val done: Int, val total: Int)
 /**
  * After a password change, re-seals every file to the new key pair. Runs whenever the vault is
  * unlocked and still holds a retired pair; locking stops it and the next unlock resumes it, so
- * a crash or an auto-lock midway costs nothing. Once a full pass finds nothing sealed to a
- * retired pair, and no write that may have begun under the old pair is still in flight, the
- * retired pairs are dropped from the header.
+ * a crash or an auto-lock midway costs nothing. Once two full passes in a row find nothing
+ * sealed to a retired pair and nothing that fails to open, and no write that may have begun
+ * under the old pair is still in flight, the retired pairs are dropped from the header. A file
+ * that fails to open is not taken for re-sealed: it is tried again on the next passes, and only
+ * after [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key.
  */
 class VaultRekeyer(
     private val root: File,
@@ -48,22 +50,39 @@ class VaultRekeyer(
         }
     }
 
+    private enum class Outcome { RESEALED, CURRENT, FAILED }
+
     private suspend fun run(keys: VaultKeys) {
         val started = System.currentTimeMillis()
         root.walkTopDown().filter { it.isFile && it.name.endsWith(SUFFIX) }.forEach { it.delete() }
+        val failures = HashMap<String, Int>()
+        var cleanPasses = 0
         while (true) {
             val files = candidates()
             var done = 0
             var resealed = 0
+            var failed = 0
             _progress.value = RekeyProgress(0, files.size)
             for (file in files) {
                 currentCoroutineContext().ensureActive()
-                if (reseal(file, keys)) resealed++
+                when (reseal(file, keys)) {
+                    Outcome.RESEALED -> {
+                        resealed++
+                        failures.remove(file.path)
+                    }
+                    Outcome.CURRENT -> failures.remove(file.path)
+                    Outcome.FAILED -> {
+                        val count = (failures[file.path] ?: 0) + 1
+                        failures[file.path] = count
+                        if (count < GIVE_UP_AFTER) failed++
+                    }
+                }
                 done++
                 _progress.value = RekeyProgress(done, files.size)
             }
+            cleanPasses = if (resealed == 0 && failed == 0) cleanPasses + 1 else 0
             // A write that read the old recipient just before the header changed may still land.
-            val settled = resealed == 0 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
+            val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
             if (settled) {
                 vault.retireFinished()
                 return
@@ -82,15 +101,15 @@ class VaultRekeyer(
         return items + blobs
     }
 
-    /** Re-seals [file] if a retired pair sealed it. False when it is current, gone, or unreadable. */
-    private fun reseal(file: File, keys: VaultKeys): Boolean {
+    /** Re-seals [file] if a retired pair sealed it; tells a current file from one that would not open. */
+    private fun reseal(file: File, keys: VaultKeys): Outcome {
         val sealed = try {
             SealedFile(file, keys)
         } catch (e: Exception) {
-            return false
+            return if (file.isFile) Outcome.FAILED else Outcome.CURRENT
         }
         sealed.use { source ->
-            if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded)) return false
+            if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded)) return Outcome.CURRENT
             val modified = file.lastModified()
             val length = file.length()
             val tmp = File(file.path + SUFFIX)
@@ -112,12 +131,12 @@ class VaultRekeyer(
                 val unchanged = file.isFile && file.lastModified() == modified && file.length() == length
                 if (!unchanged || !tmp.renameTo(file)) {
                     tmp.delete()
-                    return false
+                    return Outcome.FAILED
                 }
-                return true
+                return Outcome.RESEALED
             } catch (e: Exception) {
                 tmp.delete()
-                return false
+                return Outcome.FAILED
             }
         }
     }
@@ -125,5 +144,6 @@ class VaultRekeyer(
     private companion object {
         const val SUFFIX = ".rekey"
         const val GRACE_MS = 2000L
+        const val GIVE_UP_AFTER = 5
     }
 }

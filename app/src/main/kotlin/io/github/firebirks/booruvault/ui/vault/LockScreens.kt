@@ -53,7 +53,7 @@ import io.github.firebirks.booruvault.vault.VaultManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-const val MIN_PASSWORD = 6
+const val MIN_PASSWORD = 8
 
 /**
  * Asks for a fingerprint and stores a biometric copy of the vault key. [scope] must outlive the
