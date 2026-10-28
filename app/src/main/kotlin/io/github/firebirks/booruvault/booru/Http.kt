@@ -19,6 +19,7 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -41,7 +42,7 @@ suspend fun OkHttpClient.getText(request: Request, json: Json): String = withCon
         throw BooruException(Problem.Code.NETWORK, e.message ?: e.javaClass.simpleName, e)
     }
     response.use {
-        val body = it.body.string()
+        val body = it.body.utf8UpTo(MAX_TEXT_BODY) ?: throw BooruFormatException(Problem.Code.BAD_RESPONSE)
         if (isChallenge(it, body)) throw BooruChallengeException(request.url.toString())
         if (!it.isSuccessful) {
             // Danbooru and Moebooru explain refusals in a JSON body; that beats a status code.
@@ -64,6 +65,21 @@ suspend fun OkHttpClient.getText(request: Request, json: Json): String = withCon
         }
         body
     }
+}
+
+/** The most a page or API answer may weigh: a list page is tens of kilobytes, never megabytes. */
+const val MAX_TEXT_BODY = 8L shl 20
+
+/** The body as text, or null when it is longer than [max] bytes: a site that big is not read. */
+fun ResponseBody.utf8UpTo(max: Long): String? = bytesUpTo(max)?.decodeToString()
+
+/**
+ * The body as bytes, or null when it is longer than [max]: the body is read no further, so a
+ * hostile or broken site cannot fill the memory with a single answer.
+ */
+fun ResponseBody.bytesUpTo(max: Long): ByteArray? {
+    if (contentLength() > max) return null
+    return source().use { source -> if (source.request(max + 1)) null else source.readByteArray() }
 }
 
 /** GETs JSON. Null for an empty body. */

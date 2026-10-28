@@ -8,6 +8,7 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.USER_AGENT
 import io.github.firebirks.booruvault.booru.await
+import io.github.firebirks.booruvault.booru.bytesUpTo
 import io.github.firebirks.booruvault.booru.extensionFromUrl
 import io.github.firebirks.booruvault.settings.AppSettings
 import io.github.firebirks.booruvault.settings.SettingsRepository
@@ -392,7 +393,7 @@ class DownloadManager(
             val hasThumb = post.previewUrl?.let { preview ->
                 runCatching {
                     client.newCall(request(preview, task.source)).await().use { r ->
-                        if (r.isSuccessful) r.body.bytes().takeIf { it.size in 1..(4 shl 20) } else null
+                        if (r.isSuccessful) r.body.bytesUpTo(MAX_THUMBNAIL)?.takeIf { it.isNotEmpty() } else null
                     }
                 }.getOrNull()?.let { bytes ->
                     try {
@@ -440,6 +441,11 @@ class DownloadManager(
             val problem = e.toProblem()
             set(key) { it.copy(status = DownloadStatus.FAILED, problem = problem) }
         }
+    }
+
+    private companion object {
+        /** A preview is a small JPEG; anything larger is not worth keeping as one. */
+        const val MAX_THUMBNAIL = 4L shl 20
     }
 
     private fun request(url: String, source: BooruSource): Request = Request.Builder().url(url)
