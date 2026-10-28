@@ -10,13 +10,15 @@ SourceCode: https://github.com/firebirks/booruvault
 IssueTracker: https://github.com/firebirks/booruvault/issues
 Changelog: https://github.com/firebirks/booruvault/releases
 
+AutoName: BooruVault
+
 RepoType: git
 Repo: https://github.com/firebirks/booruvault.git
 
 Builds:
   - versionName: 0.1.0
     versionCode: 1
-    commit: v0.1.0
+    commit: 461081b40858e9f9fb6c1cf85b34e6a3e9fe30f8
     subdir: app
     gradle:
       - yes
