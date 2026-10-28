@@ -3,6 +3,7 @@
     <string name="problem_network">Ошибка сети: %1$s</string>
     <string name="problem_tor_unreachable">Tor недоступен: проверьте, что Orbot запущен.</string>
     <string name="problem_tor_dns_blocked">Локальный DNS-запрос заблокирован: при включённом Tor имена разрешаются только через Tor.</string>
+    <string name="problem_tor_unverified">Выход Tor ещё не проверен: проверяется, действительно ли соединения выходят через Tor.</string>
     <string name="problem_challenge">Сайт требует антибот-проверку (Cloudflare): пройдите её во встроенном браузере.</string>
     <string name="problem_access_denied">Доступ запрещён (%1$s): этому источнику могут требоваться вход и API-ключ.</string>
     <string name="problem_not_found">Адрес не найден (404): проверьте URL и тип движка.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Изображение не найдено на странице поста.</string>
     <string name="problem_unrecognised_pages">Не удалось распознать веб-страницы сайта.</string>
     <string name="problem_no_file">Нет доступного файла.</string>
+    <string name="problem_too_large">Файл больше предела в 2 ГБ.</string>
     <string name="problem_already_in_vault">Уже в хранилище</string>
     <string name="problem_no_vault">Сначала создайте хранилище.</string>
     <string name="problem_vault_locked">Хранилище заблокировано.</string>
@@ -250,6 +252,8 @@
     <string name="challenge_title">Проверка безопасности</string>
     <string name="action_done">Готово</string>
     <string name="browser_hint">Войдите в аккаунт, пройдите проверки или измените настройки сайта (напр. «Display all site content» на Gelbooru), затем нажмите «Готово»: cookie сайта сохранятся в хранилище в зашифрованном виде.</string>
+    <string name="browser_blocked_outside">Этот браузер остаётся на %1$s: ссылка на другой сайт не открыта.</string>
+    <string name="browser_tor_unverified">Tor включён, но ещё не проверен: браузер откроется, когда проверка подтвердит, что соединения выходят через Tor.</string>
     <string name="challenge_hint">Сайт хочет убедиться, что вы человек. Пройдите проверку ниже: как только страница сайта откроется нормально, BooruVault сам повторит попытку.</string>
     <string name="browser_tor_unsupported">При включённом Tor встроенный браузер не открывается: WebView на этом телефоне нельзя полностью направить через Tor. Обновите «Android System WebView».</string>
     <string name="notification_channel">Загрузки</string>

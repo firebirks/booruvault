@@ -3,6 +3,7 @@
     <string name="problem_network">ข้อผิดพลาดของเครือข่าย: %1$s</string>
     <string name="problem_tor_unreachable">เชื่อมต่อ Tor ไม่ได้: ตรวจสอบว่า Orbot ทำงานอยู่</string>
     <string name="problem_tor_dns_blocked">บล็อกการค้นหา DNS ในเครื่องแล้ว: เมื่อเปิด Tor ชื่อโดเมนจะถูกแปลงผ่าน Tor เท่านั้น</string>
+    <string name="problem_tor_unverified">ยังไม่ได้ยืนยันทางออก Tor: กำลังตรวจสอบว่าการเชื่อมต่อออกผ่าน Tor จริง</string>
     <string name="problem_challenge">เว็บไซต์ต้องการให้ผ่านการตรวจสอบป้องกันบอท (Cloudflare): ทำให้เสร็จในเบราว์เซอร์ในตัว</string>
     <string name="problem_access_denied">การเข้าถึงถูกปฏิเสธ (%1$s): แหล่งที่มานี้อาจต้องเข้าสู่ระบบและใช้คีย์ API</string>
     <string name="problem_not_found">ไม่พบที่อยู่ (404): ตรวจสอบ URL และประเภทเอนจิน</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">ไม่พบรูปภาพในหน้าโพสต์</string>
     <string name="problem_unrecognised_pages">ไม่รู้จักรูปแบบหน้าเว็บของเว็บไซต์นี้</string>
     <string name="problem_no_file">ไม่มีไฟล์ให้ใช้</string>
+    <string name="problem_too_large">ไฟล์ใหญ่กว่าขีดจำกัด 2 GB</string>
     <string name="problem_already_in_vault">อยู่ในคลังนิรภัยแล้ว</string>
     <string name="problem_no_vault">สร้างคลังนิรภัยก่อน</string>
     <string name="problem_vault_locked">คลังนิรภัยถูกล็อกอยู่</string>
@@ -235,6 +237,8 @@
     <string name="challenge_title">การตรวจสอบความปลอดภัย</string>
     <string name="action_done">เสร็จสิ้น</string>
     <string name="browser_hint">เข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ (เช่น “Display all site content” บน Gelbooru) จากนั้นแตะ “เสร็จสิ้น”: คุกกี้ของเว็บไซต์จะถูกเข้ารหัสและบันทึกไว้ในคลังนิรภัย</string>
+    <string name="browser_blocked_outside">เบราว์เซอร์นี้อยู่บน %1$s เท่านั้น: ไม่ได้เปิดลิงก์ไปยังเว็บไซต์อื่น</string>
+    <string name="browser_tor_unverified">Tor เปิดอยู่แต่ยังไม่ได้ยืนยัน: เบราว์เซอร์จะเปิดเมื่อการตรวจสอบยืนยันว่าการเชื่อมต่อออกผ่าน Tor</string>
     <string name="challenge_hint">เว็บไซต์ต้องการตรวจสอบว่าคุณเป็นมนุษย์ ทำการตรวจสอบด้านล่างให้เสร็จ: เมื่อหน้าเว็บของเว็บไซต์เปิดได้ตามปกติ BooruVault จะลองใหม่เอง</string>
     <string name="browser_tor_unsupported">เมื่อเปิด Tor อยู่ เบราว์เซอร์ในตัวจะไม่เปิด: WebView ของโทรศัพท์เครื่องนี้ไม่สามารถส่งการรับส่งข้อมูลทั้งหมดผ่าน Tor ได้ อัปเดต “Android System WebView”</string>
     <string name="notification_channel">ดาวน์โหลด</string>

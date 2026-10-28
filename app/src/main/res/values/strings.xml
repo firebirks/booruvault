@@ -4,6 +4,7 @@
     <string name="problem_network">Network error: %1$s</string>
     <string name="problem_tor_unreachable">Tor is unreachable: check that Orbot is running.</string>
     <string name="problem_tor_dns_blocked">Local DNS lookup blocked: with Tor on, names are resolved only through Tor.</string>
+    <string name="problem_tor_unverified">Tor exit not verified yet: checking that connections really leave through Tor.</string>
     <string name="problem_challenge">The site asks for an anti-bot check (Cloudflare): complete it in the built-in browser.</string>
     <string name="problem_access_denied">Access denied (%1$s): this source may need a login and an API key.</string>
     <string name="problem_not_found">Address not found (404): check the URL and the engine type.</string>
@@ -19,6 +20,7 @@
     <string name="problem_no_image_on_page">Image not found on the post page.</string>
     <string name="problem_unrecognised_pages">The site\'s web pages were not recognised.</string>
     <string name="problem_no_file">No file available.</string>
+    <string name="problem_too_large">The file is larger than the 2 GB limit.</string>
     <string name="problem_already_in_vault">Already in the vault</string>
     <string name="problem_no_vault">Create the vault first.</string>
     <string name="problem_vault_locked">The vault is locked.</string>
@@ -246,6 +248,8 @@
     <string name="challenge_title">Security check</string>
     <string name="action_done">Done</string>
     <string name="browser_hint">Log in, pass the checks or change the site\'s preferences (e.g. “Display all site content” on Gelbooru), then tap Done: the site\'s cookies are saved encrypted in the vault.</string>
+    <string name="browser_blocked_outside">This browser stays on %1$s: a link to another site was not opened.</string>
+    <string name="browser_tor_unverified">Tor is on but not yet verified: the browser opens once a check confirms that connections leave through Tor.</string>
     <string name="challenge_hint">The site wants to check that you are a person. Complete the check below: once the site\'s page opens normally, BooruVault tries again by itself.</string>
     <string name="browser_tor_unsupported">With Tor on, the built-in browser does not open: this phone\'s WebView cannot be routed entirely through Tor. Update “Android System WebView”.</string>
     <string name="notification_channel">Downloads</string>

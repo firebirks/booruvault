@@ -3,6 +3,7 @@
     <string name="problem_network">Erro de rede: %1$s</string>
     <string name="problem_tor_unreachable">Não foi possível alcançar o Tor: verifique se o Orbot está em execução.</string>
     <string name="problem_tor_dns_blocked">Consulta DNS local bloqueada: com o Tor ativado, os nomes são resolvidos apenas pelo Tor.</string>
+    <string name="problem_tor_unverified">Saída do Tor ainda não verificada: verificando se as conexões realmente saem pelo Tor.</string>
     <string name="problem_challenge">O site pede uma verificação antibot (Cloudflare): conclua-a no navegador integrado.</string>
     <string name="problem_access_denied">Acesso negado (%1$s): esta fonte pode exigir login e uma chave de API.</string>
     <string name="problem_not_found">Endereço não encontrado (404): verifique a URL e o tipo de motor.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Imagem não encontrada na página do post.</string>
     <string name="problem_unrecognised_pages">As páginas web do site não foram reconhecidas.</string>
     <string name="problem_no_file">Nenhum arquivo disponível.</string>
+    <string name="problem_too_large">O arquivo excede o limite de 2 GB.</string>
     <string name="problem_already_in_vault">Já está no cofre</string>
     <string name="problem_no_vault">Crie o cofre primeiro.</string>
     <string name="problem_vault_locked">O cofre está bloqueado.</string>
@@ -245,6 +247,8 @@
     <string name="challenge_title">Verificação de segurança</string>
     <string name="action_done">Concluído</string>
     <string name="browser_hint">Faça login, passe pelas verificações ou altere as preferências do site (por exemplo, “Display all site content” no Gelbooru) e depois toque em Concluído: os cookies do site são salvos criptografados no cofre.</string>
+    <string name="browser_blocked_outside">Este navegador fica em %1$s: um link para outro site não foi aberto.</string>
+    <string name="browser_tor_unverified">O Tor está ligado mas ainda não verificado: o navegador abre quando uma verificação confirmar que as conexões saem pelo Tor.</string>
     <string name="challenge_hint">O site quer verificar se você é uma pessoa. Conclua a verificação abaixo: assim que a página do site abrir normalmente, o BooruVault tentará de novo automaticamente.</string>
     <string name="browser_tor_unsupported">Com o Tor ativado, o navegador integrado não abre: a WebView deste telefone não pode ser roteada totalmente pelo Tor. Atualize o “Android System WebView”.</string>
     <string name="notification_channel">Downloads</string>

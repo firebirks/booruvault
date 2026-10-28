@@ -3,6 +3,7 @@
     <string name="problem_network">नेटवर्क त्रुटि: %1$s</string>
     <string name="problem_tor_unreachable">Tor तक नहीं पहुंचा जा सका: जांचें कि Orbot चल रहा है।</string>
     <string name="problem_tor_dns_blocked">लोकल DNS लुकअप ब्लॉक किया गया: Tor चालू होने पर नाम केवल Tor के ज़रिए रिज़ॉल्व होते हैं।</string>
+    <string name="problem_tor_unverified">Tor निकास अभी सत्यापित नहीं: जाँच हो रही है कि कनेक्शन सच में Tor से बाहर जाते हैं।</string>
     <string name="problem_challenge">साइट एंटी-बॉट जांच (Cloudflare) मांग रही है: इसे बिल्ट-इन ब्राउज़र में पूरा करें।</string>
     <string name="problem_access_denied">ऐक्सेस अस्वीकार (%1$s): इस स्रोत के लिए लॉग इन और API कुंजी की ज़रूरत हो सकती है।</string>
     <string name="problem_not_found">पता नहीं मिला (404): URL और इंजन का प्रकार जांचें।</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">पोस्ट के पेज पर इमेज नहीं मिली।</string>
     <string name="problem_unrecognised_pages">साइट के वेब पेज पहचाने नहीं जा सके।</string>
     <string name="problem_no_file">कोई फ़ाइल उपलब्ध नहीं है।</string>
+    <string name="problem_too_large">फ़ाइल 2 GB की सीमा से बड़ी है।</string>
     <string name="problem_already_in_vault">पहले से तिजोरी में है</string>
     <string name="problem_no_vault">पहले तिजोरी बनाएं।</string>
     <string name="problem_vault_locked">तिजोरी लॉक है।</string>
@@ -240,6 +242,8 @@
     <string name="challenge_title">सुरक्षा जांच</string>
     <string name="action_done">हो गया</string>
     <string name="browser_hint">लॉग इन करें, जांचें पास करें या साइट की प्राथमिकताएं बदलें (जैसे Gelbooru पर “Display all site content”), फिर हो गया पर टैप करें: साइट की कुकी तिजोरी में एन्क्रिप्ट करके सेव की जाती हैं।</string>
+    <string name="browser_blocked_outside">यह ब्राउज़र %1$s पर ही रहता है: दूसरी साइट का लिंक नहीं खोला गया।</string>
+    <string name="browser_tor_unverified">Tor चालू है पर अभी सत्यापित नहीं: जाँच से पुष्टि होने पर कि कनेक्शन Tor से बाहर जाते हैं, ब्राउज़र खुलेगा।</string>
     <string name="challenge_hint">साइट यह जांचना चाहती है कि आप इंसान हैं। नीचे दी गई जांच पूरी करें: जब साइट का पेज सामान्य रूप से खुल जाएगा, तो BooruVault अपने आप फिर से कोशिश करेगा।</string>
     <string name="browser_tor_unsupported">Tor चालू होने पर बिल्ट-इन ब्राउज़र नहीं खुलता: इस फ़ोन के WebView को पूरी तरह Tor से होकर नहीं भेजा जा सकता। “Android System WebView” अपडेट करें।</string>
     <string name="notification_channel">डाउनलोड</string>

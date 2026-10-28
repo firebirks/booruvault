@@ -3,6 +3,7 @@
     <string name="problem_network">Kesalahan jaringan: %1$s</string>
     <string name="problem_tor_unreachable">Tor tidak dapat dijangkau: pastikan Orbot sedang berjalan.</string>
     <string name="problem_tor_dns_blocked">Pencarian DNS lokal diblokir: saat Tor aktif, nama domain hanya diterjemahkan melalui Tor.</string>
+    <string name="problem_tor_unverified">Keluaran Tor belum diverifikasi: memeriksa bahwa koneksi benar-benar keluar lewat Tor.</string>
     <string name="problem_challenge">Situs meminta pemeriksaan anti-bot (Cloudflare): selesaikan di browser bawaan.</string>
     <string name="problem_access_denied">Akses ditolak (%1$s): sumber ini mungkin memerlukan login dan kunci API.</string>
     <string name="problem_not_found">Alamat tidak ditemukan (404): periksa URL dan jenis mesin.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Gambar tidak ditemukan di halaman postingan.</string>
     <string name="problem_unrecognised_pages">Halaman web situs tidak dikenali.</string>
     <string name="problem_no_file">Tidak ada file yang tersedia.</string>
+    <string name="problem_too_large">Berkas melebihi batas 2 GB.</string>
     <string name="problem_already_in_vault">Sudah ada di brankas</string>
     <string name="problem_no_vault">Buat brankas terlebih dahulu.</string>
     <string name="problem_vault_locked">Brankas terkunci.</string>
@@ -235,6 +237,8 @@
     <string name="challenge_title">Pemeriksaan keamanan</string>
     <string name="action_done">Selesai</string>
     <string name="browser_hint">Login, lolos pemeriksaan, atau ubah preferensi situs (mis. “Display all site content” di Gelbooru), lalu ketuk Selesai: cookie situs disimpan terenkripsi di brankas.</string>
+    <string name="browser_blocked_outside">Peramban ini tetap di %1$s: tautan ke situs lain tidak dibuka.</string>
+    <string name="browser_tor_unverified">Tor aktif tetapi belum diverifikasi: peramban terbuka setelah pemeriksaan memastikan koneksi keluar lewat Tor.</string>
     <string name="challenge_hint">Situs ingin memastikan bahwa Anda manusia. Selesaikan pemeriksaan di bawah: setelah halaman situs terbuka seperti biasa, BooruVault akan mencoba lagi secara otomatis.</string>
     <string name="browser_tor_unsupported">Saat Tor aktif, browser bawaan tidak dapat dibuka: WebView di ponsel ini tidak dapat dirutekan sepenuhnya melalui Tor. Perbarui “Android System WebView”.</string>
     <string name="notification_channel">Unduhan</string>

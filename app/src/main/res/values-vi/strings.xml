@@ -3,6 +3,7 @@
     <string name="problem_network">Lỗi mạng: %1$s</string>
     <string name="problem_tor_unreachable">Không kết nối được tới Tor: hãy kiểm tra xem Orbot có đang chạy không.</string>
     <string name="problem_tor_dns_blocked">Đã chặn tra cứu DNS cục bộ: khi bật Tor, tên miền chỉ được phân giải qua Tor.</string>
+    <string name="problem_tor_unverified">Lối ra Tor chưa được xác minh: đang kiểm tra kết nối có thật sự đi ra qua Tor.</string>
     <string name="problem_challenge">Trang web yêu cầu kiểm tra chống bot (Cloudflare): hãy hoàn tất trong trình duyệt tích hợp.</string>
     <string name="problem_access_denied">Truy cập bị từ chối (%1$s): nguồn này có thể cần đăng nhập và khóa API.</string>
     <string name="problem_not_found">Không tìm thấy địa chỉ (404): hãy kiểm tra URL và loại nền tảng.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Không tìm thấy hình ảnh trên trang bài đăng.</string>
     <string name="problem_unrecognised_pages">Không nhận dạng được các trang của trang web này.</string>
     <string name="problem_no_file">Không có tệp nào.</string>
+    <string name="problem_too_large">Tệp lớn hơn giới hạn 2 GB.</string>
     <string name="problem_already_in_vault">Đã có trong kho</string>
     <string name="problem_no_vault">Hãy tạo kho trước.</string>
     <string name="problem_vault_locked">Kho đang bị khóa.</string>
@@ -235,6 +237,8 @@
     <string name="challenge_title">Kiểm tra bảo mật</string>
     <string name="action_done">Xong</string>
     <string name="browser_hint">Đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web (vd. “Display all site content” trên Gelbooru), rồi nhấn “Xong”: cookie của trang web được mã hóa và lưu trong kho.</string>
+    <string name="browser_blocked_outside">Trình duyệt này ở lại %1$s: liên kết đến trang khác không được mở.</string>
+    <string name="browser_tor_unverified">Tor đang bật nhưng chưa được xác minh: trình duyệt mở khi kiểm tra xác nhận kết nối đi ra qua Tor.</string>
     <string name="challenge_hint">Trang web muốn xác minh rằng bạn là người. Hãy hoàn tất kiểm tra bên dưới: khi trang web mở bình thường, BooruVault sẽ tự thử lại.</string>
     <string name="browser_tor_unsupported">Khi bật Tor, trình duyệt tích hợp không mở được: WebView trên điện thoại này không thể định tuyến hoàn toàn qua Tor. Hãy cập nhật “Android System WebView”.</string>
     <string name="notification_channel">Tải xuống</string>

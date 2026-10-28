@@ -3,6 +3,7 @@
     <string name="problem_network">خطأ في الشبكة: %1$s</string>
     <string name="problem_tor_unreachable">يتعذّر الوصول إلى Tor: تأكّد من أن Orbot قيد التشغيل.</string>
     <string name="problem_tor_dns_blocked">تم حظر استعلام DNS المحلي: عند تفعيل Tor، لا تُحَلّ أسماء النطاقات إلا عبر Tor.</string>
+    <string name="problem_tor_unverified">لم يُتحقق من مخرج Tor بعد: يجري التأكد من أن الاتصالات تخرج فعلًا عبر Tor.</string>
     <string name="problem_challenge">يطلب الموقع تحققًا مضادًا للروبوتات (Cloudflare): أكمله في المتصفح المدمج.</string>
     <string name="problem_access_denied">تم رفض الوصول (%1$s): قد يتطلب هذا المصدر تسجيل الدخول ومفتاح API.</string>
     <string name="problem_not_found">العنوان غير موجود (404): تحقّق من عنوان URL ونوع المحرّك.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">لم يتم العثور على الصورة في صفحة المنشور.</string>
     <string name="problem_unrecognised_pages">تعذّر التعرّف على صفحات الويب الخاصة بالموقع.</string>
     <string name="problem_no_file">لا يتوفر أي ملف.</string>
+    <string name="problem_too_large">الملف أكبر من حد 2 غيغابايت.</string>
     <string name="problem_already_in_vault">موجود بالفعل في الخزنة</string>
     <string name="problem_no_vault">أنشئ الخزنة أولًا.</string>
     <string name="problem_vault_locked">الخزنة مقفلة.</string>
@@ -260,6 +262,8 @@
     <string name="challenge_title">تحقق أمني</string>
     <string name="action_done">تم</string>
     <string name="browser_hint">سجّل الدخول أو اجتز عمليات التحقق أو غيّر تفضيلات الموقع (مثل «Display all site content» على Gelbooru)، ثم انقر على «تم»: تُحفظ ملفات تعريف الارتباط الخاصة بالموقع مشفّرة في الخزنة.</string>
+    <string name="browser_blocked_outside">يبقى هذا المتصفح على %1$s: لم يُفتح رابط إلى موقع آخر.</string>
+    <string name="browser_tor_unverified">Tor مفعّل لكنه لم يُتحقق منه بعد: يفتح المتصفح عندما يؤكد فحص أن الاتصالات تخرج عبر Tor.</string>
     <string name="challenge_hint">يريد الموقع التحقق من أنك إنسان. أكمل التحقق أدناه: بمجرد أن تُفتح صفحة الموقع بشكل طبيعي، سيعيد BooruVault المحاولة تلقائيًا.</string>
     <string name="browser_tor_unsupported">عند تفعيل Tor، لا يُفتح المتصفح المدمج: لا يمكن توجيه WebView في هذا الهاتف بالكامل عبر Tor. حدّث «Android System WebView».</string>
     <string name="notification_channel">التنزيلات</string>

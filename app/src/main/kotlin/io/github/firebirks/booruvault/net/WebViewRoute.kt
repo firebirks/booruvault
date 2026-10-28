@@ -27,6 +27,11 @@ object WebViewRoute {
         ) {
             return Result.failure(IllegalStateException("WebView cannot be routed entirely through Tor"))
         }
+        // The same rule as the HTTP client: a SOCKS listener is not Tor until the exit check says so.
+        if (!tor.verified) {
+            tor.refreshStatus()
+            return Result.failure(TorUnverifiedException())
+        }
         // socks5:// lets Tor resolve host names; no direct rule, so nothing goes around it.
         val config = ProxyConfig.Builder().addProxyRule("socks5://127.0.0.1:${tor.state.value.socksPort}").build()
         suspendCancellableCoroutine { cont ->

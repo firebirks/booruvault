@@ -3,6 +3,7 @@
     <string name="problem_network">Netwerkfout: %1$s</string>
     <string name="problem_tor_unreachable">Tor is niet bereikbaar: controleer of Orbot actief is.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-opzoeking geblokkeerd: met Tor aan worden namen alleen via Tor omgezet.</string>
+    <string name="problem_tor_unverified">Tor-uitgang nog niet gecontroleerd: er wordt gecontroleerd of verbindingen echt via Tor naar buiten gaan.</string>
     <string name="problem_challenge">De site vraagt om een anti-botcontrole (Cloudflare): voltooi die in de ingebouwde browser.</string>
     <string name="problem_access_denied">Toegang geweigerd (%1$s): deze bron heeft mogelijk een login en een API-sleutel nodig.</string>
     <string name="problem_not_found">Adres niet gevonden (404): controleer de URL en het enginetype.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Afbeelding niet gevonden op de pagina van de post.</string>
     <string name="problem_unrecognised_pages">De webpagina\'s van de site werden niet herkend.</string>
     <string name="problem_no_file">Geen bestand beschikbaar.</string>
+    <string name="problem_too_large">Het bestand is groter dan de limiet van 2 GB.</string>
     <string name="problem_already_in_vault">Al in de kluis</string>
     <string name="problem_no_vault">Maak eerst de kluis aan.</string>
     <string name="problem_vault_locked">De kluis is vergrendeld.</string>
@@ -240,6 +242,8 @@
     <string name="challenge_title">Beveiligingscontrole</string>
     <string name="action_done">Klaar</string>
     <string name="browser_hint">Log in, doorsta de controles of wijzig de voorkeuren van de site (bijv. ‘Display all site content’ op Gelbooru) en tik daarna op Klaar: de cookies van de site worden versleuteld in de kluis opgeslagen.</string>
+    <string name="browser_blocked_outside">Deze browser blijft op %1$s: een link naar een andere site is niet geopend.</string>
+    <string name="browser_tor_unverified">Tor staat aan maar is nog niet gecontroleerd: de browser opent zodra een controle bevestigt dat verbindingen via Tor naar buiten gaan.</string>
     <string name="challenge_hint">De site wil controleren of je een mens bent. Voltooi de controle hieronder: zodra de pagina van de site normaal opent, probeert BooruVault het vanzelf opnieuw.</string>
     <string name="browser_tor_unsupported">Met Tor aan opent de ingebouwde browser niet: de WebView van deze telefoon kan niet volledig via Tor worden geleid. Update ‘Android System WebView’.</string>
     <string name="notification_channel">Downloads</string>

@@ -12,9 +12,11 @@ import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.SecureCookieJar
+import io.github.firebirks.booruvault.net.TorExitGate
 import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.net.TorUnreachableException
+import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.vault.AutoLock
 import io.github.firebirks.booruvault.vault.VaultImageFetcher
@@ -77,6 +79,8 @@ class AppContainer(private val context: Context) {
         .proxySelector(tor.proxySelector)
         .dns(tor.dns)
         .cookieJar(cookies)
+        // Nothing leaves before the exit check says the SOCKS listener really is Tor.
+        .addInterceptor(TorExitGate({ tor.enabled }, { tor.verified }) { tor.refreshStatus() })
         .addInterceptor { chain ->
             val request = chain.request()
             // A site whose anti-bot check the user passed only honours the browser that passed it.
@@ -88,7 +92,7 @@ class AppContainer(private val context: Context) {
             try {
                 chain.proceed(builder.build())
             } catch (e: IOException) {
-                if (tor.enabled && !chain.call().isCanceled() && e !is TorUnreachableException) throw TorUnreachableException(e)
+                if (tor.enabled && !chain.call().isCanceled() && e !is TorUnreachableException && e !is TorUnverifiedException) throw TorUnreachableException(e)
                 throw e
             }
         }
@@ -115,6 +119,9 @@ class AppContainer(private val context: Context) {
     val autoLock = AutoLock(vault, settings, scope)
 
     init {
+        // The exit check needs the client, which needs the manager: wired here, then started.
+        tor.onVerifyNeeded = { scope.launch { tor.verify(http, json) } }
+        tor.refreshStatus()
         // Connections opened along the old route must not be reused along the new one. Closing
         // a TLS socket writes a close alert, which the main thread, where the switch is flipped,
         // is not allowed to do; until the pool is empty the route guard refuses the old ones.

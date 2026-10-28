@@ -3,6 +3,7 @@
     <string name="problem_network">Errore di rete: %1$s</string>
     <string name="problem_tor_unreachable">Tor non raggiungibile: controlla che Orbot sia attivo.</string>
     <string name="problem_tor_dns_blocked">Risoluzione DNS locale bloccata: con Tor attivo i nomi si risolvono solo attraverso Tor.</string>
+    <string name="problem_tor_unverified">Uscita Tor non ancora verificata: controllo che le connessioni escano davvero via Tor.</string>
     <string name="problem_challenge">Il sito chiede una verifica anti-bot (Cloudflare): completala nel browser integrato.</string>
     <string name="problem_access_denied">Accesso negato (%1$s): questa fonte potrebbe richiedere login e API key.</string>
     <string name="problem_not_found">Indirizzo non trovato (404): controlla l\'URL e il tipo di motore.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Immagine non trovata nella pagina del post.</string>
     <string name="problem_unrecognised_pages">Le pagine web del sito non sono state riconosciute.</string>
     <string name="problem_no_file">Nessun file disponibile.</string>
+    <string name="problem_too_large">Il file supera il limite di 2 GB.</string>
     <string name="problem_already_in_vault">Già nel vault</string>
     <string name="problem_no_vault">Crea prima il vault.</string>
     <string name="problem_vault_locked">Il vault è bloccato.</string>
@@ -245,6 +247,8 @@
     <string name="challenge_title">Verifica di sicurezza</string>
     <string name="action_done">Fatto</string>
     <string name="browser_hint">Accedi, supera le verifiche o cambia le preferenze del sito (es. «Display all site content» su Gelbooru), poi premi Fatto: i cookie del sito vengono salvati cifrati nel vault.</string>
+    <string name="browser_blocked_outside">Questo browser resta su %1$s: un link verso un altro sito non è stato aperto.</string>
+    <string name="browser_tor_unverified">Tor è attivo ma non ancora verificato: il browser si apre quando un controllo conferma che le connessioni escono via Tor.</string>
     <string name="challenge_hint">Il sito vuole verificare che tu sia una persona. Completa il controllo qui sotto: quando la pagina del sito si apre normalmente, BooruVault riprova da solo.</string>
     <string name="browser_tor_unsupported">Con Tor attivo il browser integrato non si apre: la WebView di questo telefono non permette di instradarla tutta attraverso Tor. Aggiorna «Android System WebView».</string>
     <string name="notification_channel">Download</string>

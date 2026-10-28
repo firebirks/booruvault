@@ -3,6 +3,7 @@
     <string name="problem_network">Błąd sieci: %1$s</string>
     <string name="problem_tor_unreachable">Tor jest nieosiągalny: sprawdź, czy Orbot działa.</string>
     <string name="problem_tor_dns_blocked">Zablokowano lokalne zapytanie DNS: gdy Tor jest włączony, nazwy są rozwiązywane wyłącznie przez Tor.</string>
+    <string name="problem_tor_unverified">Wyjście Tor jeszcze niezweryfikowane: trwa sprawdzanie, czy połączenia naprawdę wychodzą przez Tor.</string>
     <string name="problem_challenge">Witryna wymaga weryfikacji antybotowej (Cloudflare): ukończ ją we wbudowanej przeglądarce.</string>
     <string name="problem_access_denied">Odmowa dostępu (%1$s): to źródło może wymagać logowania i klucza API.</string>
     <string name="problem_not_found">Nie znaleziono adresu (404): sprawdź URL i typ silnika.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Nie znaleziono obrazu na stronie posta.</string>
     <string name="problem_unrecognised_pages">Nie rozpoznano stron WWW tej witryny.</string>
     <string name="problem_no_file">Brak dostępnego pliku.</string>
+    <string name="problem_too_large">Plik przekracza limit 2 GB.</string>
     <string name="problem_already_in_vault">Już w sejfie</string>
     <string name="problem_no_vault">Najpierw utwórz sejf.</string>
     <string name="problem_vault_locked">Sejf jest zablokowany.</string>
@@ -250,6 +252,8 @@
     <string name="challenge_title">Kontrola bezpieczeństwa</string>
     <string name="action_done">Gotowe</string>
     <string name="browser_hint">Zaloguj się, przejdź weryfikację lub zmień preferencje witryny (np. „Display all site content” na Gelbooru), a potem dotknij przycisku Gotowe: pliki cookie witryny zostaną zapisane w sejfie w postaci zaszyfrowanej.</string>
+    <string name="browser_blocked_outside">Ta przeglądarka zostaje na %1$s: link do innej witryny nie został otwarty.</string>
+    <string name="browser_tor_unverified">Tor jest włączony, ale jeszcze niezweryfikowany: przeglądarka otworzy się, gdy kontrola potwierdzi, że połączenia wychodzą przez Tor.</string>
     <string name="challenge_hint">Witryna chce sprawdzić, czy jesteś człowiekiem. Ukończ weryfikację poniżej: gdy strona witryny otworzy się normalnie, BooruVault samodzielnie spróbuje ponownie.</string>
     <string name="browser_tor_unsupported">Gdy Tor jest włączony, wbudowana przeglądarka się nie otwiera: WebView w tym telefonie nie pozwala skierować całego ruchu przez Tor. Zaktualizuj „Android System WebView”.</string>
     <string name="notification_channel">Pobieranie</string>

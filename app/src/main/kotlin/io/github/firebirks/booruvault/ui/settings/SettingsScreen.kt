@@ -602,6 +602,9 @@ private fun TorSettings() {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     state.verifiedExit?.let { Text(stringResource(R.string.tor_verified, it), color = MaterialTheme.colorScheme.primary) }
                     state.verifyError?.let { Text(problemText(it), color = MaterialTheme.colorScheme.error) }
+                    if (state.status == TorStatus.ON && state.verifiedExit == null && state.verifyError == null) {
+                        Text(stringResource(R.string.tor_verifying), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                     Text(stringResource(R.string.tor_vpn_hint), style = MaterialTheme.typography.bodySmall)
                 }
             },

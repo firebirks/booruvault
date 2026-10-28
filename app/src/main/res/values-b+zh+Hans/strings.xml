@@ -3,6 +3,7 @@
     <string name="problem_network">网络错误：%1$s</string>
     <string name="problem_tor_unreachable">无法连接 Tor：请检查 Orbot 是否正在运行。</string>
     <string name="problem_tor_dns_blocked">已阻止本地 DNS 查询：开启 Tor 后，域名只通过 Tor 解析。</string>
+    <string name="problem_tor_unverified">Tor 出口尚未验证：正在确认连接确实经由 Tor。</string>
     <string name="problem_challenge">该网站要求进行反机器人验证（Cloudflare）：请在内置浏览器中完成。</string>
     <string name="problem_access_denied">访问被拒绝（%1$s）：此来源可能需要登录和 API 密钥。</string>
     <string name="problem_not_found">找不到网址（404）：请检查 URL 和引擎类型。</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">在帖子页面上找不到图片。</string>
     <string name="problem_unrecognised_pages">无法识别该网站的网页。</string>
     <string name="problem_no_file">没有可用的文件。</string>
+    <string name="problem_too_large">文件超过 2 GB 的上限。</string>
     <string name="problem_already_in_vault">已在保险库中</string>
     <string name="problem_no_vault">请先创建保险库。</string>
     <string name="problem_vault_locked">保险库已锁定。</string>
@@ -235,6 +237,8 @@
     <string name="challenge_title">安全验证</string>
     <string name="action_done">完成</string>
     <string name="browser_hint">登录、通过验证或更改网站偏好设置（例如 Gelbooru 上的“Display all site content”），然后点按“完成”：网站的 Cookie 会加密保存到保险库中。</string>
+    <string name="browser_blocked_outside">此浏览器只停留在 %1$s：指向其他站点的链接未打开。</string>
+    <string name="browser_tor_unverified">Tor 已开启但尚未验证：确认连接经由 Tor 后，浏览器才会打开。</string>
     <string name="challenge_hint">该网站需要确认你是真人。请完成下方的验证：网站页面正常打开后，BooruVault 会自动重试。</string>
     <string name="browser_tor_unsupported">开启 Tor 时，内置浏览器无法打开：这部手机的 WebView 无法完全通过 Tor 路由。请更新“Android System WebView”。</string>
     <string name="notification_channel">下载</string>

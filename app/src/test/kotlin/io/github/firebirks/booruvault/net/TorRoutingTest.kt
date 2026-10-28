@@ -182,4 +182,31 @@ class TorRoutingTest {
             }
         }
     }
+
+    @Test
+    fun nothingButTheExitCheckGoesOutBeforeItPasses() {
+        var verified = false
+        var blocked = 0
+        // The check's host name resolves to the local server, so the gate sees the real name.
+        val client = OkHttpClient.Builder()
+            .addInterceptor(TorExitGate({ true }, { verified }) { blocked++ })
+            .dns { listOf(InetAddress.getByName("127.0.0.1")) }
+            .build()
+        keepAliveHttp().use { server ->
+            val other = Request.Builder().url("http://booru.example.invalid:${server.localPort}/").build()
+            try {
+                client.newCall(other).execute().close()
+                fail("a request must wait for the exit check")
+            } catch (e: TorUnverifiedException) {
+                // expected
+            }
+            assertEquals(1, blocked)
+            // The check itself is the one request that may go while unverified.
+            val check = Request.Builder().url("http://${TorManager.VERIFY_HOST}:${server.localPort}/api/ip").build()
+            client.newCall(check).execute().use { assertEquals("ok", it.body.string()) }
+            verified = true
+            client.newCall(other).execute().use { assertEquals("ok", it.body.string()) }
+            assertEquals(1, blocked)
+        }
+    }
 }

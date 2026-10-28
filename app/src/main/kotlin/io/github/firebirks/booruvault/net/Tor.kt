@@ -58,8 +58,11 @@ const val DEFAULT_SOCKS_PORT = 9050
  *
  * Orbot is neither started nor asked anything: since Orbot 17.9.6 other apps cannot start it,
  * and its status broadcasts, which any app could forge, are gone with that. Whether it listens
- * is found out by greeting the port as a SOCKS5 client; whether traffic really leaves through
- * Tor, by the exit check.
+ * is found out by greeting the port as a SOCKS5 client. A SOCKS5 greeting proves nothing about
+ * who answers, though: any local process that took the port first would do, see the host names
+ * in every CONNECT and go out in clear. So whether traffic really leaves through Tor is checked
+ * against the Tor Project's exit test as soon as the port answers, and again whenever it stops
+ * and comes back; until the check passes, [TorExitGate] lets nothing but the check itself out.
  */
 class TorManager(private val context: Context, private val scope: CoroutineScope) {
     private val prefs = context.getSharedPreferences("network", Context.MODE_PRIVATE)
@@ -84,9 +87,17 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     /** Called when the route changes, so pooled connections opened the other way are dropped. */
     var onRouteChanged: () -> Unit = {}
 
-    init {
-        if (enabled) refreshStatus()
-    }
+    /** Called when Orbot answers and the exit has not been verified: runs [verify] with the app's client. */
+    var onVerifyNeeded: () -> Unit = {}
+
+    /** True once the exit check passed on the current port and Orbot has answered ever since. */
+    val verified: Boolean get() = _state.value.verifiedExit != null
+
+    @Volatile
+    private var verifying = false
+
+    @Volatile
+    private var lastVerifyAt = 0L
 
     fun isOrbotInstalled(): Boolean = try {
         context.packageManager.getPackageInfo(ORBOT_PACKAGE, 0)
@@ -113,7 +124,10 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
         return true
     }
 
-    /** Finds out whether Orbot is installed and a SOCKS5 server answers on the port. */
+    /**
+     * Finds out whether Orbot is installed and a SOCKS5 server answers on the port. A port that
+     * stops answering forgets its verification: whatever answers next has to pass the check.
+     */
     fun refreshStatus() {
         if (!enabled) return
         scope.launch(Dispatchers.IO) {
@@ -122,17 +136,30 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
                 socks5Listening(_state.value.socksPort) -> TorStatus.ON
                 else -> TorStatus.OFF
             }
-            _state.update { if (it.enabled) it.copy(status = status) else it }
+            _state.update {
+                when {
+                    !it.enabled -> it
+                    status == TorStatus.ON -> it.copy(status = status)
+                    else -> it.copy(status = status, verifiedExit = null, verifyError = null)
+                }
+            }
+            val now = System.currentTimeMillis()
+            if (status == TorStatus.ON && !verified && !verifying && now - lastVerifyAt >= VERIFY_INTERVAL_MS) {
+                lastVerifyAt = now
+                onVerifyNeeded()
+            }
         }
     }
 
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
 
-    /** Asks the Tor Project whether requests reach it through Tor. */
+    /** Asks the Tor Project whether requests reach it through Tor. One check at a time. */
     suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
+        if (verifying) return@withContext
+        verifying = true
         _state.update { it.copy(verifiedExit = null, verifyError = null) }
         try {
-            val request = Request.Builder().url("https://check.torproject.org/api/ip").header("User-Agent", UserAgents.browser).build()
+            val request = Request.Builder().url("https://$VERIFY_HOST/api/ip").header("User-Agent", UserAgents.browser).build()
             val body = client.newCall(request).await().use { it.body.string() }
             val result = json.parseToJsonElement(body).jsonObject
             val isTor = result["IsTor"]?.jsonPrimitive?.boolean == true
@@ -142,11 +169,19 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
             }
         } catch (e: Exception) {
             _state.update { it.copy(verifyError = e.toProblem()) }
+        } finally {
+            verifying = false
         }
     }
 
     companion object {
         const val ORBOT_PACKAGE = "org.torproject.android"
+
+        /** The exit check's host: the one request allowed out before the check has passed. */
+        const val VERIFY_HOST = "check.torproject.org"
+
+        /** The least time between two automatic checks, so a check that keeps failing does not loop. */
+        private const val VERIFY_INTERVAL_MS = 10_000L
         private const val KEY_ENABLED = "tor"
         private const val KEY_PORT = "socks_port"
     }
@@ -191,6 +226,30 @@ class TorProxySelector(private val enabled: () -> Boolean, private val port: () 
         if (enabled()) listOf(Proxy(Proxy.Type.SOCKS, InetSocketAddress("127.0.0.1", port()))) else listOf(Proxy.NO_PROXY)
 
     override fun connectFailed(uri: URI?, address: SocketAddress?, e: IOException?) = Unit
+}
+
+/**
+ * While Tor is on and its exit is not yet verified, lets out nothing but the exit check itself:
+ * a request is refused before any connection is made, and [onBlocked] gives the manager a
+ * chance to run the check. A SOCKS listener is not Orbot until the check says so.
+ */
+class TorExitGate(
+    private val enabled: () -> Boolean,
+    private val verified: () -> Boolean,
+    private val onBlocked: () -> Unit = {},
+) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        if (enabled() && !verified() && chain.request().url.host != TorManager.VERIFY_HOST) {
+            onBlocked()
+            throw TorUnverifiedException()
+        }
+        return chain.proceed(chain.request())
+    }
+}
+
+/** A request held back because Tor is on and the exit check has not passed yet. */
+class TorUnverifiedException : IOException("Tor exit not verified yet"), HasProblem {
+    override val problem = Problem(Problem.Code.TOR_UNVERIFIED)
 }
 
 /**

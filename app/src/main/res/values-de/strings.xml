@@ -3,6 +3,7 @@
     <string name="problem_network">Netzwerkfehler: %1$s</string>
     <string name="problem_tor_unreachable">Tor ist nicht erreichbar: Prüfe, ob Orbot läuft.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-Abfrage blockiert: Mit aktivem Tor werden Namen nur über Tor aufgelöst.</string>
+    <string name="problem_tor_unverified">Tor-Ausgang noch nicht geprüft: es wird geprüft, ob Verbindungen wirklich über Tor hinausgehen.</string>
     <string name="problem_challenge">Die Website verlangt eine Anti-Bot-Prüfung (Cloudflare): Schließe sie im integrierten Browser ab.</string>
     <string name="problem_access_denied">Zugriff verweigert (%1$s): Diese Quelle erfordert eventuell eine Anmeldung und einen API-Schlüssel.</string>
     <string name="problem_not_found">Adresse nicht gefunden (404): Prüfe die URL und den Engine-Typ.</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">Kein Bild auf der Seite des Posts gefunden.</string>
     <string name="problem_unrecognised_pages">Die Seiten dieser Website wurden nicht erkannt.</string>
     <string name="problem_no_file">Keine Datei verfügbar.</string>
+    <string name="problem_too_large">Die Datei ist größer als das Limit von 2 GB.</string>
     <string name="problem_already_in_vault">Bereits im Tresor</string>
     <string name="problem_no_vault">Erstelle zuerst den Tresor.</string>
     <string name="problem_vault_locked">Der Tresor ist gesperrt.</string>
@@ -240,6 +242,8 @@
     <string name="challenge_title">Sicherheitsprüfung</string>
     <string name="action_done">Fertig</string>
     <string name="browser_hint">Melde dich an, bestehe die Prüfungen oder ändere die Einstellungen der Website (z. B. „Display all site content“ auf Gelbooru) und tippe dann auf Fertig: Die Cookies der Website werden verschlüsselt im Tresor gespeichert.</string>
+    <string name="browser_blocked_outside">Dieser Browser bleibt auf %1$s: ein Link zu einer anderen Seite wurde nicht geöffnet.</string>
+    <string name="browser_tor_unverified">Tor ist an, aber noch nicht geprüft: der Browser öffnet sich, sobald eine Prüfung bestätigt, dass Verbindungen über Tor hinausgehen.</string>
     <string name="challenge_hint">Die Website möchte prüfen, ob du ein Mensch bist. Schließe die Prüfung unten ab: Sobald die Seite der Website normal lädt, versucht BooruVault es selbstständig erneut.</string>
     <string name="browser_tor_unsupported">Mit aktivem Tor öffnet sich der integrierte Browser nicht: Die WebView dieses Telefons kann nicht vollständig über Tor geleitet werden. Aktualisiere „Android System WebView“.</string>
     <string name="notification_channel">Downloads</string>

@@ -3,6 +3,7 @@
     <string name="problem_network">ネットワークエラー：%1$s</string>
     <string name="problem_tor_unreachable">Tor に接続できません。Orbot が起動しているか確認してください。</string>
     <string name="problem_tor_dns_blocked">ローカルの DNS 解決をブロックしました。Tor がオンのときは、名前は Tor 経由でのみ解決されます。</string>
+    <string name="problem_tor_unverified">Tor の出口がまだ確認されていません。接続が本当に Tor 経由か確認中です。</string>
     <string name="problem_challenge">サイトがボット対策の確認（Cloudflare）を求めています。内蔵ブラウザで完了してください。</string>
     <string name="problem_access_denied">アクセスが拒否されました（%1$s）。このソースにはログインと API キーが必要な場合があります。</string>
     <string name="problem_not_found">アドレスが見つかりません（404）。URL とエンジンの種類を確認してください。</string>
@@ -18,6 +19,7 @@
     <string name="problem_no_image_on_page">投稿ページに画像が見つかりません。</string>
     <string name="problem_unrecognised_pages">サイトのウェブページを認識できませんでした。</string>
     <string name="problem_no_file">利用できるファイルがありません。</string>
+    <string name="problem_too_large">ファイルが上限の 2 GB を超えています。</string>
     <string name="problem_already_in_vault">すでに保管庫にあります</string>
     <string name="problem_no_vault">先に保管庫を作成してください。</string>
     <string name="problem_vault_locked">保管庫はロックされています。</string>
@@ -235,6 +237,8 @@
     <string name="challenge_title">セキュリティチェック</string>
     <string name="action_done">完了</string>
     <string name="browser_hint">ログイン、確認の通過、サイト設定の変更（例：Gelbooru の「Display all site content」）を行ってから「完了」をタップしてください。サイトの Cookie は暗号化されて保管庫に保存されます。</string>
+    <string name="browser_blocked_outside">このブラウザーは %1$s にとどまります。他のサイトへのリンクは開きませんでした。</string>
+    <string name="browser_tor_unverified">Tor はオンですがまだ確認されていません。接続が Tor 経由であることを確認でき次第ブラウザーが開きます。</string>
     <string name="challenge_hint">サイトは、あなたが人間かどうかを確認しようとしています。下の確認を完了してください。サイトのページが正常に開いたら、BooruVault が自動的に再試行します。</string>
     <string name="browser_tor_unsupported">Tor がオンの場合、内蔵ブラウザは開きません。このスマートフォンの WebView では、すべての通信を Tor 経由にすることができません。「Android System WebView」を更新してください。</string>
     <string name="notification_channel">ダウンロード</string>
