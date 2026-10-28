@@ -77,14 +77,33 @@ class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseB
         )
     }
 
+    /**
+     * The site's own autocomplete, which resolves aliases and orders as the site does; a fork
+     * without it falls back to a prefix search of the tag list.
+     */
     override suspend fun autocomplete(query: String): List<TagSuggestion> {
-        val url = base.newBuilder().addPathSegment("tags.json")
+        val url = base.newBuilder().addPathSegment("autocomplete.json")
+            .addQueryParameter("search[query]", query)
+            .addQueryParameter("search[type]", "tag_query")
+            .addQueryParameter("limit", "12")
+            .build()
+        val list = try {
+            get(url).arr()
+        } catch (e: BooruHttpException) {
+            null
+        }
+        if (list != null) {
+            return list.mapNotNull { it.obj() }.mapNotNull { o ->
+                TagSuggestion(o.str("value") ?: return@mapNotNull null, o.long("post_count"), danbooruCategory(o.int("category")))
+            }
+        }
+        val tags = base.newBuilder().addPathSegment("tags.json")
             .addQueryParameter("search[name_matches]", "$query*")
             .addQueryParameter("search[order]", "count")
             .addQueryParameter("search[hide_empty]", "true")
             .addQueryParameter("limit", "12")
             .build()
-        return get(url).arr().orEmpty().mapNotNull { it.obj() }.mapNotNull { o ->
+        return get(tags).arr().orEmpty().mapNotNull { it.obj() }.mapNotNull { o ->
             TagSuggestion(o.str("name") ?: return@mapNotNull null, o.long("post_count"), danbooruCategory(o.int("category")))
         }
     }

@@ -127,6 +127,15 @@ class ParsingTest {
     }
 
     @Test
+    fun danbooruAutocompleteResolvesAliases() = runBlocking {
+        val body = """[{"type":"tag-alias","label":"landscape","value":"landscape","category":0,"post_count":9888,"antecedent":"scenery"}]"""
+        val list = api(BooruEngine.DANBOORU, "https://danbooru.donmai.us", body).autocomplete("scen")
+        assertEquals("landscape", list[0].name)
+        assertEquals(9888L, list[0].count)
+        assertTrue(requests.last().url.toString().startsWith("https://danbooru.donmai.us/autocomplete.json?"))
+    }
+
+    @Test
     fun gelbooruAutocompleteLabels() = runBlocking {
         val body = """[{"label":"landscape (9888)","value":"landscape"},{"label":"landscapes (1)","value":"landscapes"}]"""
         val list = api(BooruEngine.GELBOORU, "https://safebooru.org", body).autocomplete("landsc")
