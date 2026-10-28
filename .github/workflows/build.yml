@@ -15,14 +15,18 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build and run unit tests
-        run: ./gradlew assembleDebug testDebugUnitTest
-      - name: Keep the debug APK
+      - name: Build, lint and run unit tests
+        run: ./gradlew assembleDebug lintDebug testDebugUnitTest
+      - name: Build the release APK (unsigned, as F-Droid builds it)
+        run: ./gradlew assembleRelease
+      - name: Keep the APKs
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: apks
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/release/app-release-unsigned.apk
       - name: Keep the test reports
         if: failure()
         uses: actions/upload-artifact@v4
