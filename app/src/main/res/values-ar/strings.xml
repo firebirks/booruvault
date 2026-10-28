@@ -466,6 +466,9 @@
     <string name="tag_exclude">استبعاد من البحث</string>
     <string name="tag_blacklist">إضافة إلى القائمة السوداء</string>
     <string name="tag_copy">نسخ</string>
+    <string name="tag_favourite">إضافة إلى المفضلة</string>
+    <string name="tag_unfavourite">إزالة من المفضلة</string>
+    <string name="browse_tag_shelf">المفضلة والأكثر استخدامًا</string>
     <string name="settings_risky">خيارات محفوفة بالمخاطر</string>
     <string name="settings_risky_hint">متوقفة افتراضيًا: كل منها يتنازل عن قدر من الخصوصية مقابل الراحة</string>
     <string name="settings_risky_intro">تُضعف هذه الخيارات الحماية التي يوفرها لك BooruVault افتراضيًا. اقرأ ما يفعله كل خيار منها قبل تفعيله.</string>

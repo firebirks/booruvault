@@ -366,6 +366,9 @@
     <string name="tag_exclude">從搜尋中排除</string>
     <string name="tag_blacklist">加入黑名單</string>
     <string name="tag_copy">複製</string>
+    <string name="tag_favourite">加入收藏</string>
+    <string name="tag_unfavourite">從收藏中移除</string>
+    <string name="browse_tag_shelf">收藏與常用</string>
     <string name="settings_risky">有風險的選項</string>
     <string name="settings_risky_hint">預設為關閉：每一項都會犧牲部分隱私權來換取便利</string>
     <string name="settings_risky_intro">這些選項會削弱 BooruVault 預設為你提供的保護。開啟前，請先閱讀每一項的作用。</string>

@@ -366,6 +366,9 @@
     <string name="tag_exclude">Loại khỏi tìm kiếm</string>
     <string name="tag_blacklist">Thêm vào danh sách đen</string>
     <string name="tag_copy">Sao chép</string>
+    <string name="tag_favourite">Thêm vào yêu thích</string>
+    <string name="tag_unfavourite">Bỏ khỏi yêu thích</string>
+    <string name="browse_tag_shelf">Yêu thích và dùng nhiều</string>
     <string name="settings_risky">Tùy chọn rủi ro</string>
     <string name="settings_risky_hint">Tắt theo mặc định: mỗi tùy chọn đánh đổi một phần quyền riêng tư để lấy sự tiện lợi</string>
     <string name="settings_risky_intro">Các tùy chọn này làm suy yếu những biện pháp bảo vệ mà BooruVault cung cấp cho bạn theo mặc định. Hãy đọc tác dụng của từng tùy chọn trước khi bật.</string>

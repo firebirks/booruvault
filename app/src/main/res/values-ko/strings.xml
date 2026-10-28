@@ -366,6 +366,9 @@
     <string name="tag_exclude">검색에서 제외</string>
     <string name="tag_blacklist">블랙리스트에 추가</string>
     <string name="tag_copy">복사</string>
+    <string name="tag_favourite">즐겨찾기에 추가</string>
+    <string name="tag_unfavourite">즐겨찾기에서 제거</string>
+    <string name="browse_tag_shelf">즐겨찾기 및 자주 쓰는 태그</string>
     <string name="settings_risky">위험한 옵션</string>
     <string name="settings_risky_hint">기본적으로 꺼져 있으며, 각 옵션은 편의를 얻는 대신 개인정보 보호를 일부 포기합니다</string>
     <string name="settings_risky_intro">이 옵션들은 BooruVault가 기본으로 제공하는 보호 기능을 약화합니다. 켜기 전에 각 옵션이 하는 일을 읽어 보세요.</string>

@@ -386,6 +386,9 @@
     <string name="tag_exclude">Aramadan hariç tut</string>
     <string name="tag_blacklist">Kara listeye ekle</string>
     <string name="tag_copy">Kopyala</string>
+    <string name="tag_favourite">Favorilere ekle</string>
+    <string name="tag_unfavourite">Favorilerden çıkar</string>
+    <string name="browse_tag_shelf">Favoriler ve en çok kullanılanlar</string>
     <string name="settings_risky">Riskli seçenekler</string>
     <string name="settings_risky_hint">Varsayılan olarak kapalı: her biri kolaylık karşılığında biraz gizlilikten vazgeçer</string>
     <string name="settings_risky_intro">Bu seçenekler, BooruVault\'un size varsayılan olarak sağladığı korumaları zayıflatır. Açmadan önce her birinin ne yaptığını okuyun.</string>

@@ -426,6 +426,9 @@
     <string name="tag_exclude">Wyklucz z wyszukiwania</string>
     <string name="tag_blacklist">Dodaj do czarnej listy</string>
     <string name="tag_copy">Kopiuj</string>
+    <string name="tag_favourite">Dodaj do ulubionych</string>
+    <string name="tag_unfavourite">Usuń z ulubionych</string>
+    <string name="browse_tag_shelf">Ulubione i najczęściej używane</string>
     <string name="settings_risky">Ryzykowne opcje</string>
     <string name="settings_risky_hint">Domyślnie wyłączone: każda z nich poświęca część prywatności na rzecz wygody</string>
     <string name="settings_risky_intro">Te opcje osłabiają ochronę, którą BooruVault zapewnia Ci domyślnie. Przeczytaj, co robi każda z nich, zanim ją włączysz.</string>

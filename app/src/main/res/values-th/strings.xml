@@ -366,6 +366,9 @@
     <string name="tag_exclude">ไม่รวมในการค้นหา</string>
     <string name="tag_blacklist">เพิ่มลงในบัญชีดำ</string>
     <string name="tag_copy">คัดลอก</string>
+    <string name="tag_favourite">เพิ่มในรายการโปรด</string>
+    <string name="tag_unfavourite">นำออกจากรายการโปรด</string>
+    <string name="browse_tag_shelf">รายการโปรดและใช้บ่อย</string>
     <string name="settings_risky">ตัวเลือกที่มีความเสี่ยง</string>
     <string name="settings_risky_hint">ปิดไว้โดยค่าเริ่มต้น: แต่ละตัวเลือกแลกความเป็นส่วนตัวบางส่วนกับความสะดวก</string>
     <string name="settings_risky_intro">ตัวเลือกเหล่านี้ลดทอนการป้องกันที่ BooruVault มอบให้คุณโดยค่าเริ่มต้น โปรดอ่านว่าแต่ละตัวเลือกทำอะไรก่อนเปิดใช้งาน</string>

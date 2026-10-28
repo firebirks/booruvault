@@ -386,6 +386,9 @@
     <string name="tag_exclude">Uitsluiten van zoekopdracht</string>
     <string name="tag_blacklist">Toevoegen aan zwarte lijst</string>
     <string name="tag_copy">Kopiëren</string>
+    <string name="tag_favourite">Aan favorieten toevoegen</string>
+    <string name="tag_unfavourite">Uit favorieten verwijderen</string>
+    <string name="browse_tag_shelf">Favorieten en meest gebruikt</string>
     <string name="settings_risky">Risicovolle opties</string>
     <string name="settings_risky_hint">Standaard uit: elke optie ruilt wat privacy in voor gemak</string>
     <string name="settings_risky_intro">Deze opties verzwakken de bescherming die BooruVault je standaard biedt. Lees wat elke optie doet voordat je die aanzet.</string>

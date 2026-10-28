@@ -15,6 +15,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material3.AssistChip
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -135,6 +140,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
     val settings by container.settings.settings.collectAsStateWithLifecycle()
     val selection by vm.selection.collectAsStateWithLifecycle()
     val suggestions by vm.suggestions.collectAsStateWithLifecycle()
+    val shelf by vm.tagShelf.collectAsStateWithLifecycle()
     val saveStates by vm.saveStates.collectAsStateWithLifecycle()
     val vaultState by container.vault.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
@@ -288,6 +294,8 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
             }
             if (searchFocused && suggestions.isNotEmpty()) {
                 SuggestionList(suggestions, onPick = vm::applySuggestion)
+            } else if (searchFocused && shelf.isNotEmpty()) {
+                TagShelf(shelf, onPick = vm::insertTag, onToggleFavourite = vm::toggleFavourite)
             }
         }
     }
@@ -479,6 +487,32 @@ private fun BrowseTopBar(
                 keyboardActions = KeyboardActions(onSearch = { onSubmit() }),
                 modifier = Modifier.fillMaxWidth().onFocusChanged { onFocus(it.isFocused) },
             )
+        }
+    }
+}
+
+/** The source's starred and most searched tags, while the search field is focused and quiet. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TagShelf(tags: List<ShelfTag>, onPick: (String) -> Unit, onToggleFavourite: (String) -> Unit) {
+    ElevatedCard(Modifier.padding(horizontal = 12.dp).fillMaxWidth().heightIn(max = 320.dp)) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Text(stringResource(R.string.browse_tag_shelf), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                tags.forEach { tag ->
+                    AssistChip(
+                        onClick = { onPick(tag.name) },
+                        label = { Text(tag.name.replace('_', ' ')) },
+                        trailingIcon = {
+                            Icon(
+                                if (tag.favourite) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                                stringResource(if (tag.favourite) R.string.tag_unfavourite else R.string.tag_favourite),
+                                Modifier.size(18.dp).clickable { onToggleFavourite(tag.name) },
+                            )
+                        },
+                    )
+                }
+            }
         }
     }
 }

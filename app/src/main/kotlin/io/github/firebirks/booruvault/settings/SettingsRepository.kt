@@ -55,6 +55,10 @@ data class AppSettings(
     val linksOutsideTor: Boolean = false,
     /** Bookmarked tag sets, shown as collections in the vault. */
     val collections: List<TagCollection> = emptyList(),
+    /** Tags the user starred, per source id, in the order they were starred. */
+    val favouriteTags: Map<String, List<String>> = emptyMap(),
+    /** How many searches named each tag, per source id; the most used are offered with the favourites. */
+    val tagUses: Map<String, Map<String, Int>> = emptyMap(),
     val secureScreen: Boolean = true,
 ) {
     val selectedSource: BooruSource?
@@ -107,7 +111,34 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
         withContext(Dispatchers.IO) { store.write(recipient, next) }
     }
 
-    suspend fun setSources(sources: List<BooruSource>) = edit { it.copy(sources = sources) }
+    suspend fun setSources(sources: List<BooruSource>) = edit { current ->
+        // A removed source takes its tags with it.
+        val ids = sources.mapTo(HashSet()) { it.id }
+        current.copy(
+            sources = sources,
+            favouriteTags = current.favouriteTags.filterKeys { it in ids },
+            tagUses = current.tagUses.filterKeys { it in ids },
+        )
+    }
+
+    suspend fun toggleFavouriteTag(sourceId: String, tag: String) = edit { current ->
+        val list = current.favouriteTags[sourceId].orEmpty()
+        val next = if (tag in list) list - tag else list + tag
+        current.copy(favouriteTags = current.favouriteTags + (sourceId to next))
+    }
+
+    /** Counts a search's tags for [sourceId]; only the most used are kept, the long tail is dropped. */
+    suspend fun recordTagUses(sourceId: String, tags: Collection<String>) = edit { current ->
+        if (tags.isEmpty()) return@edit current
+        val counts = current.tagUses[sourceId].orEmpty().toMutableMap()
+        tags.forEach { counts[it] = (counts[it] ?: 0) + 1 }
+        val kept = counts.entries.sortedByDescending { it.value }.take(MAX_TAG_USES).associate { it.key to it.value }
+        current.copy(tagUses = current.tagUses + (sourceId to kept))
+    }
+
+    private companion object {
+        const val MAX_TAG_USES = 100
+    }
     suspend fun selectSource(id: String) = edit { it.copy(selectedSourceId = id) }
     suspend fun setRatings(ratings: Set<Rating>) = edit { it.copy(allowedRatings = ratings) }
     suspend fun setBlacklist(text: String) = edit { it.copy(blacklist = text) }

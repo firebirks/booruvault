@@ -50,6 +50,8 @@ import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -218,9 +220,12 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     }
 
     info?.let { post ->
+        val favourites = settings.favouriteTags[state.source?.id].orEmpty()
         PostInfoSheet(
             post = post,
             sourceName = state.source?.name.orEmpty(),
+            isFavourite = { it in favourites },
+            onToggleFavourite = vm::toggleFavourite,
             onDismiss = { info = null },
             onSearch = { tag ->
                 info = null
@@ -305,6 +310,8 @@ private fun ZoomablePostImage(post: Post, url: String?, onTap: () -> Unit) {
 private fun PostInfoSheet(
     post: Post,
     sourceName: String,
+    isFavourite: (String) -> Boolean,
+    onToggleFavourite: (String) -> Unit,
     onDismiss: () -> Unit,
     onSearch: (String) -> Unit,
     onAddToSearch: (String) -> Unit,
@@ -350,6 +357,8 @@ private fun PostInfoSheet(
                     tags.forEach { tag ->
                         TagChip(
                             tag = tag,
+                            favourite = isFavourite(tag.name),
+                            onToggleFavourite = onToggleFavourite,
                             onSearch = onSearch,
                             onAddToSearch = onAddToSearch,
                             onExclude = onExclude,
@@ -375,6 +384,8 @@ private fun PostInfoSheet(
 @Composable
 private fun TagChip(
     tag: Tag,
+    favourite: Boolean,
+    onToggleFavourite: (String) -> Unit,
     onSearch: (String) -> Unit,
     onAddToSearch: (String) -> Unit,
     onExclude: (String) -> Unit,
@@ -402,6 +413,14 @@ private fun TagChip(
                 menu = false
                 onExclude(tag.name)
             })
+            DropdownMenuItem(
+                text = { Text(stringResource(if (favourite) R.string.tag_unfavourite else R.string.tag_favourite)) },
+                leadingIcon = { Icon(if (favourite) Icons.Filled.Star else Icons.Outlined.StarOutline, null) },
+                onClick = {
+                    menu = false
+                    onToggleFavourite(tag.name)
+                },
+            )
             DropdownMenuItem(text = { Text(stringResource(R.string.tag_create_collection)) }, leadingIcon = { Icon(Icons.Outlined.BookmarkAdd, null) }, onClick = {
                 menu = false
                 onCreateCollection(tag.name)

@@ -366,6 +366,9 @@
     <string name="tag_exclude">Kecualikan dari pencarian</string>
     <string name="tag_blacklist">Tambahkan ke daftar hitam</string>
     <string name="tag_copy">Salin</string>
+    <string name="tag_favourite">Tambahkan ke favorit</string>
+    <string name="tag_unfavourite">Hapus dari favorit</string>
+    <string name="browse_tag_shelf">Favorit dan paling sering dipakai</string>
     <string name="settings_risky">Opsi berisiko</string>
     <string name="settings_risky_hint">Nonaktif secara default: masing-masing mengorbankan sebagian privasi demi kenyamanan</string>
     <string name="settings_risky_intro">Opsi-opsi ini melemahkan perlindungan yang diberikan BooruVault kepada Anda secara default. Baca apa yang dilakukan masing-masing opsi sebelum mengaktifkannya.</string>

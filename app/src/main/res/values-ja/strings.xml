@@ -366,6 +366,9 @@
     <string name="tag_exclude">検索から除外</string>
     <string name="tag_blacklist">ブラックリストに追加</string>
     <string name="tag_copy">コピー</string>
+    <string name="tag_favourite">お気に入りに追加</string>
+    <string name="tag_unfavourite">お気に入りから削除</string>
+    <string name="browse_tag_shelf">お気に入りとよく使うタグ</string>
     <string name="settings_risky">リスクのあるオプション</string>
     <string name="settings_risky_hint">初期設定ではオフ。どれも利便性と引き換えにプライバシーの一部を手放します</string>
     <string name="settings_risky_intro">これらのオプションは、BooruVault が初期設定で提供している保護を弱めます。オンにする前に、それぞれの動作の説明を読んでください。</string>

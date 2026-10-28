@@ -386,6 +386,9 @@
     <string name="tag_exclude">खोज से बाहर रखें</string>
     <string name="tag_blacklist">ब्लैकलिस्ट में जोड़ें</string>
     <string name="tag_copy">कॉपी करें</string>
+    <string name="tag_favourite">पसंदीदा में जोड़ें</string>
+    <string name="tag_unfavourite">पसंदीदा से हटाएँ</string>
+    <string name="browse_tag_shelf">पसंदीदा और सबसे ज़्यादा इस्तेमाल किए गए</string>
     <string name="settings_risky">जोखिम भरे विकल्प</string>
     <string name="settings_risky_hint">डिफ़ॉल्ट रूप से बंद: हर विकल्प सुविधा के बदले थोड़ी निजता छोड़ देता है</string>
     <string name="settings_risky_intro">ये विकल्प उस सुरक्षा को कमज़ोर करते हैं जो BooruVault आपको डिफ़ॉल्ट रूप से देता है। किसी भी विकल्प को चालू करने से पहले पढ़ें कि वह क्या करता है।</string>
