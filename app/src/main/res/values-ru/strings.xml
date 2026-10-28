@@ -118,6 +118,8 @@
     <string name="settings_delete_vault">Удалить хранилище</string>
     <string name="settings_delete_vault_hint">Безвозвратно стирает контент, настройки, источники и ключ.</string>
     <string name="settings_section_about">О приложении</string>
+    <string name="settings_language">Язык</string>
+    <string name="language_system">Язык телефона</string>
     <string name="settings_about_text">Контент, настройки, источники, cookie и очередь загрузок шифруются в хранилище с помощью AES-256-GCM, а ключи выводятся через ECDH P-256. Закрытый ключ защищён Argon2id (64 MiB) и, если включено, биометрическим ключом Keystore. Просматриваемые изображения хранятся только в памяти.</string>
     <string name="settings_page_content">Фильтр контента</string>
     <string name="settings_page_browsing">Просмотр и загрузки</string>

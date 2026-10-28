@@ -118,6 +118,8 @@
     <string name="settings_delete_vault">Видалити сховище</string>
     <string name="settings_delete_vault_hint">Безповоротно стирає вміст, налаштування, джерела та ключ.</string>
     <string name="settings_section_about">Про застосунок</string>
+    <string name="settings_language">Мова</string>
+    <string name="language_system">Мова телефону</string>
     <string name="settings_about_text">Вміст, налаштування, джерела, cookie та черга завантажень шифруються у сховищі за допомогою AES-256-GCM, а ключі виводяться через ECDH P-256. Закритий ключ захищено Argon2id (64 MiB) і, якщо ввімкнено, біометричним ключем Keystore. Переглядувані зображення зберігаються лише в пам\'яті.</string>
     <string name="settings_page_content">Фільтр вмісту</string>
     <string name="settings_page_browsing">Перегляд і завантаження</string>

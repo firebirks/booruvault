@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
@@ -9,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import io.github.firebirks.booruvault.settings.AppLanguage
 import io.github.firebirks.booruvault.ui.AppRoot
 import io.github.firebirks.booruvault.ui.common.IncognitoKeyboard
 import io.github.firebirks.booruvault.ui.theme.BooruVaultTheme
@@ -21,6 +23,10 @@ import kotlinx.coroutines.launch
 class MainActivity : FragmentActivity() {
     /** A tab a notification asked to open, consumed by the UI. */
     val requestedTab = MutableStateFlow<String?>(null)
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

@@ -119,6 +119,8 @@
     <string name="settings_delete_vault">Delete the vault</string>
     <string name="settings_delete_vault_hint">Irreversibly erases content, settings, sources and the key.</string>
     <string name="settings_section_about">About</string>
+    <string name="settings_language">Language</string>
+    <string name="language_system">Phone\'s language</string>
     <string name="settings_about_version" translatable="false">BooruVault %1$s</string>
     <string name="settings_about_text">Content, settings, sources, cookies and the download queue are encrypted in the vault with AES-256-GCM, with keys derived through ECDH P-256. The private key is protected by Argon2id (64 MiB) and, if enabled, by a biometric Keystore key. Browsed images stay in memory only.</string>
     <string name="settings_page_content">Content filter</string>

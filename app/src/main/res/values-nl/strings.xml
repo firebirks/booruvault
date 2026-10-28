@@ -114,6 +114,8 @@
     <string name="settings_delete_vault">Kluis verwijderen</string>
     <string name="settings_delete_vault_hint">Wist onherroepelijk inhoud, instellingen, bronnen en de sleutel.</string>
     <string name="settings_section_about">Over</string>
+    <string name="settings_language">Taal</string>
+    <string name="language_system">Taal van de telefoon</string>
     <string name="settings_about_text">Inhoud, instellingen, bronnen, cookies en de downloadwachtrij worden in de kluis versleuteld met AES-256-GCM, met sleutels die via ECDH P-256 zijn afgeleid. De privésleutel wordt beschermd door Argon2id (64 MiB) en, indien ingeschakeld, door een biometrische Keystore-sleutel. Bekeken afbeeldingen blijven alleen in het geheugen.</string>
     <string name="settings_page_content">Inhoudsfilter</string>
     <string name="settings_page_browsing">Browsen en downloads</string>

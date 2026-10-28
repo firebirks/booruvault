@@ -122,6 +122,8 @@
     <string name="settings_delete_vault">حذف الخزنة</string>
     <string name="settings_delete_vault_hint">يمحو المحتوى والإعدادات والمصادر والمفتاح نهائيًا دون إمكانية التراجع.</string>
     <string name="settings_section_about">حول التطبيق</string>
+    <string name="settings_language">اللغة</string>
+    <string name="language_system">لغة الهاتف</string>
     <string name="settings_about_text">يُشفَّر المحتوى والإعدادات والمصادر وملفات تعريف الارتباط وقائمة انتظار التنزيلات في الخزنة باستخدام AES-256-GCM، بمفاتيح مشتقة عبر ECDH P-256. المفتاح الخاص محمي بواسطة Argon2id (64 MiB)، وكذلك بمفتاح بيومتري في Keystore إذا كان مفعّلًا. أما الصور التي تتصفحها فتبقى في الذاكرة فقط.</string>
     <string name="settings_page_content">تصفية المحتوى</string>
     <string name="settings_page_browsing">التصفح والتنزيلات</string>

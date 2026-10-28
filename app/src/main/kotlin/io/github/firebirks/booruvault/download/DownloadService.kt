@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
@@ -14,6 +15,7 @@ import androidx.core.app.ServiceCompat
 import io.github.firebirks.booruvault.BooruVaultApp
 import io.github.firebirks.booruvault.MainActivity
 import io.github.firebirks.booruvault.R
+import io.github.firebirks.booruvault.settings.AppLanguage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -27,6 +29,11 @@ import kotlinx.coroutines.launch
 class DownloadService : Service() {
     private val scope = MainScope()
     private var observer: Job? = null
+
+    /** The notifications speak the language chosen in the app, like the screens. */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 

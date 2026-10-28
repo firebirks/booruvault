@@ -114,6 +114,8 @@
     <string name="settings_delete_vault">तिजोरी मिटाएं</string>
     <string name="settings_delete_vault_hint">सामग्री, सेटिंग, स्रोत और कुंजी को हमेशा के लिए मिटा देता है। इसे वापस नहीं लाया जा सकता।</string>
     <string name="settings_section_about">जानकारी</string>
+    <string name="settings_language">भाषा</string>
+    <string name="language_system">फ़ोन की भाषा</string>
     <string name="settings_about_text">सामग्री, सेटिंग, स्रोत, कुकी और डाउनलोड कतार को तिजोरी में AES-256-GCM से एन्क्रिप्ट किया जाता है, और कुंजियां ECDH P-256 से डिराइव की जाती हैं। निजी कुंजी Argon2id (64 MiB) से सुरक्षित है और, अगर चालू हो, तो Keystore की एक बायोमेट्रिक कुंजी से भी। ब्राउज़ की गई इमेज केवल मेमोरी में रहती हैं।</string>
     <string name="settings_page_content">सामग्री फ़िल्टर</string>
     <string name="settings_page_browsing">ब्राउज़िंग और डाउनलोड</string>

@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">ลบคลังนิรภัย</string>
     <string name="settings_delete_vault_hint">ลบเนื้อหา การตั้งค่า แหล่งที่มา และคีย์อย่างถาวรโดยกู้คืนไม่ได้</string>
     <string name="settings_section_about">เกี่ยวกับ</string>
+    <string name="settings_language">ภาษา</string>
+    <string name="language_system">ภาษาของโทรศัพท์</string>
     <string name="settings_about_text">เนื้อหา การตั้งค่า แหล่งที่มา คุกกี้ และคิวดาวน์โหลดถูกเข้ารหัสไว้ในคลังนิรภัยด้วย AES-256-GCM โดยใช้คีย์ที่สร้างผ่าน ECDH P-256 คีย์ส่วนตัวได้รับการปกป้องด้วย Argon2id (64 MiB) และหากเปิดใช้ จะได้รับการปกป้องด้วยคีย์ไบโอเมตริกใน Keystore ด้วย รูปภาพที่เรียกดูจะอยู่ในหน่วยความจำเท่านั้น</string>
     <string name="settings_page_content">ตัวกรองเนื้อหา</string>
     <string name="settings_page_browsing">การเรียกดูและดาวน์โหลด</string>

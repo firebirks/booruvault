@@ -34,6 +34,9 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.RadioButton
+import io.github.firebirks.booruvault.settings.AppLanguage
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.ui.graphics.Color
@@ -113,6 +116,7 @@ fun SettingsTab() {
         page == "vault" -> SettingsPage(stringResource(R.string.settings_section_vault), back) { VaultSettings() }
         page == "network" -> SettingsPage(stringResource(R.string.settings_section_network), back) { NetworkSettings() }
         page == "risky" -> RiskySettings(onBack = back)
+        page == "language" -> SettingsPage(stringResource(R.string.settings_language), back) { LanguageSettings() }
         page == "about" -> SettingsPage(stringResource(R.string.settings_section_about), back) { AboutPage() }
     }
 }
@@ -160,6 +164,13 @@ private fun SettingsMain(onOpen: (String) -> Unit) {
                 if (riskyOn == 0) stringResource(R.string.settings_risky_hint) else pluralStringResource(R.plurals.settings_risky_on, riskyOn, riskyOn),
                 tint = MaterialTheme.colorScheme.error,
             ) { onOpen("risky") }
+
+            val context = LocalContext.current
+            val language = AppLanguage.current(context)
+            HubRow(
+                Icons.Outlined.Translate, stringResource(R.string.settings_language),
+                AppLanguage.choices.firstOrNull { it.tag == language }?.name ?: stringResource(R.string.language_system),
+            ) { onOpen("language") }
 
             HubRow(Icons.Outlined.Info, stringResource(R.string.settings_section_about), stringResource(R.string.settings_about_version, BuildConfig.VERSION_NAME)) { onOpen("about") }
         }
@@ -337,6 +348,31 @@ private fun NetworkSettings() {
                 Toast.makeText(context, cleared, Toast.LENGTH_SHORT).show()
             }) { Text(stringResource(R.string.action_clear)) }
         },
+    )
+}
+
+/** The phone's language, or one of the app's own; each named in itself. */
+@Composable
+private fun LanguageSettings() {
+    val context = LocalContext.current
+    val current = AppLanguage.current(context)
+    fun choose(tag: String?) {
+        if (tag == current) return
+        if (AppLanguage.set(context, tag)) context.findActivity()?.recreate()
+    }
+    LanguageRow(stringResource(R.string.language_system), selected = current == null) { choose(null) }
+    HorizontalDivider()
+    AppLanguage.choices.forEach { choice ->
+        LanguageRow(choice.name, selected = choice.tag == current) { choose(choice.tag) }
+    }
+}
+
+@Composable
+private fun LanguageRow(name: String, selected: Boolean, onClick: () -> Unit) {
+    ListItem(
+        headlineContent = { Text(name) },
+        leadingContent = { RadioButton(selected = selected, onClick = onClick) },
+        modifier = Modifier.clickable(onClick = onClick),
     )
 }
 

@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">보관함 삭제</string>
     <string name="settings_delete_vault_hint">콘텐츠, 설정, 소스, 키를 지웁니다. 되돌릴 수 없습니다.</string>
     <string name="settings_section_about">정보</string>
+    <string name="settings_language">언어</string>
+    <string name="language_system">휴대전화 언어</string>
     <string name="settings_about_text">콘텐츠, 설정, 소스, 쿠키, 다운로드 대기열은 ECDH P-256으로 도출한 키를 사용해 AES-256-GCM으로 보관함에 암호화됩니다. 개인 키는 Argon2id(64 MiB)로 보호되며, 사용 설정한 경우 생체 인식 Keystore 키로도 보호됩니다. 탐색한 이미지는 메모리에만 남습니다.</string>
     <string name="settings_page_content">콘텐츠 필터</string>
     <string name="settings_page_browsing">탐색 및 다운로드</string>

@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">刪除保險庫</string>
     <string name="settings_delete_vault_hint">永久清除內容、設定、來源和金鑰，且無法復原。</string>
     <string name="settings_section_about">關於</string>
+    <string name="settings_language">語言</string>
+    <string name="language_system">手機語言</string>
     <string name="settings_about_text">內容、設定、來源、Cookie 和下載佇列皆以 AES-256-GCM 加密儲存在保險庫中，金鑰透過 ECDH P-256 衍生。私密金鑰受 Argon2id（64 MiB）保護；若已啟用，還會受 Keystore 中的生物辨識金鑰保護。瀏覽過的圖片只會保留在記憶體中。</string>
     <string name="settings_page_content">內容過濾</string>
     <string name="settings_page_browsing">瀏覽與下載</string>

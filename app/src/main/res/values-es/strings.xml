@@ -116,6 +116,8 @@
     <string name="settings_delete_vault">Eliminar la bóveda</string>
     <string name="settings_delete_vault_hint">Borra de forma irreversible el contenido, los ajustes, las fuentes y la clave.</string>
     <string name="settings_section_about">Acerca de</string>
+    <string name="settings_language">Idioma</string>
+    <string name="language_system">Idioma del teléfono</string>
     <string name="settings_about_text">El contenido, los ajustes, las fuentes, las cookies y la cola de descargas se cifran en la bóveda con AES-256-GCM, con claves derivadas mediante ECDH P-256. La clave privada está protegida por Argon2id (64 MiB) y, si está activada, por una clave biométrica del Keystore. Las imágenes que exploras solo permanecen en la memoria.</string>
     <string name="settings_page_content">Filtro de contenido</string>
     <string name="settings_page_browsing">Navegación y descargas</string>

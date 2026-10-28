@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">删除保险库</string>
     <string name="settings_delete_vault_hint">不可逆地清除内容、设置、来源和密钥。</string>
     <string name="settings_section_about">关于</string>
+    <string name="settings_language">语言</string>
+    <string name="language_system">手机语言</string>
     <string name="settings_about_text">内容、设置、来源、Cookie 和下载队列均使用 AES-256-GCM 加密保存在保险库中，密钥通过 ECDH P-256 派生。私钥受 Argon2id（64 MiB）保护；如已启用，还受 Keystore 中的生物识别密钥保护。浏览的图片仅保存在内存中。</string>
     <string name="settings_page_content">内容过滤</string>
     <string name="settings_page_browsing">浏览与下载</string>

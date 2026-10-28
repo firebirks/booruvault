@@ -116,6 +116,8 @@
     <string name="settings_delete_vault">Elimina il vault</string>
     <string name="settings_delete_vault_hint">Cancella in modo irreversibile contenuti, impostazioni, fonti e chiave.</string>
     <string name="settings_section_about">Informazioni</string>
+    <string name="settings_language">Lingua</string>
+    <string name="language_system">Lingua del telefono</string>
     <string name="settings_about_text">Contenuti, impostazioni, fonti, cookie e coda dei download sono cifrati nel vault con AES-256-GCM, con chiavi derivate via ECDH P-256. La chiave privata è protetta da Argon2id (64 MiB) e, se attivo, da una chiave biometrica del Keystore. Le immagini sfogliate restano solo in memoria.</string>
     <string name="settings_page_content">Filtro contenuti</string>
     <string name="settings_page_browsing">Navigazione e download</string>

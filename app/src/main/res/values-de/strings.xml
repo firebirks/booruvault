@@ -114,6 +114,8 @@
     <string name="settings_delete_vault">Tresor löschen</string>
     <string name="settings_delete_vault_hint">Löscht unwiderruflich Inhalte, Einstellungen, Quellen und den Schlüssel.</string>
     <string name="settings_section_about">Über</string>
+    <string name="settings_language">Sprache</string>
+    <string name="language_system">Sprache des Telefons</string>
     <string name="settings_about_text">Inhalte, Einstellungen, Quellen, Cookies und die Download-Warteschlange werden im Tresor mit AES-256-GCM verschlüsselt, mit über ECDH P-256 abgeleiteten Schlüsseln. Der private Schlüssel ist durch Argon2id (64 MiB) geschützt und, falls aktiviert, durch einen biometrischen Keystore-Schlüssel. Angesehene Bilder bleiben nur im Arbeitsspeicher.</string>
     <string name="settings_page_content">Inhaltsfilter</string>
     <string name="settings_page_browsing">Browsen und Downloads</string>

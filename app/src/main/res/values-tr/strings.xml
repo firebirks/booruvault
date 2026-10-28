@@ -114,6 +114,8 @@
     <string name="settings_delete_vault">Kasayı sil</string>
     <string name="settings_delete_vault_hint">İçeriği, ayarları, kaynakları ve anahtarı geri döndürülemez şekilde siler.</string>
     <string name="settings_section_about">Hakkında</string>
+    <string name="settings_language">Dil</string>
+    <string name="language_system">Telefonun dili</string>
     <string name="settings_about_text">İçerik, ayarlar, kaynaklar, çerezler ve indirme kuyruğu kasada AES-256-GCM ile şifrelenir; anahtarlar ECDH P-256 ile türetilir. Özel anahtar Argon2id (64 MiB) ile ve etkinse biyometrik bir Keystore anahtarıyla korunur. Göz atılan görseller yalnızca bellekte kalır.</string>
     <string name="settings_page_content">İçerik filtresi</string>
     <string name="settings_page_browsing">Gezinme ve indirmeler</string>

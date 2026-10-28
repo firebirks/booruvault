@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">Xóa kho</string>
     <string name="settings_delete_vault_hint">Xóa nội dung, cài đặt, nguồn và khóa mã hóa. Không thể hoàn tác.</string>
     <string name="settings_section_about">Giới thiệu</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="language_system">Ngôn ngữ điện thoại</string>
     <string name="settings_about_text">Nội dung, cài đặt, nguồn, cookie và hàng đợi tải xuống được mã hóa trong kho bằng AES-256-GCM, với khóa được dẫn xuất qua ECDH P-256. Khóa riêng tư được bảo vệ bằng Argon2id (64 MiB) và, nếu bật, bằng một khóa sinh trắc học trong Keystore. Hình ảnh đã duyệt chỉ nằm trong bộ nhớ.</string>
     <string name="settings_page_content">Bộ lọc nội dung</string>
     <string name="settings_page_browsing">Duyệt và tải xuống</string>

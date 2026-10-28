@@ -116,6 +116,8 @@
     <string name="settings_delete_vault">Excluir o cofre</string>
     <string name="settings_delete_vault_hint">Apaga de forma irreversível o conteúdo, os ajustes, as fontes e a chave.</string>
     <string name="settings_section_about">Sobre</string>
+    <string name="settings_language">Idioma</string>
+    <string name="language_system">Idioma do telefone</string>
     <string name="settings_about_text">O conteúdo, os ajustes, as fontes, os cookies e a fila de downloads são criptografados no cofre com AES-256-GCM, com chaves derivadas por ECDH P-256. A chave privada é protegida pelo Argon2id (64 MiB) e, se ativada, por uma chave biométrica do Keystore. As imagens navegadas ficam apenas na memória.</string>
     <string name="settings_page_content">Filtro de conteúdo</string>
     <string name="settings_page_browsing">Navegação e downloads</string>

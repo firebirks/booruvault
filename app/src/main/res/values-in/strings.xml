@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">Hapus brankas</string>
     <string name="settings_delete_vault_hint">Menghapus konten, setelan, sumber, dan kunci secara permanen, tanpa bisa dipulihkan.</string>
     <string name="settings_section_about">Tentang</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="language_system">Bahasa ponsel</string>
     <string name="settings_about_text">Konten, setelan, sumber, cookie, dan antrean unduhan dienkripsi di brankas dengan AES-256-GCM, dengan kunci yang diturunkan melalui ECDH P-256. Kunci privat dilindungi oleh Argon2id (64 MiB) dan, jika diaktifkan, oleh kunci biometrik Keystore. Gambar yang dijelajahi hanya disimpan di memori.</string>
     <string name="settings_page_content">Filter konten</string>
     <string name="settings_page_browsing">Penjelajahan dan unduhan</string>

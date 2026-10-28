@@ -112,6 +112,8 @@
     <string name="settings_delete_vault">保管庫を削除</string>
     <string name="settings_delete_vault_hint">コンテンツ、設定、ソース、鍵を消去します。元に戻すことはできません。</string>
     <string name="settings_section_about">このアプリについて</string>
+    <string name="settings_language">言語</string>
+    <string name="language_system">端末の言語</string>
     <string name="settings_about_text">コンテンツ、設定、ソース、Cookie、ダウンロードキューは、ECDH P-256 で導出した鍵を使って AES-256-GCM で暗号化され、保管庫に保存されます。秘密鍵は Argon2id（64 MiB）で保護され、有効にした場合は生体認証の Keystore 鍵でも保護されます。閲覧した画像はメモリ上にのみ保持されます。</string>
     <string name="settings_page_content">コンテンツフィルター</string>
     <string name="settings_page_browsing">閲覧とダウンロード</string>

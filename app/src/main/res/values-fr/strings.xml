@@ -116,6 +116,8 @@
     <string name="settings_delete_vault">Supprimer le coffre</string>
     <string name="settings_delete_vault_hint">Efface de façon irréversible le contenu, les paramètres, les sources et la clé.</string>
     <string name="settings_section_about">À propos</string>
+    <string name="settings_language">Langue</string>
+    <string name="language_system">Langue du téléphone</string>
     <string name="settings_about_text">Le contenu, les paramètres, les sources, les cookies et la file de téléchargement sont chiffrés dans le coffre avec AES-256-GCM, avec des clés dérivées via ECDH P-256. La clé privée est protégée par Argon2id (64 MiB) et, si elle est activée, par une clé biométrique du Keystore. Les images parcourues restent uniquement en mémoire.</string>
     <string name="settings_page_content">Filtre de contenu</string>
     <string name="settings_page_browsing">Navigation et téléchargements</string>

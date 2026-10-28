@@ -64,7 +64,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 ## Languages
 
 - **Available:** English (default), plus Arabic (right-to-left), Chinese (Simplified and Traditional), Dutch, French, German, Hindi, Indonesian, Italian, Japanese, Korean, Polish, Portuguese, Russian, Spanish, Thai, Turkish, Ukrainian and Vietnamese.
-- **Which one is used:** the phone's language by default. On Android 13 and later you can pick a different one for this app alone, in the system's app language settings.
+- **Which one is used:** the phone's language by default; Settings → Language picks another for this app alone. On Android 13 and later that is the system's own per-app language setting, so the two agree.
 - **Errors:** they travel through the app as codes and are put into words only on screen. A site's own message is shown as the site wrote it.
 - **Formats:** dates, numbers and file sizes follow the phone's conventions.
 

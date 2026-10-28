@@ -118,6 +118,8 @@
     <string name="settings_delete_vault">Usuń sejf</string>
     <string name="settings_delete_vault_hint">Nieodwracalnie usuwa zawartość, ustawienia, źródła i klucz.</string>
     <string name="settings_section_about">Informacje</string>
+    <string name="settings_language">Język</string>
+    <string name="language_system">Język telefonu</string>
     <string name="settings_about_text">Zawartość, ustawienia, źródła, pliki cookie i kolejka pobierania są szyfrowane w sejfie za pomocą AES-256-GCM, kluczami wyprowadzanymi przez ECDH P-256. Klucz prywatny jest chroniony przez Argon2id (64 MiB) oraz, jeśli włączono, przez biometryczny klucz w Keystore. Przeglądane obrazy pozostają wyłącznie w pamięci.</string>
     <string name="settings_page_content">Filtr treści</string>
     <string name="settings_page_browsing">Przeglądanie i pobieranie</string>
