@@ -66,6 +66,7 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.MoebooruApi
 import io.github.firebirks.booruvault.booru.Presets
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
+import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -170,17 +171,6 @@ private fun addressHint(engine: BooruEngine): Int = when (engine) {
     BooruEngine.SHIMMIE -> R.string.source_hint_shimmie
     BooruEngine.HTML_GENERIC -> R.string.source_hint_generic
     else -> R.string.source_hint_default
-}
-
-/** Where the built-in browser starts: Gelbooru's options hold "Display all site content". */
-private fun browserStart(source: BooruSource): String {
-    val base = source.baseUrl.trim().trimEnd('/')
-    return when (source.engine) {
-        BooruEngine.GELBOORU, BooruEngine.GELBOORU_HTML ->
-            base.replace("://api.", "://") + "/index.php?page=account&s=options"
-        BooruEngine.HTML_GENERIC -> base.replace("{tags}", "").replace("{page}", "1")
-        else -> "$base/"
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

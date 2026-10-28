@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.DISABLE_WEBRTC_SCRIPT
@@ -65,6 +66,20 @@ val LocalChallenge = staticCompositionLocalOf<ChallengeLauncher> { ChallengeLaun
  * the site's home is opened for its anti-bot check, which closes on its own once passed.
  */
 data class ChallengeRequest(val source: BooruSource?, val url: String, val browse: Boolean, val onSolved: () -> Unit)
+
+/**
+ * Where the built-in browser starts for [source]'s settings and login: Gelbooru's options page
+ * holds "Display all site content"; other sites open at their home.
+ */
+fun browserStart(source: BooruSource): String {
+    val base = source.baseUrl.trim().trimEnd('/')
+    return when (source.engine) {
+        BooruEngine.GELBOORU, BooruEngine.GELBOORU_HTML ->
+            base.replace("://api.", "://") + "/index.php?page=account&s=options"
+        BooruEngine.HTML_GENERIC -> base.replace("{tags}", "").replace("{page}", "1")
+        else -> "$base/"
+    }
+}
 
 /**
  * The site in a real browser, so the user can pass its check by hand. The clearance cookie lands

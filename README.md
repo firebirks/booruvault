@@ -19,7 +19,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **Search:** tag autocomplete, infinite scrolling grid, pull to refresh.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
 - **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source.
-- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences such as Gelbooru's "Display all site content". The site's cookies are then kept in the vault.
+- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences such as Gelbooru's "Display all site content". The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings.
 
 ### Downloads
 

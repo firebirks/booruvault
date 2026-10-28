@@ -57,6 +57,7 @@ import androidx.compose.material.icons.outlined.Gif
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Schedule
@@ -114,6 +115,7 @@ import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.TagSuggestion
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
+import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.MessageState
 import io.github.firebirks.booruvault.ui.common.categoryColor
@@ -206,6 +208,9 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     // A plain page has nothing to search; its address stands where the field would be.
                     pageAddress = state.source?.takeIf { !it.searchable }?.baseUrl,
                     onSelectSource = vm::selectSource,
+                    // Login and site preferences without a trip through Settings; the results
+                    // reload with the cookies the visit brought back.
+                    onOpenSite = state.source?.let { source -> { challenge.open(source, browserStart(source), browse = true) { vm.refresh() } } },
                     input = vm.input,
                     onInput = vm::onInput,
                     onSubmit = {
@@ -353,6 +358,7 @@ private fun BrowseTopBar(
     selectedId: String?,
     pageAddress: String?,
     onSelectSource: (String) -> Unit,
+    onOpenSite: (() -> Unit)?,
     input: androidx.compose.ui.text.input.TextFieldValue,
     onInput: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
     onSubmit: () -> Unit,
@@ -385,6 +391,9 @@ private fun BrowseTopBar(
                             )
                         }
                     }
+                }
+                if (onOpenSite != null) {
+                    IconButton(onClick = onOpenSite) { Icon(Icons.Outlined.OpenInBrowser, stringResource(R.string.source_open_browser)) }
                 }
                 Spacer(Modifier.weight(1f))
                 Box {
