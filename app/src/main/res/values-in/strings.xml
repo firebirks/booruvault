@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">Hanya konten aman</string>
     <string name="preset_note_two_tags">Maks. 2 tag per pencarian tanpa akun</string>
     <string name="preset_note_web_without_key">Tanpa kunci API, membaca halaman web situs</string>
-    <string name="preset_note_web_without_key_challenge">Tanpa kunci API, membaca halaman web, dengan pemeriksaan anti-bot</string>
     <string name="action_cancel">Batal</string>
     <string name="action_delete">Hapus</string>
     <string name="action_retry">Coba lagi</string>

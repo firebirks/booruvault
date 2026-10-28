@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">محتوى آمن فقط</string>
     <string name="preset_note_two_tags">وسمان كحد أقصى لكل بحث بدون حساب</string>
     <string name="preset_note_web_without_key">بدون مفتاح API، يقرأ صفحات الويب الخاصة بالموقع</string>
-    <string name="preset_note_web_without_key_challenge">بدون مفتاح API، يقرأ صفحات الويب مع تحقق مضاد للروبوتات</string>
     <string name="action_cancel">إلغاء</string>
     <string name="action_delete">حذف</string>
     <string name="action_retry">إعادة المحاولة</string>

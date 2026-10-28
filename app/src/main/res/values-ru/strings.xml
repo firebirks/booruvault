@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">Только безопасный контент</string>
     <string name="preset_note_two_tags">До 2 тегов на поиск без аккаунта</string>
     <string name="preset_note_web_without_key">Без API-ключа читает веб-страницы сайта</string>
-    <string name="preset_note_web_without_key_challenge">Без API-ключа читает веб-страницы, с антибот-проверкой</string>
     <string name="action_cancel">Отмена</string>
     <string name="action_delete">Удалить</string>
     <string name="action_retry">Повторить</string>

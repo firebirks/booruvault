@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">เนื้อหาปลอดภัยเท่านั้น</string>
     <string name="preset_note_two_tags">ค้นหาได้สูงสุด 2 แท็กต่อครั้งหากไม่มีบัญชี</string>
     <string name="preset_note_web_without_key">หากไม่มีคีย์ API จะอ่านจากหน้าเว็บของเว็บไซต์</string>
-    <string name="preset_note_web_without_key_challenge">หากไม่มีคีย์ API จะอ่านจากหน้าเว็บ โดยต้องผ่านการตรวจสอบป้องกันบอท</string>
     <string name="action_cancel">ยกเลิก</string>
     <string name="action_delete">ลบ</string>
     <string name="action_retry">ลองอีกครั้ง</string>

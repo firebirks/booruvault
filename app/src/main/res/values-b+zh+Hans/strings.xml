@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">仅限安全内容</string>
     <string name="preset_note_two_tags">无账号时每次搜索最多 2 个标签</string>
     <string name="preset_note_web_without_key">没有 API 密钥时，读取网站的网页</string>
-    <string name="preset_note_web_without_key_challenge">没有 API 密钥时读取网页，需通过反机器人验证</string>
     <string name="action_cancel">取消</string>
     <string name="action_delete">删除</string>
     <string name="action_retry">重试</string>

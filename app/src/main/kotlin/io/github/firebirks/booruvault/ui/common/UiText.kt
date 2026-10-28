@@ -121,5 +121,4 @@ fun PresetNote.labelRes(): Int = when (this) {
     PresetNote.SAFE_ONLY -> R.string.preset_note_safe_only
     PresetNote.TWO_TAG_LIMIT -> R.string.preset_note_two_tags
     PresetNote.WEB_WITHOUT_KEY -> R.string.preset_note_web_without_key
-    PresetNote.WEB_WITHOUT_KEY_CHALLENGE -> R.string.preset_note_web_without_key_challenge
 }

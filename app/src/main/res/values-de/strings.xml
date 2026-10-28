@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">Nur jugendfreie Inhalte</string>
     <string name="preset_note_two_tags">Ohne Konto bis zu 2 Tags pro Suche</string>
     <string name="preset_note_web_without_key">Ohne API-Schlüssel werden die Webseiten der Website gelesen</string>
-    <string name="preset_note_web_without_key_challenge">Ohne API-Schlüssel werden die Webseiten gelesen, mit Anti-Bot-Prüfung</string>
     <string name="action_cancel">Abbrechen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_retry">Wiederholen</string>

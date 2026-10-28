@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">Alleen veilige inhoud</string>
     <string name="preset_note_two_tags">Zonder account max. 2 tags per zoekopdracht</string>
     <string name="preset_note_web_without_key">Zonder API-sleutel worden de webpagina\'s van de site gelezen</string>
-    <string name="preset_note_web_without_key_challenge">Zonder API-sleutel worden de webpagina\'s gelezen, met anti-botcontrole</string>
     <string name="action_cancel">Annuleren</string>
     <string name="action_delete">Verwijderen</string>
     <string name="action_retry">Opnieuw</string>

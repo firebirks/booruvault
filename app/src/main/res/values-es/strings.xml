@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">Solo contenido seguro</string>
     <string name="preset_note_two_tags">Hasta 2 etiquetas por búsqueda sin cuenta</string>
     <string name="preset_note_web_without_key">Sin clave de API, lee las páginas web del sitio</string>
-    <string name="preset_note_web_without_key_challenge">Sin clave de API, lee las páginas web, con verificación antibots</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_delete">Eliminar</string>
     <string name="action_retry">Reintentar</string>

@@ -52,7 +52,6 @@
     <string name="preset_note_safe_only">Safe content only</string>
     <string name="preset_note_two_tags">Up to 2 tags per search without an account</string>
     <string name="preset_note_web_without_key">Without an API key, reads the site\'s web pages</string>
-    <string name="preset_note_web_without_key_challenge">Without an API key, reads the web pages, with an anti-bot check</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_delete">Delete</string>
     <string name="action_retry">Retry</string>

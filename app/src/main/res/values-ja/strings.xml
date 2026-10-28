@@ -47,7 +47,6 @@
     <string name="preset_note_safe_only">安全なコンテンツのみ</string>
     <string name="preset_note_two_tags">アカウントなしでは検索 1 回につきタグ 2 つまで</string>
     <string name="preset_note_web_without_key">API キーがない場合はサイトのウェブページを読み込みます</string>
-    <string name="preset_note_web_without_key_challenge">API キーがない場合はウェブページを読み込みます（ボット対策の確認あり）</string>
     <string name="action_cancel">キャンセル</string>
     <string name="action_delete">削除</string>
     <string name="action_retry">再試行</string>
