@@ -15,3 +15,11 @@ Everything the app keeps is encrypted in the vault: downloaded files, settings, 
 ## What is never collected
 
 No usage statistics, no identifiers, no logs of what you browse. There is no backup of the vault to any cloud: `allowBackup` is off.
+
+## Who is responsible for your data
+
+The developer receives no data at all: there is no server, no account, no telemetry and no crash reporting. There is therefore no data controller for this app in the sense of the GDPR, nothing you could ask the developer to hand over and nothing to delete. What you keep on the phone is yours alone.
+
+The data you send elsewhere is governed by the privacy policy of whoever receives it: the booru sites you add, the Tor Project for the exit check, and Google if you turn on Safe Browsing. Read theirs for what they keep.
+
+A bug report or a question opened on GitHub is subject to GitHub's privacy policy, not this page. Do not paste API keys or vault passwords into an issue.
