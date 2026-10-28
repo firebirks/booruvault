@@ -10,6 +10,7 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import java.security.GeneralSecurityException
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -53,12 +54,17 @@ object BiometricKey {
     /** A fresh key's cipher, ready to be authorised by [authenticate] and handed to the vault. */
     fun encryptCipher(): Cipher = Cipher.getInstance(TRANSFORMATION).apply { init(Cipher.ENCRYPT_MODE, newKey()) }
 
-    /** Null when the key is gone or was invalidated by a change in enrolled biometrics. */
+    /**
+     * Null when the key is gone, was invalidated by a change in enrolled biometrics, or the
+     * Keystore will not hand it out for any other reason: the password is always there.
+     */
     fun decryptCipher(iv: ByteArray): Cipher? = try {
         val key = keyStore().getKey(ALIAS, null) as? SecretKey ?: return null
         Cipher.getInstance(TRANSFORMATION).apply { init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(128, iv)) }
     } catch (_: KeyPermanentlyInvalidatedException) {
         delete()
+        null
+    } catch (_: GeneralSecurityException) {
         null
     }
 
