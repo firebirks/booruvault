@@ -12,18 +12,22 @@ Changelog: https://github.com/firebirks/booruvault/releases
 
 AutoName: BooruVault
 
+# Questionable and explicit ratings can be turned on, behind an adult's confirmation.
+AntiFeatures:
+  - NSFW
+
 RepoType: git
 Repo: https://github.com/firebirks/booruvault.git
 
 Builds:
-  - versionName: 0.1.0
-    versionCode: 1
-    commit: 461081b40858e9f9fb6c1cf85b34e6a3e9fe30f8
+  - versionName: 0.2.0
+    versionCode: 2
+    commit: 2ad3329b66f6a8bcfd36eac6be506beaf88a9ed9
     subdir: app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 0.1.0
-CurrentVersionCode: 1
+CurrentVersion: 0.2.0
+CurrentVersionCode: 2

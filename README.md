@@ -6,6 +6,14 @@ Everything the app stores about you is encrypted: the files you download, your s
 
 The interface follows the phone's language, with English as the fallback. See [Languages](#languages).
 
+## Installing
+
+- **Obtainium:** add `https://github.com/firebirks/booruvault` as a source; it installs the APK attached to each release and follows later ones.
+- **F-Droid client:** add the repository `https://firebirks.github.io/booruvault/fdroid/repo` with fingerprint `0DDEB006B5340592AAFC96349364A69DE0485FD1723572D7B3884414A510531A`. It carries the same APK as the release.
+- **By hand:** download `booruvault-<version>.apk` from the [releases](https://github.com/firebirks/booruvault/releases); its SHA-256 is next to it.
+
+All three are signed with the same key, so updates install over each other. A build from F-Droid's own repository, when there is one, is signed by F-Droid and will not update an APK from here, nor the other way round.
+
 ## Features
 
 ### Browsing
@@ -164,6 +172,8 @@ A release is a commit and a tag:
 3. Commit, tag `v<versionName>` and push the tag.
 
 The tag starts the `Release` workflow, which checks that the tag matches `versionName`, runs the tests, builds the APK signed with the project's key (kept in the repository secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD` and `KEY_PASSWORD`) and publishes it, with its SHA-256, as a GitHub release whose notes are the changelog. Obtainium and direct installs use that APK.
+
+A second job then adds the same APK to the project's F-Droid repository, served by GitHub Pages from the `gh-pages` branch under `fdroid/repo`. It runs `fdroid update` with the metadata in `fdroid/` and the texts and icon in `fastlane/`, signs the index with the repository key (secrets `FDROID_KEYSTORE_BASE64`, `FDROID_KEYSTORE_PASS` and `FDROID_KEY_PASS`, alias `booruvault-repo`) and commits only `fdroid/repo`, so the site at the root of the branch is untouched. Both keys live offline with their owner; losing the app key would leave users unable to update without reinstalling.
 
 F-Droid builds every version itself from the same tag and signs it with its own key; `fdroid/io.github.firebirks.booruvault.yml` is the reference copy of its metadata. The first version is submitted to [fdroiddata](https://gitlab.com/fdroid/fdroiddata) as a merge request, later ones are picked up through `UpdateCheckMode: Tags`. `fastlane/metadata/android/` holds the store texts; the icon and screenshots are taken from the APK when not provided there.
 

@@ -61,3 +61,62 @@ jobs:
           gh release create "$GITHUB_REF_NAME" dist/* \
             --title "BooruVault ${{ steps.version.outputs.name }}" \
             --notes-file "fastlane/metadata/android/en-US/changelogs/${{ steps.version.outputs.code }}.txt"
+
+  # The same APK, served from the project's own F-Droid repository on GitHub Pages. The index
+  # is signed with the repository key held in the secrets; the site at the root of gh-pages is
+  # left alone, only fdroid/repo is rewritten.
+  fdroid:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: pages
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install fdroidserver
+        run: pip install fdroidserver
+      - name: Lay out the repository working directory
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FDROID_KEYSTORE_BASE64: ${{ secrets.FDROID_KEYSTORE_BASE64 }}
+          FDROID_KEYSTORE_PASS: ${{ secrets.FDROID_KEYSTORE_PASS }}
+          FDROID_KEY_PASS: ${{ secrets.FDROID_KEY_PASS }}
+        run: |
+          mkdir -p work/metadata/io.github.firebirks.booruvault pages/fdroid/repo
+          cp -r pages/fdroid/repo work/repo
+          gh release download "$GITHUB_REF_NAME" --pattern '*.apk' --dir work/repo
+          cp fdroid/io.github.firebirks.booruvault.yml work/metadata/
+          cp -r fastlane/metadata/android/en-US work/metadata/io.github.firebirks.booruvault/
+          cp fastlane/metadata/android/en-US/images/icon.png work/icon.png
+          echo "$FDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/fdroid.p12"
+          cat > work/config.yml <<EOF
+          repo_url: https://firebirks.github.io/booruvault/fdroid/repo
+          repo_name: BooruVault
+          repo_icon: icon.png
+          repo_description: >-
+            The official repository of BooruVault, signed by its developer. It carries the
+            same APK as the GitHub release, built and signed by the release workflow.
+          archive_older: 0
+          repo_keyalias: booruvault-repo
+          keystore: $RUNNER_TEMP/fdroid.p12
+          keystorepass: $FDROID_KEYSTORE_PASS
+          keypass: $FDROID_KEY_PASS
+          keydname: CN=booruvault-repo, OU=F-Droid
+          EOF
+      - name: Update the repository index
+        run: cd work && fdroid update
+      - name: Remove the repository key
+        if: always()
+        run: rm -f work/config.yml "$RUNNER_TEMP/fdroid.p12"
+      - name: Publish to GitHub Pages
+        run: |
+          rsync -a --delete --exclude status work/repo/ pages/fdroid/repo/
+          cd pages
+          git add fdroid/repo
+          git -c user.name=firebirks -c user.email=336470935+firebirks@users.noreply.github.com \
+            commit -m "F-Droid repository: ${GITHUB_REF_NAME#v}"
+          git push
