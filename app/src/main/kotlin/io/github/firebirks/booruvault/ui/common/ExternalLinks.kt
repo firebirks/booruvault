@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.R
 import kotlinx.coroutines.delay
 
@@ -52,6 +53,7 @@ private const val WARNING_SECONDS = 5
 fun ProvideLinkOpener(content: @Composable () -> Unit) {
     val container = LocalContainer.current
     val context = LocalContext.current
+    val settings by container.settings.settings.collectAsStateWithLifecycle()
     var pending by remember { mutableStateOf<String?>(null) }
     val opener = remember(context) {
         LinkOpener { url ->
@@ -63,8 +65,7 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
     }
     CompositionLocalProvider(LocalLinkOpener provides opener) { content() }
     pending?.let { url ->
-        val allowed = container.settings.settings.value.linksOutsideTor
-        if (allowed) {
+        if (settings.linksOutsideTor) {
             OutsideTorWarning(
                 onOpen = {
                     pending = null
