@@ -38,6 +38,8 @@ data class AppSettings(
     val viewerOriginal: Boolean = false,
     val downloadOriginal: Boolean = true,
     val pageSize: Int = 40,
+    /** How many results "download all" takes, as last chosen. */
+    val batchMax: Int = 100,
     /** Seconds in background before the app locks; 0 locks at once. */
     val autoLockSeconds: Int = 300,
     /**
@@ -113,6 +115,7 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     suspend fun setViewerOriginal(value: Boolean) = edit { it.copy(viewerOriginal = value) }
     suspend fun setDownloadOriginal(value: Boolean) = edit { it.copy(downloadOriginal = value) }
     suspend fun setPageSize(value: Int) = edit { it.copy(pageSize = value) }
+    suspend fun setBatchMax(value: Int) = edit { it.copy(batchMax = value) }
     suspend fun setAutoLock(seconds: Int) = edit { it.copy(autoLockSeconds = seconds) }
     suspend fun setSecureScreen(value: Boolean) = edit { it.copy(secureScreen = value) }
     suspend fun setDownloadWhileLocked(value: Boolean) = edit { it.copy(downloadWhileLocked = value) }

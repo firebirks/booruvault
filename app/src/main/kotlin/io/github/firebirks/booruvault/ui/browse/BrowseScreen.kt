@@ -339,9 +339,11 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
         BatchDialog(
             query = state.query,
             sourceName = state.source?.name.orEmpty(),
+            initial = settings.batchMax,
             onDismiss = { showBatch = false },
             onConfirm = { max ->
                 showBatch = false
+                scope.launch { container.settings.setBatchMax(max) }
                 queue {
                     vm.downloadAll(max)
                     -1
@@ -585,9 +587,9 @@ private fun GridFooter(loading: Boolean, error: String?, endReached: Boolean, hi
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun BatchDialog(query: String, sourceName: String, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
+private fun BatchDialog(query: String, sourceName: String, initial: Int, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
     val options = listOf(50, 100, 250, 500, 1000)
-    var max by remember { mutableIntStateOf(100) }
+    var max by remember { mutableIntStateOf(if (initial in options) initial else 100) }
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = { Icon(Icons.AutoMirrored.Outlined.ManageSearch, null) },
