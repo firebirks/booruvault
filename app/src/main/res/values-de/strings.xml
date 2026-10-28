@@ -409,6 +409,9 @@
     <string name="settings_risky">Riskante Optionen</string>
     <string name="settings_risky_hint">Standardmäßig aus: Jede tauscht ein Stück Privatsphäre gegen Komfort ein</string>
     <string name="settings_risky_intro">Diese Optionen schwächen die Schutzmaßnahmen, die BooruVault dir standardmäßig bietet. Lies, was jede einzelne bewirkt, bevor du sie aktivierst.</string>
+    <string name="risky_confirm_title">Bevor du das einschaltest</string>
+    <string name="risky_confirm_wait">Verstanden, einschalten (%d)</string>
+    <string name="risky_confirm">Verstanden, einschalten</string>
     <string name="settings_hidden_browser">Geschützte Seiten mit einem versteckten Browser lesen</string>
     <string name="settings_hidden_browser_on">An: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, obwohl du sie bestanden hast (häufig mit Tor), öffnet die App ihre Seiten in einem versteckten Browser und liest sie dort aus. Bei jeder so gelesenen Seite läuft das JavaScript der Website wie bei einem normalen Besuch, Tracker eingeschlossen, und kann einen Fingerabdruck des Browsers erstellen. Drittanbieter-Cookies bleiben blockiert, WebRTC bleibt deaktiviert, Bilder werden nicht geladen, der Datenverkehr läuft über Tor, wenn Tor aktiv ist, und die Daten des Browsers werden nach jeder Seite gelöscht. Es ist langsamer und verbraucht mehr Akku.</string>
     <string name="settings_hidden_browser_off">Aus: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, hält die App an und bittet dich, sie im integrierten Browser abzuschließen. Der Code der Website läuft nur, während du sie dir ansiehst.</string>

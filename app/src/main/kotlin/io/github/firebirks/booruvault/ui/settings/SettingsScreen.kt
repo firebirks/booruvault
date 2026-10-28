@@ -58,6 +58,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -415,22 +416,25 @@ private fun RiskySettings(onBack: () -> Unit) {
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(16.dp),
             )
-            SwitchRow(
+            RiskySwitch(
                 stringResource(R.string.settings_download_locked),
-                stringResource(if (settings.downloadWhileLocked) R.string.settings_download_locked_on else R.string.settings_download_locked_off),
-                settings.downloadWhileLocked,
+                onText = stringResource(R.string.settings_download_locked_on),
+                offText = stringResource(R.string.settings_download_locked_off),
+                checked = settings.downloadWhileLocked,
             ) { scope.launch { repo.setDownloadWhileLocked(it) } }
             HorizontalDivider()
-            SwitchRow(
+            RiskySwitch(
                 stringResource(R.string.settings_hidden_browser),
-                stringResource(if (settings.hiddenBrowser) R.string.settings_hidden_browser_on else R.string.settings_hidden_browser_off),
-                settings.hiddenBrowser,
+                onText = stringResource(R.string.settings_hidden_browser_on),
+                offText = stringResource(R.string.settings_hidden_browser_off),
+                checked = settings.hiddenBrowser,
             ) { scope.launch { repo.setHiddenBrowser(it) } }
             HorizontalDivider()
-            SwitchRow(
+            RiskySwitch(
                 stringResource(R.string.settings_links_outside_tor),
-                stringResource(if (settings.linksOutsideTor) R.string.settings_links_outside_tor_on else R.string.settings_links_outside_tor_off),
-                settings.linksOutsideTor,
+                onText = stringResource(R.string.settings_links_outside_tor_on),
+                offText = stringResource(R.string.settings_links_outside_tor_off),
+                checked = settings.linksOutsideTor,
             ) { scope.launch { repo.setLinksOutsideTor(it) } }
             HorizontalDivider()
             if (!gms) {
@@ -441,15 +445,64 @@ private fun RiskySettings(onBack: () -> Unit) {
                     enabled = false,
                 ) {}
             } else {
-                SwitchRow(
+                RiskySwitch(
                     stringResource(R.string.settings_safe_browsing),
-                    stringResource(if (settings.webSafeBrowsing) R.string.settings_safe_browsing_on else R.string.settings_safe_browsing_off),
-                    settings.webSafeBrowsing,
+                    onText = stringResource(R.string.settings_safe_browsing_on),
+                    offText = stringResource(R.string.settings_safe_browsing_off),
+                    checked = settings.webSafeBrowsing,
                 ) { scope.launch { repo.setWebSafeBrowsing(it) } }
             }
         }
     }
 }
+
+/**
+ * A switch that gives up some protection. Turning it off is immediate. Turning it on first
+ * shows what it costs, in full, and the button that confirms unlocks only after a few seconds,
+ * so the text is read rather than dismissed. The row itself says what the current state does.
+ */
+@Composable
+private fun RiskySwitch(title: String, onText: String, offText: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    var asking by remember { mutableStateOf(false) }
+    SwitchRow(title, if (checked) onText else offText, checked) { on ->
+        if (on) asking = true else onChange(false)
+    }
+    if (asking) {
+        var remaining by remember { mutableIntStateOf(RISKY_WAIT_SECONDS) }
+        LaunchedEffect(Unit) {
+            while (remaining > 0) {
+                delay(1000)
+                remaining--
+            }
+        }
+        AlertDialog(
+            onDismissRequest = { asking = false },
+            icon = { Icon(Icons.Outlined.WarningAmber, null, tint = MaterialTheme.colorScheme.error) },
+            title = { Text(stringResource(R.string.risky_confirm_title)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(title, fontWeight = FontWeight.SemiBold)
+                    Text(onText)
+                }
+            },
+            confirmButton = {
+                TextButton(enabled = remaining == 0, onClick = {
+                    asking = false
+                    onChange(true)
+                }) {
+                    Text(
+                        if (remaining > 0) stringResource(R.string.risky_confirm_wait, remaining) else stringResource(R.string.risky_confirm),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = { TextButton(onClick = { asking = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
+}
+
+/** Seconds the explanation stays up before a risky option can be turned on. */
+private const val RISKY_WAIT_SECONDS = 8
 
 @Composable
 private fun BlacklistEditor(stored: String, onSave: (String) -> Unit) {

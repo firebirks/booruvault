@@ -387,6 +387,9 @@
     <string name="settings_risky">リスクのあるオプション</string>
     <string name="settings_risky_hint">初期設定ではオフ。どれも利便性と引き換えにプライバシーの一部を手放します</string>
     <string name="settings_risky_intro">これらのオプションは、BooruVault が初期設定で提供している保護を弱めます。オンにする前に、それぞれの動作の説明を読んでください。</string>
+    <string name="risky_confirm_title">オンにする前に</string>
+    <string name="risky_confirm_wait">理解した、オンにする (%d)</string>
+    <string name="risky_confirm">理解した、オンにする</string>
     <string name="settings_hidden_browser">保護されたページを非表示のブラウザで読み取る</string>
     <string name="settings_hidden_browser_on">オン：ボット対策の確認を通過した後もサイトが確認を求め続ける場合（Tor ではよくあります）、アプリはそのサイトのページを非表示のブラウザで開き、そこから内容を読み取ります。この方法で読み取るページごとに、サイトの JavaScript がトラッカーも含めて通常の訪問と同じように実行され、ブラウザのフィンガープリントを取得することもできます。サードパーティ Cookie は引き続きブロックされ、WebRTC はオフのまま、画像は読み込まれず、Tor がオンのときは通信が Tor を経由し、ブラウザのデータはページを 1 つ読み取るたびに消去されます。動作が遅くなり、バッテリーの消費も増えます。</string>
     <string name="settings_hidden_browser_off">オフ：サイトがボット対策の確認を求め続ける場合、アプリは処理を中断し、内蔵ブラウザで確認を通過するよう求めます。サイトのコードが実行されるのは、あなたがそのサイトを見ている間だけです。</string>

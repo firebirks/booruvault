@@ -409,6 +409,9 @@
     <string name="settings_risky">Riskli seçenekler</string>
     <string name="settings_risky_hint">Varsayılan olarak kapalı: her biri kolaylık karşılığında biraz gizlilikten vazgeçer</string>
     <string name="settings_risky_intro">Bu seçenekler, BooruVault\'un size varsayılan olarak sağladığı korumaları zayıflatır. Açmadan önce her birinin ne yaptığını okuyun.</string>
+    <string name="risky_confirm_title">Açmadan önce</string>
+    <string name="risky_confirm_wait">Anladım, aç (%d)</string>
+    <string name="risky_confirm">Anladım, aç</string>
     <string name="settings_hidden_browser">Korumalı sayfaları gizli bir tarayıcıyla oku</string>
     <string name="settings_hidden_browser_on">Açık: bir site, siz anti-bot doğrulamasını tamamladıktan sonra bile onu istemeye devam ederse (Tor ile sık görülür), uygulama sitenin sayfalarını gizli bir tarayıcıda açar ve onları oradan okur. Bu şekilde okunan her sayfada sitenin JavaScript\'i, izleyiciler dahil, normal bir ziyaretteki gibi çalışır ve tarayıcının parmak izini çıkarabilir. Üçüncü taraf çerezleri engellenmeye devam eder, WebRTC kapalı kalır, görseller yüklenmez, Tor açıkken trafik Tor üzerinden geçer ve tarayıcının verileri her sayfadan sonra silinir. Daha yavaştır ve daha fazla pil tüketir.</string>
     <string name="settings_hidden_browser_off">Kapalı: bir site anti-bot doğrulamasını istemeye devam ederse uygulama durur ve sizden doğrulamayı yerleşik tarayıcıda tamamlamanızı ister. Sitenin kodu yalnızca siz ona bakarken çalışır.</string>

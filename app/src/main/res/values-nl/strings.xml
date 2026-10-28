@@ -409,6 +409,9 @@
     <string name="settings_risky">Risicovolle opties</string>
     <string name="settings_risky_hint">Standaard uit: elke optie ruilt wat privacy in voor gemak</string>
     <string name="settings_risky_intro">Deze opties verzwakken de bescherming die BooruVault je standaard biedt. Lees wat elke optie doet voordat je die aanzet.</string>
+    <string name="risky_confirm_title">Voordat je dit inschakelt</string>
+    <string name="risky_confirm_wait">Begrepen, inschakelen (%d)</string>
+    <string name="risky_confirm">Begrepen, inschakelen</string>
     <string name="settings_hidden_browser">Beschermde pagina\'s lezen met een verborgen browser</string>
     <string name="settings_hidden_browser_on">Aan: als een site om de anti-botcontrole blijft vragen, ook nadat je die hebt doorstaan (vaak het geval met Tor), opent de app de pagina\'s van die site in een verborgen browser en leest ze daar uit. Voor elke pagina die zo wordt gelezen, draait het JavaScript van de site zoals bij een normaal bezoek, trackers inbegrepen, en kan het een vingerafdruk van de browser nemen. Cookies van derden blijven geblokkeerd, WebRTC blijft uit, afbeeldingen worden niet geladen, het verkeer gaat via Tor als Tor aan staat, en de gegevens van de browser worden na elke pagina gewist. Het is trager en verbruikt meer batterij.</string>
     <string name="settings_hidden_browser_off">Uit: als een site om de anti-botcontrole blijft vragen, stopt de app en vraagt je die in de ingebouwde browser te voltooien. De code van de site draait alleen terwijl je ernaar kijkt.</string>

@@ -431,6 +431,9 @@
     <string name="settings_risky">Opções arriscadas</string>
     <string name="settings_risky_hint">Desativadas por padrão: cada uma abre mão de um pouco de privacidade em troca de conveniência</string>
     <string name="settings_risky_intro">Estas opções reduzem as proteções que o BooruVault oferece a você por padrão. Leia o que cada uma faz antes de ativá-la.</string>
+    <string name="risky_confirm_title">Antes de ativar</string>
+    <string name="risky_confirm_wait">Entendi, ativar (%d)</string>
+    <string name="risky_confirm">Entendi, ativar</string>
     <string name="settings_hidden_browser">Ler páginas protegidas com um navegador oculto</string>
     <string name="settings_hidden_browser_on">Ativado: quando um site continua pedindo a verificação antibot mesmo depois de você tê-la concluído (comum com o Tor), o app abre as páginas dele em um navegador oculto e as lê a partir dali. Para cada página lida dessa forma, o JavaScript do site é executado como em uma visita normal, incluindo rastreadores, e pode coletar uma impressão digital do navegador. Os cookies de terceiros continuam bloqueados, o WebRTC continua desativado, as imagens não são carregadas, o tráfego passa pelo Tor quando o Tor está ativado e os dados do navegador são apagados após cada página. É mais lento e consome mais bateria.</string>
     <string name="settings_hidden_browser_off">Desativado: quando um site continua pedindo a verificação antibot, o app para e pede que você a conclua no navegador integrado. O código do site só é executado enquanto você está olhando para ele.</string>

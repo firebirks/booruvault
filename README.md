@@ -53,7 +53,7 @@ The interface follows the phone's language, with English as the fallback. See [L
   - Safe Browsing off unless the user turns it on;
   - its storage wiped after each session and at start-up.
 - **Cookies:** only those the user brings back from the built-in browser are kept, for thirty days at most. Cloudflare's clearance is kept for the site's registrable domain (public suffix list), since its image hosts check it too; every other cookie, a login above all, is bound to the one host it was read from, so it never travels to a sibling host or to another `github.io` site. Cookies sites set on their own last for the session.
-- **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs:
+- **Risky options:** a separate settings page holds everything that trades privacy for convenience. All are off by default, and each one explains what it costs; turning one on first shows that explanation in full, behind a button that unlocks after a few seconds:
   - keep downloading while the vault is locked;
   - read pages that keep demanding an anti-bot check through a hidden browser. It runs the site's scripts and can be fingerprinted, but loads no images, blocks third-party cookies, has WebRTC off, goes through Tor when Tor is on, and is wiped after each page;
   - Google Safe Browsing in the built-in browser;
