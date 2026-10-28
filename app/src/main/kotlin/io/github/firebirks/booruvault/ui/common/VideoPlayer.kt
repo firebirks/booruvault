@@ -19,11 +19,18 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
+import android.view.View
 
 /** A looping player that lives exactly as long as it is on screen and pauses in the background. */
 @OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayer(uri: Uri, dataSourceFactory: DataSource.Factory, modifier: Modifier = Modifier) {
+fun VideoPlayer(
+    uri: Uri,
+    dataSourceFactory: DataSource.Factory,
+    modifier: Modifier = Modifier,
+    /** Told when a tap shows or hides the player's controls, so a viewer can follow with its own. */
+    onControlsVisible: ((Boolean) -> Unit)? = null,
+) {
     val context = LocalContext.current
     val player = remember(uri) {
         ExoPlayer.Builder(context)
@@ -50,6 +57,9 @@ fun VideoPlayer(uri: Uri, dataSourceFactory: DataSource.Factory, modifier: Modif
             PlayerView(ctx).apply {
                 setBackgroundColor(Color.BLACK)
                 setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                onControlsVisible?.let { listener ->
+                    setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility -> listener(visibility == View.VISIBLE) })
+                }
                 this.player = player
             }
         },

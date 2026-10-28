@@ -18,6 +18,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -154,10 +156,10 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
             if (post.needsResolve) {
                 // This and the neighbouring pages fetch their post page while being looked at.
                 LaunchedEffect(post.id) { vm.resolve(post) }
-                PendingPost(post, resolveErrors[post.id], onRetry = { vm.resolve(post) })
+                PendingPost(post, resolveErrors[post.id], onRetry = { vm.resolve(post) }, onTap = { chrome = !chrome })
             } else if (post.kind == MediaKind.VIDEO && url != null) {
                 if (page == pager.currentPage) {
-                    VideoPlayer(Uri.parse(url), videoSource, Modifier.fillMaxSize())
+                    VideoPlayer(Uri.parse(url), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it })
                 } else {
                     AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
@@ -255,8 +257,8 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
 }
 
 @Composable
-private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onTap: () -> Unit) {
+    Box(Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures { onTap() } }, contentAlignment = Alignment.Center) {
         AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
         if (error == null) {
             CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)

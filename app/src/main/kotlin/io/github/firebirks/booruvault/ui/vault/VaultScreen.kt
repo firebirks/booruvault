@@ -127,6 +127,13 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     val selectedCollection = collections.firstOrNull { it.id == vm.collectionId }
 
     LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it.resolve(context)) } }
+    LaunchedEffect(vm) {
+        vm.scrollTo.collect { id ->
+            val index = vm.items.value.indexOfFirst { it.id == id }
+            val visible = gridState.layoutInfo.visibleItemsInfo.map { it.index }
+            if (index >= 0 && index !in visible) gridState.scrollToItem(index)
+        }
+    }
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
 
     // System pickers put the app in the background; keep the vault open while they are up.

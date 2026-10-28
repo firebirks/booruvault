@@ -71,6 +71,15 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     private val _messages = MutableSharedFlow<UiText>(extraBufferCapacity = 4)
     val messages: SharedFlow<UiText> = _messages
 
+    private val _scrollTo = MutableSharedFlow<String>(extraBufferCapacity = 1)
+
+    /** The id of the item the viewer was closed on; the grid brings it into view. */
+    val scrollTo: SharedFlow<String> = _scrollTo
+
+    fun requestScroll(id: String) {
+        _scrollTo.tryEmit(id)
+    }
+
     init {
         // Locking forgets the selection and the filter along with everything else. A password
         // change publishes a new unlocked state, which is no reason to drop them.

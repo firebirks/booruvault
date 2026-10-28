@@ -104,10 +104,14 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
         exporting = null
     }
 
-    BackHandler(onBack = onClose)
+    val current = items.getOrNull(pager.currentPage)
+    fun close() {
+        current?.let { vm.requestScroll(it.id) }
+        onClose()
+    }
+    BackHandler { close() }
     ViewerSystemBars(hidden = !chrome)
 
-    val current = items.getOrNull(pager.currentPage)
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         HorizontalPager(
             state = pager,
@@ -118,7 +122,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
             val item = items[page]
             if (item.isVideo) {
                 if (page == pager.currentPage) {
-                    VideoPlayer(SealedDataSource.uriFor(item.id), videoSource, Modifier.fillMaxSize())
+                    VideoPlayer(SealedDataSource.uriFor(item.id), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it })
                 } else if (item.hasThumbnail) {
                     AsyncImage(VaultImage(item.id, thumbnail = true), null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
@@ -152,7 +156,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
                     .padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onClose) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back), tint = Color.White) }
+                IconButton(onClick = ::close) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back), tint = Color.White) }
                 Column(Modifier.weight(1f)) {
                     Text(item.fileName, color = Color.White, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text("${pager.currentPage + 1}/${items.size}", color = Color.White.copy(alpha = 0.75f), style = MaterialTheme.typography.labelMedium)
