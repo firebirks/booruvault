@@ -20,7 +20,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.HourglassTop
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import io.github.firebirks.booruvault.ui.theme.successColors
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Info
@@ -598,17 +605,9 @@ private fun TorSettings() {
         }
         ListItem(
             headlineContent = { Text(torStatusText(state)) },
-            supportingContent = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    state.verifiedExit?.let { Text(stringResource(R.string.tor_verified, it), color = MaterialTheme.colorScheme.primary) }
-                    state.verifyError?.let { Text(problemText(it), color = MaterialTheme.colorScheme.error) }
-                    if (state.status == TorStatus.ON && state.verifiedExit == null && state.verifyError == null) {
-                        Text(stringResource(R.string.tor_verifying), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Text(stringResource(R.string.tor_vpn_hint), style = MaterialTheme.typography.bodySmall)
-                }
-            },
+            supportingContent = { Text(stringResource(R.string.tor_vpn_hint), style = MaterialTheme.typography.bodySmall) },
         )
+        TorVerdict(state)
         TorPortField(tor, state.socksPort)
         Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { tor.orbotLaunchIntent()?.let { context.startActivity(it) } }) { Text(stringResource(R.string.tor_open_orbot)) }
@@ -648,6 +647,42 @@ private fun TorSettings() {
  * The local port the app connects to Orbot on. It is applied when the field is left or confirmed,
  * not at every keystroke: each change drops the connections opened along the old route.
  */
+/**
+ * The one line that matters, in colour: green when the exit check passed, red when it failed or
+ * nothing answers on the port, neutral while it is being run.
+ */
+@Composable
+private fun TorVerdict(state: TorState) {
+    val (background, foreground, icon, text) = when {
+        state.verifiedExit != null -> {
+            val (bg, fg) = successColors()
+            Verdict(bg, fg, Icons.Outlined.CheckCircle, stringResource(R.string.tor_verified, state.verifiedExit))
+        }
+        state.verifyError != null -> Verdict(
+            MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer, Icons.Outlined.ErrorOutline, problemText(state.verifyError),
+        )
+        state.status == TorStatus.OFF || state.status == TorStatus.NOT_INSTALLED -> Verdict(
+            MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer, Icons.Outlined.ErrorOutline, torStatusText(state),
+        )
+        else -> Verdict(
+            MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, Icons.Outlined.HourglassTop, stringResource(R.string.tor_verifying),
+        )
+    }
+    Surface(
+        color = background,
+        contentColor = foreground,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Icon(icon, null, Modifier.size(28.dp))
+            Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+private data class Verdict(val background: Color, val foreground: Color, val icon: ImageVector, val text: String)
+
 @Composable
 private fun torStatusText(state: TorState): String = when (state.status) {
     TorStatus.ON -> stringResource(R.string.tor_status_on, state.socksPort)

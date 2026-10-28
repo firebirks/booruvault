@@ -35,6 +35,11 @@ private val Dark = darkColorScheme(
     surface = Color(0xFF131218),
 )
 
+/** Background and text for a reassuring, "all is well" banner: Material has no green of its own. */
+@Composable
+fun successColors(): Pair<Color, Color> =
+    if (isSystemInDarkTheme()) Color(0xFF1F3D24) to Color(0xFFA5D6A7) else Color(0xFFD8F3DC) to Color(0xFF1B5E20)
+
 @Composable
 fun BooruVaultTheme(content: @Composable () -> Unit) {
     val dark = isSystemInDarkTheme()
