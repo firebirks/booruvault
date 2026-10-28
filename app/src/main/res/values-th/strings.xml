@@ -339,6 +339,7 @@
     <string name="browse_change_source">เปลี่ยนแหล่งที่มา</string>
     <string name="browse_download_all">ดาวน์โหลดผลลัพธ์ทั้งหมด…</string>
     <string name="browse_open_web">เปิดหน้าเว็บ…</string>
+    <string name="browse_close_web">ปิดหน้า</string>
     <string name="browse_refresh">รีเฟรช</string>
     <string name="browse_search_hint">ค้นหาแท็ก เช่น scenery -rain</string>
     <string name="browse_end">สิ้นสุดผลลัพธ์</string>

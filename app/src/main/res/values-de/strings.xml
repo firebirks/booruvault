@@ -358,6 +358,7 @@
     <string name="browse_change_source">Quelle wechseln</string>
     <string name="browse_download_all">Alle Ergebnisse herunterladen…</string>
     <string name="browse_open_web">Webseite öffnen…</string>
+    <string name="browse_close_web">Seite schließen</string>
     <string name="browse_refresh">Aktualisieren</string>
     <string name="browse_search_hint">Tags suchen, z. B. scenery -rain</string>
     <string name="browse_end">Ende der Ergebnisse</string>

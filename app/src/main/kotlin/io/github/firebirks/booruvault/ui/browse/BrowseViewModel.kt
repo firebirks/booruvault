@@ -269,6 +269,11 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         viewModelScope.launch { c.settings.selectSource(id) }
     }
 
+    /** Back to the selected source from a page opened on the spot. */
+    fun closeWebPage() {
+        webPage.value = null
+    }
+
     fun onInput(value: TextFieldValue) {
         val changed = value.text != input.text
         input = value

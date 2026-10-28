@@ -339,6 +339,7 @@
     <string name="browse_change_source">Ganti sumber</string>
     <string name="browse_download_all">Unduh semua hasil…</string>
     <string name="browse_open_web">Buka halaman web…</string>
+    <string name="browse_close_web">Tutup halaman</string>
     <string name="browse_refresh">Muat ulang</string>
     <string name="browse_search_hint">Cari tag, mis. scenery -rain</string>
     <string name="browse_end">Akhir hasil</string>

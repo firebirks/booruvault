@@ -358,6 +358,7 @@
     <string name="browse_change_source">Bron wijzigen</string>
     <string name="browse_download_all">Alle resultaten downloaden…</string>
     <string name="browse_open_web">Webpagina openen…</string>
+    <string name="browse_close_web">Pagina sluiten</string>
     <string name="browse_refresh">Vernieuwen</string>
     <string name="browse_search_hint">Tags zoeken, bijv. scenery -rain</string>
     <string name="browse_end">Einde van de resultaten</string>

@@ -396,6 +396,7 @@
     <string name="browse_change_source">Сменить источник</string>
     <string name="browse_download_all">Скачать все результаты…</string>
     <string name="browse_open_web">Открыть веб-страницу…</string>
+    <string name="browse_close_web">Закрыть страницу</string>
     <string name="browse_refresh">Обновить</string>
     <string name="browse_search_hint">Поиск по тегам, напр. scenery -rain</string>
     <string name="browse_end">Конец результатов</string>

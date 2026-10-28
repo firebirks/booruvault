@@ -339,6 +339,7 @@
     <string name="browse_change_source">소스 변경</string>
     <string name="browse_download_all">모든 결과 다운로드…</string>
     <string name="browse_open_web">웹 페이지 열기…</string>
+    <string name="browse_close_web">페이지 닫기</string>
     <string name="browse_refresh">새로고침</string>
     <string name="browse_search_hint">태그 검색(예: scenery -rain)</string>
     <string name="browse_end">결과 끝</string>

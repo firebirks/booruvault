@@ -339,6 +339,7 @@
     <string name="browse_change_source">ソースを変更</string>
     <string name="browse_download_all">すべての結果をダウンロード…</string>
     <string name="browse_open_web">ウェブページを開く…</string>
+    <string name="browse_close_web">ページを閉じる</string>
     <string name="browse_refresh">更新</string>
     <string name="browse_search_hint">タグを検索（例：scenery -rain）</string>
     <string name="browse_end">結果は以上です</string>

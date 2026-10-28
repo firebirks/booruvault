@@ -222,6 +222,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     onRefresh = vm::refresh,
                     onDownloadAll = { showBatch = true },
                     onOpenWebPage = { showWebPage = true },
+                    onCloseWebPage = if (state.source?.id == BrowseViewModel.WEB_PAGE_SOURCE) vm::closeWebPage else null,
                     onSaveSearch = { saveSearch = true },
                 )
             }
@@ -367,6 +368,8 @@ private fun BrowseTopBar(
     onRefresh: () -> Unit,
     onDownloadAll: () -> Unit,
     onOpenWebPage: () -> Unit,
+    /** Non-null while a page opened on the spot is being browsed. */
+    onCloseWebPage: (() -> Unit)?,
     onSaveSearch: () -> Unit,
 ) {
     var sourceMenu by remember { mutableStateOf(false) }
@@ -424,6 +427,16 @@ private fun BrowseTopBar(
                                 onOpenWebPage()
                             },
                         )
+                        if (onCloseWebPage != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.browse_close_web)) },
+                                leadingIcon = { Icon(Icons.Outlined.Close, null) },
+                                onClick = {
+                                    overflow = false
+                                    onCloseWebPage()
+                                },
+                            )
+                        }
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.browse_refresh)) },
                             leadingIcon = { Icon(Icons.Outlined.Refresh, null) },

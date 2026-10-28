@@ -358,6 +358,7 @@
     <string name="browse_change_source">Kaynağı değiştir</string>
     <string name="browse_download_all">Tüm sonuçları indir…</string>
     <string name="browse_open_web">Web sayfası aç…</string>
+    <string name="browse_close_web">Sayfayı kapat</string>
     <string name="browse_refresh">Yenile</string>
     <string name="browse_search_hint">Etiket ara, ör. scenery -rain</string>
     <string name="browse_end">Sonuçların sonu</string>

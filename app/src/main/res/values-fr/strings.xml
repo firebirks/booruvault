@@ -377,6 +377,7 @@
     <string name="browse_change_source">Changer de source</string>
     <string name="browse_download_all">Télécharger tous les résultats…</string>
     <string name="browse_open_web">Ouvrir une page web…</string>
+    <string name="browse_close_web">Fermer la page</string>
     <string name="browse_refresh">Actualiser</string>
     <string name="browse_search_hint">Chercher des tags, ex. scenery -rain</string>
     <string name="browse_end">Fin des résultats</string>
