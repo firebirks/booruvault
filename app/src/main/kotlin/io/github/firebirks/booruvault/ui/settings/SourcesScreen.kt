@@ -250,6 +250,18 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                     }
                 }
             }
+            // What the choice costs and gives: the API's complete posts, or the pages' independence.
+            Text(
+                stringResource(
+                    when (engine) {
+                        BooruEngine.GELBOORU -> R.string.source_mode_gelbooru
+                        BooruEngine.GELBOORU_HTML, BooruEngine.SHIMMIE, BooruEngine.HTML_GENERIC -> R.string.source_mode_html
+                        else -> R.string.source_mode_api
+                    },
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             OutlinedTextField(
                 url, { url = it }, label = { Text(stringResource(R.string.source_address)) }, singleLine = true,
                 supportingText = { Text(stringResource(addressHint(engine))) },

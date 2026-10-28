@@ -156,6 +156,9 @@
     <string name="source_new">แหล่งที่มาใหม่</string>
     <string name="source_name">ชื่อ</string>
     <string name="source_engine">เอนจิน: %1$s</string>
+    <string name="source_mode_api">อ่านเว็บไซต์ผ่าน API ของมัน: โพสต์มาครบถ้วน (ไฟล์ ขนาด md5 แท็กตามประเภท) หน้าเบาและเร็ว และสิ่งที่มีอยู่ในคลังนิรภัยแล้วจะถูกจดจำ เนื้อหาบางส่วนอาจต้องใช้บัญชีหรือคีย์</string>
+    <string name="source_mode_html">อ่านหน้าเว็บของเว็บไซต์เหมือนเบราว์เซอร์: ไม่ต้องใช้ API หรือคีย์ และเว็บไซต์ที่ไม่มี API ก็ใช้ได้ แลกกับการที่แต่ละโพสต์ต้องถูกเปิดแยกเพื่อหาไฟล์ โหลดช้าและหนักกว่า รู้ข้อมูลโพสต์น้อยกว่า (ไม่มีขนาดหรือ md5 สำหรับจดจำรายการซ้ำ) การตรวจสอบป้องกันบอตบ่อยขึ้น และการปรับดีไซน์เว็บไซต์อาจทำให้ใช้ไม่ได้</string>
+    <string name="source_mode_gelbooru">มี ID ผู้ใช้และคีย์ จะอ่านผ่าน API; ไม่มีจะอ่านจากหน้าเว็บ พร้อมต้นทุนของมัน: เปิดแต่ละโพสต์แยกกัน โหลดช้ากว่า ข้อมูลโพสต์น้อยกว่า ตรวจสอบป้องกันบอตบ่อยกว่า</string>
     <string name="source_address">ที่อยู่</string>
     <string name="source_hint_default">เช่น https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">เช่น https://name.booru.org หรือเว็บไซต์ Gelbooru ที่ไม่มี API</string>

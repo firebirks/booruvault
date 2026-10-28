@@ -162,6 +162,9 @@
     <string name="source_new">Новый источник</string>
     <string name="source_name">Название</string>
     <string name="source_engine">Движок: %1$s</string>
+    <string name="source_mode_api">Читает сайт через его API: посты приходят полными (файл, размер, md5, теги по типам), страницы лёгкие и быстрые, а то, что уже есть в хранилище, распознаётся. Для части контента может понадобиться аккаунт или ключ.</string>
+    <string name="source_mode_html">Читает веб-страницы сайта, как браузер: не нужны ни API, ни ключ, и сайты без API тоже работают. Взамен каждый пост открывается отдельно, чтобы найти его файл, загрузка медленнее и тяжелее, о посте известно меньше (нет размера и md5 для распознавания дубликатов), антибот-проверки чаще, а редизайн сайта может всё сломать.</string>
+    <string name="source_mode_gelbooru">С ID пользователя и ключом сайт читается через API; без них — через веб-страницы, со всеми издержками: каждый пост открывается отдельно, загрузка медленнее, о посте известно меньше, антибот-проверок больше.</string>
     <string name="source_address">Адрес</string>
     <string name="source_hint_default">Напр. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Напр. https://name.booru.org или сайт Gelbooru без API</string>

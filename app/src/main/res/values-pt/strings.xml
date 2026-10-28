@@ -160,6 +160,9 @@
     <string name="source_new">Nova fonte</string>
     <string name="source_name">Nome</string>
     <string name="source_engine">Motor: %1$s</string>
+    <string name="source_mode_api">Lê o site pela sua API: as publicações chegam completas (arquivo, tamanho, md5, tags por tipo), as páginas são leves e rápidas, e o que o cofre já tem é reconhecido. Algum conteúdo pode exigir uma conta ou uma chave.</string>
+    <string name="source_mode_html">Lê as páginas web do site, como faria um navegador: não precisa de API nem de chave, e sites sem API também funcionam. Em troca, cada publicação é aberta separadamente para encontrar seu arquivo, o carregamento é mais lento e pesado, sabe-se menos de cada publicação (sem tamanho nem md5 para reconhecer duplicados), as verificações anti-bot são mais frequentes, e uma reformulação do site pode quebrá-lo.</string>
+    <string name="source_mode_gelbooru">Com ID de usuário e chave o site é lido pela API; sem eles, pelas páginas web, com os custos disso: cada publicação aberta separadamente, carregamento mais lento, menos dados de cada publicação, mais verificações anti-bot.</string>
     <string name="source_address">Endereço</string>
     <string name="source_hint_default">Ex.: https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Ex.: https://name.booru.org, ou um site Gelbooru sem API</string>

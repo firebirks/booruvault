@@ -162,6 +162,9 @@
     <string name="source_new">Nowe źródło</string>
     <string name="source_name">Nazwa</string>
     <string name="source_engine">Silnik: %1$s</string>
+    <string name="source_mode_api">Czyta serwis przez jego API: posty przychodzą kompletne (plik, rozmiar, md5, tagi według typu), strony są lekkie i szybkie, a to, co sejf już ma, jest rozpoznawane. Część treści może wymagać konta lub klucza.</string>
+    <string name="source_mode_html">Czyta strony WWW serwisu, jak przeglądarka: nie trzeba API ani klucza, a serwisy bez API też działają. W zamian każdy post jest otwierany osobno, by znaleźć jego plik, ładowanie jest wolniejsze i cięższe, o poście wiadomo mniej (brak rozmiaru i md5 do rozpoznawania duplikatów), kontrole antybotowe są częstsze, a przebudowa serwisu może to zepsuć.</string>
+    <string name="source_mode_gelbooru">Z ID użytkownika i kluczem serwis jest czytany przez API; bez nich przez strony WWW, z tego kosztami: każdy post otwierany osobno, wolniejsze ładowanie, mniej informacji o poście, więcej kontroli antybotowych.</string>
     <string name="source_address">Adres</string>
     <string name="source_hint_default">Np. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Np. https://name.booru.org lub witryna Gelbooru bez API</string>

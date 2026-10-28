@@ -158,6 +158,9 @@
     <string name="source_new">Nieuwe bron</string>
     <string name="source_name">Naam</string>
     <string name="source_engine">Engine: %1$s</string>
+    <string name="source_mode_api">Leest de site via zijn API: posts komen compleet binnen (bestand, grootte, md5, tags per soort), pagina\'s zijn klein en snel, en wat de kluis al heeft wordt herkend. Sommige inhoud vereist een account of een sleutel.</string>
+    <string name="source_mode_html">Leest de webpagina\'s van de site, zoals een browser: geen API of sleutel nodig, en sites zonder API werken ook. Daartegenover wordt elke post apart geopend om zijn bestand te vinden, laden is trager en zwaarder, over een post is minder bekend (geen grootte of md5 om duplicaten te herkennen), anti-botcontroles komen vaker, en een herontwerp van de site kan het breken.</string>
+    <string name="source_mode_gelbooru">Met gebruikers-ID en sleutel wordt de site via de API gelezen; zonder via de webpagina\'s, met de kosten daarvan: elke post apart geopend, trager laden, minder bekend over een post, meer anti-botcontroles.</string>
     <string name="source_address">Adres</string>
     <string name="source_hint_default">Bijv. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Bijv. https://name.booru.org, of een Gelbooru-site zonder API</string>

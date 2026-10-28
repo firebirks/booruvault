@@ -156,6 +156,9 @@
     <string name="source_new">Sumber baru</string>
     <string name="source_name">Nama</string>
     <string name="source_engine">Mesin: %1$s</string>
+    <string name="source_mode_api">Membaca situs lewat API-nya: kiriman tiba lengkap (berkas, ukuran, md5, tag per jenis), halaman ringan dan cepat, dan yang sudah ada di brankas dikenali. Sebagian konten mungkin memerlukan akun atau kunci.</string>
+    <string name="source_mode_html">Membaca halaman web situs seperti peramban: tidak perlu API atau kunci, dan situs tanpa API pun bisa. Imbalannya, setiap kiriman dibuka sendiri-sendiri untuk menemukan berkasnya, pemuatan lebih lambat dan berat, lebih sedikit yang diketahui tentang kiriman (tanpa ukuran atau md5 untuk mengenali duplikat), pemeriksaan anti-bot lebih sering, dan perombakan situs bisa merusaknya.</string>
+    <string name="source_mode_gelbooru">Dengan ID pengguna dan kunci, situs dibaca lewat API; tanpa itu lewat halaman web, dengan konsekuensinya: setiap kiriman dibuka sendiri-sendiri, pemuatan lebih lambat, info kiriman lebih sedikit, pemeriksaan anti-bot lebih banyak.</string>
     <string name="source_address">Alamat</string>
     <string name="source_hint_default">Mis. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Mis. https://name.booru.org, atau situs Gelbooru tanpa API</string>

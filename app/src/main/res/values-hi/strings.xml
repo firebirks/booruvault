@@ -158,6 +158,9 @@
     <string name="source_new">नया स्रोत</string>
     <string name="source_name">नाम</string>
     <string name="source_engine">इंजन: %1$s</string>
+    <string name="source_mode_api">साइट को उसके API से पढ़ता है: पोस्ट पूरी आती हैं (फ़ाइल, आकार, md5, प्रकार के अनुसार टैग), पेज हल्के और तेज़ होते हैं, और जो तिजोरी में पहले से है वह पहचाना जाता है। कुछ सामग्री के लिए खाता या कुंजी चाहिए हो सकती है।</string>
+    <string name="source_mode_html">साइट के वेब पेज ब्राउज़र की तरह पढ़ता है: API या कुंजी की ज़रूरत नहीं, और बिना API वाली साइटें भी चलती हैं। बदले में हर पोस्ट को उसकी फ़ाइल ढूँढने के लिए अलग से खोलना पड़ता है, लोडिंग धीमी और भारी होती है, पोस्ट के बारे में कम पता चलता है (डुप्लिकेट पहचानने के लिए आकार या md5 नहीं), एंटी-बॉट जाँचें ज़्यादा आती हैं, और साइट का नया डिज़ाइन इसे तोड़ सकता है।</string>
+    <string name="source_mode_gelbooru">यूज़र ID और कुंजी के साथ साइट API से पढ़ी जाती है; उनके बिना वेब पेजों से, उसकी कीमत के साथ: हर पोस्ट अलग से खुलती है, लोडिंग धीमी, पोस्ट की जानकारी कम, एंटी-बॉट जाँचें ज़्यादा।</string>
     <string name="source_address">पता</string>
     <string name="source_hint_default">जैसे https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">जैसे https://name.booru.org, या बिना API वाली कोई Gelbooru साइट</string>

@@ -160,6 +160,9 @@
     <string name="source_new">Nuova fonte</string>
     <string name="source_name">Nome</string>
     <string name="source_engine">Motore: %1$s</string>
+    <string name="source_mode_api">Legge il sito tramite la sua API: i post arrivano completi (file, dimensioni, md5, tag per tipo), le pagine sono leggere e veloci, e ciò che il vault ha già viene riconosciuto. Alcuni contenuti possono richiedere un account o una chiave.</string>
+    <string name="source_mode_html">Legge le pagine web del sito, come farebbe un browser: non servono API né chiave, e funziona anche con i siti che non hanno un\'API. In cambio ogni post va aperto da solo per trovarne il file, il caricamento è più lento e pesante, di un post si sa meno (niente dimensioni né md5 per riconoscere i doppioni), le verifiche anti-bot sono più frequenti, e un restyling del sito può romperlo.</string>
+    <string name="source_mode_gelbooru">Con ID utente e chiave il sito viene letto tramite API; senza, dalle sue pagine web, con i costi del caso: ogni post aperto da solo, caricamento più lento, meno informazioni sui post, più verifiche anti-bot.</string>
     <string name="source_address">Indirizzo</string>
     <string name="source_hint_default">Es. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Es. https://nome.booru.org, o un sito Gelbooru senza API</string>

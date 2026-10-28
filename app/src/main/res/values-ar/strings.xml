@@ -166,6 +166,9 @@
     <string name="source_new">مصدر جديد</string>
     <string name="source_name">الاسم</string>
     <string name="source_engine">المحرّك: %1$s</string>
+    <string name="source_mode_api">يقرأ الموقع عبر واجهته البرمجية (API): تصل المنشورات كاملة (الملف والحجم وmd5 والوسوم حسب النوع)، والصفحات خفيفة وسريعة، وما في الخزنة أصلًا يُتعرَّف عليه. قد يتطلب بعض المحتوى حسابًا أو مفتاحًا.</string>
+    <string name="source_mode_html">يقرأ صفحات الموقع كما يفعل المتصفح: لا حاجة إلى API أو مفتاح، والمواقع بلا API تعمل أيضًا. في المقابل يُفتح كل منشور على حدة للعثور على ملفه، والتحميل أبطأ وأثقل، ويُعرف عن المنشور أقل (لا حجم ولا md5 للتعرف على المكررات)، وفحوص مكافحة الروبوتات أكثر تكرارًا، وقد يعطّله تغيير تصميم الموقع.</string>
+    <string name="source_mode_gelbooru">مع معرّف المستخدم والمفتاح يُقرأ الموقع عبر API؛ ومن دونهما عبر صفحاته، بما يكلّفه ذلك: كل منشور يُفتح على حدة، وتحميل أبطأ، ومعلومات أقل عن المنشور، وفحوص مكافحة روبوتات أكثر.</string>
     <string name="source_address">العنوان</string>
     <string name="source_hint_default">مثال: https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">مثال: https://name.booru.org، أو موقع Gelbooru بدون API</string>

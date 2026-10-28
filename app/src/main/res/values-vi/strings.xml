@@ -156,6 +156,9 @@
     <string name="source_new">Nguồn mới</string>
     <string name="source_name">Tên</string>
     <string name="source_engine">Nền tảng: %1$s</string>
+    <string name="source_mode_api">Đọc trang qua API của nó: bài đăng đến đầy đủ (tệp, kích thước, md5, thẻ theo loại), trang nhẹ và nhanh, và những gì kho đã có sẽ được nhận ra. Một số nội dung có thể cần tài khoản hoặc khóa.</string>
+    <string name="source_mode_html">Đọc các trang web của trang như trình duyệt: không cần API hay khóa, và trang không có API cũng dùng được. Đổi lại, mỗi bài đăng phải được mở riêng để tìm tệp, tải chậm và nặng hơn, biết ít hơn về bài đăng (không có kích thước hay md5 để nhận ra trùng lặp), kiểm tra chống bot thường xuyên hơn, và việc trang đổi thiết kế có thể làm hỏng.</string>
+    <string name="source_mode_gelbooru">Có ID người dùng và khóa thì đọc qua API; không có thì đọc từ các trang web, với cái giá của nó: mỗi bài đăng mở riêng, tải chậm hơn, ít thông tin về bài đăng hơn, nhiều kiểm tra chống bot hơn.</string>
     <string name="source_address">Địa chỉ</string>
     <string name="source_hint_default">Vd. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Vd. https://name.booru.org, hoặc một trang Gelbooru không có API</string>

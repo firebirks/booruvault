@@ -156,6 +156,9 @@
     <string name="source_new">新來源</string>
     <string name="source_name">名稱</string>
     <string name="source_engine">引擎：%1$s</string>
+    <string name="source_mode_api">透過網站的 API 讀取：貼文完整送達（檔案、尺寸、md5、依類型的標籤），頁面輕快，保險庫中已有的內容會被辨識。部分內容可能需要帳號或金鑰。</string>
+    <string name="source_mode_html">像瀏覽器一樣讀取網站的網頁：不需要 API 或金鑰，沒有 API 的網站也能用。代價是每則貼文都要單獨開啟才能找到檔案，載入更慢更重，對貼文了解更少（沒有尺寸和 md5 來辨識重複），反機器人驗證更頻繁，網站改版可能導致失效。</string>
+    <string name="source_mode_gelbooru">有使用者 ID 和金鑰時透過 API 讀取；沒有時透過網頁讀取，並付出相應代價：每則貼文單獨開啟、載入更慢、貼文資訊更少、反機器人驗證更多。</string>
     <string name="source_address">網址</string>
     <string name="source_hint_default">例如 https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">例如 https://name.booru.org，或沒有 API 的 Gelbooru 網站</string>

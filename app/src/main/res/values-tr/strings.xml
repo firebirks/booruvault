@@ -158,6 +158,9 @@
     <string name="source_new">Yeni kaynak</string>
     <string name="source_name">Ad</string>
     <string name="source_engine">Motor: %1$s</string>
+    <string name="source_mode_api">Siteyi API\'si üzerinden okur: gönderiler eksiksiz gelir (dosya, boyut, md5, türüne göre etiketler), sayfalar hafif ve hızlıdır, kasada zaten olanlar tanınır. Bazı içerikler hesap veya anahtar gerektirebilir.</string>
+    <string name="source_mode_html">Sitenin web sayfalarını bir tarayıcı gibi okur: API veya anahtar gerekmez, API\'si olmayan siteler de çalışır. Karşılığında her gönderi dosyasını bulmak için ayrı ayrı açılır, yükleme daha yavaş ve ağırdır, gönderi hakkında daha az şey bilinir (kopyaları tanımak için boyut veya md5 yoktur), bot karşıtı denetimler daha sık gelir ve sitenin yeniden tasarlanması bunu bozabilir.</string>
+    <string name="source_mode_gelbooru">Kullanıcı kimliği ve anahtarla site API üzerinden okunur; onlar olmadan web sayfalarından, bedeliyle: her gönderi ayrı açılır, yükleme daha yavaş, gönderi hakkında daha az bilgi, daha çok bot karşıtı denetim.</string>
     <string name="source_address">Adres</string>
     <string name="source_hint_default">Ör. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Ör. https://name.booru.org veya API\'si olmayan bir Gelbooru sitesi</string>

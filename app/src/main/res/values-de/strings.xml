@@ -158,6 +158,9 @@
     <string name="source_new">Neue Quelle</string>
     <string name="source_name">Name</string>
     <string name="source_engine">Engine: %1$s</string>
+    <string name="source_mode_api">Liest die Seite über ihre API: Beiträge kommen vollständig an (Datei, Größe, MD5, Tags nach Art), die Seiten sind klein und schnell, und was der Tresor schon hat, wird erkannt. Manche Inhalte brauchen ein Konto oder einen Schlüssel.</string>
+    <string name="source_mode_html">Liest die Webseiten der Seite, wie ein Browser: weder API noch Schlüssel nötig, und Seiten ohne API gehen auch. Dafür wird jeder Beitrag einzeln geöffnet, um seine Datei zu finden, das Laden ist langsamer und schwerer, über einen Beitrag ist weniger bekannt (keine Größe, kein MD5 zum Erkennen von Duplikaten), Anti-Bot-Prüfungen kommen öfter, und ein Umbau der Seite kann es brechen.</string>
+    <string name="source_mode_gelbooru">Mit Benutzer-ID und Schlüssel wird die Seite über die API gelesen; ohne sie über die Webseiten, mit den entsprechenden Kosten: jeder Beitrag einzeln geöffnet, langsameres Laden, weniger über einen Beitrag bekannt, mehr Anti-Bot-Prüfungen.</string>
     <string name="source_address">Adresse</string>
     <string name="source_hint_default">Z. B. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Z. B. https://name.booru.org oder eine Gelbooru-Website ohne API</string>

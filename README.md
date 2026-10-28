@@ -11,6 +11,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 ### Browsing
 
 - **Sites:** Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 and its forks (Safebooru.org, Rule34.xxx, Xbooru, TBIB…) and e621/e926, through their APIs. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
+- **API or web pages?** Through its API a site hands over complete posts (file, size, md5, tags by type), in small quick pages, and the vault recognises what it already holds. Read from its web pages, as a browser would, a site needs no API or key, but each post is opened on its own to find its file, loading is slower and heavier, less is known about a post, anti-bot checks come more often, and a redesign can break the reading. The source editor says which applies to the chosen engine.
 - **Sites without a usable API**, read from their web pages:
   - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com or rule34.xxx without an API key.
   - Gelbooru 0.1 sites (booru.org).
