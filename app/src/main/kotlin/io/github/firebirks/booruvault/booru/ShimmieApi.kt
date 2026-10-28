@@ -36,7 +36,11 @@ class ShimmieApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBo
     /** `{"tag": count}` on most versions, `{"tag": {"count": n}}` on newer ones. */
     override suspend fun autocomplete(query: String): List<TagSuggestion> {
         val url = base.newBuilder().addPathSegments("api/internal/autocomplete").addQueryParameter("s", query).build()
-        val root = runCatching { get(url) }.getOrNull() as? JsonObject ?: return emptyList()
+        val root = try {
+            get(url)
+        } catch (e: BooruException) {
+            null
+        } as? JsonObject ?: return emptyList()
         return root.entries.map { (name, value) ->
             val count = (value as? JsonPrimitive)?.longOrNull ?: (value as? JsonObject)?.long("count")
             TagSuggestion(name, count, TagCategory.GENERAL)

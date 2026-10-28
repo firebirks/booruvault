@@ -6,6 +6,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruApiFactory
 import io.github.firebirks.booruvault.booru.BooruSource
+import io.github.firebirks.booruvault.booru.GelbooruApi
 import io.github.firebirks.booruvault.booru.USER_AGENT
 import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.net.Challenge
@@ -154,6 +155,7 @@ class AppContainer(private val context: Context) {
      * Browsing requests are cancelled by their own screens; downloads the user lets run are not.
      */
     private suspend fun forgetSession() {
+        GelbooruApi.forgetSession()
         imageLoader.memoryCache?.clear()
         http.connectionPool.evictAll()
         // Let cancelled transfers unwind and the UI drop its state first.

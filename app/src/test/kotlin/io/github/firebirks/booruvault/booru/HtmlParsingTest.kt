@@ -11,6 +11,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 
 /** Page shapes copied from the live sites' markup, with neutral content. */
@@ -182,5 +183,37 @@ class HtmlParsingTest {
         assertEquals("https://img4.gelbooru.com/images/a7/87/a787.jpg", resolved.fileUrl)
         // Page 2 uses the page size the paginator gave.
         assertEquals(2, api.posts("landscape", 2, 40).size)
+    }
+
+    @Test
+    fun gelbooruRateLimitDoesNotDemoteTheApi() = runBlocking {
+        var apiCode = 429
+        var apiCalls = 0
+        val client = OkHttpClient.Builder().addInterceptor { chain ->
+            val url = chain.request().url.toString()
+            val (code, body) = when {
+                "page=dapi" in url -> {
+                    apiCalls++
+                    apiCode to (if (apiCode == 200) """[{"id":7,"file_url":"https://img.test/a.jpg","image":"a.jpg","directory":"a/b"}]""" else "")
+                }
+                "s=list" in url -> 200 to gelbooruList
+                else -> 404 to ""
+            }
+            Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(code).message("x")
+                .body(body.toResponseBody("text/html".toMediaType())).build()
+        }.build()
+        val api = BooruApiFactory.create(BooruSource("rl", "RL", BooruEngine.GELBOORU, "https://api.ratelimit.test"), client, json)
+        try {
+            api.posts("landscape", 1, 40)
+            fail()
+        } catch (e: BooruException) {
+            assertEquals(io.github.firebirks.booruvault.util.Problem.Code.RATE_LIMITED, e.problem.code)
+        }
+        // Once the limit lifts the API is used again, with its full posts, rather than the pages.
+        apiCode = 200
+        val posts = api.posts("landscape", 1, 40)
+        assertEquals(2, apiCalls)
+        assertEquals(1, posts.size)
+        assertTrue(posts.none { it.needsResolve })
     }
 }

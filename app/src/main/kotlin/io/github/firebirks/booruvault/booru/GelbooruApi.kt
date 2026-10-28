@@ -45,8 +45,9 @@ class GelbooruApi(
         } catch (e: BooruChallengeException) {
             throw e
         } catch (e: BooruException) {
-            // A network failure would hit the web pages too; anything else may be the API alone.
-            if (e.cause is java.io.IOException) throw e
+            // Only a refusal or a missing API is worth the pages: a rate limit, an outage or a
+            // damaged answer passes, so it would be wrong to give up on the API for the session.
+            if (e.problem.code !in API_REFUSALS) throw e
             val fallback = try {
                 htmlPosts(tags, page, requireList = true)
             } catch (challenge: BooruChallengeException) {
@@ -150,7 +151,11 @@ class GelbooruApi(
             base.newBuilder().addPathSegment("autocomplete.php").addQueryParameter("q", query).build(),
         )
         for (url in attempts) {
-            val list = runCatching { get(url).arr() }.getOrNull() ?: continue
+            val list = try {
+                get(url).arr()
+            } catch (e: BooruException) {
+                null
+            } ?: continue
             val suggestions = list.mapNotNull { it.obj() }.mapNotNull { o ->
                 val name = o.str("value") ?: return@mapNotNull null
                 // autocomplete.php puts the count in the label: "name (123)".
@@ -163,12 +168,23 @@ class GelbooruApi(
         return emptyList()
     }
 
-    private companion object {
+    companion object {
         /** Sites whose API turned us away this session: go straight to their pages. */
-        val apiRefused: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+        private val apiRefused: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
 
         /** Posts per list page, learned from each site's paginator. */
-        val pageSizes = java.util.concurrent.ConcurrentHashMap<String, Int>()
+        private val pageSizes = java.util.concurrent.ConcurrentHashMap<String, Int>()
+
+        /** What the API answers when it will not serve this source at all, now or ever. */
+        private val API_REFUSALS = setOf(
+            Problem.Code.ACCESS_DENIED, Problem.Code.SITE_MESSAGE, Problem.Code.NOT_JSON, Problem.Code.NOT_FOUND,
+        )
+
+        /** Called on lock: what was learned about sites names them, so it goes with the session. */
+        fun forgetSession() {
+            apiRefused.clear()
+            pageSizes.clear()
+        }
     }
 
     private fun gelbooruCategory(name: String?): TagCategory = when (name) {
