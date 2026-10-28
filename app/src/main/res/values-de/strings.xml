@@ -75,7 +75,6 @@
     </plurals>
     <string name="settings_sources_in_use">Aktiv: %1$s</string>
     <string name="settings_sources_none">keine</string>
-    <string name="settings_section_content">Inhalte</string>
     <string name="settings_ratings_title">Angezeigte Einstufungen</string>
     <string name="settings_ratings_hint">Shimmie2 und einfache Webseiten haben keine Einstufungen: Um ihre Posts zu sehen, aktiviere „Nicht eingestuft“.</string>
     <string name="settings_blacklist">Sperrliste</string>
@@ -107,7 +106,6 @@
     <string name="settings_safe_browsing_unavailable">Nicht verfügbar: In der WebView funktioniert Safe Browsing über die Google Play-Dienste, die dieses Telefon nicht hat. In keinem Fall wird eine Adresse an Google gesendet.</string>
     <string name="settings_safe_browsing_on">An. Für jede Adresse, die der integrierte Browser öffnet (Seiten, Bilder, Skripte, auch Werbung), berechnen die Google Play-Dienste einen kryptografischen Fingerabdruck und vergleichen ihn mit einer Liste auf dem Telefon. Stimmt der Anfang des Fingerabdrucks mit einem Eintrag der Liste überein, senden sie dieses nur wenige Bytes große Fragment zur Bestätigung an die Server von Google. Google erhält die Adresse nicht im Klartext, sieht aber deine IP, die Uhrzeit und das Fragment; die Anfrage kommt von den Google-Diensten des Telefons, kann also mit dem Gerät verknüpft werden, und sie läuft NICHT über Tor, auch wenn Tor aktiv ist. Im Gegenzug wird eine Seite, die für Malware, Phishing oder unerwünschte Software bekannt ist, mit einer Warnung blockiert.</string>
     <string name="settings_safe_browsing_off">Aus: Der integrierte Browser fragt Google nicht ab, und es werden keine Daten über die von dir besuchten Adressen an Google gesendet. Du erhältst keine Warnung, wenn eine Seite für Malware oder Phishing bekannt ist. Das betrifft nur den integrierten Browser: Suchen, Bilder und Downloads der App nutzen nie Safe Browsing.</string>
-    <string name="settings_section_data">Daten</string>
     <string name="settings_cookies">Website-Cookies</string>
     <string name="settings_cookies_hint">Bestandene Anti-Bot-Prüfungen und Sitzungen, verschlüsselt im Tresor</string>
     <string name="settings_cookies_cleared">Cookies gelöscht</string>
@@ -115,6 +113,21 @@
     <string name="settings_delete_vault_hint">Löscht unwiderruflich Inhalte, Einstellungen, Quellen und den Schlüssel.</string>
     <string name="settings_section_about">Über</string>
     <string name="settings_about_text">Inhalte, Einstellungen, Quellen, Cookies und die Download-Warteschlange werden im Tresor mit AES-256-GCM verschlüsselt, mit über ECDH P-256 abgeleiteten Schlüsseln. Der private Schlüssel ist durch Argon2id (64 MiB) geschützt und, falls aktiviert, durch einen biometrischen Keystore-Schlüssel. Angesehene Bilder bleiben nur im Arbeitsspeicher.</string>
+    <string name="settings_page_content">Inhaltsfilter</string>
+    <string name="settings_page_browsing">Browsen und Downloads</string>
+    <string name="settings_browsing_summary">Raster %1$s · %2$d pro Seite</string>
+    <string name="settings_tor_off_summary">Aus: Verbindungen gehen direkt hinaus</string>
+    <string name="settings_about_licence">Freie Software unter der GNU GPL v3</string>
+    <string name="settings_about_libraries">Open-Source-Bibliotheken</string>
+    <string name="settings_about_libraries_hint">Worauf die App aufbaut, jeweils mit Lizenz. Antippen öffnet die Website.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d Blacklist-Regel</item>
+        <item quantity="other">%d Blacklist-Regeln</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d aktiv</item>
+        <item quantity="other">%d aktiv</item>
+    </plurals>
     <string name="password_current">Aktuelles Passwort</string>
     <string name="password_new">Neues Passwort</string>
     <string name="password_new_confirm">Neues Passwort bestätigen</string>

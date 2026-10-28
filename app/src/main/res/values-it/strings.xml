@@ -77,7 +77,6 @@
     </plurals>
     <string name="settings_sources_in_use">%1$s in uso</string>
     <string name="settings_sources_none">nessuna</string>
-    <string name="settings_section_content">Contenuti</string>
     <string name="settings_ratings_title">Rating mostrati</string>
     <string name="settings_ratings_hint">Shimmie2 e le pagine web generiche non hanno rating: per vederle serve «Senza rating».</string>
     <string name="settings_blacklist">Blacklist</string>
@@ -109,7 +108,6 @@
     <string name="settings_safe_browsing_unavailable">Non disponibile: nella WebView Safe Browsing passa dai servizi Google Play, che su questo telefono non ci sono. Nessun indirizzo viene inviato a Google in ogni caso.</string>
     <string name="settings_safe_browsing_on">Acceso. Per ogni indirizzo che il browser integrato apre (pagine, immagini, script, pubblicità comprese) Google Play Services calcola un\'impronta crittografica e la confronta con un elenco sul telefono. Quando l\'inizio dell\'impronta coincide con una voce dell\'elenco, invia quel frammento di pochi byte ai server di Google per la conferma. Google non riceve l\'indirizzo in chiaro, ma vede il tuo IP, l\'ora e il frammento; la richiesta parte dai servizi Google del telefono, quindi può essere collegata al dispositivo, e NON passa da Tor anche se Tor è attivo. In cambio, una pagina nota per malware, phishing o software indesiderato viene bloccata con un avviso.</string>
     <string name="settings_safe_browsing_off">Spento: il browser integrato non consulta Google e nessun dato sugli indirizzi visitati gli viene inviato. Non ricevi avvisi se una pagina è nota per malware o phishing. Riguarda solo il browser integrato: ricerche, immagini e download dell\'app non usano mai Safe Browsing.</string>
-    <string name="settings_section_data">Dati</string>
     <string name="settings_cookies">Cookie dei siti</string>
     <string name="settings_cookies_hint">Verifiche anti-bot superate e sessioni, cifrate nel vault</string>
     <string name="settings_cookies_cleared">Cookie cancellati</string>
@@ -117,6 +115,23 @@
     <string name="settings_delete_vault_hint">Cancella in modo irreversibile contenuti, impostazioni, fonti e chiave.</string>
     <string name="settings_section_about">Informazioni</string>
     <string name="settings_about_text">Contenuti, impostazioni, fonti, cookie e coda dei download sono cifrati nel vault con AES-256-GCM, con chiavi derivate via ECDH P-256. La chiave privata è protetta da Argon2id (64 MiB) e, se attivo, da una chiave biometrica del Keystore. Le immagini sfogliate restano solo in memoria.</string>
+    <string name="settings_page_content">Filtro contenuti</string>
+    <string name="settings_page_browsing">Navigazione e download</string>
+    <string name="settings_browsing_summary">Griglia %1$s · %2$d per pagina</string>
+    <string name="settings_tor_off_summary">Spento: le connessioni escono direttamente</string>
+    <string name="settings_about_licence">Software libero sotto licenza GNU GPL v3</string>
+    <string name="settings_about_libraries">Librerie open source</string>
+    <string name="settings_about_libraries_hint">Su cosa è costruita l\'app, ciascuna con la sua licenza. Tocca per aprirne il sito.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d regola di blacklist</item>
+        <item quantity="many">%d regole di blacklist</item>
+        <item quantity="other">%d regole di blacklist</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d attiva</item>
+        <item quantity="many">%d attive</item>
+        <item quantity="other">%d attive</item>
+    </plurals>
     <string name="password_current">Password attuale</string>
     <string name="password_new">Nuova password</string>
     <string name="password_new_confirm">Conferma nuova password</string>

@@ -83,7 +83,6 @@
     </plurals>
     <string name="settings_sources_in_use">قيد الاستخدام: %1$s</string>
     <string name="settings_sources_none">لا شيء</string>
-    <string name="settings_section_content">المحتوى</string>
     <string name="settings_ratings_title">التصنيفات المعروضة</string>
     <string name="settings_ratings_hint">لا تحتوي Shimmie2 وصفحات الويب العادية على تصنيفات: لرؤية منشوراتها، فعّل «بدون تصنيف».</string>
     <string name="settings_blacklist">القائمة السوداء</string>
@@ -115,7 +114,6 @@
     <string name="settings_safe_browsing_unavailable">غير متاح: في WebView، يعمل Safe Browsing عبر خدمات Google Play، وهي غير موجودة على هذا الهاتف. وفي كل الأحوال، لا يُرسَل أي عنوان إلى Google.</string>
     <string name="settings_safe_browsing_on">مفعّل. لكل عنوان يفتحه المتصفح المدمج (بما في ذلك الصفحات والصور والنصوص البرمجية والإعلانات)، تحسب خدمات Google Play بصمة تشفيرية وتقارنها بقائمة محفوظة على الهاتف. وعندما تطابق بداية البصمة أحد إدخالات القائمة، ترسل ذلك الجزء المكوّن من بضعة بايتات إلى خوادم Google للتأكيد. لا تتلقى Google العنوان بنص واضح، لكنها ترى عنوان IP الخاص بك والوقت وذلك الجزء؛ ويصدر الطلب من خدمات Google على الهاتف، لذا يمكن ربطه بالجهاز، ولا يمرّ عبر Tor حتى عندما يكون Tor مفعّلًا. في المقابل، تُحظر الصفحة المعروفة بالبرامج الضارة أو التصيّد الاحتيالي أو البرامج غير المرغوب فيها مع عرض تحذير.</string>
     <string name="settings_safe_browsing_off">متوقف: لا يستشير المتصفح المدمج Google، ولا تُرسَل إليها أي بيانات عن العناوين التي تزورها. لن تتلقى أي تحذير إذا كانت الصفحة معروفة بالبرامج الضارة أو التصيّد الاحتيالي. يخص هذا الإعداد المتصفح المدمج فقط: لا تستخدم عمليات البحث والصور والتنزيلات في التطبيق Safe Browsing أبدًا.</string>
-    <string name="settings_section_data">البيانات</string>
     <string name="settings_cookies">ملفات تعريف الارتباط للمواقع</string>
     <string name="settings_cookies_hint">عمليات التحقق المضادة للروبوتات التي اجتزتها والجلسات، مشفّرة في الخزنة</string>
     <string name="settings_cookies_cleared">تم حذف ملفات تعريف الارتباط</string>
@@ -123,6 +121,29 @@
     <string name="settings_delete_vault_hint">يمحو المحتوى والإعدادات والمصادر والمفتاح نهائيًا دون إمكانية التراجع.</string>
     <string name="settings_section_about">حول التطبيق</string>
     <string name="settings_about_text">يُشفَّر المحتوى والإعدادات والمصادر وملفات تعريف الارتباط وقائمة انتظار التنزيلات في الخزنة باستخدام AES-256-GCM، بمفاتيح مشتقة عبر ECDH P-256. المفتاح الخاص محمي بواسطة Argon2id (64 MiB)، وكذلك بمفتاح بيومتري في Keystore إذا كان مفعّلًا. أما الصور التي تتصفحها فتبقى في الذاكرة فقط.</string>
+    <string name="settings_page_content">تصفية المحتوى</string>
+    <string name="settings_page_browsing">التصفح والتنزيلات</string>
+    <string name="settings_browsing_summary">شبكة %1$s · %2$d في الصفحة</string>
+    <string name="settings_tor_off_summary">متوقف: الاتصالات تخرج مباشرة</string>
+    <string name="settings_about_licence">برنامج حر بموجب رخصة GNU GPL v3</string>
+    <string name="settings_about_libraries">مكتبات مفتوحة المصدر</string>
+    <string name="settings_about_libraries_hint">ما بُني عليه التطبيق، مع رخصة كل منها. انقر لفتح موقعه.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="zero">لا قواعد حظر</item>
+        <item quantity="one">قاعدة حظر واحدة</item>
+        <item quantity="two">قاعدتا حظر</item>
+        <item quantity="few">%d قواعد حظر</item>
+        <item quantity="many">%d قاعدة حظر</item>
+        <item quantity="other">%d قاعدة حظر</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="zero">لا شيء مفعّل</item>
+        <item quantity="one">واحد مفعّل</item>
+        <item quantity="two">اثنان مفعّلان</item>
+        <item quantity="few">%d مفعّلة</item>
+        <item quantity="many">%d مفعّلًا</item>
+        <item quantity="other">%d مفعّل</item>
+    </plurals>
     <string name="password_current">كلمة المرور الحالية</string>
     <string name="password_new">كلمة المرور الجديدة</string>
     <string name="password_new_confirm">تأكيد كلمة المرور الجديدة</string>

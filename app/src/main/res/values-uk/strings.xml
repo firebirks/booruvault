@@ -79,7 +79,6 @@
     </plurals>
     <string name="settings_sources_in_use">Використовується: %1$s</string>
     <string name="settings_sources_none">немає</string>
-    <string name="settings_section_content">Вміст</string>
     <string name="settings_ratings_title">Показувані рейтинги</string>
     <string name="settings_ratings_hint">Shimmie2 і звичайні вебсторінки не мають рейтингів: щоб бачити їхні дописи, увімкніть «Без рейтингу».</string>
     <string name="settings_blacklist">Чорний список</string>
@@ -111,7 +110,6 @@
     <string name="settings_safe_browsing_unavailable">Недоступно: у WebView Safe Browsing працює через сервіси Google Play, яких на цьому телефоні немає. Адреси в будь-якому разі не надсилаються в Google.</string>
     <string name="settings_safe_browsing_on">Увімк. Для кожної адреси, яку відкриває вбудований браузер (зокрема сторінок, зображень, скриптів і реклами), сервіси Google Play обчислюють криптографічний відбиток і порівнюють його зі списком, що зберігається на телефоні. Якщо початок відбитка збігається із записом у списку, вони надсилають цей фрагмент розміром кілька байтів на сервери Google для підтвердження. Google не отримує адресу у відкритому вигляді, але бачить ваш IP, час і фрагмент; запит надходить від сервісів Google на телефоні, тож його можна пов\'язати з пристроєм, і він НЕ проходить через Tor, навіть коли Tor увімкнено. Натомість сторінку, відому як джерело шкідливого ПЗ, фішингу чи небажаного ПЗ, буде заблоковано з попередженням.</string>
     <string name="settings_safe_browsing_off">Вимк.: вбудований браузер не звертається до Google, і жодні дані про відвідані вами адреси туди не надсилаються. Ви не отримаєте попередження, якщо сторінка відома як джерело шкідливого ПЗ чи фішингу. Це стосується лише вбудованого браузера: пошук, зображення й завантаження застосунку ніколи не використовують Safe Browsing.</string>
-    <string name="settings_section_data">Дані</string>
     <string name="settings_cookies">Cookie сайтів</string>
     <string name="settings_cookies_hint">Пройдені антибот-перевірки та сеанси, зашифровані у сховищі</string>
     <string name="settings_cookies_cleared">Cookie видалено</string>
@@ -119,6 +117,25 @@
     <string name="settings_delete_vault_hint">Безповоротно стирає вміст, налаштування, джерела та ключ.</string>
     <string name="settings_section_about">Про застосунок</string>
     <string name="settings_about_text">Вміст, налаштування, джерела, cookie та черга завантажень шифруються у сховищі за допомогою AES-256-GCM, а ключі виводяться через ECDH P-256. Закритий ключ захищено Argon2id (64 MiB) і, якщо ввімкнено, біометричним ключем Keystore. Переглядувані зображення зберігаються лише в пам\'яті.</string>
+    <string name="settings_page_content">Фільтр вмісту</string>
+    <string name="settings_page_browsing">Перегляд і завантаження</string>
+    <string name="settings_browsing_summary">Сітка %1$s · %2$d на сторінку</string>
+    <string name="settings_tor_off_summary">Вимкнено: з\'єднання йдуть напряму</string>
+    <string name="settings_about_licence">Вільне ПЗ за ліцензією GNU GPL v3</string>
+    <string name="settings_about_libraries">Бібліотеки з відкритим кодом</string>
+    <string name="settings_about_libraries_hint">На чому побудовано застосунок, з ліцензією кожної. Торкніться, щоб відкрити сайт.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d правило чорного списку</item>
+        <item quantity="few">%d правила чорного списку</item>
+        <item quantity="many">%d правил чорного списку</item>
+        <item quantity="other">%d правила чорного списку</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d увімкнена</item>
+        <item quantity="few">%d увімкнені</item>
+        <item quantity="many">%d увімкнено</item>
+        <item quantity="other">%d увімкнено</item>
+    </plurals>
     <string name="password_current">Поточний пароль</string>
     <string name="password_new">Новий пароль</string>
     <string name="password_new_confirm">Підтвердьте новий пароль</string>

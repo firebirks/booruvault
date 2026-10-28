@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">กำลังใช้: %1$s</string>
     <string name="settings_sources_none">ไม่มี</string>
-    <string name="settings_section_content">เนื้อหา</string>
     <string name="settings_ratings_title">เรตที่แสดง</string>
     <string name="settings_ratings_hint">Shimmie2 และหน้าเว็บธรรมดาไม่มีเรต: หากต้องการดูโพสต์จากแหล่งเหล่านี้ ให้เปิด “ไม่มีเรต”</string>
     <string name="settings_blacklist">บัญชีดำ</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">ใช้ไม่ได้: ใน WebView นั้น Safe Browsing ทำงานผ่านบริการ Google Play ซึ่งโทรศัพท์เครื่องนี้ไม่มี ไม่ว่ากรณีใดจะไม่มีที่อยู่ใดถูกส่งไปยัง Google</string>
     <string name="settings_safe_browsing_on">เปิด สำหรับทุกที่อยู่ที่เบราว์เซอร์ในตัวเปิด (รวมถึงหน้าเว็บ รูปภาพ สคริปต์ และโฆษณา) บริการ Google Play จะคำนวณค่าแฮชเชิงวิทยาการเข้ารหัส แล้วเทียบกับรายการที่เก็บไว้ในโทรศัพท์ เมื่อส่วนต้นของค่าแฮชตรงกับรายการใดในรายการนั้น ก็จะส่งส่วนย่อยขนาดไม่กี่ไบต์นั้นไปยังเซิร์ฟเวอร์ของ Google เพื่อยืนยัน Google จะไม่ได้รับที่อยู่ในรูปแบบข้อความธรรมดา แต่จะเห็น IP ของคุณ เวลา และส่วนย่อยนั้น คำขอนี้ส่งจากบริการ Google ในโทรศัพท์ จึงอาจเชื่อมโยงกับอุปกรณ์ได้ และจะไม่ผ่าน Tor แม้ว่าจะเปิด Tor อยู่ก็ตาม ในทางกลับกัน หน้าเว็บที่ทราบว่ามีมัลแวร์ ฟิชชิง หรือซอฟต์แวร์ที่ไม่พึงประสงค์จะถูกบล็อกพร้อมคำเตือน</string>
     <string name="settings_safe_browsing_off">ปิด: เบราว์เซอร์ในตัวจะไม่ตรวจสอบกับ Google และไม่มีข้อมูลใดเกี่ยวกับที่อยู่ที่คุณเข้าชมถูกส่งไปยัง Google คุณจะไม่ได้รับคำเตือนหากหน้าเว็บเป็นที่ทราบว่ามีมัลแวร์หรือฟิชชิง การตั้งค่านี้มีผลกับเบราว์เซอร์ในตัวเท่านั้น: การค้นหา รูปภาพ และการดาวน์โหลดของแอปไม่เคยใช้ Safe Browsing</string>
-    <string name="settings_section_data">ข้อมูล</string>
     <string name="settings_cookies">คุกกี้ของเว็บไซต์</string>
     <string name="settings_cookies_hint">การตรวจสอบป้องกันบอทที่ผ่านแล้วและเซสชัน เข้ารหัสไว้ในคลังนิรภัย</string>
     <string name="settings_cookies_cleared">ลบคุกกี้แล้ว</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">ลบเนื้อหา การตั้งค่า แหล่งที่มา และคีย์อย่างถาวรโดยกู้คืนไม่ได้</string>
     <string name="settings_section_about">เกี่ยวกับ</string>
     <string name="settings_about_text">เนื้อหา การตั้งค่า แหล่งที่มา คุกกี้ และคิวดาวน์โหลดถูกเข้ารหัสไว้ในคลังนิรภัยด้วย AES-256-GCM โดยใช้คีย์ที่สร้างผ่าน ECDH P-256 คีย์ส่วนตัวได้รับการปกป้องด้วย Argon2id (64 MiB) และหากเปิดใช้ จะได้รับการปกป้องด้วยคีย์ไบโอเมตริกใน Keystore ด้วย รูปภาพที่เรียกดูจะอยู่ในหน่วยความจำเท่านั้น</string>
+    <string name="settings_page_content">ตัวกรองเนื้อหา</string>
+    <string name="settings_page_browsing">การเรียกดูและดาวน์โหลด</string>
+    <string name="settings_browsing_summary">ตาราง %1$s · %2$d ต่อหน้า</string>
+    <string name="settings_tor_off_summary">ปิด: การเชื่อมต่อออกไปโดยตรง</string>
+    <string name="settings_about_licence">ซอฟต์แวร์เสรีภายใต้ GNU GPL v3</string>
+    <string name="settings_about_libraries">ไลบรารีโอเพนซอร์ส</string>
+    <string name="settings_about_libraries_hint">สิ่งที่แอปสร้างขึ้นมา พร้อมสัญญาอนุญาตของแต่ละรายการ แตะเพื่อเปิดเว็บไซต์</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">กฎแบล็กลิสต์ %d ข้อ</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">เปิด %d รายการ</item>
+    </plurals>
     <string name="password_current">รหัสผ่านปัจจุบัน</string>
     <string name="password_new">รหัสผ่านใหม่</string>
     <string name="password_new_confirm">ยืนยันรหัสผ่านใหม่</string>

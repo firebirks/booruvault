@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">Đang dùng: %1$s</string>
     <string name="settings_sources_none">không có</string>
-    <string name="settings_section_content">Nội dung</string>
     <string name="settings_ratings_title">Phân loại hiển thị</string>
     <string name="settings_ratings_hint">Shimmie2 và trang web thông thường không có phân loại: để xem bài đăng của chúng, hãy bật “Chưa phân loại”.</string>
     <string name="settings_blacklist">Danh sách đen</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">Không khả dụng: trong WebView, Safe Browsing hoạt động qua Dịch vụ Google Play, mà điện thoại này không có. Dù thế nào, không có địa chỉ nào được gửi tới Google.</string>
     <string name="settings_safe_browsing_on">Bật. Với mỗi địa chỉ mà trình duyệt tích hợp mở (kể cả trang, hình ảnh, script, quảng cáo), Dịch vụ Google Play tính một dấu vân tay mật mã và so sánh với một danh sách lưu trên điện thoại. Khi phần đầu của dấu vân tay khớp với một mục trong danh sách, dịch vụ gửi đoạn dài vài byte đó tới máy chủ của Google để xác nhận. Google không nhận được nguyên văn địa chỉ, nhưng thấy IP của bạn, thời điểm và đoạn đó; yêu cầu xuất phát từ dịch vụ Google trên điện thoại nên có thể liên kết với thiết bị, và yêu cầu này KHÔNG đi qua Tor ngay cả khi Tor đang bật. Đổi lại, trang được biết là chứa phần mềm độc hại, lừa đảo (phishing) hoặc phần mềm không mong muốn sẽ bị chặn kèm cảnh báo.</string>
     <string name="settings_safe_browsing_off">Tắt: trình duyệt tích hợp không hỏi Google và không có dữ liệu nào về các địa chỉ bạn truy cập được gửi tới Google. Bạn sẽ không nhận được cảnh báo nếu một trang được biết là chứa phần mềm độc hại hoặc lừa đảo. Điều này chỉ áp dụng cho trình duyệt tích hợp: tìm kiếm, hình ảnh và tải xuống của ứng dụng không bao giờ dùng Safe Browsing.</string>
-    <string name="settings_section_data">Dữ liệu</string>
     <string name="settings_cookies">Cookie của trang web</string>
     <string name="settings_cookies_hint">Các lần kiểm tra chống bot đã vượt qua và phiên đăng nhập, được mã hóa trong kho</string>
     <string name="settings_cookies_cleared">Đã xóa cookie</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">Xóa nội dung, cài đặt, nguồn và khóa mã hóa. Không thể hoàn tác.</string>
     <string name="settings_section_about">Giới thiệu</string>
     <string name="settings_about_text">Nội dung, cài đặt, nguồn, cookie và hàng đợi tải xuống được mã hóa trong kho bằng AES-256-GCM, với khóa được dẫn xuất qua ECDH P-256. Khóa riêng tư được bảo vệ bằng Argon2id (64 MiB) và, nếu bật, bằng một khóa sinh trắc học trong Keystore. Hình ảnh đã duyệt chỉ nằm trong bộ nhớ.</string>
+    <string name="settings_page_content">Bộ lọc nội dung</string>
+    <string name="settings_page_browsing">Duyệt và tải xuống</string>
+    <string name="settings_browsing_summary">Lưới %1$s · %2$d mỗi trang</string>
+    <string name="settings_tor_off_summary">Tắt: kết nối đi ra trực tiếp</string>
+    <string name="settings_about_licence">Phần mềm tự do theo giấy phép GNU GPL v3</string>
+    <string name="settings_about_libraries">Thư viện mã nguồn mở</string>
+    <string name="settings_about_libraries_hint">Những gì ứng dụng được xây dựng trên đó, kèm giấy phép. Chạm để mở trang.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">%d quy tắc danh sách đen</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">%d đang bật</item>
+    </plurals>
     <string name="password_current">Mật khẩu hiện tại</string>
     <string name="password_new">Mật khẩu mới</string>
     <string name="password_new_confirm">Xác nhận mật khẩu mới</string>

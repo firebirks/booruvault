@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">使用中：%1$s</string>
     <string name="settings_sources_none">無</string>
-    <string name="settings_section_content">內容</string>
     <string name="settings_ratings_title">顯示的分級</string>
     <string name="settings_ratings_hint">Shimmie2 和普通網頁沒有分級：如要查看它們的貼文，請開啟「未分級」。</string>
     <string name="settings_blacklist">黑名單</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">無法使用：在 WebView 中，Safe Browsing 須透過 Google Play 服務運作，但這支手機沒有該服務。無論如何都不會傳送任何網址給 Google。</string>
     <string name="settings_safe_browsing_on">開啟。內建瀏覽器開啟的每個網址（包括網頁、圖片、指令碼和廣告），Google Play 服務都會計算出其密碼學指紋，並與手機上儲存的清單比對。當指紋的開頭與清單中的某個項目相符時，就會將這段只有幾個位元組的片段傳送到 Google 的伺服器進行確認。Google 不會收到明文網址，但會看到你的 IP、時間和該片段；這個要求是由手機上的 Google 服務發出，因此可能與裝置產生關聯，而且即使開啟了 Tor，也不會經過 Tor。相對地，已知含有惡意軟體、網路釣魚或垃圾軟體的網頁會遭到封鎖並顯示警告。</string>
     <string name="settings_safe_browsing_off">關閉：內建瀏覽器不會查詢 Google，也不會傳送任何與你造訪的網址相關的資料給 Google。如果某個網頁已知含有惡意軟體或網路釣魚內容，你不會收到警告。這只與內建瀏覽器有關：應用程式的搜尋、圖片和下載絕不會使用 Safe Browsing。</string>
-    <string name="settings_section_data">資料</string>
     <string name="settings_cookies">網站 Cookie</string>
     <string name="settings_cookies_hint">已通過的防機器人驗證和登入工作階段，加密儲存在保險庫中</string>
     <string name="settings_cookies_cleared">Cookie 已刪除</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">永久清除內容、設定、來源和金鑰，且無法復原。</string>
     <string name="settings_section_about">關於</string>
     <string name="settings_about_text">內容、設定、來源、Cookie 和下載佇列皆以 AES-256-GCM 加密儲存在保險庫中，金鑰透過 ECDH P-256 衍生。私密金鑰受 Argon2id（64 MiB）保護；若已啟用，還會受 Keystore 中的生物辨識金鑰保護。瀏覽過的圖片只會保留在記憶體中。</string>
+    <string name="settings_page_content">內容過濾</string>
+    <string name="settings_page_browsing">瀏覽與下載</string>
+    <string name="settings_browsing_summary">網格 %1$s · 每頁 %2$d 則</string>
+    <string name="settings_tor_off_summary">關閉：連線直接送出</string>
+    <string name="settings_about_licence">基於 GNU GPL v3 的自由軟體</string>
+    <string name="settings_about_libraries">開源程式庫</string>
+    <string name="settings_about_libraries_hint">應用程式所依賴的專案及其授權。點按可開啟其網站。</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">%d 則黑名單規則</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">已開啟 %d 項</item>
+    </plurals>
     <string name="password_current">目前的密碼</string>
     <string name="password_new">新密碼</string>
     <string name="password_new_confirm">確認新密碼</string>

@@ -184,4 +184,4 @@ BooruVault is free software: you can redistribute it and/or modify it under the 
 
 BooruVault is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-The full text is in [LICENSE](LICENSE). The libraries the app uses keep their own licenses (Apache-2.0, MIT and similar), all compatible with GPL-3.0.
+The full text is in [LICENSE](LICENSE). The libraries the app uses keep their own licenses (Apache-2.0, MIT and similar), all compatible with GPL-3.0; Settings → About lists each of them with its author and license.

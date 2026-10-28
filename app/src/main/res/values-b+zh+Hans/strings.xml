@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">正在使用：%1$s</string>
     <string name="settings_sources_none">无</string>
-    <string name="settings_section_content">内容</string>
     <string name="settings_ratings_title">显示的分级</string>
     <string name="settings_ratings_hint">Shimmie2 和普通网页没有分级：要查看它们的帖子，请开启“未分级”。</string>
     <string name="settings_blacklist">黑名单</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">不可用：在 WebView 中，Safe Browsing 需要通过 Google Play 服务运行，而这部手机没有该服务。无论如何都不会向 Google 发送任何网址。</string>
     <string name="settings_safe_browsing_on">开启。对于内置浏览器打开的每个网址（包括页面、图片、脚本和广告），Google Play 服务都会计算其密码学指纹，并与手机上保存的列表进行比对。如果指纹的开头与列表中的某一项相符，就会将这段只有几个字节的片段发送到 Google 的服务器进行确认。Google 不会收到明文网址，但能看到你的 IP、时间和该片段；该请求由手机上的 Google 服务发出，因此可能与设备关联起来，而且即使开启了 Tor，它也不会经过 Tor。作为交换，已知含有恶意软件、网络钓鱼或不受欢迎的软件的页面会被拦截并显示警告。</string>
     <string name="settings_safe_browsing_off">关闭：内置浏览器不会查询 Google，也不会向其发送任何与你访问的网址有关的数据。如果某个页面已知含有恶意软件或网络钓鱼内容，你不会收到警告。这只涉及内置浏览器：应用的搜索、图片和下载从不使用 Safe Browsing。</string>
-    <string name="settings_section_data">数据</string>
     <string name="settings_cookies">网站 Cookie</string>
     <string name="settings_cookies_hint">已通过的反机器人验证和登录会话，加密保存在保险库中</string>
     <string name="settings_cookies_cleared">Cookie 已删除</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">不可逆地清除内容、设置、来源和密钥。</string>
     <string name="settings_section_about">关于</string>
     <string name="settings_about_text">内容、设置、来源、Cookie 和下载队列均使用 AES-256-GCM 加密保存在保险库中，密钥通过 ECDH P-256 派生。私钥受 Argon2id（64 MiB）保护；如已启用，还受 Keystore 中的生物识别密钥保护。浏览的图片仅保存在内存中。</string>
+    <string name="settings_page_content">内容过滤</string>
+    <string name="settings_page_browsing">浏览与下载</string>
+    <string name="settings_browsing_summary">网格 %1$s · 每页 %2$d 条</string>
+    <string name="settings_tor_off_summary">关闭：连接直接发出</string>
+    <string name="settings_about_licence">基于 GNU GPL v3 的自由软件</string>
+    <string name="settings_about_libraries">开源库</string>
+    <string name="settings_about_libraries_hint">应用所依赖的项目及其许可证。点按可打开其网站。</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">%d 条黑名单规则</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">已开启 %d 项</item>
+    </plurals>
     <string name="password_current">当前密码</string>
     <string name="password_new">新密码</string>
     <string name="password_new_confirm">确认新密码</string>

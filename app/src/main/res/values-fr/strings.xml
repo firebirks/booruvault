@@ -77,7 +77,6 @@
     </plurals>
     <string name="settings_sources_in_use">%1$s utilisée</string>
     <string name="settings_sources_none">aucune</string>
-    <string name="settings_section_content">Contenu</string>
     <string name="settings_ratings_title">Classifications affichées</string>
     <string name="settings_ratings_hint">Shimmie2 et les pages web simples n\'ont pas de classification : pour voir leurs posts, activez « Non classé ».</string>
     <string name="settings_blacklist">Liste noire</string>
@@ -109,7 +108,6 @@
     <string name="settings_safe_browsing_unavailable">Indisponible : dans la WebView, Safe Browsing passe par les services Google Play, absents de ce téléphone. Dans tous les cas, aucune adresse n\'est envoyée à Google.</string>
     <string name="settings_safe_browsing_on">Activé. Pour chaque adresse ouverte par le navigateur intégré (pages, images, scripts et publicités compris), les services Google Play calculent une empreinte cryptographique et la comparent à une liste conservée sur le téléphone. Quand le début de l\'empreinte correspond à une entrée de la liste, ils envoient ce fragment de quelques octets aux serveurs de Google pour confirmation. Google ne reçoit pas l\'adresse en clair, mais voit votre IP, l\'heure et le fragment ; la requête part des services Google du téléphone, elle peut donc être reliée à l\'appareil, et elle ne passe PAS par Tor, même quand Tor est activé. En contrepartie, une page connue pour des logiciels malveillants, de l\'hameçonnage ou des logiciels indésirables est bloquée avec un avertissement.</string>
     <string name="settings_safe_browsing_off">Désactivé : le navigateur intégré ne consulte pas Google et aucune donnée sur les adresses que vous visitez ne lui est envoyée. Vous n\'êtes pas averti si une page est connue pour des logiciels malveillants ou de l\'hameçonnage. Cela ne concerne que le navigateur intégré : les recherches, les images et les téléchargements de l\'appli n\'utilisent jamais Safe Browsing.</string>
-    <string name="settings_section_data">Données</string>
     <string name="settings_cookies">Cookies des sites</string>
     <string name="settings_cookies_hint">Vérifications anti-bot réussies et sessions, chiffrées dans le coffre</string>
     <string name="settings_cookies_cleared">Cookies supprimés</string>
@@ -117,6 +115,23 @@
     <string name="settings_delete_vault_hint">Efface de façon irréversible le contenu, les paramètres, les sources et la clé.</string>
     <string name="settings_section_about">À propos</string>
     <string name="settings_about_text">Le contenu, les paramètres, les sources, les cookies et la file de téléchargement sont chiffrés dans le coffre avec AES-256-GCM, avec des clés dérivées via ECDH P-256. La clé privée est protégée par Argon2id (64 MiB) et, si elle est activée, par une clé biométrique du Keystore. Les images parcourues restent uniquement en mémoire.</string>
+    <string name="settings_page_content">Filtre de contenu</string>
+    <string name="settings_page_browsing">Navigation et téléchargements</string>
+    <string name="settings_browsing_summary">Grille %1$s · %2$d par page</string>
+    <string name="settings_tor_off_summary">Désactivé : les connexions sortent directement</string>
+    <string name="settings_about_licence">Logiciel libre sous licence GNU GPL v3</string>
+    <string name="settings_about_libraries">Bibliothèques open source</string>
+    <string name="settings_about_libraries_hint">Ce sur quoi l\'app est construite, chacune avec sa licence. Touchez-en une pour ouvrir son site.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d règle de liste noire</item>
+        <item quantity="many">%d règles de liste noire</item>
+        <item quantity="other">%d règles de liste noire</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d activée</item>
+        <item quantity="many">%d activées</item>
+        <item quantity="other">%d activées</item>
+    </plurals>
     <string name="password_current">Mot de passe actuel</string>
     <string name="password_new">Nouveau mot de passe</string>
     <string name="password_new_confirm">Confirmer le nouveau mot de passe</string>

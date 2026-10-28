@@ -75,7 +75,6 @@
     </plurals>
     <string name="settings_sources_in_use">इस्तेमाल में: %1$s</string>
     <string name="settings_sources_none">कोई नहीं</string>
-    <string name="settings_section_content">सामग्री</string>
     <string name="settings_ratings_title">दिखाई जाने वाली रेटिंग</string>
     <string name="settings_ratings_hint">Shimmie2 और सामान्य वेब पेजों में रेटिंग नहीं होती: उनकी पोस्ट देखने के लिए “बिना रेटिंग” चालू करें।</string>
     <string name="settings_blacklist">ब्लैकलिस्ट</string>
@@ -107,7 +106,6 @@
     <string name="settings_safe_browsing_unavailable">उपलब्ध नहीं: WebView में Safe Browsing, Google Play सेवाओं के ज़रिए काम करता है, जो इस फ़ोन में नहीं हैं। किसी भी स्थिति में Google को कोई पता नहीं भेजा जाता।</string>
     <string name="settings_safe_browsing_on">चालू। बिल्ट-इन ब्राउज़र जो भी पता खोलता है (पेज, इमेज, स्क्रिप्ट और विज्ञापन भी), उसके लिए Google Play सेवाएं एक क्रिप्टोग्राफ़िक फ़िंगरप्रिंट कैलकुलेट करती हैं और उसे फ़ोन पर रखी एक सूची से मिलाती हैं। जब फ़िंगरप्रिंट की शुरुआत सूची की किसी एंट्री से मेल खाती है, तो वे पुष्टि के लिए कुछ बाइट का वह टुकड़ा Google के सर्वर को भेजती हैं। Google को पता पढ़ने लायक रूप में नहीं मिलता, लेकिन वह आपका IP, समय और वह टुकड़ा देखता है; अनुरोध फ़ोन की Google सेवाओं से जाता है, इसलिए उसे डिवाइस से जोड़ा जा सकता है, और वह Tor चालू होने पर भी Tor से होकर नहीं जाता। बदले में, मैलवेयर, फ़िशिंग या अनचाहे सॉफ़्टवेयर के लिए जाना जाने वाला पेज चेतावनी के साथ ब्लॉक कर दिया जाता है।</string>
     <string name="settings_safe_browsing_off">बंद: बिल्ट-इन ब्राउज़र Google से कुछ नहीं पूछता और आपके देखे गए पतों के बारे में कोई डेटा उसे नहीं भेजा जाता। अगर कोई पेज मैलवेयर या फ़िशिंग के लिए जाना जाता है, तो आपको कोई चेतावनी नहीं मिलती। यह सिर्फ़ बिल्ट-इन ब्राउज़र पर लागू होता है: ऐप की खोजें, इमेज और डाउनलोड कभी भी Safe Browsing का इस्तेमाल नहीं करते।</string>
-    <string name="settings_section_data">डेटा</string>
     <string name="settings_cookies">साइट कुकी</string>
     <string name="settings_cookies_hint">पास की गई एंटी-बॉट जांचें और सेशन, तिजोरी में एन्क्रिप्टेड</string>
     <string name="settings_cookies_cleared">कुकी मिटा दी गईं</string>
@@ -115,6 +113,21 @@
     <string name="settings_delete_vault_hint">सामग्री, सेटिंग, स्रोत और कुंजी को हमेशा के लिए मिटा देता है। इसे वापस नहीं लाया जा सकता।</string>
     <string name="settings_section_about">जानकारी</string>
     <string name="settings_about_text">सामग्री, सेटिंग, स्रोत, कुकी और डाउनलोड कतार को तिजोरी में AES-256-GCM से एन्क्रिप्ट किया जाता है, और कुंजियां ECDH P-256 से डिराइव की जाती हैं। निजी कुंजी Argon2id (64 MiB) से सुरक्षित है और, अगर चालू हो, तो Keystore की एक बायोमेट्रिक कुंजी से भी। ब्राउज़ की गई इमेज केवल मेमोरी में रहती हैं।</string>
+    <string name="settings_page_content">सामग्री फ़िल्टर</string>
+    <string name="settings_page_browsing">ब्राउज़िंग और डाउनलोड</string>
+    <string name="settings_browsing_summary">ग्रिड %1$s · प्रति पेज %2$d</string>
+    <string name="settings_tor_off_summary">बंद: कनेक्शन सीधे बाहर जाते हैं</string>
+    <string name="settings_about_licence">GNU GPL v3 के तहत मुक्त सॉफ़्टवेयर</string>
+    <string name="settings_about_libraries">ओपन-सोर्स लाइब्रेरी</string>
+    <string name="settings_about_libraries_hint">ऐप जिन पर बना है, हर एक अपने लाइसेंस के साथ। साइट खोलने के लिए टैप करें।</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d ब्लैकलिस्ट नियम</item>
+        <item quantity="other">%d ब्लैकलिस्ट नियम</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d चालू</item>
+        <item quantity="other">%d चालू</item>
+    </plurals>
     <string name="password_current">मौजूदा पासवर्ड</string>
     <string name="password_new">नया पासवर्ड</string>
     <string name="password_new_confirm">नए पासवर्ड की पुष्टि करें</string>

@@ -75,7 +75,6 @@
     </plurals>
     <string name="settings_sources_in_use">In gebruik: %1$s</string>
     <string name="settings_sources_none">geen</string>
-    <string name="settings_section_content">Inhoud</string>
     <string name="settings_ratings_title">Getoonde classificaties</string>
     <string name="settings_ratings_hint">Shimmie2 en gewone webpagina\'s hebben geen classificatie: zet ‘Niet geclassificeerd’ aan om hun posts te zien.</string>
     <string name="settings_blacklist">Zwarte lijst</string>
@@ -107,7 +106,6 @@
     <string name="settings_safe_browsing_unavailable">Niet beschikbaar: in de WebView werkt Safe Browsing via Google Play-services, die deze telefoon niet heeft. Er wordt in geen geval een adres naar Google gestuurd.</string>
     <string name="settings_safe_browsing_on">Aan. Voor elk adres dat de ingebouwde browser opent (pagina\'s, afbeeldingen, scripts, advertenties inbegrepen) berekent Google Play-services een cryptografische vingerafdruk en vergelijkt die met een lijst op de telefoon. Als het begin van de vingerafdruk overeenkomt met een item in de lijst, stuurt het dat fragment van een paar bytes ter bevestiging naar de servers van Google. Google ontvangt het adres niet in leesbare vorm, maar ziet je IP, het tijdstip en het fragment; het verzoek komt van de Google-services van de telefoon, dus het kan aan het apparaat worden gekoppeld, en het gaat NIET via Tor, ook niet als Tor aan staat. In ruil daarvoor wordt een pagina die bekendstaat om malware, phishing of ongewenste software met een waarschuwing geblokkeerd.</string>
     <string name="settings_safe_browsing_off">Uit: de ingebouwde browser raadpleegt Google niet en er worden geen gegevens over de adressen die je bezoekt naar Google gestuurd. Je krijgt geen waarschuwing als een pagina bekendstaat om malware of phishing. Dit geldt alleen voor de ingebouwde browser: de zoekopdrachten, afbeeldingen en downloads van de app gebruiken nooit Safe Browsing.</string>
-    <string name="settings_section_data">Gegevens</string>
     <string name="settings_cookies">Cookies van sites</string>
     <string name="settings_cookies_hint">Geslaagde anti-botcontroles en sessies, versleuteld in de kluis</string>
     <string name="settings_cookies_cleared">Cookies verwijderd</string>
@@ -115,6 +113,21 @@
     <string name="settings_delete_vault_hint">Wist onherroepelijk inhoud, instellingen, bronnen en de sleutel.</string>
     <string name="settings_section_about">Over</string>
     <string name="settings_about_text">Inhoud, instellingen, bronnen, cookies en de downloadwachtrij worden in de kluis versleuteld met AES-256-GCM, met sleutels die via ECDH P-256 zijn afgeleid. De privésleutel wordt beschermd door Argon2id (64 MiB) en, indien ingeschakeld, door een biometrische Keystore-sleutel. Bekeken afbeeldingen blijven alleen in het geheugen.</string>
+    <string name="settings_page_content">Inhoudsfilter</string>
+    <string name="settings_page_browsing">Browsen en downloads</string>
+    <string name="settings_browsing_summary">Raster %1$s · %2$d per pagina</string>
+    <string name="settings_tor_off_summary">Uit: verbindingen gaan rechtstreeks naar buiten</string>
+    <string name="settings_about_licence">Vrije software onder de GNU GPL v3</string>
+    <string name="settings_about_libraries">Opensourcebibliotheken</string>
+    <string name="settings_about_libraries_hint">Waarop de app is gebouwd, elk met zijn licentie. Tik om de site te openen.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d blacklistregel</item>
+        <item quantity="other">%d blacklistregels</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d aan</item>
+        <item quantity="other">%d aan</item>
+    </plurals>
     <string name="password_current">Huidig wachtwoord</string>
     <string name="password_new">Nieuw wachtwoord</string>
     <string name="password_new_confirm">Nieuw wachtwoord bevestigen</string>

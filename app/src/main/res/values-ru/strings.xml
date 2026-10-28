@@ -79,7 +79,6 @@
     </plurals>
     <string name="settings_sources_in_use">Используется: %1$s</string>
     <string name="settings_sources_none">нет</string>
-    <string name="settings_section_content">Контент</string>
     <string name="settings_ratings_title">Показываемые рейтинги</string>
     <string name="settings_ratings_hint">У Shimmie2 и обычных веб-страниц нет рейтингов: чтобы видеть их посты, включите «Без рейтинга».</string>
     <string name="settings_blacklist">Чёрный список</string>
@@ -111,7 +110,6 @@
     <string name="settings_safe_browsing_unavailable">Недоступно: в WebView Safe Browsing работает через сервисы Google Play, которых на этом телефоне нет. Адреса в любом случае не отправляются в Google.</string>
     <string name="settings_safe_browsing_on">Вкл. Для каждого адреса, который открывает встроенный браузер (включая страницы, изображения, скрипты и рекламу), сервисы Google Play вычисляют криптографический отпечаток и сравнивают его со списком, хранящимся на телефоне. Если начало отпечатка совпадает с записью в списке, они отправляют этот фрагмент длиной в несколько байт на серверы Google для подтверждения. Google не получает адрес в открытом виде, но видит ваш IP, время и фрагмент; запрос исходит от сервисов Google на телефоне, поэтому его можно связать с устройством, и он НЕ идёт через Tor, даже когда Tor включён. Взамен страница, известная как источник вредоносного ПО, фишинга или нежелательного ПО, блокируется с предупреждением.</string>
     <string name="settings_safe_browsing_off">Выкл.: встроенный браузер не обращается к Google, и никакие данные о посещаемых вами адресах туда не отправляются. Вы не получите предупреждения, если страница известна как источник вредоносного ПО или фишинга. Это касается только встроенного браузера: поиск, изображения и загрузки приложения никогда не используют Safe Browsing.</string>
-    <string name="settings_section_data">Данные</string>
     <string name="settings_cookies">Cookie сайтов</string>
     <string name="settings_cookies_hint">Пройденные антибот-проверки и сессии, зашифрованы в хранилище</string>
     <string name="settings_cookies_cleared">Cookie удалены</string>
@@ -119,6 +117,25 @@
     <string name="settings_delete_vault_hint">Безвозвратно стирает контент, настройки, источники и ключ.</string>
     <string name="settings_section_about">О приложении</string>
     <string name="settings_about_text">Контент, настройки, источники, cookie и очередь загрузок шифруются в хранилище с помощью AES-256-GCM, а ключи выводятся через ECDH P-256. Закрытый ключ защищён Argon2id (64 MiB) и, если включено, биометрическим ключом Keystore. Просматриваемые изображения хранятся только в памяти.</string>
+    <string name="settings_page_content">Фильтр контента</string>
+    <string name="settings_page_browsing">Просмотр и загрузки</string>
+    <string name="settings_browsing_summary">Сетка %1$s · %2$d на страницу</string>
+    <string name="settings_tor_off_summary">Выключено: соединения идут напрямую</string>
+    <string name="settings_about_licence">Свободное ПО под лицензией GNU GPL v3</string>
+    <string name="settings_about_libraries">Библиотеки с открытым кодом</string>
+    <string name="settings_about_libraries_hint">На чём построено приложение, с лицензией каждой. Нажмите, чтобы открыть сайт.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d правило чёрного списка</item>
+        <item quantity="few">%d правила чёрного списка</item>
+        <item quantity="many">%d правил чёрного списка</item>
+        <item quantity="other">%d правила чёрного списка</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d включена</item>
+        <item quantity="few">%d включены</item>
+        <item quantity="many">%d включено</item>
+        <item quantity="other">%d включено</item>
+    </plurals>
     <string name="password_current">Текущий пароль</string>
     <string name="password_new">Новый пароль</string>
     <string name="password_new_confirm">Подтвердите новый пароль</string>

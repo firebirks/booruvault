@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">Digunakan: %1$s</string>
     <string name="settings_sources_none">tidak ada</string>
-    <string name="settings_section_content">Konten</string>
     <string name="settings_ratings_title">Rating yang ditampilkan</string>
     <string name="settings_ratings_hint">Shimmie2 dan halaman web biasa tidak memiliki rating: untuk melihat postingannya, aktifkan “Tanpa rating”.</string>
     <string name="settings_blacklist">Daftar hitam</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">Tidak tersedia: di WebView, Safe Browsing bekerja melalui layanan Google Play, yang tidak ada di ponsel ini. Bagaimanapun juga, tidak ada alamat yang dikirim ke Google.</string>
     <string name="settings_safe_browsing_on">Aktif. Untuk setiap alamat yang dibuka browser bawaan (termasuk halaman, gambar, skrip, dan iklan), layanan Google Play menghitung sidik jari kriptografis dan membandingkannya dengan daftar yang disimpan di ponsel. Jika awal sidik jari cocok dengan salah satu entri daftar, layanan tersebut mengirim potongan beberapa byte itu ke server Google untuk konfirmasi. Google tidak menerima alamat dalam bentuk teks biasa, tetapi melihat IP Anda, waktunya, dan potongan tersebut; permintaan dikirim dari layanan Google di ponsel, sehingga dapat dikaitkan dengan perangkat, dan TIDAK melewati Tor meskipun Tor aktif. Sebagai gantinya, halaman yang dikenal mengandung malware, phishing, atau software yang tidak diinginkan akan diblokir dengan peringatan.</string>
     <string name="settings_safe_browsing_off">Nonaktif: browser bawaan tidak menghubungi Google dan tidak ada data tentang alamat yang Anda kunjungi yang dikirim ke Google. Anda tidak mendapat peringatan jika suatu halaman dikenal mengandung malware atau phishing. Ini hanya berlaku untuk browser bawaan: pencarian, gambar, dan unduhan aplikasi tidak pernah menggunakan Safe Browsing.</string>
-    <string name="settings_section_data">Data</string>
     <string name="settings_cookies">Cookie situs</string>
     <string name="settings_cookies_hint">Pemeriksaan anti-bot yang lolos dan sesi, terenkripsi di brankas</string>
     <string name="settings_cookies_cleared">Cookie dihapus</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">Menghapus konten, setelan, sumber, dan kunci secara permanen, tanpa bisa dipulihkan.</string>
     <string name="settings_section_about">Tentang</string>
     <string name="settings_about_text">Konten, setelan, sumber, cookie, dan antrean unduhan dienkripsi di brankas dengan AES-256-GCM, dengan kunci yang diturunkan melalui ECDH P-256. Kunci privat dilindungi oleh Argon2id (64 MiB) dan, jika diaktifkan, oleh kunci biometrik Keystore. Gambar yang dijelajahi hanya disimpan di memori.</string>
+    <string name="settings_page_content">Filter konten</string>
+    <string name="settings_page_browsing">Penjelajahan dan unduhan</string>
+    <string name="settings_browsing_summary">Kisi %1$s · %2$d per halaman</string>
+    <string name="settings_tor_off_summary">Mati: koneksi keluar langsung</string>
+    <string name="settings_about_licence">Perangkat lunak bebas di bawah GNU GPL v3</string>
+    <string name="settings_about_libraries">Pustaka sumber terbuka</string>
+    <string name="settings_about_libraries_hint">Dasar aplikasi ini, masing-masing dengan lisensinya. Ketuk untuk membuka situsnya.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">%d aturan daftar hitam</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">%d aktif</item>
+    </plurals>
     <string name="password_current">Sandi saat ini</string>
     <string name="password_new">Sandi baru</string>
     <string name="password_new_confirm">Konfirmasi sandi baru</string>

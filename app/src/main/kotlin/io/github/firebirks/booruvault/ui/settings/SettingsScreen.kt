@@ -21,6 +21,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material3.AlertDialog
@@ -59,6 +70,7 @@ import io.github.firebirks.booruvault.BuildConfig
 import io.github.firebirks.booruvault.R
 import io.github.firebirks.booruvault.booru.Rating
 import io.github.firebirks.booruvault.net.TorManager
+import io.github.firebirks.booruvault.net.TorState
 import io.github.firebirks.booruvault.net.TorStatus
 import io.github.firebirks.booruvault.settings.GridSize
 import io.github.firebirks.booruvault.ui.common.LocalContainer
@@ -75,22 +87,156 @@ import io.github.firebirks.booruvault.vault.VaultHeaderException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** Settings with its own small back stack: main page, source list, source editor. */
+/**
+ * Settings as a hub of short pages, one per theme, each with its own back stack entry. The hub
+ * shows where every page stands, so most answers are there without opening one.
+ */
 @Composable
 fun SettingsTab() {
     var page by rememberSaveable { mutableStateOf("main") }
     BackHandler(enabled = page != "main") { page = if (page.startsWith("source:")) "sources" else "main" }
+    val back = { page = "main" }
     when {
-        page == "main" -> SettingsMain(onSources = { page = "sources" }, onRisky = { page = "risky" })
-        page == "risky" -> RiskySettings(onBack = { page = "main" })
-        page == "sources" -> SourcesScreen(onBack = { page = "main" }, onEdit = { page = "source:$it" })
-        else -> SourceEditor(id = page.removePrefix("source:").takeIf { it != NEW_SOURCE }, onDone = { page = "sources" })
+        page == "main" -> SettingsMain(onOpen = { page = it })
+        page == "sources" -> SourcesScreen(onBack = back, onEdit = { page = "source:$it" })
+        page.startsWith("source:") -> SourceEditor(id = page.removePrefix("source:").takeIf { it != NEW_SOURCE }, onDone = { page = "sources" })
+        page == "content" -> SettingsPage(stringResource(R.string.settings_page_content), back) { ContentSettings() }
+        page == "browsing" -> SettingsPage(stringResource(R.string.settings_page_browsing), back) { BrowsingSettings() }
+        page == "vault" -> SettingsPage(stringResource(R.string.settings_section_vault), back) { VaultSettings() }
+        page == "network" -> SettingsPage(stringResource(R.string.settings_section_network), back) { NetworkSettings() }
+        page == "risky" -> RiskySettings(onBack = back)
+        page == "about" -> SettingsPage(stringResource(R.string.settings_section_about), back) { AboutPage() }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
+private fun SettingsMain(onOpen: (String) -> Unit) {
+    val container = LocalContainer.current
+    val settings by container.settings.settings.collectAsStateWithLifecycle()
+    val biometricOn by container.vault.biometric.collectAsStateWithLifecycle()
+    val tor by container.tor.state.collectAsStateWithLifecycle()
+
+    Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.settings_title)) }) }, contentWindowInsets = WindowInsets(0)) { padding ->
+        Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState())) {
+            val count = pluralStringResource(R.plurals.settings_sources_count, settings.sources.size, settings.sources.size)
+            val inUse = stringResource(R.string.settings_sources_in_use, settings.selectedSource?.name ?: stringResource(R.string.settings_sources_none))
+            HubRow(Icons.Outlined.Language, stringResource(R.string.settings_section_sources), "$count · $inUse") { onOpen("sources") }
+
+            val ratings = Rating.entries.filter { it in settings.allowedRatings }.map { stringResource(it.labelRes()) }.joinToString(" · ")
+            val rules = settings.blacklistRules.size
+            HubRow(
+                Icons.Outlined.FilterAlt, stringResource(R.string.settings_page_content),
+                "$ratings · " + pluralStringResource(R.plurals.settings_blacklist_rules, rules, rules),
+            ) { onOpen("content") }
+
+            HubRow(
+                Icons.Outlined.GridView, stringResource(R.string.settings_page_browsing),
+                stringResource(R.string.settings_browsing_summary, stringResource(settings.gridSize.labelRes()), settings.pageSize),
+            ) { onOpen("browsing") }
+
+            val autoLock = autoLockLabel(settings.autoLockSeconds)
+            HubRow(
+                Icons.Outlined.Lock, stringResource(R.string.settings_section_vault),
+                if (biometricOn) "$autoLock · ${stringResource(R.string.settings_biometric)}" else autoLock,
+            ) { onOpen("vault") }
+
+            HubRow(
+                Icons.Outlined.Public, stringResource(R.string.settings_section_network),
+                if (tor.enabled) torStatusText(tor) else stringResource(R.string.settings_tor_off_summary),
+            ) { onOpen("network") }
+
+            val riskyOn = listOf(settings.downloadWhileLocked, settings.hiddenBrowser, settings.linksOutsideTor, settings.webSafeBrowsing).count { it }
+            HubRow(
+                Icons.Outlined.WarningAmber, stringResource(R.string.settings_risky),
+                if (riskyOn == 0) stringResource(R.string.settings_risky_hint) else pluralStringResource(R.plurals.settings_risky_on, riskyOn, riskyOn),
+                tint = MaterialTheme.colorScheme.error,
+            ) { onOpen("risky") }
+
+            HubRow(Icons.Outlined.Info, stringResource(R.string.settings_section_about), stringResource(R.string.settings_about_version, BuildConfig.VERSION_NAME)) { onOpen("about") }
+        }
+    }
+}
+
+/** One entry of the hub: where to go, and where that page stands right now. */
+@Composable
+private fun HubRow(icon: ImageVector, title: String, summary: String, tint: Color = LocalContentColor.current, onClick: () -> Unit) {
+    ListItem(
+        headlineContent = { Text(title) },
+        supportingContent = { Text(summary, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+        leadingContent = { Icon(icon, null, tint = tint) },
+        trailingContent = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null) },
+        modifier = Modifier.clickable(onClick = onClick),
+    )
+}
+
+/** A page of the hub: a title, a way back, and its rows in a scrolling column. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingsPage(title: String, onBack: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back)) } },
+            )
+        },
+        contentWindowInsets = WindowInsets(0),
+    ) { padding ->
+        Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()), content = content)
+    }
+}
+
+@Composable
+private fun autoLockLabel(seconds: Int): String = when (seconds) {
+    0 -> stringResource(R.string.auto_lock_immediately)
+    in 1..59 -> stringResource(R.string.auto_lock_seconds, seconds)
+    else -> stringResource(R.string.auto_lock_minutes, seconds / 60)
+}
+
+/** What is shown and what is hidden: ratings and the blacklist. */
+@Composable
+private fun ContentSettings() {
+    val repo = LocalContainer.current.settings
+    val settings by repo.settings.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    ChoiceRow(
+        title = stringResource(R.string.settings_ratings_title),
+        subtitle = stringResource(R.string.settings_ratings_hint),
+        options = Rating.entries,
+        label = { stringResource(it.labelRes()) },
+        isSelected = { it in settings.allowedRatings },
+        onSelect = { rating ->
+            val next = if (rating in settings.allowedRatings) settings.allowedRatings - rating else settings.allowedRatings + rating
+            if (next.isNotEmpty()) scope.launch { repo.setRatings(next) }
+        },
+    )
+    BlacklistEditor(settings.blacklist) { scope.launch { repo.setBlacklist(it) } }
+}
+
+/** How results are laid out and which version of a file is viewed or saved. */
+@Composable
+private fun BrowsingSettings() {
+    val repo = LocalContainer.current.settings
+    val settings by repo.settings.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    ChoiceRow(stringResource(R.string.settings_grid_size), null, GridSize.entries, { stringResource(it.labelRes()) }, { it == settings.gridSize }) {
+        scope.launch { repo.setGridSize(it) }
+    }
+    ChoiceRow(stringResource(R.string.settings_page_size), null, listOf(20, 40, 60, 100), { "$it" }, { it == settings.pageSize }) {
+        scope.launch { repo.setPageSize(it) }
+    }
+    SwitchRow(stringResource(R.string.settings_viewer_original), stringResource(R.string.settings_viewer_original_hint), settings.viewerOriginal) {
+        scope.launch { repo.setViewerOriginal(it) }
+    }
+    SwitchRow(stringResource(R.string.settings_download_original), stringResource(R.string.settings_download_original_hint), settings.downloadOriginal) {
+        scope.launch { repo.setDownloadOriginal(it) }
+    }
+}
+
+/** The lock, the password, the shortcut past it, and the one irreversible action, last. */
+@Composable
+private fun VaultSettings() {
     val container = LocalContainer.current
     val repo = container.settings
     val settings by repo.settings.collectAsStateWithLifecycle()
@@ -100,146 +246,137 @@ private fun SettingsMain(onSources: () -> Unit, onRisky: () -> Unit) {
     var destroy by remember { mutableStateOf(false) }
     val biometricOn by container.vault.biometric.collectAsStateWithLifecycle()
 
-    Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.settings_title)) }) }, contentWindowInsets = WindowInsets(0)) { padding ->
-        Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState())) {
-            SectionHeader(stringResource(R.string.settings_section_sources))
-            val count = pluralStringResource(R.plurals.settings_sources_count, settings.sources.size, settings.sources.size)
-            val inUse = stringResource(R.string.settings_sources_in_use, settings.selectedSource?.name ?: stringResource(R.string.settings_sources_none))
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_manage_sources)) },
-                supportingContent = { Text("$count · $inUse") },
-                trailingContent = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null) },
-                modifier = Modifier.clickable(onClick = onSources),
-            )
-
-            SectionHeader(stringResource(R.string.settings_section_content))
-            ChoiceRow(
-                title = stringResource(R.string.settings_ratings_title),
-                subtitle = stringResource(R.string.settings_ratings_hint),
-                options = Rating.entries,
-                label = { stringResource(it.labelRes()) },
-                isSelected = { it in settings.allowedRatings },
-                onSelect = { rating ->
-                    val next = if (rating in settings.allowedRatings) settings.allowedRatings - rating else settings.allowedRatings + rating
-                    if (next.isNotEmpty()) scope.launch { repo.setRatings(next) }
-                },
-            )
-            BlacklistEditor(settings.blacklist) { scope.launch { repo.setBlacklist(it) } }
-            ChoiceRow(stringResource(R.string.settings_grid_size), null, GridSize.entries, { stringResource(it.labelRes()) }, { it == settings.gridSize }) {
-                scope.launch { repo.setGridSize(it) }
-            }
-            ChoiceRow(stringResource(R.string.settings_page_size), null, listOf(20, 40, 60, 100), { "$it" }, { it == settings.pageSize }) {
-                scope.launch { repo.setPageSize(it) }
-            }
-            SwitchRow(stringResource(R.string.settings_viewer_original), stringResource(R.string.settings_viewer_original_hint), settings.viewerOriginal) {
-                scope.launch { repo.setViewerOriginal(it) }
-            }
-            SwitchRow(stringResource(R.string.settings_download_original), stringResource(R.string.settings_download_original_hint), settings.downloadOriginal) {
-                scope.launch { repo.setDownloadOriginal(it) }
-            }
-
-            SectionHeader(stringResource(R.string.settings_section_vault))
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_lock_now)) },
-                supportingContent = { Text(stringResource(R.string.settings_lock_now_hint)) },
-                leadingContent = { Icon(Icons.Outlined.Lock, null) },
-                modifier = Modifier.clickable { container.vault.lock() },
-            )
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_change_password)) },
-                leadingContent = { Icon(Icons.Outlined.Password, null) },
-                modifier = Modifier.clickable { changePassword = true },
-            )
-            val rekey by container.rekeyer.progress.collectAsStateWithLifecycle()
-            rekey?.let { progress ->
-                ListItem(
-                    headlineContent = { Text(stringResource(R.string.rekey_title)) },
-                    supportingContent = {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(stringResource(R.string.rekey_progress, progress.done, progress.total))
-                            LinearProgressIndicator(
-                                progress = { if (progress.total == 0) 0f else progress.done.toFloat() / progress.total },
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                        }
-                    },
-                )
-            }
-            val activity = context.findActivity() as? FragmentActivity
-            if (activity != null && BiometricKey.isAvailable(context)) {
-                SwitchRow(stringResource(R.string.settings_biometric), stringResource(R.string.settings_biometric_hint), biometricOn) { on ->
-                    if (on) {
-                        enrollBiometric(activity, container.vault, container.scope) { message ->
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        container.scope.launch {
-                            container.vault.disableBiometric()
-                            BiometricKey.delete()
-                        }
-                    }
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_lock_now)) },
+        supportingContent = { Text(stringResource(R.string.settings_lock_now_hint)) },
+        leadingContent = { Icon(Icons.Outlined.Lock, null) },
+        modifier = Modifier.clickable { container.vault.lock() },
+    )
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_change_password)) },
+        leadingContent = { Icon(Icons.Outlined.Password, null) },
+        modifier = Modifier.clickable { changePassword = true },
+    )
+    val rekey by container.rekeyer.progress.collectAsStateWithLifecycle()
+    rekey?.let { progress ->
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.rekey_title)) },
+            supportingContent = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.rekey_progress, progress.done, progress.total))
+                    LinearProgressIndicator(
+                        progress = { if (progress.total == 0) 0f else progress.done.toFloat() / progress.total },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+        )
+    }
+    val activity = context.findActivity() as? FragmentActivity
+    if (activity != null && BiometricKey.isAvailable(context)) {
+        SwitchRow(stringResource(R.string.settings_biometric), stringResource(R.string.settings_biometric_hint), biometricOn) { on ->
+            if (on) {
+                enrollBiometric(activity, container.vault, container.scope) { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                container.scope.launch {
+                    container.vault.disableBiometric()
+                    BiometricKey.delete()
                 }
             }
-            ChoiceRow(
-                title = stringResource(R.string.settings_auto_lock),
-                subtitle = stringResource(R.string.settings_auto_lock_hint),
-                options = listOf(0, 30, 60, 300, 900),
-                label = {
-                    when (it) {
-                        0 -> stringResource(R.string.auto_lock_immediately)
-                        in 1..59 -> stringResource(R.string.auto_lock_seconds, it)
-                        else -> stringResource(R.string.auto_lock_minutes, it / 60)
-                    }
-                },
-                isSelected = { it == settings.autoLockSeconds },
-                onSelect = { scope.launch { repo.setAutoLock(it) } },
-            )
-            SwitchRow(
-                stringResource(R.string.settings_secure_screen),
-                stringResource(R.string.settings_secure_screen_hint),
-                settings.secureScreen,
-            ) { scope.launch { repo.setSecureScreen(it) } }
-
-            SectionHeader(stringResource(R.string.settings_section_network))
-            TorSettings()
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_risky)) },
-                supportingContent = { Text(stringResource(R.string.settings_risky_hint)) },
-                leadingContent = { Icon(Icons.Outlined.WarningAmber, null, tint = MaterialTheme.colorScheme.error) },
-                trailingContent = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null) },
-                modifier = Modifier.clickable(onClick = onRisky),
-            )
-
-            SectionHeader(stringResource(R.string.settings_section_data))
-            val cleared = stringResource(R.string.settings_cookies_cleared)
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_cookies)) },
-                supportingContent = { Text(stringResource(R.string.settings_cookies_hint)) },
-                trailingContent = {
-                    TextButton(onClick = {
-                        container.cookies.clear()
-                        Toast.makeText(context, cleared, Toast.LENGTH_SHORT).show()
-                    }) { Text(stringResource(R.string.action_clear)) }
-                },
-            )
-            HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error) },
-                supportingContent = { Text(stringResource(R.string.settings_delete_vault_hint)) },
-                leadingContent = { Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error) },
-                modifier = Modifier.clickable { destroy = true },
-            )
-
-            SectionHeader(stringResource(R.string.settings_section_about))
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.settings_about_version, BuildConfig.VERSION_NAME)) },
-                supportingContent = { Text(stringResource(R.string.settings_about_text)) },
-            )
         }
     }
+    ChoiceRow(
+        title = stringResource(R.string.settings_auto_lock),
+        subtitle = stringResource(R.string.settings_auto_lock_hint),
+        options = listOf(0, 30, 60, 300, 900),
+        label = { autoLockLabel(it) },
+        isSelected = { it == settings.autoLockSeconds },
+        onSelect = { scope.launch { repo.setAutoLock(it) } },
+    )
+    SwitchRow(
+        stringResource(R.string.settings_secure_screen),
+        stringResource(R.string.settings_secure_screen_hint),
+        settings.secureScreen,
+    ) { scope.launch { repo.setSecureScreen(it) } }
+    HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error) },
+        supportingContent = { Text(stringResource(R.string.settings_delete_vault_hint)) },
+        leadingContent = { Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error) },
+        modifier = Modifier.clickable { destroy = true },
+    )
 
     if (changePassword) ChangePasswordDialog(onDismiss = { changePassword = false })
     if (destroy) DestroyVaultDialog(onDismiss = { destroy = false })
+}
+
+/** Tor, and what the built-in browser brought back from sites. */
+@Composable
+private fun NetworkSettings() {
+    val container = LocalContainer.current
+    val context = LocalContext.current
+    TorSettings()
+    HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+    val cleared = stringResource(R.string.settings_cookies_cleared)
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_cookies)) },
+        supportingContent = { Text(stringResource(R.string.settings_cookies_hint)) },
+        trailingContent = {
+            TextButton(onClick = {
+                container.cookies.clear()
+                Toast.makeText(context, cleared, Toast.LENGTH_SHORT).show()
+            }) { Text(stringResource(R.string.action_clear)) }
+        },
+    )
+}
+
+/** A project the app is built on, with the licence its code comes under. */
+private class Library(val name: String, val author: String, val licence: String, val url: String)
+
+private val LIBRARIES = listOf(
+    Library("Kotlin, kotlinx.coroutines, kotlinx.serialization", "JetBrains", "Apache License 2.0", "https://kotlinlang.org"),
+    Library("AndroidX: Core, Activity, Fragment, Lifecycle, Biometric, DocumentFile, WebKit", "The Android Open Source Project", "Apache License 2.0", "https://developer.android.com/jetpack/androidx"),
+    Library("Jetpack Compose, Material 3, Material Icons", "The Android Open Source Project", "Apache License 2.0", "https://developer.android.com/compose"),
+    Library("Media3 (ExoPlayer)", "The Android Open Source Project", "Apache License 2.0", "https://github.com/androidx/media"),
+    Library("OkHttp", "Square, Inc.", "Apache License 2.0", "https://square.github.io/okhttp/"),
+    Library("Coil", "Coil Contributors", "Apache License 2.0", "https://coil-kt.github.io/coil/"),
+    Library("Telephoto", "Saket Narayan", "Apache License 2.0", "https://github.com/saket/telephoto"),
+    Library("jsoup", "Jonathan Hedley", "MIT License", "https://jsoup.org"),
+    Library("Bouncy Castle", "Legion of the Bouncy Castle Inc.", "MIT License", "https://www.bouncycastle.org"),
+    Library("Public Suffix List (bundled with OkHttp)", "Mozilla Foundation", "Mozilla Public License 2.0", "https://publicsuffix.org"),
+)
+
+/** The version, how the vault is protected, the app's licence and the projects it stands on. */
+@Composable
+private fun AboutPage() {
+    val links = LocalLinkOpener.current
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_about_version, BuildConfig.VERSION_NAME)) },
+        supportingContent = { Text(stringResource(R.string.settings_about_text)) },
+    )
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_about_licence)) },
+        supportingContent = { Text("GNU GPL v3") },
+        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+        modifier = Modifier.clickable { links.open("https://www.gnu.org/licenses/gpl-3.0.html") },
+    )
+    SectionHeader(stringResource(R.string.settings_about_libraries))
+    Text(
+        stringResource(R.string.settings_about_libraries_hint),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+    )
+    LIBRARIES.forEach { library ->
+        ListItem(
+            headlineContent = { Text(library.name) },
+            supportingContent = { Text("${library.author} · ${library.licence}") },
+            trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+            modifier = Modifier.clickable { links.open(library.url) },
+        )
+    }
 }
 
 /**
@@ -459,14 +596,8 @@ private fun TorSettings() {
                 delay(3000)
             }
         }
-        val status = when (state.status) {
-            TorStatus.ON -> stringResource(R.string.tor_status_on, state.socksPort)
-            TorStatus.CHECKING -> stringResource(R.string.tor_verifying)
-            TorStatus.NOT_INSTALLED -> stringResource(R.string.tor_status_not_installed)
-            TorStatus.OFF, TorStatus.DISABLED -> stringResource(R.string.tor_status_off)
-        }
         ListItem(
-            headlineContent = { Text(status) },
+            headlineContent = { Text(torStatusText(state)) },
             supportingContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     state.verifiedExit?.let { Text(stringResource(R.string.tor_verified, it), color = MaterialTheme.colorScheme.primary) }
@@ -514,6 +645,14 @@ private fun TorSettings() {
  * The local port the app connects to Orbot on. It is applied when the field is left or confirmed,
  * not at every keystroke: each change drops the connections opened along the old route.
  */
+@Composable
+private fun torStatusText(state: TorState): String = when (state.status) {
+    TorStatus.ON -> stringResource(R.string.tor_status_on, state.socksPort)
+    TorStatus.CHECKING -> stringResource(R.string.tor_verifying)
+    TorStatus.NOT_INSTALLED -> stringResource(R.string.tor_status_not_installed)
+    TorStatus.OFF, TorStatus.DISABLED -> stringResource(R.string.tor_status_off)
+}
+
 @Composable
 private fun TorPortField(tor: TorManager, port: Int) {
     var text by remember(port) { mutableStateOf(port.toString()) }

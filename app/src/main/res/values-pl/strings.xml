@@ -79,7 +79,6 @@
     </plurals>
     <string name="settings_sources_in_use">W użyciu: %1$s</string>
     <string name="settings_sources_none">brak</string>
-    <string name="settings_section_content">Treści</string>
     <string name="settings_ratings_title">Pokazywane klasyfikacje</string>
     <string name="settings_ratings_hint">Shimmie2 i zwykłe strony WWW nie mają klasyfikacji: aby zobaczyć ich posty, włącz „Bez klasyfikacji”.</string>
     <string name="settings_blacklist">Czarna lista</string>
@@ -111,7 +110,6 @@
     <string name="settings_safe_browsing_unavailable">Niedostępne: w WebView funkcja Safe Browsing działa przez Usługi Google Play, których ten telefon nie ma. W żadnym przypadku żaden adres nie jest wysyłany do Google.</string>
     <string name="settings_safe_browsing_on">Włączone. Dla każdego adresu otwieranego przez wbudowaną przeglądarkę (strony, obrazy, skrypty, w tym reklamy) Usługi Google Play obliczają skrót kryptograficzny i porównują go z listą przechowywaną na telefonie. Gdy początek skrótu pasuje do pozycji na liście, wysyłają ten kilkubajtowy fragment do serwerów Google w celu potwierdzenia. Google nie otrzymuje adresu w postaci jawnej, ale widzi Twój adres IP, godzinę i fragment; żądanie pochodzi z usług Google na telefonie, więc można je powiązać z urządzeniem, i NIE przechodzi przez Tor, nawet gdy Tor jest włączony. W zamian strona znana z malware, phishingu lub niechcianego oprogramowania jest blokowana z ostrzeżeniem.</string>
     <string name="settings_safe_browsing_off">Wyłączone: wbudowana przeglądarka nie odpytuje Google i żadne dane o odwiedzanych przez Ciebie adresach nie są wysyłane do Google. Nie otrzymasz ostrzeżenia, jeśli strona jest znana z malware lub phishingu. Dotyczy to tylko wbudowanej przeglądarki: wyszukiwania, obrazy i pobierania w aplikacji nigdy nie korzystają z Safe Browsing.</string>
-    <string name="settings_section_data">Dane</string>
     <string name="settings_cookies">Pliki cookie witryn</string>
     <string name="settings_cookies_hint">Zaliczone weryfikacje antybotowe i sesje, zaszyfrowane w sejfie</string>
     <string name="settings_cookies_cleared">Usunięto pliki cookie</string>
@@ -119,6 +117,25 @@
     <string name="settings_delete_vault_hint">Nieodwracalnie usuwa zawartość, ustawienia, źródła i klucz.</string>
     <string name="settings_section_about">Informacje</string>
     <string name="settings_about_text">Zawartość, ustawienia, źródła, pliki cookie i kolejka pobierania są szyfrowane w sejfie za pomocą AES-256-GCM, kluczami wyprowadzanymi przez ECDH P-256. Klucz prywatny jest chroniony przez Argon2id (64 MiB) oraz, jeśli włączono, przez biometryczny klucz w Keystore. Przeglądane obrazy pozostają wyłącznie w pamięci.</string>
+    <string name="settings_page_content">Filtr treści</string>
+    <string name="settings_page_browsing">Przeglądanie i pobieranie</string>
+    <string name="settings_browsing_summary">Siatka %1$s · %2$d na stronę</string>
+    <string name="settings_tor_off_summary">Wyłączone: połączenia wychodzą bezpośrednio</string>
+    <string name="settings_about_licence">Wolne oprogramowanie na licencji GNU GPL v3</string>
+    <string name="settings_about_libraries">Biblioteki open source</string>
+    <string name="settings_about_libraries_hint">Na czym zbudowana jest aplikacja, każda ze swoją licencją. Dotknij, by otworzyć stronę.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d reguła czarnej listy</item>
+        <item quantity="few">%d reguły czarnej listy</item>
+        <item quantity="many">%d reguł czarnej listy</item>
+        <item quantity="other">%d reguły czarnej listy</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d włączona</item>
+        <item quantity="few">%d włączone</item>
+        <item quantity="many">%d włączonych</item>
+        <item quantity="other">%d włączonej</item>
+    </plurals>
     <string name="password_current">Obecne hasło</string>
     <string name="password_new">Nowe hasło</string>
     <string name="password_new_confirm">Potwierdź nowe hasło</string>

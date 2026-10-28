@@ -73,7 +73,6 @@
     </plurals>
     <string name="settings_sources_in_use">使用中：%1$s</string>
     <string name="settings_sources_none">なし</string>
-    <string name="settings_section_content">コンテンツ</string>
     <string name="settings_ratings_title">表示するレーティング</string>
     <string name="settings_ratings_hint">Shimmie2 と通常のウェブページにはレーティングがありません。これらの投稿を表示するには「レーティングなし」をオンにしてください。</string>
     <string name="settings_blacklist">ブラックリスト</string>
@@ -105,7 +104,6 @@
     <string name="settings_safe_browsing_unavailable">利用できません：WebView の Safe Browsing は Google Play 開発者サービスを通じて動作しますが、このスマートフォンには搭載されていません。いずれにしても、アドレスが Google に送信されることはありません。</string>
     <string name="settings_safe_browsing_on">オン。内蔵ブラウザが開くすべてのアドレス（ページ、画像、スクリプト、広告も含む）について、Google Play 開発者サービスが暗号学的なフィンガープリントを計算し、スマートフォンに保存されたリストと照合します。フィンガープリントの先頭部分がリストの項目と一致すると、その数バイトの断片を確認のために Google のサーバーへ送信します。Google がアドレスを平文で受け取ることはありませんが、あなたの IP、時刻、断片は Google に伝わります。リクエストはスマートフォンの Google サービスから送信されるため、デバイスと結び付けられる可能性があります。また、このリクエストは Tor がオンのときでも Tor を経由しません。その代わり、マルウェア、フィッシング、望ましくないソフトウェアで知られるページは警告とともにブロックされます。</string>
     <string name="settings_safe_browsing_off">オフ：内蔵ブラウザは Google に問い合わせず、アクセスしたアドレスに関するデータは Google に一切送信されません。ページがマルウェアやフィッシングで知られていても警告は表示されません。この設定は内蔵ブラウザにのみ関係します。アプリの検索、画像、ダウンロードで Safe Browsing が使用されることは決してありません。</string>
-    <string name="settings_section_data">データ</string>
     <string name="settings_cookies">サイトの Cookie</string>
     <string name="settings_cookies_hint">通過したボット対策の確認とセッション。保管庫内で暗号化されています</string>
     <string name="settings_cookies_cleared">Cookie を削除しました</string>
@@ -113,6 +111,19 @@
     <string name="settings_delete_vault_hint">コンテンツ、設定、ソース、鍵を消去します。元に戻すことはできません。</string>
     <string name="settings_section_about">このアプリについて</string>
     <string name="settings_about_text">コンテンツ、設定、ソース、Cookie、ダウンロードキューは、ECDH P-256 で導出した鍵を使って AES-256-GCM で暗号化され、保管庫に保存されます。秘密鍵は Argon2id（64 MiB）で保護され、有効にした場合は生体認証の Keystore 鍵でも保護されます。閲覧した画像はメモリ上にのみ保持されます。</string>
+    <string name="settings_page_content">コンテンツフィルター</string>
+    <string name="settings_page_browsing">閲覧とダウンロード</string>
+    <string name="settings_browsing_summary">グリッド %1$s · 1ページ %2$d 件</string>
+    <string name="settings_tor_off_summary">オフ: 接続は直接行われます</string>
+    <string name="settings_about_licence">GNU GPL v3 のもとで公開される自由ソフトウェア</string>
+    <string name="settings_about_libraries">オープンソースライブラリ</string>
+    <string name="settings_about_libraries_hint">アプリの基盤となるプロジェクトと、それぞれのライセンス。タップするとサイトを開きます。</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="other">ブラックリストのルール %d 件</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="other">%d 件オン</item>
+    </plurals>
     <string name="password_current">現在のパスワード</string>
     <string name="password_new">新しいパスワード</string>
     <string name="password_new_confirm">新しいパスワード（確認）</string>

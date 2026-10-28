@@ -75,7 +75,6 @@
     </plurals>
     <string name="settings_sources_in_use">Kullanımda: %1$s</string>
     <string name="settings_sources_none">yok</string>
-    <string name="settings_section_content">İçerik</string>
     <string name="settings_ratings_title">Gösterilen derecelendirmeler</string>
     <string name="settings_ratings_hint">Shimmie2 ve sıradan web sayfalarında derecelendirme yoktur: gönderilerini görmek için “Derecelendirmesiz” seçeneğini açın.</string>
     <string name="settings_blacklist">Kara liste</string>
@@ -107,7 +106,6 @@
     <string name="settings_safe_browsing_unavailable">Kullanılamıyor: WebView\'da Safe Browsing, bu telefonda bulunmayan Google Play hizmetleri üzerinden çalışır. Her durumda Google\'a hiçbir adres gönderilmez.</string>
     <string name="settings_safe_browsing_on">Açık. Yerleşik tarayıcının açtığı her adres için (sayfalar, görseller, betikler ve reklamlar dahil) Google Play hizmetleri kriptografik bir parmak izi hesaplar ve bunu telefonda tutulan bir listeyle karşılaştırır. Parmak izinin başı listedeki bir girişle eşleşirse, birkaç baytlık o parçayı doğrulama için Google\'ın sunucularına gönderir. Google adresi açık metin olarak almaz, ancak IP\'nizi, zamanı ve parçayı görür; istek telefonun Google hizmetlerinden gelir, bu yüzden cihazla ilişkilendirilebilir ve Tor açık olsa bile Tor üzerinden GEÇMEZ. Karşılığında, kötü amaçlı yazılım, kimlik avı veya istenmeyen yazılımla bilinen bir sayfa bir uyarıyla engellenir.</string>
     <string name="settings_safe_browsing_off">Kapalı: yerleşik tarayıcı Google\'a danışmaz ve ziyaret ettiğiniz adreslerle ilgili hiçbir veri ona gönderilmez. Bir sayfa kötü amaçlı yazılım veya kimlik avıyla biliniyorsa uyarı almazsınız. Bu yalnızca yerleşik tarayıcıyı ilgilendirir: uygulamanın aramaları, görselleri ve indirmeleri hiçbir zaman Safe Browsing kullanmaz.</string>
-    <string name="settings_section_data">Veriler</string>
     <string name="settings_cookies">Site çerezleri</string>
     <string name="settings_cookies_hint">Geçilen anti-bot doğrulamaları ve oturumlar, kasada şifreli</string>
     <string name="settings_cookies_cleared">Çerezler silindi</string>
@@ -115,6 +113,21 @@
     <string name="settings_delete_vault_hint">İçeriği, ayarları, kaynakları ve anahtarı geri döndürülemez şekilde siler.</string>
     <string name="settings_section_about">Hakkında</string>
     <string name="settings_about_text">İçerik, ayarlar, kaynaklar, çerezler ve indirme kuyruğu kasada AES-256-GCM ile şifrelenir; anahtarlar ECDH P-256 ile türetilir. Özel anahtar Argon2id (64 MiB) ile ve etkinse biyometrik bir Keystore anahtarıyla korunur. Göz atılan görseller yalnızca bellekte kalır.</string>
+    <string name="settings_page_content">İçerik filtresi</string>
+    <string name="settings_page_browsing">Gezinme ve indirmeler</string>
+    <string name="settings_browsing_summary">%1$s ızgara · sayfa başına %2$d</string>
+    <string name="settings_tor_off_summary">Kapalı: bağlantılar doğrudan çıkar</string>
+    <string name="settings_about_licence">GNU GPL v3 altında özgür yazılım</string>
+    <string name="settings_about_libraries">Açık kaynak kütüphaneler</string>
+    <string name="settings_about_libraries_hint">Uygulamanın üzerine kurulduğu projeler, lisanslarıyla. Sitesini açmak için dokunun.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d kara liste kuralı</item>
+        <item quantity="other">%d kara liste kuralı</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d açık</item>
+        <item quantity="other">%d açık</item>
+    </plurals>
     <string name="password_current">Mevcut parola</string>
     <string name="password_new">Yeni parola</string>
     <string name="password_new_confirm">Yeni parolayı onaylayın</string>

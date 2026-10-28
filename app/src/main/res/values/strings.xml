@@ -80,7 +80,6 @@
     </plurals>
     <string name="settings_sources_in_use">%1$s in use</string>
     <string name="settings_sources_none">none</string>
-    <string name="settings_section_content">Content</string>
     <string name="settings_ratings_title">Ratings shown</string>
     <string name="settings_ratings_hint">Shimmie2 and plain web pages have no ratings: to see their posts, turn on “Unrated”.</string>
     <string name="settings_blacklist">Blacklist</string>
@@ -112,7 +111,6 @@
     <string name="settings_safe_browsing_unavailable">Unavailable: in the WebView, Safe Browsing works through Google Play services, which this phone does not have. No address is sent to Google either way.</string>
     <string name="settings_safe_browsing_on">On. For every address the built-in browser opens (pages, images, scripts, ads included) Google Play services computes a cryptographic fingerprint and compares it with a list kept on the phone. When the start of the fingerprint matches an entry in the list, it sends that fragment of a few bytes to Google\'s servers for confirmation. Google does not receive the address in clear, but sees your IP, the time and the fragment; the request comes from the phone\'s Google services, so it can be linked to the device, and it does NOT go through Tor even when Tor is on. In return, a page known for malware, phishing or unwanted software is blocked with a warning.</string>
     <string name="settings_safe_browsing_off">Off: the built-in browser does not consult Google and no data about the addresses you visit is sent to it. You get no warning if a page is known for malware or phishing. This only concerns the built-in browser: the app\'s searches, images and downloads never use Safe Browsing.</string>
-    <string name="settings_section_data">Data</string>
     <string name="settings_cookies">Site cookies</string>
     <string name="settings_cookies_hint">Passed anti-bot checks and sessions, encrypted in the vault</string>
     <string name="settings_cookies_cleared">Cookies deleted</string>
@@ -121,6 +119,21 @@
     <string name="settings_section_about">About</string>
     <string name="settings_about_version" translatable="false">BooruVault %1$s</string>
     <string name="settings_about_text">Content, settings, sources, cookies and the download queue are encrypted in the vault with AES-256-GCM, with keys derived through ECDH P-256. The private key is protected by Argon2id (64 MiB) and, if enabled, by a biometric Keystore key. Browsed images stay in memory only.</string>
+    <string name="settings_page_content">Content filter</string>
+    <string name="settings_page_browsing">Browsing and downloads</string>
+    <string name="settings_browsing_summary">%1$s grid · %2$d per page</string>
+    <string name="settings_tor_off_summary">Off: connections go out directly</string>
+    <string name="settings_about_licence">Free software under the GNU General Public License v3</string>
+    <string name="settings_about_libraries">Open-source libraries</string>
+    <string name="settings_about_libraries_hint">What the app is built on, each with its licence. Tap one to open its site.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d blacklist rule</item>
+        <item quantity="other">%d blacklist rules</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d on</item>
+        <item quantity="other">%d on</item>
+    </plurals>
     <string name="password_current">Current password</string>
     <string name="password_new">New password</string>
     <string name="password_new_confirm">Confirm new password</string>

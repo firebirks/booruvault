@@ -77,7 +77,6 @@
     </plurals>
     <string name="settings_sources_in_use">%1$s en uso</string>
     <string name="settings_sources_none">ninguna</string>
-    <string name="settings_section_content">Contenido</string>
     <string name="settings_ratings_title">Clasificaciones visibles</string>
     <string name="settings_ratings_hint">Shimmie2 y las páginas web simples no tienen clasificación: para ver sus posts, activa “Sin clasificar”.</string>
     <string name="settings_blacklist">Lista negra</string>
@@ -109,7 +108,6 @@
     <string name="settings_safe_browsing_unavailable">No disponible: en la WebView, Safe Browsing funciona a través de los servicios de Google Play, que este teléfono no tiene. De todos modos, no se envía ninguna dirección a Google.</string>
     <string name="settings_safe_browsing_on">Activado. Para cada dirección que abre el navegador integrado (incluidas páginas, imágenes, scripts y anuncios), los servicios de Google Play calculan una huella criptográfica y la comparan con una lista guardada en el teléfono. Cuando el inicio de la huella coincide con una entrada de la lista, envían ese fragmento de unos pocos bytes a los servidores de Google para confirmarlo. Google no recibe la dirección en claro, pero ve tu IP, la hora y el fragmento; la solicitud sale de los servicios de Google del teléfono, así que puede vincularse al dispositivo, y NO pasa por Tor aunque Tor esté activado. A cambio, una página conocida por malware, phishing o software no deseado se bloquea con una advertencia.</string>
     <string name="settings_safe_browsing_off">Desactivado: el navegador integrado no consulta a Google y no se le envía ningún dato sobre las direcciones que visitas. No recibes ninguna advertencia si una página es conocida por malware o phishing. Esto solo afecta al navegador integrado: las búsquedas, las imágenes y las descargas de la app nunca usan Safe Browsing.</string>
-    <string name="settings_section_data">Datos</string>
     <string name="settings_cookies">Cookies de los sitios</string>
     <string name="settings_cookies_hint">Verificaciones antibots superadas y sesiones, cifradas en la bóveda</string>
     <string name="settings_cookies_cleared">Cookies eliminadas</string>
@@ -117,6 +115,23 @@
     <string name="settings_delete_vault_hint">Borra de forma irreversible el contenido, los ajustes, las fuentes y la clave.</string>
     <string name="settings_section_about">Acerca de</string>
     <string name="settings_about_text">El contenido, los ajustes, las fuentes, las cookies y la cola de descargas se cifran en la bóveda con AES-256-GCM, con claves derivadas mediante ECDH P-256. La clave privada está protegida por Argon2id (64 MiB) y, si está activada, por una clave biométrica del Keystore. Las imágenes que exploras solo permanecen en la memoria.</string>
+    <string name="settings_page_content">Filtro de contenido</string>
+    <string name="settings_page_browsing">Navegación y descargas</string>
+    <string name="settings_browsing_summary">Cuadrícula %1$s · %2$d por página</string>
+    <string name="settings_tor_off_summary">Desactivado: las conexiones salen directamente</string>
+    <string name="settings_about_licence">Software libre bajo la GNU GPL v3</string>
+    <string name="settings_about_libraries">Bibliotecas de código abierto</string>
+    <string name="settings_about_libraries_hint">Sobre lo que está construida la app, cada una con su licencia. Toca una para abrir su sitio.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d regla de lista negra</item>
+        <item quantity="many">%d reglas de lista negra</item>
+        <item quantity="other">%d reglas de lista negra</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d activada</item>
+        <item quantity="many">%d activadas</item>
+        <item quantity="other">%d activadas</item>
+    </plurals>
     <string name="password_current">Contraseña actual</string>
     <string name="password_new">Contraseña nueva</string>
     <string name="password_new_confirm">Confirmar contraseña nueva</string>

@@ -77,7 +77,6 @@
     </plurals>
     <string name="settings_sources_in_use">%1$s em uso</string>
     <string name="settings_sources_none">nenhuma</string>
-    <string name="settings_section_content">Conteúdo</string>
     <string name="settings_ratings_title">Classificações exibidas</string>
     <string name="settings_ratings_hint">O Shimmie2 e as páginas web simples não têm classificação: para ver os posts deles, ative “Sem classificação”.</string>
     <string name="settings_blacklist">Lista de bloqueio</string>
@@ -109,7 +108,6 @@
     <string name="settings_safe_browsing_unavailable">Indisponível: na WebView, o Safe Browsing funciona pelos serviços do Google Play, que este telefone não tem. De qualquer forma, nenhum endereço é enviado ao Google.</string>
     <string name="settings_safe_browsing_on">Ativado. Para cada endereço que o navegador integrado abre (incluindo páginas, imagens, scripts e anúncios), os serviços do Google Play calculam uma impressão digital criptográfica e a comparam com uma lista mantida no telefone. Quando o início da impressão digital corresponde a uma entrada da lista, eles enviam esse fragmento de poucos bytes aos servidores do Google para confirmação. O Google não recebe o endereço em texto claro, mas vê seu IP, o horário e o fragmento; a solicitação parte dos serviços do Google do telefone, então pode ser vinculada ao dispositivo, e NÃO passa pelo Tor mesmo quando o Tor está ativado. Em troca, uma página conhecida por malware, phishing ou software indesejado é bloqueada com um aviso.</string>
     <string name="settings_safe_browsing_off">Desativado: o navegador integrado não consulta o Google e nenhum dado sobre os endereços que você visita é enviado a ele. Você não recebe nenhum aviso se uma página for conhecida por malware ou phishing. Isso afeta apenas o navegador integrado: as pesquisas, as imagens e os downloads do app nunca usam o Safe Browsing.</string>
-    <string name="settings_section_data">Dados</string>
     <string name="settings_cookies">Cookies dos sites</string>
     <string name="settings_cookies_hint">Verificações antibot concluídas e sessões, criptografadas no cofre</string>
     <string name="settings_cookies_cleared">Cookies excluídos</string>
@@ -117,6 +115,23 @@
     <string name="settings_delete_vault_hint">Apaga de forma irreversível o conteúdo, os ajustes, as fontes e a chave.</string>
     <string name="settings_section_about">Sobre</string>
     <string name="settings_about_text">O conteúdo, os ajustes, as fontes, os cookies e a fila de downloads são criptografados no cofre com AES-256-GCM, com chaves derivadas por ECDH P-256. A chave privada é protegida pelo Argon2id (64 MiB) e, se ativada, por uma chave biométrica do Keystore. As imagens navegadas ficam apenas na memória.</string>
+    <string name="settings_page_content">Filtro de conteúdo</string>
+    <string name="settings_page_browsing">Navegação e downloads</string>
+    <string name="settings_browsing_summary">Grade %1$s · %2$d por página</string>
+    <string name="settings_tor_off_summary">Desligado: as conexões saem diretamente</string>
+    <string name="settings_about_licence">Software livre sob a GNU GPL v3</string>
+    <string name="settings_about_libraries">Bibliotecas de código aberto</string>
+    <string name="settings_about_libraries_hint">No que o app se baseia, cada uma com sua licença. Toque em uma para abrir o site.</string>
+    <plurals name="settings_blacklist_rules">
+        <item quantity="one">%d regra de lista negra</item>
+        <item quantity="many">%d regras de lista negra</item>
+        <item quantity="other">%d regras de lista negra</item>
+    </plurals>
+    <plurals name="settings_risky_on">
+        <item quantity="one">%d ativada</item>
+        <item quantity="many">%d ativadas</item>
+        <item quantity="other">%d ativadas</item>
+    </plurals>
     <string name="password_current">Senha atual</string>
     <string name="password_new">Nova senha</string>
     <string name="password_new_confirm">Confirmar nova senha</string>
