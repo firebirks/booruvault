@@ -1,0 +1,27 @@
+# Reference copy of the F-Droid metadata for this app. The live file lives in the fdroiddata
+# repository as metadata/io.github.firebirks.booruvault.yml; submit it there as a merge request
+# once the repository is public and the version is tagged.
+Categories:
+  - Internet
+  - Multimedia
+License: GPL-3.0-or-later
+AuthorName: firebirks
+SourceCode: https://github.com/firebirks/booruvault
+IssueTracker: https://github.com/firebirks/booruvault/issues
+Changelog: https://github.com/firebirks/booruvault/releases
+
+RepoType: git
+Repo: https://github.com/firebirks/booruvault.git
+
+Builds:
+  - versionName: 0.1.0
+    versionCode: 1
+    commit: v0.1.0
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.1.0
+CurrentVersionCode: 1

@@ -155,6 +155,20 @@ Requirements:
 - **SDK and version pins:** `minSdk` is 26 (Android 8), `compileSdk`/`targetSdk` is 36. Several dependencies are held at the last version that compiles against SDK 36 (OkHttp 5.4, Coil 3.4, the Compose BOM). See the notes in `gradle/libs.versions.toml`.
 - **Stack:** Kotlin, Jetpack Compose with Material 3, OkHttp, kotlinx.serialization, Coil 3 with Telephoto, Media3, jsoup, BouncyCastle (Argon2 only), androidx.biometric and androidx.webkit.
 
+## Releasing
+
+The app is meant for F-Droid, which builds every version itself from a git tag and signs it with its own key; no signing key of ours is involved. A release is therefore a commit and a tag:
+
+1. Raise `versionCode` (always by one) and `versionName` in `app/build.gradle.kts`.
+2. Write `fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt`, at least for `en-US`.
+3. Commit, tag `v<versionName>` and push the tag. F-Droid's `UpdateCheckMode: Tags` picks it up.
+
+`fdroid/io.github.firebirks.booruvault.yml` is the reference copy of the F-Droid metadata; the first version is submitted to [fdroiddata](https://gitlab.com/fdroid/fdroiddata) as a merge request, later ones are picked up automatically. The repository has to be public for F-Droid to build it. `fastlane/metadata/android/` holds the store texts F-Droid shows; the icon and screenshots are taken from the APK when not provided there.
+
+To sign a release yourself, for a GitHub release or a test on a phone, put a `keystore.properties` next to this file with `storeFile`, `storePassword`, `keyAlias` and `keyPassword`; it is ignored by git, and `assembleRelease` then produces a signed APK. Without it the release build is unsigned, exactly as F-Droid makes it.
+
+See [PRIVACY.md](PRIVACY.md) for what the app sends and keeps, in one page.
+
 ## Project layout
 
 ```

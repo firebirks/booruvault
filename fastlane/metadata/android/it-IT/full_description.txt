@@ -1,0 +1,25 @@
+BooruVault sfoglia le board di immagini booru e conserva ciò che salvi in un vault cifrato.
+
+Tutto ciò che l'app conserva è cifrato: i file scaricati, le impostazioni, le fonti con le loro chiavi API, i cookie dei siti e la coda dei download. L'app si apre solo attraverso il vault e può far passare tutto il traffico da Tor tramite Orbot.
+
+Navigazione
+• Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 e i suoi fork (Safebooru, Rule34, Xbooru, TBIB…) ed e621/e926 tramite le loro API; Gelbooru 0.1 (booru.org), Shimmie2 e qualsiasi pagina web tramite le loro pagine.
+• Autocompletamento dei tag, tag preferiti e più usati per fonte, griglia infinita, filtro dei contenuti per rating e blacklist.
+• Un visualizzatore con zoom, riproduzione video e scheda dei tag.
+• Un browser integrato per superare le verifiche anti-bot, accedere o cambiare le preferenze del sito; resta sul sito per cui è stato aperto, e i cookie che riporta vengono conservati nel vault.
+
+Download
+• Singoli post, una selezione o un'intera ricerca, cifrati mentre arrivano, in background. La coda sopravvive al blocco e al riavvio.
+
+Vault
+• Password protetta con Argon2id, sblocco con impronta opzionale, blocco automatico dopo un tempo in background.
+• Collezioni per query di tag, filtri, importazione dal dispositivo, esportazione in chiaro su richiesta.
+• Protezione dello schermo da screenshot e dall'anteprima nelle app recenti.
+
+Privacy
+• Nessuna cache di immagini su disco; il blocco dimentica la sessione; a ogni tastiera viene chiesto di non imparare.
+• Tor tramite Orbot, a prova di fallimento: nessun fallback diretto, nessun DNS locale, e l'uscita viene verificata prima che esca qualsiasi traffico.
+• Le opzioni che barattano privacy per comodità sono spente di default, e ognuna spiega il suo costo.
+• Nessun Google Play services necessario, nessuna telemetria, nessun rapporto di crash.
+
+Software libero sotto licenza GNU GPL v3.

@@ -1,0 +1,1 @@
+First release: browsing of Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 and plain web pages; encrypted vault with password and fingerprint; background downloads; Tor via Orbot with a verified exit; built-in browser for logins and anti-bot checks; 20 languages.

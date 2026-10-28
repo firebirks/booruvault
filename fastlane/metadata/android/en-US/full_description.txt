@@ -1,0 +1,25 @@
+BooruVault browses booru image boards and keeps what you save in an encrypted vault.
+
+Everything the app stores is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. The app opens only through the vault, and it can send all its traffic through Tor via Orbot.
+
+Browsing
+• Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 and its forks (Safebooru, Rule34, Xbooru, TBIB…) and e621/e926 through their APIs; Gelbooru 0.1 (booru.org), Shimmie2 and any web page through their pages.
+• Tag autocomplete, favourite and most-used tags per source, an infinite grid, a content filter by rating and blacklist.
+• A viewer with zoom, video playback and a tag sheet.
+• A built-in browser to pass anti-bot checks, log in or set site preferences; it stays on the site it was opened for, and the cookies it brings back are kept in the vault.
+
+Downloads
+• Single posts, a selection or a whole search, encrypted while they stream, in the background. The queue survives a lock and a restart.
+
+Vault
+• A password hardened with Argon2id, optional fingerprint unlock, auto-lock after a time in the background.
+• Collections by tag query, filters, import from the device, export in clear on request.
+• Screen protection against screenshots and the recent-apps preview.
+
+Privacy
+• No image cache on disk; locking forgets the session; every keyboard is asked not to learn.
+• Tor via Orbot, fail-closed: no direct fallback, no local DNS, and the exit is verified before any traffic leaves.
+• Options that trade privacy for convenience are off by default, each one explaining its cost.
+• No Google Play services needed, no telemetry, no crash reports.
+
+Free software under the GNU GPL v3.
