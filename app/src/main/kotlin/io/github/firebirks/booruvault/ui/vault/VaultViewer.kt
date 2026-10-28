@@ -43,6 +43,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -67,6 +69,7 @@ import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
+import io.github.firebirks.booruvault.ui.common.resolve
 import io.github.firebirks.booruvault.util.formatBytes
 import io.github.firebirks.booruvault.util.formatDate
 import io.github.firebirks.booruvault.vault.SealedDataSource
@@ -96,6 +99,10 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
     var exporting by remember { mutableStateOf<VaultItem?>(null) }
     var releaseHold by remember { mutableStateOf<(() -> Unit)?>(null) }
     val videoSource = remember { SealedDataSource.Factory(container.vaultStore) }
+    val context = LocalContext.current
+    val snackbar = remember { SnackbarHostState() }
+    // The vault screen's own snackbar sits under this viewer, where nothing is seen.
+    LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it.resolve(context)) } }
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
         releaseHold?.invoke()
         releaseHold = null
@@ -170,6 +177,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
                 IconButton(onClick = { confirmDelete = item }) { Icon(Icons.Outlined.Delete, stringResource(R.string.action_delete), tint = Color.White) }
             }
         }
+        SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).navigationBarsPadding())
     }
 
     info?.let { item ->

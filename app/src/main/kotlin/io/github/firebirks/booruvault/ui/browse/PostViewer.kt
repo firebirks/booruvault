@@ -62,6 +62,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -131,6 +133,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     var info by remember { mutableStateOf<Post?>(null) }
     var collectionFromTag by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val snackbar = remember { SnackbarHostState() }
     val videoSource = remember { OkHttpDataSource.Factory(container.http).setUserAgent(UserAgents.forSource(state.source)) }
 
     fun close() {
@@ -202,12 +205,16 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                             onNeedVault()
                         } else {
                             askNotifications()
-                            vm.download(listOf(post))
+                            val added = vm.download(listOf(post))
+                            val message = if (added == 0) resources.getString(R.string.browse_already_queued) else resources.getQuantityString(R.plurals.browse_added, added, added)
+                            scope.launch { snackbar.showSnackbar(message) }
                         }
                     }) { Icon(Icons.Outlined.Download, stringResource(R.string.action_download_to_vault), tint = Color.White) }
                 }
             }
         }
+        // The screen's own snackbar sits under this viewer, where nothing is seen.
+        SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).navigationBarsPadding())
     }
 
     info?.let { post ->
