@@ -8,6 +8,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.widget.Toast
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -46,6 +48,8 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.DISABLE_WEBRTC_SCRIPT
 import io.github.firebirks.booruvault.net.PrivateWebView
+import io.github.firebirks.booruvault.net.SecureCookieJar
+import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.net.WebViewRoute
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
@@ -104,12 +108,17 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
     }
     val target = if (request.browse) request.url else origin
     val host = remember(origin) { Uri.parse(origin).host.orEmpty() }
+    // The session stays on this site; the bar names the host actually on screen.
+    val site = remember(host) { SecureCookieJar.siteOf(host) }
+    val startScheme = remember(origin) { Uri.parse(origin).scheme.orEmpty().lowercase() }
+    var currentHost by remember { mutableStateOf(host) }
     val userAgent = remember(request.source) { Challenge.userAgent(context, request.source) }
     var progress by remember { mutableIntStateOf(0) }
     var title by remember { mutableStateOf("") }
+    val blocked = stringResource(R.string.browser_blocked_outside, site)
 
     fun finish(solved: Boolean) {
-        if (solved) cookies.recordClearance(host, userAgent, Challenge.cookiesFor(origin, request.url, webView?.url ?: origin))
+        if (solved) cookies.recordClearance(host, userAgent, Challenge.cookiesFor(site, origin, request.url, webView?.url ?: origin))
         // The WebView's own stores are in clear; once the clearance is sealed, they are emptied.
         Challenge.wipe(context, webView)
         onClose(solved)
@@ -135,7 +144,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                     title = {
                         Column {
                             Text(stringResource(if (request.browse) R.string.browser_title else R.string.challenge_title))
-                            Text(host, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(currentHost, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     },
                     navigationIcon = { IconButton(onClick = { finish(false) }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_close)) } },
@@ -156,9 +165,9 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                     return@Column
                 }
-                ready.exceptionOrNull()?.let {
+                ready.exceptionOrNull()?.let { failure ->
                     Text(
-                        stringResource(R.string.browser_tor_unsupported),
+                        stringResource(if (failure is TorUnverifiedException) R.string.browser_tor_unverified else R.string.browser_tor_unsupported),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp),
                     )
@@ -182,8 +191,16 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                                 WebViewCompat.addDocumentStartJavaScript(this, DISABLE_WEBRTC_SCRIPT, setOf("*"))
                             }
                             webViewClient = object : WebViewClient() {
+                                // Links and scripts may point anywhere; only the site itself is followed.
+                                override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                                    if (!request.isForMainFrame || Challenge.allowedNavigation(site, startScheme, request.url)) return false
+                                    Toast.makeText(context, blocked, Toast.LENGTH_SHORT).show()
+                                    return true
+                                }
+
                                 override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
                                     progress = 0
+                                    url?.let { Uri.parse(it).host }?.let { currentHost = it }
                                 }
 
                                 override fun onPageFinished(view: WebView, url: String?) {

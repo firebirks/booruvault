@@ -1,6 +1,7 @@
 package io.github.firebirks.booruvault.net
 
 import android.content.Context
+import android.net.Uri
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebStorage
@@ -34,32 +35,58 @@ object Challenge {
     @Volatile
     private var learned = false
 
+    /** Cloudflare's checks run in a frame from here; it is the one host outside a site a session may reach. */
+    const val CHALLENGE_HOST = "challenges.cloudflare.com"
+
+    /**
+     * Whether a built-in browser session started on [site] (a registrable domain) may navigate
+     * to [url]: the site itself, over https or the scheme it was opened with, and Cloudflare's
+     * challenge host. Anything else is where a page's script or link tries to take the user,
+     * and a password typed there would go to a site the bar does not name.
+     */
+    fun allowedNavigation(site: String, startScheme: String, url: Uri): Boolean {
+        val host = url.host?.lowercase() ?: return false
+        val scheme = url.scheme?.lowercase() ?: return false
+        if (scheme != "https" && scheme != startScheme) return false
+        return host == CHALLENGE_HOST || SecureCookieJar.siteOf(host) == site
+    }
+
     fun hasClearance(url: String): Boolean =
         runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull()?.contains("cf_clearance=") == true
 
     /**
-     * The cookies the WebView holds for [url], as domain cookies for the whole site. CookieManager
-     * hides their real expiry, so they are kept for six months: a session or clearance the site
-     * has expired by then is simply refused, and a preference stays as long as the user expects.
+     * The cookies the WebView holds for [urls] of [site]. CookieManager tells only names and
+     * values, so the rest is chosen as narrowly as the app can afford: Cloudflare's clearance
+     * is a domain cookie, since the image hosts of a site check it too; every other cookie is
+     * bound to the very host it was read from, as a login would be. The real expiry is hidden
+     * as well, so they are kept for thirty days: a session the site has ended by then is simply
+     * refused, and a preference can be set again. A URL outside [site] contributes nothing.
      */
-    fun cookiesFor(vararg urls: String): List<Cookie> {
+    fun cookiesFor(site: String, vararg urls: String): List<Cookie> {
         val found = LinkedHashMap<String, Cookie>()
-        val expires = System.currentTimeMillis() + 180L * 24 * 60 * 60 * 1000
+        val expires = System.currentTimeMillis() + KEEP_DAYS * 24 * 60 * 60 * 1000
         // A site may scope its pass to the challenged path; asking for each page gathers it too.
         for (url in urls) {
             val httpUrl = url.toHttpUrlOrNull() ?: continue
+            val host = httpUrl.host.lowercase()
+            if (SecureCookieJar.siteOf(host) != site) continue
             val header = runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull() ?: continue
-            val site = SecureCookieJar.siteOf(httpUrl.host)
             header.split(';').forEach { part ->
                 val name = part.substringBefore('=').trim()
                 val value = part.substringAfter('=', "").trim()
                 if (name.isEmpty()) return@forEach
-                runCatching { Cookie.Builder().name(name).value(value).domain(site).path("/").expiresAt(expires).secure().build() }
-                    .getOrNull()?.let { found[name] = it }
+                runCatching {
+                    Cookie.Builder().name(name).value(value).path("/").expiresAt(expires).secure()
+                        .apply { if (name == CLEARANCE_COOKIE) domain(site) else hostOnlyDomain(host) }
+                        .build()
+                }.getOrNull()?.let { found["$name|${it.domain}"] = it }
             }
         }
         return found.values.toList()
     }
+
+    const val CLEARANCE_COOKIE = "cf_clearance"
+    private const val KEEP_DAYS = 30L
 
     /**
      * Deletes the WebView's directories from disk. Only safe before a WebView is created in this

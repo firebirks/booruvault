@@ -151,7 +151,7 @@ class SecureCookieJar(root: File, private val vault: VaultManager, json: Json, s
         val renewed = synchronized(lock) {
             if (!loaded) return
             val keptNames = cookies.filter { it.key() in kept }.mapTo(HashSet()) { it.name }
-            webCookies.filter { it.name in keptNames || it.name == "cf_clearance" }.onEach {
+            webCookies.filter { it.name in keptNames || it.name == Challenge.CLEARANCE_COOKIE }.onEach {
                 put(it)
                 kept += it.key()
             }

@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.net
 import android.content.Context
 import android.webkit.CookieManager
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.webkit.WebViewCompat
@@ -49,24 +50,25 @@ class HiddenBrowser(
             // With Tor on, a WebView that cannot be routed through it must not load anything.
             WebViewRoute.apply(tor).getOrElse { throw BooruChallengeException(url) }
             val origin = "${httpUrl.scheme}://${httpUrl.host}/"
+            val site = SecureCookieJar.siteOf(httpUrl.host)
             val agent = cookies.userAgentFor(httpUrl.host) ?: Challenge.userAgent(context, null)
             val manager = CookieManager.getInstance()
             cookies.browserCookies(httpUrl).forEach { manager.setCookie(origin, it) }
             val webView = PrivateWebView(context.applicationContext)
             try {
-                withTimeout(TIMEOUT_MS) { load(webView, url, agent) }
+                withTimeout(TIMEOUT_MS) { load(webView, url, agent, site, httpUrl.scheme) }
             } catch (e: TimeoutCancellationException) {
                 // Still a check after the wait: it needs a person, in the visible browser.
                 throw BooruChallengeException(url)
             } finally {
-                cookies.renewFromBrowser(httpUrl.host, Challenge.cookiesFor(origin, url))
+                cookies.renewFromBrowser(httpUrl.host, Challenge.cookiesFor(site, origin, url))
                 Challenge.wipe(context, webView)
                 webView.destroy()
             }
         }
     }
 
-    private suspend fun load(webView: WebView, url: String, agent: String): String = suspendCancellableCoroutine { cont ->
+    private suspend fun load(webView: WebView, url: String, agent: String, site: String, startScheme: String): String = suspendCancellableCoroutine { cont ->
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -82,7 +84,16 @@ class HiddenBrowser(
             WebViewCompat.addDocumentStartJavaScript(webView, DISABLE_WEBRTC_SCRIPT, setOf("*"))
         }
         webView.webViewClient = object : WebViewClient() {
+            // The page may try to send the visit elsewhere; the read stays on the site.
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
+                request.isForMainFrame && !Challenge.allowedNavigation(site, startScheme, request.url)
+
             override fun onPageFinished(view: WebView, finishedUrl: String?) {
+                val finishedHost = finishedUrl?.toHttpUrlOrNull()?.host
+                if (finishedHost == null || SecureCookieJar.siteOf(finishedHost) != site) {
+                    if (cont.isActive) cont.resumeWithException(BooruChallengeException(url))
+                    return
+                }
                 view.evaluateJavascript("document.documentElement.outerHTML") { result ->
                     val html = runCatching { json.decodeFromString(String.serializer(), result) }.getOrNull() ?: return@evaluateJavascript
                     // A check reloads the page by itself once passed; wait for that load.
