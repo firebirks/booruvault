@@ -84,11 +84,17 @@ suspend fun OkHttpClient.getJson(request: Request, json: Json): JsonElement? {
     }
 }
 
-/** Cloudflare marks its challenge pages with a header; older setups only show it in the page. */
+/**
+ * Cloudflare marks its challenge pages with a header; older setups only show it in the page.
+ * The page markers count only with a challenge status: ordinary pages carry the same
+ * `challenge-platform` script when the site has JavaScript detections on.
+ */
 fun isChallenge(response: Response, body: String): Boolean =
     response.header("cf-mitigated").equals("challenge", ignoreCase = true) ||
-        (response.code in setOf(403, 429, 503) && body.contains("<title>Just a moment", ignoreCase = true)) ||
-        (body.contains("challenge-platform", ignoreCase = true) && body.trimStart().startsWith("<"))
+        (response.code in CHALLENGE_CODES && body.trimStart().startsWith("<") &&
+            (body.contains("<title>Just a moment", ignoreCase = true) || body.contains("challenge-platform", ignoreCase = true)))
+
+private val CHALLENGE_CODES = setOf(403, 429, 503)
 
 // Lenient accessors: booru APIs disagree on types (numbers as strings, "" for null, 0/1 booleans).
 

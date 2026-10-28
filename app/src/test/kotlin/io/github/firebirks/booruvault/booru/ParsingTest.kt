@@ -177,6 +177,26 @@ class ParsingTest {
     }
 
     @Test
+    fun challengeScriptOnAnOrdinaryPageIsNotAChallenge() = runBlocking {
+        // Sites with JavaScript detections on put the challenge-platform script in every page.
+        val page = "<!DOCTYPE html><html><head><title>Posts</title><script src=\"/cdn-cgi/challenge-platform/scripts/jsd/main.js\"></script></head></html>"
+        try {
+            api(BooruEngine.DANBOORU, "https://danbooru.donmai.us", page).posts("", 1, 1)
+            fail()
+        } catch (e: BooruChallengeException) {
+            fail("a 200 page is not a challenge")
+        } catch (e: BooruException) {
+            assertEquals(io.github.firebirks.booruvault.util.Problem.Code.NOT_JSON, e.problem.code)
+        }
+        try {
+            api(BooruEngine.DANBOORU, "https://danbooru.donmai.us", page, code = 503).posts("", 1, 1)
+            fail()
+        } catch (e: BooruChallengeException) {
+            // expected: the same script with a challenge status
+        }
+    }
+
+    @Test
     fun plainForbiddenIsNotAChallenge() = runBlocking {
         try {
             api(BooruEngine.GELBOORU, "https://gelbooru.com", "", code = 401).posts("", 1, 1)
