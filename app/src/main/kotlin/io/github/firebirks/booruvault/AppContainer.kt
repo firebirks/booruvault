@@ -37,6 +37,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
@@ -94,6 +95,18 @@ class AppContainer(private val context: Context) {
         .addNetworkInterceptor(TorRouteGuard { tor.enabled })
         .build()
 
+    /**
+     * The same client for API calls and page reads, with a queue of its own: OkHttp runs a few
+     * calls per host and queues the rest, and a grid of slow thumbnails would otherwise hold a
+     * search or a tag suggestion back until they drained, which over Tor is a long time.
+     */
+    val apiHttp: OkHttpClient = http.newBuilder()
+        .dispatcher(Dispatcher().apply {
+            maxRequests = 16
+            maxRequestsPerHost = 8
+        })
+        .build()
+
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
     val rekeyer = VaultRekeyer(vaultDir, vault, vaultStore, scope)
     val transfer = VaultTransfer(context, vaultStore)
@@ -108,6 +121,7 @@ class AppContainer(private val context: Context) {
         tor.onRouteChanged = {
             scope.launch(Dispatchers.IO) {
                 http.dispatcher.cancelAll()
+                apiHttp.dispatcher.cancelAll()
                 http.connectionPool.evictAll()
             }
         }
@@ -132,7 +146,7 @@ class AppContainer(private val context: Context) {
         .build()
 
     fun api(source: BooruSource): BooruApi =
-        BooruApiFactory.create(source, http, json, hiddenBrowser.takeIf { settings.settings.value.hiddenBrowser })
+        BooruApiFactory.create(source, apiHttp, json, hiddenBrowser.takeIf { settings.settings.value.hiddenBrowser })
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(autoLock)
