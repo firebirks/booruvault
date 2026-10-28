@@ -259,15 +259,29 @@ class VaultTest {
         // Whoever can write the header could ask Argon2 for memory the process does not have.
         val headerFile = File(root, "vault.json")
         val header = json.decodeFromString(VaultHeader.serializer(), headerFile.readText())
-        headerFile.writeText(json.encodeToString(VaultHeader.serializer(), header.copy(kdf = header.kdf.copy(memoryKiB = 16 shl 20))))
+        headerFile.writeText(json.encodeToString(VaultHeader.serializer(), header.copy(kdf = header.kdf.copy(memoryKiB = 512 * 1024))))
 
         val reopened = VaultManager(root, json)
         try {
             reopened.unlock("pw".toCharArray())
-            fail("a header asking for 16 GiB must be refused, not attempted")
+            fail("a header asking for 512 MiB must be refused, not attempted")
         } catch (_: VaultHeaderException) {
         }
         assertTrue(reopened.state.value is VaultState.Locked)
+    }
+
+    @Test
+    fun kdfCeilingsStayWithinAPhonesHeap() {
+        // 256 MiB and ten passes: above that a phone would sooner kill the process than finish.
+        assertEquals(256 * 1024, Kdf.MAX_MEMORY_KIB)
+        assertEquals(10, Kdf.MAX_ITERATIONS)
+        val written = Kdf.newParams()
+        assertTrue(Kdf.sane(written))
+        assertTrue(Kdf.sane(written.copy(memoryKiB = Kdf.MAX_MEMORY_KIB, iterations = Kdf.MAX_ITERATIONS)))
+        assertFalse(Kdf.sane(written.copy(memoryKiB = Kdf.MAX_MEMORY_KIB + 1)))
+        assertFalse(Kdf.sane(written.copy(iterations = Kdf.MAX_ITERATIONS + 1)))
+        assertFalse(Kdf.sane(written.copy(memoryKiB = Kdf.MIN_MEMORY_KIB - 1)))
+        assertFalse(Kdf.sane(written.copy(iterations = 0)))
     }
 
     @Test

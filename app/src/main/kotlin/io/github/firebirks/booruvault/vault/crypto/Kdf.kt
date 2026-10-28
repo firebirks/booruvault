@@ -22,7 +22,9 @@ object Kdf {
     /**
      * Whether [params] are ones this app would have written. The header is in clear, and a
      * memory or pass count altered by whoever can write it would make Argon2 eat the process
-     * at the next unlock; a vault that asks for more than this is refused as damaged.
+     * at the next unlock; a vault that asks for more than this is refused as damaged. The
+     * ceilings leave room above [newParams] for stronger vaults later, but stay near what
+     * Android grants one app's Java heap, where BouncyCastle keeps the whole Argon2 memory.
      */
     fun sane(params: KdfParams): Boolean =
         params.algorithm == KdfParams.ALGORITHM &&
@@ -32,8 +34,8 @@ object Kdf {
             runCatching { params.salt.fromBase64().size >= 8 }.getOrDefault(false)
 
     const val MIN_MEMORY_KIB = 1024
-    const val MAX_MEMORY_KIB = 1 shl 20
-    const val MAX_ITERATIONS = 50
+    const val MAX_MEMORY_KIB = 256 * 1024
+    const val MAX_ITERATIONS = 10
     const val MAX_PARALLELISM = 8
 
     /**
