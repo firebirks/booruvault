@@ -20,8 +20,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.boolean
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -189,6 +191,24 @@ class TorProxySelector(private val enabled: () -> Boolean, private val port: () 
         if (enabled()) listOf(Proxy(Proxy.Type.SOCKS, InetSocketAddress("127.0.0.1", port()))) else listOf(Proxy.NO_PROXY)
 
     override fun connectFailed(uri: URI?, address: SocketAddress?, e: IOException?) = Unit
+}
+
+/**
+ * Refuses an exchange on a connection that does not go through Orbot while Tor is on. The pool
+ * is emptied when the route changes, but OkHttp offers a pooled connection to any request for
+ * the same host whatever proxy the selector now names, so a direct connection opened just
+ * before the switch could still carry a request made just after it. This closes that window:
+ * the connection is refused and its socket closed, so it is never offered again.
+ */
+class TorRouteGuard(private val enabled: () -> Boolean) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val connection = chain.connection()
+        if (enabled() && connection != null && connection.route().proxy.type() != Proxy.Type.SOCKS) {
+            runCatching { connection.socket().close() }
+            throw TorUnreachableException(IOException("connection does not go through Orbot"))
+        }
+        return chain.proceed(chain.request())
+    }
 }
 
 /** A local name lookup refused because Tor is on. */

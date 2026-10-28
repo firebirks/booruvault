@@ -13,6 +13,7 @@ import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorManager
+import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.net.TorUnreachableException
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.vault.AutoLock
@@ -90,6 +91,7 @@ class AppContainer(private val context: Context) {
                 throw e
             }
         }
+        .addNetworkInterceptor(TorRouteGuard { tor.enabled })
         .build()
 
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
@@ -100,10 +102,14 @@ class AppContainer(private val context: Context) {
     val autoLock = AutoLock(vault, settings, scope)
 
     init {
-        // Connections opened along the old route must not be reused along the new one.
+        // Connections opened along the old route must not be reused along the new one. Closing
+        // a TLS socket writes a close alert, which the main thread, where the switch is flipped,
+        // is not allowed to do; until the pool is empty the route guard refuses the old ones.
         tor.onRouteChanged = {
-            http.dispatcher.cancelAll()
-            http.connectionPool.evictAll()
+            scope.launch(Dispatchers.IO) {
+                http.dispatcher.cancelAll()
+                http.connectionPool.evictAll()
+            }
         }
         // Downloads allowed to outlive the lock keep the site cookies they need, and only them.
         cookies.retainWhileLocked = { downloads.workingWhileLocked }

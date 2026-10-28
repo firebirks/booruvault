@@ -124,8 +124,8 @@ On the JVM this is best effort and not a guarantee:
 
 BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 
-- **The app's network traffic** goes through a single HTTP client: API calls, images, video and downloads.
-- **Orbot only:** that client reaches the network through Orbot's SOCKS port and nothing else. If Orbot is not running, every request fails; there is no direct fallback.
+- **The app's network traffic** goes through one HTTP client, built once: API calls and page reads on one queue, images, video and downloads on another, sharing the same route and connections.
+- **Orbot only:** that client reaches the network through Orbot's SOCKS port and nothing else. If Orbot is not running, every request fails; there is no direct fallback. When Tor is switched on, pooled connections opened directly are dropped, and until they are, a guard refuses any request that would reuse one.
 - **The port is a setting** (default 9050). It is never taken from a broadcast: Orbot's status messages carried no proof of their sender, so any app could have sent one naming a port it listens on, and current Orbot sends none at all.
 - **No local DNS:** host names are passed to Orbot unresolved, and any local DNS lookup is refused. A unit test drives a fake SOCKS5 server to check that names travel as domains.
 - **Built-in browser:** goes through Orbot via a WebView proxy override with no direct rule, and WebRTC is removed before page scripts run. If the WebView cannot do either, the built-in browser does not open while Tor is on.

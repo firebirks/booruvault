@@ -133,4 +133,53 @@ class TorRoutingTest {
         socks.close()
         other.close()
     }
+
+    /** A plain HTTP server that keeps its connections open, so a client can pool them. */
+    private fun keepAliveHttp(): ServerSocket {
+        val server = ServerSocket(0, 4, InetAddress.getByName("127.0.0.1"))
+        thread(isDaemon = true) {
+            while (!server.isClosed) {
+                val socket = runCatching { server.accept() }.getOrNull() ?: break
+                thread(isDaemon = true) {
+                    socket.use {
+                        val reader = it.getInputStream().bufferedReader()
+                        val output = it.getOutputStream()
+                        while (true) {
+                            val first = reader.readLine() ?: break
+                            if (first.isEmpty()) continue
+                            while (reader.readLine()?.isNotEmpty() == true) Unit
+                            output.write("HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok".toByteArray())
+                            output.flush()
+                        }
+                    }
+                }
+            }
+        }
+        return server
+    }
+
+    @Test
+    fun aDirectConnectionIsNotReusedOnceTorIsOn() {
+        var enabled = false
+        val closed = ServerSocket(0).use { it.localPort }
+        val client = OkHttpClient.Builder()
+            .proxySelector(TorProxySelector({ enabled }, { closed }))
+            .dns(TorAwareDns { enabled })
+            .addNetworkInterceptor(TorRouteGuard { enabled })
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build()
+        keepAliveHttp().use { server ->
+            val request = Request.Builder().url("http://127.0.0.1:${server.localPort}/").build()
+            // Opened directly, and left in the pool.
+            client.newCall(request).execute().use { assertEquals("ok", it.body.string()) }
+            enabled = true
+            try {
+                client.newCall(request).execute().close()
+                fail("the pooled direct connection must not carry a request while Tor is on")
+            } catch (e: IOException) {
+                assertTrue(e is TorUnreachableException || e.cause is TorUnreachableException || e.message!!.contains("Orbot") || e.message!!.contains("refused"))
+            }
+        }
+    }
 }
