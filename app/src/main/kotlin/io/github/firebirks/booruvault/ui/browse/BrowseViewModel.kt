@@ -96,6 +96,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     /** Posts from HTML lists whose page could not be read, with the reason. */
     val resolveErrors: StateFlow<Map<Long, Problem>> = _resolveErrors.asStateFlow()
     private val resolving = HashSet<Long>()
+    private val resolveJobs = HashMap<Long, Job>()
 
     private var page = 0
     private val seen = HashSet<Long>()
@@ -144,7 +145,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         input = TextFieldValue("")
         _suggestions.value = emptyList()
         _selection.value = emptySet()
-        resolving.clear()
+        cancelResolves()
         _resolveErrors.value = emptyMap()
         webPage.value = null
         _state.value = BrowseState(generation = _state.value.generation + 1)
@@ -192,6 +193,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
 
     private fun restart(refreshing: Boolean) {
         loadJob?.cancel()
+        cancelResolves()
         page = 0
         seen.clear()
         _selection.value = emptySet()
@@ -212,7 +214,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val source = _state.value.source ?: return
         val generation = _state.value.generation
         _resolveErrors.update { it - post.id }
-        viewModelScope.launch {
+        resolveJobs[post.id] = viewModelScope.launch {
             try {
                 val resolved = c.api(source).resolve(post)
                 _state.update { s ->
@@ -224,8 +226,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 _resolveErrors.update { it + (post.id to e.toProblem()) }
             } finally {
                 resolving.remove(post.id)
+                resolveJobs.remove(post.id)
             }
         }
+    }
+
+    /** A new search or a lock: the pages still being read belong to the old one. */
+    private fun cancelResolves() {
+        resolveJobs.values.toList().forEach { it.cancel() }
+        resolveJobs.clear()
+        resolving.clear()
     }
 
     /** Shows the images of any page, as a source of the moment that is not saved. */

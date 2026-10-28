@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.firebirks.booruvault.AppContainer
 import io.github.firebirks.booruvault.vault.VaultItem
+import io.github.firebirks.booruvault.vault.VaultState
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -71,9 +72,11 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     val messages: SharedFlow<UiText> = _messages
 
     init {
-        // Locking forgets the selection and the filter along with everything else.
+        // Locking forgets the selection and the filter along with everything else. A password
+        // change publishes a new unlocked state, which is no reason to drop them.
         viewModelScope.launch {
-            c.vault.state.collect {
+            c.vault.state.collect { state ->
+                if (state is VaultState.Unlocked) return@collect
                 _selection.value = emptySet()
                 query = ""
                 collectionId = null
