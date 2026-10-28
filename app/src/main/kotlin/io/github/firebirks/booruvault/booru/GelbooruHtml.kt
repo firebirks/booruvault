@@ -93,7 +93,7 @@ object GelbooruHtml {
         val type = Regex("tag-type-([a-z]+)").find(li.className())?.groupValues?.get(1)
         val link = li.select("a[href*=tags=]").lastOrNull() ?: return@mapNotNull null
         val name = Regex("[?&]tags=([^&]+)").find(link.attr("href"))?.groupValues?.get(1)
-            ?.let { java.net.URLDecoder.decode(it, "UTF-8") }
+            ?.let { encoded -> runCatching { java.net.URLDecoder.decode(encoded, "UTF-8") }.getOrNull() }
             ?: link.text()
         Tag(
             name.trim().replace(' ', '_'),

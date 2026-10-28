@@ -75,7 +75,16 @@ class MoebooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseB
             .addQueryParameter("limit", "12")
             .build()
         return get(url).arr().orEmpty().mapNotNull { it.obj() }.mapNotNull { o ->
-            TagSuggestion(o.str("name") ?: return@mapNotNull null, o.long("count"), danbooruCategory(o.int("type")))
+            TagSuggestion(o.str("name") ?: return@mapNotNull null, o.long("count"), moebooruCategory(o.int("type")))
         }
     }
+}
+
+/** Moebooru's tag types: Danbooru's up to character, then circle (5) and faults (6). */
+internal fun moebooruCategory(code: Int?): TagCategory = when (code) {
+    0 -> TagCategory.GENERAL
+    1 -> TagCategory.ARTIST
+    3 -> TagCategory.COPYRIGHT
+    4 -> TagCategory.CHARACTER
+    else -> TagCategory.OTHER
 }

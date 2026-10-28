@@ -12,7 +12,7 @@ import okhttp3.Request
 class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
 
     override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
-        .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim())) }
+        .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim(), Charsets.UTF_8)) }
         .build()
 
     override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
@@ -38,6 +38,7 @@ class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseB
             ext = large.extensionFromUrl()!!
         }
         if (fileUrl == null && large == null) return null // restricted or banned post
+        if (ext == "zip") return null // an ugoira without a playable sample: an archive of frames
         val variants = o["media_asset"].obj()?.get("variants").arr().orEmpty().mapNotNull { it.obj() }
         val preview = variants.firstOrNull { it.str("type") == "360x360" }?.str("url")
             ?: absolute(o.str("preview_file_url"))
