@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.vault.crypto
 import java.io.Closeable
 import java.io.EOFException
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -314,7 +315,18 @@ object SealedBlob {
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, file.name + ".tmp")
         try {
-            SealedOutputStream(tmp.outputStream().buffered(), recipient).use { it.write(bytes) }
+            // Synced before the rename, as the vault header is, so a power cut right after it
+            // leaves the previous file in place rather than an empty new one.
+            val raw = object : FileOutputStream(tmp) {
+                override fun close() {
+                    try {
+                        fd.sync()
+                    } finally {
+                        super.close()
+                    }
+                }
+            }
+            SealedOutputStream(raw.buffered(), recipient).use { it.write(bytes) }
             if (!tmp.renameTo(file)) throw IOException("cannot write ${file.name}")
         } catch (e: Exception) {
             tmp.delete()
