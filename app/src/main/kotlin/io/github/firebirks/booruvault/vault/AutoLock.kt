@@ -25,12 +25,18 @@ class AutoLock(
     @Volatile
     var holdCount = 0
 
-    private val timeout get() = settings.settings.value.autoLockSeconds
+    /** The timeout in force since the last stop: held, a picker gets at least [HOLD_SECONDS]. */
+    private var seconds = 0
+
+    private val timeout: Int
+        get() {
+            val configured = settings.settings.value.autoLockSeconds
+            return if (holdCount > 0 && configured in 0..<HOLD_SECONDS) HOLD_SECONDS else configured
+        }
 
     override fun onStop(owner: LifecycleOwner) {
-        if (holdCount > 0) return
         backgroundSince = SystemClock.elapsedRealtime()
-        val seconds = timeout
+        seconds = timeout
         when {
             seconds == 0 -> vault.lock()
             seconds > 0 -> pending = scope.launch {
@@ -44,7 +50,6 @@ class AutoLock(
         pending?.cancel()
         pending = null
         // The delayed job may not have run if the process was frozen; check the clock too.
-        val seconds = timeout
         if (backgroundSince > 0 && seconds >= 0 &&
             SystemClock.elapsedRealtime() - backgroundSince >= seconds * 1000L
         ) {
@@ -53,6 +58,11 @@ class AutoLock(
         backgroundSince = 0
     }
 
+    /**
+     * Returns a release for a hold. While held, "lock immediately" and short timeouts stretch
+     * to [HOLD_SECONDS], so a trip through a system picker does not lock the vault, but leaving
+     * the app with the picker in front still does, after that.
+     */
     fun hold(): () -> Unit {
         holdCount++
         var released = false
@@ -62,5 +72,9 @@ class AutoLock(
                 holdCount--
             }
         }
+    }
+
+    private companion object {
+        const val HOLD_SECONDS = 300
     }
 }
