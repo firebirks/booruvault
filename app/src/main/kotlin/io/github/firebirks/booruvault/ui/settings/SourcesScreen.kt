@@ -52,7 +52,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -181,10 +180,12 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     val settings by repo.settings.collectAsStateWithLifecycle()
     val existing = id?.let { key -> settings.sources.firstOrNull { it.id == key } }
     val scope = rememberCoroutineScope()
-    var name by rememberSaveable(existing?.id) { mutableStateOf(existing?.name ?: "") }
-    var engine by rememberSaveable(existing?.id) { mutableStateOf(existing?.engine ?: BooruEngine.DANBOORU) }
-    var url by rememberSaveable(existing?.id) { mutableStateOf(existing?.baseUrl ?: "https://") }
-    var login by rememberSaveable(existing?.id) { mutableStateOf(existing?.login ?: "") }
+    // Plain remember throughout: a saved-state bundle would carry the site and the account name
+    // out of the vault, into the system's activity record.
+    var name by remember(existing?.id) { mutableStateOf(existing?.name ?: "") }
+    var engine by remember(existing?.id) { mutableStateOf(existing?.engine ?: BooruEngine.DANBOORU) }
+    var url by remember(existing?.id) { mutableStateOf(existing?.baseUrl ?: "https://") }
+    var login by remember(existing?.id) { mutableStateOf(existing?.login ?: "") }
     // For Moebooru the stored key is a hash of the password; the field starts empty and a blank
     // entry keeps what is stored, so the hash never shows in a text field.
     var apiKey by remember(existing?.id) { mutableStateOf(if (existing?.engine == BooruEngine.MOEBOORU) "" else existing?.apiKey ?: "") }
