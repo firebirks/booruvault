@@ -241,6 +241,9 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                 DropdownMenu(expanded = engineMenu, onDismissRequest = { engineMenu = false }) {
                     BooruEngine.entries.forEach {
                         DropdownMenuItem(text = { Text(stringResource(it.labelRes())) }, onClick = {
+                            // A key or password typed for one engine means nothing to another, and
+                            // for Moebooru it would be hashed as a password.
+                            if (it != engine) apiKey = ""
                             engine = it
                             engineMenu = false
                         })
