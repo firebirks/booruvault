@@ -56,6 +56,9 @@ data class BrowseState(
 /** Where a post stands with respect to the vault. */
 enum class SaveState { NONE, QUEUED, SAVED }
 
+/** A tag offered under the search field: starred by the user, or among the source's most searched. */
+data class ShelfTag(val name: String, val favourite: Boolean)
+
 class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private val _state = MutableStateFlow(BrowseState())
     val state: StateFlow<BrowseState> = _state.asStateFlow()
@@ -72,6 +75,15 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     /** Asks the grid to bring a post into view, e.g. the one a viewer was closed on. */
     private val _scrollTo = MutableSharedFlow<Int>(extraBufferCapacity = 1)
     val scrollTo: SharedFlow<Int> = _scrollTo
+
+    /** The current source's starred tags, then its most searched ones not already starred. */
+    val tagShelf: StateFlow<List<ShelfTag>> = combine(_state.map { it.source?.id }.distinctUntilChanged(), c.settings.settings) { sourceId, settings ->
+        if (sourceId == null) return@combine emptyList()
+        val favourites = settings.favouriteTags[sourceId].orEmpty()
+        val used = settings.tagUses[sourceId].orEmpty().entries
+            .filter { it.key !in favourites }.sortedByDescending { it.value }.take(MAX_SHELF_USED).map { it.key }
+        favourites.map { ShelfTag(it, favourite = true) } + used.map { ShelfTag(it, favourite = false) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     /** "sourceId/postId" → whether it is in the vault or on its way there. */
     val saveStates: StateFlow<Map<String, SaveState>> = combine(c.vaultStore.items, c.downloads.tasks) { items, tasks ->
@@ -252,6 +264,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
 
     companion object {
         const val WEB_PAGE_SOURCE = "web-page"
+
+        /** How many most-used tags join the favourites on the shelf. */
+        const val MAX_SHELF_USED = 10
     }
 
     fun search(query: String) {
@@ -259,7 +274,25 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         input = TextFieldValue(normalized, TextRange(normalized.length))
         _suggestions.value = emptyList()
         _state.update { it.copy(query = normalized) }
+        rememberTags(normalized)
         restart(refreshing = false)
+    }
+
+    /** Counts the plain tags of a search for the source, so the most used can be offered later. */
+    private fun rememberTags(query: String) {
+        val source = _state.value.source?.takeIf { it.id != WEB_PAGE_SOURCE } ?: return
+        val tags = query.split(' ').map { it.trimStart('-', '~') }.filter { it.isNotEmpty() && ':' !in it && '*' !in it }
+        if (tags.isNotEmpty()) viewModelScope.launch { c.settings.recordTagUses(source.id, tags) }
+    }
+
+    fun isFavourite(tag: String): Boolean {
+        val sourceId = _state.value.source?.id ?: return false
+        return tag in c.settings.settings.value.favouriteTags[sourceId].orEmpty()
+    }
+
+    fun toggleFavourite(tag: String) {
+        val source = _state.value.source?.takeIf { it.id != WEB_PAGE_SOURCE } ?: return
+        viewModelScope.launch { c.settings.toggleFavouriteTag(source.id, tag) }
     }
 
     fun submit() = search(input.text)
@@ -296,7 +329,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         suggestJob = viewModelScope.launch {
             delay(300)
             _suggestions.value = try {
-                c.api(source).autocomplete(token)
+                // A site may list a tag twice (as itself and as an alias); the list is keyed by name.
+                c.api(source).autocomplete(token).distinctBy { it.name }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -305,11 +339,14 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         }
     }
 
-    fun applySuggestion(suggestion: TagSuggestion) {
+    fun applySuggestion(suggestion: TagSuggestion) = insertTag(suggestion.name)
+
+    /** Puts [tag] in place of the word being typed, or after the last one, ready for the next. */
+    fun insertTag(tag: String) {
         val text = input.text
-        val head = text.substringBeforeLast(' ', "")
-        val (prefix, _) = autocompleteToken(text)
-        val replaced = (if (head.isEmpty()) "" else "$head ") + prefix + suggestion.name + " "
+        val head = if (text.endsWith(' ')) text.trimEnd() else text.substringBeforeLast(' ', "")
+        val (prefix, _) = if (text.endsWith(' ')) "" to "" else autocompleteToken(text)
+        val replaced = (if (head.isEmpty()) "" else "$head ") + prefix + tag + " "
         input = TextFieldValue(replaced, TextRange(replaced.length))
         _suggestions.value = emptyList()
     }
