@@ -1,8 +1,8 @@
 # BooruVault
 
-An Android app for browsing booru image boards and keeping what you save in an encrypted vault.
+Your collection, encrypted and reached through Tor. BooruVault is an Android app that browses booru image boards and keeps what you save in a vault only your password opens.
 
-Everything the app stores about you is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. The app opens only through the vault, and it can send all its traffic through Tor via Orbot.
+Everything the app stores about you is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Downloads are sealed to the vault's public key as they stream, so they can land even while the vault is locked and plaintext never touches storage. With Orbot installed, every connection goes through Tor, with no direct fallback.
 
 The interface follows the phone's language, with English as the fallback. See [Languages](#languages).
 
@@ -10,17 +10,17 @@ The interface follows the phone's language, with English as the fallback. See [L
 
 ### Browsing
 
-- **Sites:** Danbooru, Moebooru (yande.re, Konachan), Gelbooru 0.2 and its forks (Safebooru.org, Rule34.xxx, Xbooru, TBIB…) and e621/e926, through their APIs. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
+- **Sites:** any board that speaks the Danbooru, Moebooru, Gelbooru 0.2 or e926 API, through that API. Safebooru, Safebooru.org, Konachan.net and e926 are ready to use on a fresh install, together with Danbooru and Gelbooru; any other board is added from its address. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
 - **API or web pages?** Through its API a site hands over complete posts (file, size, md5, tags by type), in small quick pages, and the vault recognises what it already holds. Read from its web pages, as a browser would, a site needs no API or key, but each post is opened on its own to find its file, loading is slower and heavier, less is known about a post, anti-bot checks come more often, and a redesign can break the reading. The source editor says which applies to the chosen engine.
 - **Sites without a usable API**, read from their web pages:
-  - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com or rule34.xxx without an API key.
+  - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com without an API key.
   - Gelbooru 0.1 sites (booru.org).
   - Shimmie2 sites.
   - **Any web page:** its images and videos are extracted. The address may contain `{tags}` and `{page}`. A page opened from the Browse menu is browsed on the spot and not added to the sources.
 - **Search:** tag autocomplete, infinite scrolling grid, pull to refresh. Under an empty search field each source offers its favourite tags, starred from a post's tag sheet or from the shelf itself, followed by the tags searched most often on it; both are kept with the settings in the vault.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
-- **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source.
-- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences such as Gelbooru's "Display all site content". The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
+- **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source. Only general content is shown until you choose otherwise; turning on questionable or explicit first asks you to confirm that you are an adult.
+- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences. The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
 
 ### Downloads
 
@@ -45,7 +45,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **No disk image cache:** browsed images stay in memory.
 - **Locking forgets the session:** settings, cookies, the queue, search results and vault contents are dropped from memory. A garbage collection is then requested so released key material is freed.
 - **Keyboard:** every text field asks the keyboard not to learn from what is typed, the built-in browser included.
-- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. e621, which asks API clients to name themselves, also gets the app's name and, when the request is signed with an account, its login.
+- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. Boards on the e926 API, which asks clients to name themselves, also get the app's name and, when the request is signed with an account, its login.
 - **Built-in browser hardening:**
   - autofill excluded and third-party cookies blocked;
   - reduced User-Agent, without phone model or Android version;

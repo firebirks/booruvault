@@ -1,1 +1,0 @@
-Prima versione: navigazione di Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 e pagine web; vault cifrato con password e impronta; download in background; Tor tramite Orbot con uscita verificata; browser integrato per accessi e verifiche anti-bot; 20 lingue.

@@ -1,1 +1,1 @@
-Browse booru image boards and keep what you save in an encrypted vault, via Tor
+Keep what you save from booru boards in an encrypted vault, reached via Tor

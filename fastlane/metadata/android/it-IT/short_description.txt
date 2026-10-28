@@ -1,1 +1,0 @@
-Sfoglia le board booru e conserva ciò che salvi in un vault cifrato, via Tor
