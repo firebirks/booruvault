@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
-import io.github.firebirks.booruvault.booru.USER_AGENT
+import io.github.firebirks.booruvault.booru.UserAgents
 import io.github.firebirks.booruvault.booru.await
 import io.github.firebirks.booruvault.booru.bytesUpTo
 import io.github.firebirks.booruvault.booru.extensionFromUrl
@@ -449,7 +449,7 @@ class DownloadManager(
     }
 
     private fun request(url: String, source: BooruSource): Request = Request.Builder().url(url)
-        .header("User-Agent", USER_AGENT)
+        .header("User-Agent", UserAgents.forSource(source))
         // Some image hosts refuse hotlinks without a referer from their own site.
         .header("Referer", source.baseUrl.trimEnd('/') + "/")
         .build()

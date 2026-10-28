@@ -87,7 +87,7 @@ import io.github.firebirks.booruvault.booru.MediaKind
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.Tag
 import io.github.firebirks.booruvault.booru.TagCategory
-import io.github.firebirks.booruvault.booru.USER_AGENT
+import io.github.firebirks.booruvault.booru.UserAgents
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
@@ -129,7 +129,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     var info by remember { mutableStateOf<Post?>(null) }
     var collectionFromTag by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val videoSource = remember { OkHttpDataSource.Factory(container.http).setUserAgent(USER_AGENT) }
+    val videoSource = remember { OkHttpDataSource.Factory(container.http).setUserAgent(UserAgents.forSource(state.source)) }
 
     fun close() {
         vm.requestScroll(pager.currentPage)

@@ -44,6 +44,7 @@ The interface follows the phone's language, with English as the fallback. See [L
 - **No disk image cache:** browsed images stay in memory.
 - **Locking forgets the session:** settings, cookies, the queue, search results and vault contents are dropped from memory. A garbage collection is then requested so released key material is freed.
 - **Keyboard:** every text field asks the keyboard not to learn from what is typed, the built-in browser included.
+- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. e621, which asks API clients to name themselves, also gets the app's name and, when the request is signed with an account, its login.
 - **Built-in browser hardening:**
   - autofill excluded and third-party cookies blocked;
   - reduced User-Agent, without phone model or Android version;

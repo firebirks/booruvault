@@ -3,7 +3,7 @@ package io.github.firebirks.booruvault.net
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import io.github.firebirks.booruvault.booru.USER_AGENT
+import io.github.firebirks.booruvault.booru.UserAgents
 import io.github.firebirks.booruvault.booru.await
 import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Problem
@@ -130,7 +130,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
         _state.update { it.copy(verifiedExit = null, verifyError = null) }
         try {
-            val request = Request.Builder().url("https://check.torproject.org/api/ip").header("User-Agent", USER_AGENT).build()
+            val request = Request.Builder().url("https://check.torproject.org/api/ip").header("User-Agent", UserAgents.browser).build()
             val body = client.newCall(request).await().use { it.body.string() }
             val result = json.parseToJsonElement(body).jsonObject
             val isTor = result["IsTor"]?.jsonPrimitive?.boolean == true

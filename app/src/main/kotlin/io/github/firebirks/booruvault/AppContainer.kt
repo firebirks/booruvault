@@ -7,7 +7,7 @@ import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruApiFactory
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.GelbooruApi
-import io.github.firebirks.booruvault.booru.USER_AGENT
+import io.github.firebirks.booruvault.booru.UserAgents
 import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
@@ -78,7 +78,7 @@ class AppContainer(private val context: Context) {
         .addInterceptor { chain ->
             val request = chain.request()
             // A site whose anti-bot check the user passed only honours the browser that passed it.
-            val agent = cookies.userAgentFor(request.url.host) ?: request.header("User-Agent") ?: USER_AGENT
+            val agent = cookies.userAgentFor(request.url.host) ?: request.header("User-Agent") ?: UserAgents.browser
             val builder = request.newBuilder().header("User-Agent", agent)
             // Some image hosts (img*.gelbooru.com) redirect a request without a Referer to an HTML
             // hotlink page. Their own origin satisfies them and says nothing about the user.
@@ -130,6 +130,8 @@ class AppContainer(private val context: Context) {
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(autoLock)
+        // The names the app goes by carry the phone's Chrome version; the WebView knows it.
+        scope.launch(Dispatchers.Main) { Challenge.learnChromeVersion(context) }
         scope.launch(Dispatchers.IO) {
             removeLegacyPlaintext()
             Challenge.wipeLeftovers(context)

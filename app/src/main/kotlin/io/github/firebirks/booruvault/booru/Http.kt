@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.booru
 
+import io.github.firebirks.booruvault.BuildConfig
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -24,7 +25,38 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-const val USER_AGENT = "BooruVault/0.1 (Android)"
+/**
+ * What the app calls itself to sites: Chrome on Android, in the reduced form Chrome itself sends,
+ * which names no phone model or Android version. The app's traffic then reads like a phone
+ * browsing, and nothing about the device travels with it. The Chrome version is read from the
+ * phone's WebView at start-up, so it keeps up without a release.
+ */
+object UserAgents {
+    /** Chrome's major version; [DEFAULT_CHROME] until the WebView has been asked. */
+    @Volatile
+    var chrome: String = DEFAULT_CHROME
+
+    /** Chrome's own name, for the HTTP client. */
+    val browser: String
+        get() = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$chrome.0.0.0 Mobile Safari/537.36"
+
+    /** The same name as Chrome's WebView sends it, for the built-in browser. */
+    val webView: String
+        get() = "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/$chrome.0.0.0 Mobile Safari/537.36"
+
+    /**
+     * The name for [source]'s site. e621 asks API clients to say who they are, so for it the
+     * app's name rides along at the end, and the account's when the request is signed with it.
+     */
+    fun forSource(source: BooruSource?, webView: Boolean = false): String {
+        val base = if (webView) this.webView else browser
+        if (source?.engine != BooruEngine.E621) return base
+        val account = if (source.hasCredentials) " (by ${source.login.trim()} on e621)" else ""
+        return "$base BooruVault/${BuildConfig.VERSION_NAME}$account"
+    }
+
+    const val DEFAULT_CHROME = "130"
+}
 
 suspend fun Call.await(): Response = suspendCancellableCoroutine { cont ->
     cont.invokeOnCancellation { cancel() }

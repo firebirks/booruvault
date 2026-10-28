@@ -7,14 +7,10 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-/**
- * e621 / e926. Their API rejects generic user agents, so it names the app, and the account when
- * the request is signed with it; an anonymous session is not tied to a name.
- */
+/** e621 / e926. Their API asks clients to name themselves; [UserAgents.forSource] does. */
 class E621Api(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
 
-    override fun request(url: HttpUrl): Request = Request.Builder().url(url)
-        .header("User-Agent", "BooruVault/0.1 (by ${if (source.hasCredentials) source.login.trim() else "anonymous"} on e621)")
+    override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
         .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim(), Charsets.UTF_8)) }
         .build()
 

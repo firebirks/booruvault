@@ -6,30 +6,33 @@ import android.webkit.WebSettings
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewDatabase
-import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
+import io.github.firebirks.booruvault.booru.UserAgents
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /** The WebView side of anti-bot checks. The WebView keeps nothing once a check is over. */
 object Challenge {
     /**
-     * A WebView User-Agent in Chrome's reduced form: the real Chrome version, but "Android 10; K"
-     * instead of the phone model and Android version, as Chrome itself now sends. It is also what
-     * the app presents to a site after its check is passed, so it should say as little as possible.
-     * e621 asks API clients to identify themselves, so for it the app's name rides along at the end.
+     * The built-in browser's User-Agent: Chrome's WebView form of the app's own name, with the
+     * real Chrome version but "Android 10; K" in place of the phone model and Android version.
+     * It is also what the app presents to a site after its check is passed.
      */
     fun userAgent(context: Context, source: BooruSource?): String {
-        val default = runCatching { WebSettings.getDefaultUserAgent(context) }.getOrDefault("")
-        val chrome = Regex("Chrome/(\\d+)").find(default)?.groupValues?.get(1) ?: "130"
-        val browser = "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) " +
-            "Version/4.0 Chrome/$chrome.0.0.0 Mobile Safari/537.36"
-        return if (source?.engine == BooruEngine.E621) {
-            "$browser BooruVault/0.1 (by ${source.login.trim().ifBlank { "anonymous" }} on e621)"
-        } else {
-            browser
-        }
+        learnChromeVersion(context)
+        return UserAgents.forSource(source, webView = true)
     }
+
+    /** Reads the phone's Chrome version off the WebView once, for every name the app uses. */
+    fun learnChromeVersion(context: Context) {
+        if (learned) return
+        val default = runCatching { WebSettings.getDefaultUserAgent(context) }.getOrNull() ?: return
+        Regex("Chrome/(\\d+)").find(default)?.groupValues?.get(1)?.let { UserAgents.chrome = it }
+        learned = true
+    }
+
+    @Volatile
+    private var learned = false
 
     fun hasClearance(url: String): Boolean =
         runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull()?.contains("cf_clearance=") == true

@@ -43,7 +43,7 @@ abstract class BaseBooruApi(
 
     protected val baseString: String by lazy { base.toString().trimEnd('/') }
 
-    protected open fun request(url: HttpUrl): Request = Request.Builder().url(url).header("User-Agent", USER_AGENT).build()
+    protected open fun request(url: HttpUrl): Request = Request.Builder().url(url).header("User-Agent", UserAgents.forSource(source)).build()
 
     protected suspend fun get(url: HttpUrl) = client.getJson(request(url), json)
 
