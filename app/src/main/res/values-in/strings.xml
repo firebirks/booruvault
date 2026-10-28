@@ -391,6 +391,9 @@
     <string name="risky_confirm_title">Sebelum mengaktifkan</string>
     <string name="risky_confirm_wait">Saya mengerti, aktifkan (%d)</string>
     <string name="risky_confirm">Saya mengerti, aktifkan</string>
+    <string name="adult_confirm_title">Konten untuk dewasa</string>
+    <string name="adult_confirm_text">Kiriman meragukan dan eksplisit ditujukan untuk orang dewasa. Aktifkan hanya jika usia Anda minimal 18 tahun dan Anda diizinkan melihat konten semacam itu di tempat tinggal Anda.</string>
+    <string name="adult_confirm">Saya berusia 18 tahun atau lebih</string>
     <string name="settings_hidden_browser">Baca halaman yang dilindungi dengan browser tersembunyi</string>
     <string name="settings_hidden_browser_on">Aktif: jika suatu situs terus meminta pemeriksaan anti-bot meskipun Anda sudah menyelesaikannya (sering terjadi dengan Tor), aplikasi membuka halaman situs tersebut di browser tersembunyi dan membacanya dari sana. Untuk setiap halaman yang dibaca dengan cara ini, JavaScript situs, termasuk pelacak, berjalan seperti pada kunjungan biasa dan dapat mengambil sidik jari browser. Cookie pihak ketiga tetap diblokir, WebRTC tetap nonaktif, gambar tidak dimuat, lalu lintas melewati Tor saat Tor aktif, dan data browser dihapus setelah setiap halaman. Cara ini lebih lambat dan lebih boros baterai.</string>
     <string name="settings_hidden_browser_off">Nonaktif: jika suatu situs terus meminta pemeriksaan anti-bot, aplikasi berhenti dan meminta Anda menyelesaikannya di browser bawaan. Kode situs hanya berjalan selama Anda melihatnya.</string>

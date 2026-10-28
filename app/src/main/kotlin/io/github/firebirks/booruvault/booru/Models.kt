@@ -12,7 +12,10 @@ enum class Rating {
     EXPLICIT,
 
     /** Sites without ratings (Shimmie2, plain web pages); filtered on their own switch. */
-    UNKNOWN,
+    UNKNOWN;
+
+    /** Meant for adults: shown only after the user has confirmed being one. */
+    val adult: Boolean get() = this == QUESTIONABLE || this == EXPLICIT
 }
 
 @Serializable

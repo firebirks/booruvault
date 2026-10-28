@@ -391,6 +391,9 @@
     <string name="risky_confirm_title">Trước khi bật</string>
     <string name="risky_confirm_wait">Tôi hiểu, bật (%d)</string>
     <string name="risky_confirm">Tôi hiểu, bật</string>
+    <string name="adult_confirm_title">Nội dung dành cho người lớn</string>
+    <string name="adult_confirm_text">Các bài đăng khêu gợi và người lớn chỉ dành cho người trưởng thành. Chỉ bật khi bạn đủ 18 tuổi trở lên và được phép xem nội dung này ở nơi bạn sinh sống.</string>
+    <string name="adult_confirm">Tôi từ 18 tuổi trở lên</string>
     <string name="settings_hidden_browser">Đọc các trang được bảo vệ bằng trình duyệt ẩn</string>
     <string name="settings_hidden_browser_on">Bật: khi một trang web cứ yêu cầu kiểm tra chống bot ngay cả sau khi bạn đã vượt qua (thường gặp khi dùng Tor), ứng dụng sẽ mở các trang của trang web đó trong một trình duyệt ẩn và đọc chúng từ đó. Với mỗi trang được đọc theo cách này, JavaScript của trang web chạy như trong một lần truy cập bình thường, kể cả các trình theo dõi, và có thể lấy dấu vân tay của trình duyệt. Cookie của bên thứ ba vẫn bị chặn, WebRTC vẫn tắt, hình ảnh không được tải, lưu lượng đi qua Tor khi Tor đang bật, và dữ liệu của trình duyệt bị xóa sau mỗi trang. Cách này chậm hơn và tốn pin hơn.</string>
     <string name="settings_hidden_browser_off">Tắt: khi một trang web cứ yêu cầu kiểm tra chống bot, ứng dụng sẽ dừng lại và yêu cầu bạn vượt qua kiểm tra trong trình duyệt tích hợp. Mã của trang web chỉ chạy trong lúc bạn đang xem trang đó.</string>

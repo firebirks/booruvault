@@ -457,6 +457,9 @@
     <string name="risky_confirm_title">Zanim to włączysz</string>
     <string name="risky_confirm_wait">Rozumiem, włącz (%d)</string>
     <string name="risky_confirm">Rozumiem, włącz</string>
+    <string name="adult_confirm_title">Treści dla dorosłych</string>
+    <string name="adult_confirm_text">Wątpliwe i dosadne posty są przeznaczone dla dorosłych. Włącz je tylko wtedy, gdy masz co najmniej 18 lat i możesz oglądać takie treści tam, gdzie mieszkasz.</string>
+    <string name="adult_confirm">Mam 18 lat lub więcej</string>
     <string name="settings_hidden_browser">Odczytuj chronione strony w ukrytej przeglądarce</string>
     <string name="settings_hidden_browser_on">Włączone: gdy witryna wciąż wymaga weryfikacji antybotowej, nawet po jej zaliczeniu (często się to zdarza przy korzystaniu z sieci Tor), aplikacja otwiera strony tej witryny w ukrytej przeglądarce i odczytuje je stamtąd. Na każdej stronie odczytanej w ten sposób JavaScript witryny działa jak podczas zwykłej wizyty, łącznie z elementami śledzącymi, i może zebrać cyfrowy odcisk palca przeglądarki. Pliki cookie stron trzecich pozostają zablokowane, WebRTC pozostaje wyłączone, obrazy nie są wczytywane, ruch przechodzi przez Tor, gdy Tor jest włączony, a dane przeglądarki są usuwane po każdej stronie. Działa to wolniej i zużywa więcej baterii.</string>
     <string name="settings_hidden_browser_off">Wyłączone: gdy witryna wciąż wymaga weryfikacji antybotowej, aplikacja zatrzymuje się i prosi Cię o jej ukończenie we wbudowanej przeglądarce. Kod witryny działa tylko wtedy, gdy ją oglądasz.</string>

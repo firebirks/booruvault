@@ -219,6 +219,7 @@ private fun ContentSettings() {
     val repo = LocalContainer.current.settings
     val settings by repo.settings.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    var adultAsked by remember { mutableStateOf<Rating?>(null) }
     ChoiceRow(
         title = stringResource(R.string.settings_ratings_title),
         subtitle = stringResource(R.string.settings_ratings_hint),
@@ -226,11 +227,34 @@ private fun ContentSettings() {
         label = { stringResource(it.labelRes()) },
         isSelected = { it in settings.allowedRatings },
         onSelect = { rating ->
-            val next = if (rating in settings.allowedRatings) settings.allowedRatings - rating else settings.allowedRatings + rating
-            if (next.isNotEmpty()) scope.launch { repo.setRatings(next) }
+            val allowed = settings.allowedRatings
+            when {
+                rating in allowed -> if (allowed.size > 1) scope.launch { repo.setRatings(allowed - rating) }
+                rating.adult && allowed.none { it.adult } -> adultAsked = rating
+                else -> scope.launch { repo.setRatings(allowed + rating) }
+            }
         },
     )
+    adultAsked?.let { rating ->
+        AdultContentDialog(onDismiss = { adultAsked = null }) {
+            adultAsked = null
+            scope.launch { repo.setRatings(settings.allowedRatings + rating) }
+        }
+    }
     BlacklistEditor(settings.blacklist) { scope.launch { repo.setBlacklist(it) } }
+}
+
+/** Questionable and explicit posts are for adults; the first of the two to be turned on asks. */
+@Composable
+private fun AdultContentDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { Icon(Icons.Outlined.WarningAmber, null, tint = MaterialTheme.colorScheme.error) },
+        title = { Text(stringResource(R.string.adult_confirm_title)) },
+        text = { Text(stringResource(R.string.adult_confirm_text)) },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.adult_confirm)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }
 
 /** How results are laid out and which version of a file is viewed or saved. */

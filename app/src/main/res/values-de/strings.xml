@@ -413,6 +413,9 @@
     <string name="risky_confirm_title">Bevor du das einschaltest</string>
     <string name="risky_confirm_wait">Verstanden, einschalten (%d)</string>
     <string name="risky_confirm">Verstanden, einschalten</string>
+    <string name="adult_confirm_title">Inhalte für Erwachsene</string>
+    <string name="adult_confirm_text">Fragwürdige und explizite Beiträge sind für Erwachsene bestimmt. Schalte sie nur ein, wenn du mindestens 18 Jahre alt bist und solche Inhalte dort, wo du lebst, ansehen darfst.</string>
+    <string name="adult_confirm">Ich bin 18 oder älter</string>
     <string name="settings_hidden_browser">Geschützte Seiten mit einem versteckten Browser lesen</string>
     <string name="settings_hidden_browser_on">An: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, obwohl du sie bestanden hast (häufig mit Tor), öffnet die App ihre Seiten in einem versteckten Browser und liest sie dort aus. Bei jeder so gelesenen Seite läuft das JavaScript der Website wie bei einem normalen Besuch, Tracker eingeschlossen, und kann einen Fingerabdruck des Browsers erstellen. Drittanbieter-Cookies bleiben blockiert, WebRTC bleibt deaktiviert, Bilder werden nicht geladen, der Datenverkehr läuft über Tor, wenn Tor aktiv ist, und die Daten des Browsers werden nach jeder Seite gelöscht. Es ist langsamer und verbraucht mehr Akku.</string>
     <string name="settings_hidden_browser_off">Aus: Wenn eine Website immer wieder die Anti-Bot-Prüfung verlangt, hält die App an und bittet dich, sie im integrierten Browser abzuschließen. Der Code der Website läuft nur, während du sie dir ansiehst.</string>

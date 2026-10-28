@@ -419,6 +419,9 @@
     <string name="risky_confirm_title">Before turning this on</string>
     <string name="risky_confirm_wait">I understand, turn on (%d)</string>
     <string name="risky_confirm">I understand, turn on</string>
+    <string name="adult_confirm_title">Content for adults</string>
+    <string name="adult_confirm_text">Questionable and explicit posts are meant for adults. Turn them on only if you are at least 18 years old and allowed to view such content where you live.</string>
+    <string name="adult_confirm">I am 18 or older</string>
     <string name="settings_hidden_browser">Read protected pages with a hidden browser</string>
     <string name="settings_hidden_browser_on">On: when a site keeps asking for the anti-bot check even after you passed it (common with Tor), the app opens its pages in a hidden browser and reads them from there. For every page read this way the site\'s JavaScript runs as in a normal visit, trackers included, and can take a fingerprint of the browser. Third-party cookies stay blocked, WebRTC stays off, images are not loaded, traffic goes through Tor when Tor is on, and the browser\'s data is erased after each page. It is slower and uses more battery.</string>
     <string name="settings_hidden_browser_off">Off: when a site keeps asking for the anti-bot check, the app stops and asks you to pass it in the built-in browser. The site\'s code runs only while you are looking at it.</string>

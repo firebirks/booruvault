@@ -391,6 +391,9 @@
     <string name="risky_confirm_title">开启之前</string>
     <string name="risky_confirm_wait">我已了解，开启 (%d)</string>
     <string name="risky_confirm">我已了解，开启</string>
+    <string name="adult_confirm_title">成人内容</string>
+    <string name="adult_confirm_text">存疑和露骨的帖子仅面向成年人。只有在你已年满 18 岁，并且所在地允许查看此类内容时，才可开启。</string>
+    <string name="adult_confirm">我已年满 18 岁</string>
     <string name="settings_hidden_browser">使用隐藏的浏览器读取受保护的页面</string>
     <string name="settings_hidden_browser_on">开启：如果网站在你通过反机器人验证后仍不断要求验证（使用 Tor 时很常见），应用会在隐藏的浏览器中打开该网站的页面，并从中读取内容。以这种方式读取的每个页面，网站的 JavaScript（包括跟踪器）都会像正常访问时一样运行，并且可以采集浏览器指纹。第三方 Cookie 仍会被阻止，WebRTC 保持关闭，不加载图片，开启 Tor 时流量会经过 Tor，并且每读取完一个页面都会清除浏览器的数据。速度更慢，也更耗电。</string>
     <string name="settings_hidden_browser_off">关闭：如果网站不断要求反机器人验证，应用会停下来，并请你在内置浏览器中通过验证。网站的代码只在你查看该网站时运行。</string>

@@ -435,6 +435,9 @@
     <string name="risky_confirm_title">Antes de activarlo</string>
     <string name="risky_confirm_wait">Entendido, activar (%d)</string>
     <string name="risky_confirm">Entendido, activar</string>
+    <string name="adult_confirm_title">Contenido para adultos</string>
+    <string name="adult_confirm_text">Las publicaciones cuestionables y explícitas están destinadas a adultos. Actívalas solo si tienes al menos 18 años y puedes ver ese contenido donde vives.</string>
+    <string name="adult_confirm">Tengo 18 años o más</string>
     <string name="settings_hidden_browser">Leer las páginas protegidas con un navegador oculto</string>
     <string name="settings_hidden_browser_on">Activado: cuando un sitio sigue pidiendo la verificación antibots incluso después de que la hayas superado (algo habitual con Tor), la app abre sus páginas en un navegador oculto y las lee desde allí. En cada página leída de esta forma, el JavaScript del sitio se ejecuta como en una visita normal, rastreadores incluidos, y puede tomar una huella digital del navegador. Las cookies de terceros siguen bloqueadas, WebRTC sigue desactivado, las imágenes no se cargan, el tráfico pasa por Tor cuando Tor está activado y los datos del navegador se borran después de cada página. Es más lento y consume más batería.</string>
     <string name="settings_hidden_browser_off">Desactivado: cuando un sitio sigue pidiendo la verificación antibots, la app se detiene y te pide que la superes en el navegador integrado. El código del sitio solo se ejecuta mientras lo estás viendo.</string>
