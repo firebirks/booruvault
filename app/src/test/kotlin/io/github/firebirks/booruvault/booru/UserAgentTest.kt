@@ -35,6 +35,16 @@ class UserAgentTest {
     }
 
     @Test
+    fun `no name carries the account, and the built-in browser not even the app's`() {
+        // The account already signs e926's API calls. In the name it would also tag every image
+        // fetched without it, and from the built-in browser reach every page and script it loads.
+        val signed = e926.copy(login = "someone", apiKey = "key")
+        assertTrue(UserAgents.forSource(signed).endsWith("BooruVault/${BuildConfig.VERSION_NAME}"))
+        assertEquals(UserAgents.webView, UserAgents.forSource(signed, webView = true))
+        assertEquals(UserAgents.webView, UserAgents.forSource(e926, webView = true))
+    }
+
+    @Test
     fun `a request that names the app keeps its name while the site holds no clearance`() {
         val request = Request.Builder().url("https://cdn.donmai.us/original/a.jpg").header("User-Agent", UserAgents.forSource(safebooru)).build()
         assertEquals("BooruVault", withSiteHeaders(request, passedAgent = null, cleared = false).header("User-Agent"))
