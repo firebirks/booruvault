@@ -44,6 +44,7 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -92,6 +93,9 @@ class DownloadManager(
     private val context: Context,
     private val api: (BooruSource) -> BooruApi,
     private val client: OkHttpClient,
+    private val torEnabled: () -> Boolean,
+    /** Whether a host's site refused, since a time, a clearance that had worked: see [downloadProblem]. */
+    private val passExpiredSince: (host: String, since: Long) -> Boolean,
     private val store: VaultStore,
     private val vault: VaultManager,
     private val settings: SettingsRepository,
@@ -176,6 +180,7 @@ class DownloadManager(
     private fun stopAll() {
         jobs.values.forEach { it.cancel() }
         jobs.clear()
+        checkedAt.clear()
         _tasks.value = emptyList()
         _batches.value = emptyList()
     }
@@ -202,6 +207,9 @@ class DownloadManager(
     val batches: StateFlow<List<BatchJob>> = _batches.asStateFlow()
 
     private val jobs = ConcurrentHashMap<Long, Job>()
+
+    /** Source id → when the user last came back from the built-in browser after one of its checks. */
+    private val checkedAt = ConcurrentHashMap<String, Long>()
     private val keys = AtomicLong()
     private val parallel = Semaphore(3)
 
@@ -321,6 +329,19 @@ class DownloadManager(
         _tasks.value.filter { it.status == DownloadStatus.FAILED }.forEach { retry(it.key) }
     }
 
+    /**
+     * Queues again the downloads of [sourceId] an anti-bot check stopped, once the user is back
+     * from the built-in browser. For a while after, any of the source's downloads that meets the
+     * check again, however it was retried, says that another round in the browser will not help.
+     */
+    fun retryAfterCheck(sourceId: String) {
+        checkedAt[sourceId] = System.currentTimeMillis()
+        challengedKeys(_tasks.value, sourceId).forEach(::retry)
+    }
+
+    /** A check passed along the other route says nothing about this one: it may be offered again. */
+    fun routeChanged() = checkedAt.clear()
+
     fun clearFinished() {
         _tasks.update { list -> list.filter { it.active } }
     }
@@ -359,9 +380,10 @@ class DownloadManager(
             val url = (if (original) post.bestUrl else post.viewUrl(false)) ?: throw ProblemException(Problem.Code.NO_FILE)
             val urlExt = url.extensionFromUrl()?.takeIf { Mime.fromExtension(it) != "application/octet-stream" }
             var contentType: String? = null
-            val size = client.newCall(request(url, task.source)).await().use { response ->
+            val size = client.newCall(downloadRequest(url, task.source)).await().use { response ->
+                // The file host may guard the file itself rather than the site: the check is passed at this address.
                 if (response.header("cf-mitigated").equals("challenge", ignoreCase = true)) {
-                    throw ProblemException(Problem.Code.CHALLENGE)
+                    throw ProblemException(Problem.Code.CHALLENGE, url)
                 }
                 if (!response.isSuccessful) throw ProblemException(Problem.Code.HTTP_STATUS, response.code.toString())
                 val body = response.body
@@ -394,7 +416,7 @@ class DownloadManager(
             }
             val hasThumb = post.previewUrl?.let { preview ->
                 runCatching {
-                    client.newCall(request(preview, task.source)).await().use { r ->
+                    client.newCall(downloadRequest(preview, task.source)).await().use { r ->
                         if (r.isSuccessful) r.body.bytesUpTo(MAX_THUMBNAIL)?.takeIf { it.isNotEmpty() } else null
                     }
                 }.getOrNull()?.let { bytes ->
@@ -440,7 +462,12 @@ class DownloadManager(
             throw e
         } catch (e: Exception) {
             store.discard(id)
-            val problem = e.toProblem()
+            val met = e.toProblem()
+            val checked = checkedAt[task.source.id]
+            // A file host's check names the file; one met on the site's own pages names nothing.
+            val guarded = (met.detail ?: task.source.baseUrl).toHttpUrlOrNull()?.host
+            val expired = checked != null && guarded != null && passExpiredSince(guarded, checked)
+            val problem = downloadProblem(met, checked, expired, System.currentTimeMillis(), torEnabled())
             set(key) { it.copy(status = DownloadStatus.FAILED, problem = problem) }
         }
     }
@@ -450,13 +477,38 @@ class DownloadManager(
         const val MAX_THUMBNAIL = 4L shl 20
     }
 
-    private fun request(url: String, source: BooruSource): Request = Request.Builder().url(url)
-        .header("User-Agent", UserAgents.forSource(source))
-        // Some image hosts refuse hotlinks without a referer from their own site.
-        .header("Referer", source.baseUrl.trimEnd('/') + "/")
-        .build()
-
     private fun startService() {
         runCatching { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }
     }
 }
+
+/**
+ * A file or its preview, asked for as the grid asks for images: the client adds the Referer, the
+ * file host's own origin, which is what hosts that refuse hotlinks want.
+ */
+internal fun downloadRequest(url: String, source: BooruSource): Request = Request.Builder().url(url)
+    .header("User-Agent", UserAgents.forSource(source))
+    .build()
+
+/** The downloads of [sourceId] an anti-bot check stopped. */
+internal fun challengedKeys(tasks: List<DownloadTask>, sourceId: String): List<Long> = tasks
+    .filter { it.status == DownloadStatus.FAILED && it.source.id == sourceId && it.problem?.code == Problem.Code.CHALLENGE }
+    .map { it.key }
+
+/**
+ * What a failed download reports. A check met again within [CHECK_HOLDS_MS] of the user passing
+ * the source's check in the browser ([checkedAt]) is not offered once more, whether the download
+ * was queued again on the way back or retried by hand: the site does not take the pass from the
+ * app, and another round in the browser would end the same way. With Tor on, the likely reason is
+ * that the browser and the app reach the site from different exits. Unless the pass worked and then
+ * stopped ([passExpired]): it ran out or the address changed, and a new one will work again.
+ */
+internal fun downloadProblem(problem: Problem, checkedAt: Long?, passExpired: Boolean, now: Long, tor: Boolean): Problem = when {
+    problem.code != Problem.Code.CHALLENGE || checkedAt == null || now - checkedAt > CHECK_HOLDS_MS -> problem
+    passExpired -> problem
+    tor -> Problem(Problem.Code.CHALLENGE_PASS_REFUSED_TOR)
+    else -> Problem(Problem.Code.CHALLENGE_PASS_REFUSED)
+}
+
+/** How long a check passed in the browser counts: Cloudflare's own clearance lasts about as long by default. */
+internal const val CHECK_HOLDS_MS = 30 * 60 * 1000L

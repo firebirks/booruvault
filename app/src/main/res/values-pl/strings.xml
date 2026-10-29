@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor jest nieosiągalny: sprawdź, czy Orbot działa.</string>
     <string name="problem_tor_dns_blocked">Zablokowano lokalne zapytanie DNS: gdy Tor jest włączony, nazwy są rozwiązywane wyłącznie przez Tor.</string>
     <string name="problem_tor_unverified">Wyjście Tor jeszcze niezweryfikowane: trwa sprawdzanie, czy połączenia naprawdę wychodzą przez Tor.</string>
-    <string name="problem_challenge">Witryna wymaga weryfikacji antybotowej (Cloudflare): ukończ ją we wbudowanej przeglądarce.</string>
+    <string name="problem_challenge">Witryna wymaga weryfikacji antybotowej (Cloudflare): dotknij „Zweryfikuj w przeglądarce”, aby ją przejść.</string>
+    <string name="problem_challenge_pass_refused">Weryfikacja została zaliczona, ale witryna znów jej wymaga, gdy aplikacja pobiera ten plik: weryfikacja zaliczona w przeglądarce nie obowiązuje dla pobierania, więc ponowna próba nic nie da.</string>
+    <string name="problem_challenge_pass_refused_tor">Weryfikacja została zaliczona, ale witryna znów jej wymaga: gdy Tor jest włączony, wbudowana przeglądarka i pobieranie docierają do witryny przez różne wyjścia Tor, a weryfikacja zaliczona przez jedno nie obowiązuje dla drugiego. Dopóki Tor jest włączony, ponowna próba nic nie da.</string>
     <string name="problem_access_denied">Odmowa dostępu (%1$s): to źródło może wymagać logowania i klucza API.</string>
     <string name="problem_not_found">Nie znaleziono adresu (404): sprawdź URL i typ silnika.</string>
     <string name="problem_gone">Strona nie jest już dostępna: witryna ogranicza, jak daleko można przeglądać kolejne strony.</string>
@@ -153,6 +155,13 @@
     <string name="delete_vault_confirm">Usuń wszystko</string>
     <string name="tor_use">Używaj sieci Tor (przez Orbot)</string>
     <string name="tor_use_hint">Wszystkie połączenia aplikacji przechodzą przez sieć Tor za pośrednictwem Orbota: wyszukiwania, obrazy, filmy, pobierania i wbudowana przeglądarka. Strony widzą adres węzła Tor zamiast twojego, a nazwy stron są rozwiązywane wewnątrz Tora (bez zapytań DNS jawnym tekstem). Jeśli Orbot nie działa, nic się nie ładuje: aplikacja nigdy nie przechodzi na połączenie bezpośrednie. Jest wolniej, a niektóre strony blokują Tor albo częściej wymagają weryfikacji anty-bot. Tor ukrywa, skąd się łączysz, a nie kim jesteś: strona, na której jesteś zalogowany lub która rozpoznaje własne ciasteczka, nadal zna twoje konto, a cała reszta widzi tylko kolejnego użytkownika Tora. Aby przeglądać niezależnie od konta, pozostań wylogowany albo usuń ciasteczka strony w sekcji Dane.</string>
+    <string name="route_title">Jak aplikacja ma się łączyć?</string>
+    <string name="route_text">Wybierz, jak BooruVault łączy się z witrynami. Dopóki nie wybierzesz, nic nie wychodzi.</string>
+    <string name="route_tor_hint">Witryny widzą adres węzła Tor zamiast Twojego. Wymaga aplikacji Orbot i działa wolniej.</string>
+    <string name="route_direct">Połączenie bezpośrednie</string>
+    <string name="route_direct_hint">Szybsze, bez dodatkowej aplikacji. Witryny widzą adres Twojej sieci.</string>
+    <string name="route_change_later">Możesz to później zmienić w Ustawieniach, w sekcji „%1$s”.</string>
+    <string name="route_orbot_missing">Zainstaluj Orbot i otwórz go raz. Dopóki nie działa, nic się nie wczytuje: aplikacja nigdy nie przełącza się na połączenie bezpośrednie.</string>
     <string name="tor_status_on">Orbot działa · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS Orbota</string>
     <string name="tor_port_hint">Domyślnie 9050. Aplikacja łączy się tylko z tym portem na tym telefonie. Nie pobiera portu z komunikatów o stanie Orbota, które mogłaby wysłać dowolna aplikacja.</string>

@@ -39,6 +39,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,8 +54,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.download.BatchJob
 import io.github.firebirks.booruvault.download.DownloadStatus
 import io.github.firebirks.booruvault.download.DownloadTask
+import io.github.firebirks.booruvault.ui.common.ChallengeMode
+import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.MessageState
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.formatBytes
 import coil3.compose.AsyncImage
 
@@ -71,6 +75,7 @@ fun DownloadsScreen() {
     val done = tasks.count { it.status == DownloadStatus.DONE }
     val failed = tasks.count { it.status == DownloadStatus.FAILED }
     val context = LocalContext.current
+    val challenge = LocalChallenge.current
 
     Scaffold(
         topBar = {
@@ -123,7 +128,20 @@ fun DownloadsScreen() {
         LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
             items(batches, key = { "batch-${it.key}" }) { batch -> BatchRow(batch, onCancel = { downloads.cancelBatch(batch.key) }) }
             items(ordered, key = { it.key }) { task ->
-                TaskRow(task, { formatBytes(context, it) }, onCancel = { downloads.cancel(task.key) }, onRetry = { downloads.retry(task.key) })
+                val check = task.problem?.takeIf { task.status == DownloadStatus.FAILED && it.code == Problem.Code.CHALLENGE }
+                TaskRow(
+                    task, { formatBytes(context, it) },
+                    onCancel = { downloads.cancel(task.key) },
+                    onRetry = { downloads.retry(task.key) },
+                    onVerify = check?.let { problem ->
+                        {
+                            // A file host guards the file itself and is passed there; a check met on
+                            // the site's own pages is passed at its home.
+                            val mode = if (problem.detail != null) ChallengeMode.ADDRESS else ChallengeMode.SITE
+                            challenge.open(task.source, problem.detail ?: task.source.baseUrl, mode) { downloads.retryAfterCheck(task.source.id) }
+                        }
+                    },
+                )
             }
         }
     }
@@ -145,7 +163,7 @@ private fun BatchRow(batch: BatchJob, onCancel: () -> Unit) {
 }
 
 @Composable
-private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () -> Unit, onRetry: () -> Unit) {
+private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () -> Unit, onRetry: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
         headlineContent = { Text("${task.source.name} #${task.post.id}") },
         supportingContent = {
@@ -162,6 +180,9 @@ private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () ->
                     status,
                     color = if (task.status == DownloadStatus.FAILED) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (onVerify != null) {
+                    TextButton(onClick = onVerify, contentPadding = PaddingValues(0.dp)) { Text(stringResource(R.string.action_verify_in_browser)) }
+                }
                 if (task.status == DownloadStatus.RUNNING) {
                     val progress = task.progress
                     if (progress != null) {

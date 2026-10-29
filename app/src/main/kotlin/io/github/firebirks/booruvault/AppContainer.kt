@@ -6,11 +6,14 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruApiFactory
 import io.github.firebirks.booruvault.booru.BooruSource
+import io.github.firebirks.booruvault.booru.DefaultUserAgent
 import io.github.firebirks.booruvault.booru.GelbooruApi
-import io.github.firebirks.booruvault.booru.UserAgents
+import io.github.firebirks.booruvault.booru.SiteHeaders
 import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
+import io.github.firebirks.booruvault.net.RouteChoiceGate
+import io.github.firebirks.booruvault.net.RouteTls
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorExitGate
 import io.github.firebirks.booruvault.net.TorManager
@@ -65,9 +68,11 @@ class AppContainer(private val context: Context) {
     private val vaultDir = File(context.filesDir, "vault")
     val vault = VaultManager(vaultDir, json)
     val settings = SettingsRepository(vaultDir, vault, json, scope)
-    val cookies = SecureCookieJar(vaultDir, vault, json, scope)
 
-    val tor = TorManager(context, scope)
+    // An install that already has a vault is not asked how to connect: it chose long ago.
+    val tor = TorManager(context, scope, hasVault = vault.state.value != VaultState.Missing)
+    val cookies = SecureCookieJar(vaultDir, vault, json, scope) { tor.route }
+    private val tls = RouteTls()
 
     /**
      * The app's only HTTP client: API calls, images (Coil), video (Media3), downloads. With Tor on
@@ -78,25 +83,24 @@ class AppContainer(private val context: Context) {
         .readTimeout(30, TimeUnit.SECONDS)
         .proxySelector(tor.proxySelector)
         .dns(tor.dns)
-        .cookieJar(cookies)
+        // One TLS session cache per route, and cookies put on by SiteHeaders once the route is known.
+        .socketFactory(tls.socketFactory)
+        .sslSocketFactory(tls.sslSocketFactory, tls.trustManager)
+        // Nothing leaves before the user has chosen between Tor and a direct connection.
+        .addInterceptor(RouteChoiceGate { tor.routeChosen.value })
         // Nothing leaves before the exit check says the SOCKS listener really is Tor.
         .addInterceptor(TorExitGate({ tor.enabled }, { tor.verified }) { tor.refreshStatus() })
         .addInterceptor { chain ->
-            val request = chain.request()
-            // A site whose anti-bot check the user passed only honours the browser that passed it.
-            val agent = cookies.userAgentFor(request.url.host) ?: request.header("User-Agent") ?: UserAgents.browser
-            val builder = request.newBuilder().header("User-Agent", agent)
-            // Some image hosts (img*.gelbooru.com) redirect a request without a Referer to an HTML
-            // hotlink page. Their own origin satisfies them and says nothing about the user.
-            if (request.header("Referer") == null) builder.header("Referer", "${request.url.scheme}://${request.url.host}/")
             try {
-                chain.proceed(builder.build())
+                chain.proceed(chain.request())
             } catch (e: IOException) {
                 if (tor.enabled && !chain.call().isCanceled() && e !is TorUnreachableException && e !is TorUnverifiedException) throw TorUnreachableException(e)
                 throw e
             }
         }
+        .addInterceptor(DefaultUserAgent)
         .addNetworkInterceptor(TorRouteGuard { tor.enabled })
+        .addNetworkInterceptor(SiteHeaders(cookies))
         .build()
 
     /**
@@ -115,7 +119,10 @@ class AppContainer(private val context: Context) {
     val rekeyer = VaultRekeyer(vaultDir, vault, vaultStore, scope)
     val transfer = VaultTransfer(context, vaultStore)
     val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
-    val downloads = DownloadManager(context, { api(it) }, http, vaultStore, vault, settings, json, vaultDir, scope)
+    val downloads = DownloadManager(
+        context, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
+        vaultStore, vault, settings, json, vaultDir, scope,
+    )
     val autoLock = AutoLock(vault, settings, scope)
 
     init {
@@ -126,6 +133,7 @@ class AppContainer(private val context: Context) {
         // a TLS socket writes a close alert, which the main thread, where the switch is flipped,
         // is not allowed to do; until the pool is empty the route guard refuses the old ones.
         tor.onRouteChanged = {
+            downloads.routeChanged()
             scope.launch(Dispatchers.IO) {
                 http.dispatcher.cancelAll()
                 apiHttp.dispatcher.cancelAll()

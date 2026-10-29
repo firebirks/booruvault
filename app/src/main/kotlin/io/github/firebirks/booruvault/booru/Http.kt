@@ -1,6 +1,8 @@
 package io.github.firebirks.booruvault.booru
 
 import io.github.firebirks.booruvault.BuildConfig
+import io.github.firebirks.booruvault.net.Challenge
+import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -17,6 +19,9 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.longOrNull
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.Cookie
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -47,15 +52,102 @@ object UserAgents {
     /**
      * The name for [source]'s site. e621 asks API clients to say who they are, so for it the
      * app's name rides along at the end, and the account's when the request is signed with it.
+     * Danbooru boards get the app's name alone, without a version: Cloudflare on cdn.donmai.us
+     * puts a check in front of original files for a client that calls itself Chrome and is not,
+     * and lets one that names itself through. The built-in browser is a browser and says so.
      */
     fun forSource(source: BooruSource?, webView: Boolean = false): String {
         val base = if (webView) this.webView else browser
-        if (source?.engine != BooruEngine.E621) return base
-        val account = if (source.hasCredentials) " (by ${source.login.trim()} on e621)" else ""
-        return "$base BooruVault/${BuildConfig.VERSION_NAME}$account"
+        return when (source?.engine) {
+            BooruEngine.DANBOORU -> if (webView) base else APP
+            BooruEngine.E621 -> {
+                val account = if (source.hasCredentials) " (by ${source.login.trim()} on e621)" else ""
+                "$base $APP/${BuildConfig.VERSION_NAME}$account"
+            }
+            else -> base
+        }
     }
 
+    /** The app's own name, for sites it presents itself to as an app rather than a browser. */
+    const val APP = "BooruVault"
+
     const val DEFAULT_CHROME = "130"
+}
+
+/**
+ * [request] as the app's client sends it. A site whose anti-bot check the user passed only honours
+ * the browser that passed it, so the [passedAgent] recorded for the site wins. A request that names
+ * the app keeps its name only while the site holds no clearance ([cleared]): a clearance is bound to
+ * the browser that earned it, and sent under another name it is refused. Some image hosts
+ * (img*.gelbooru.com) redirect a request without a Referer to an HTML hotlink page; their own origin
+ * satisfies them and says nothing about the user.
+ */
+fun withSiteHeaders(request: Request, passedAgent: String?, cleared: Boolean, cookies: List<Cookie> = emptyList()): Request {
+    val own = request.header("User-Agent")
+    val agent = own?.takeIf { it == UserAgents.APP && !cleared } ?: passedAgent ?: own ?: UserAgents.browser
+    val builder = request.newBuilder().header("User-Agent", agent)
+    if (request.header("Referer") == null) builder.header("Referer", "${request.url.scheme}://${request.url.host}/")
+    if (cookies.isNotEmpty()) builder.header("Cookie", cookies.joinToString("; ") { "${it.name}=${it.value}" })
+    return builder.build()
+}
+
+/**
+ * The site cookies and anti-bot passes the client holds, one share per [Route]: what was earned
+ * along one route is never offered along the other.
+ */
+interface SitePasses {
+    /** The cookies a request to [url] carries along [route]. */
+    fun cookiesFor(route: Route, url: HttpUrl): List<Cookie>
+
+    /** Takes the cookies [url]'s site set in an answer that came back along [route]. */
+    fun saveFromResponse(route: Route, url: HttpUrl, cookies: List<Cookie>)
+
+    /** The agent that passed the check of [host]'s site along [route], if one did. */
+    fun userAgentFor(route: Route, host: String): String?
+
+    /** Notes that the clearance [value] brought back an answer from [host]: the site took it. */
+    fun clearanceWorked(route: Route, host: String, value: String)
+
+    /** Forgets the clearance [value] that [host]'s site refused, and the agent with it once none is left. */
+    fun dropClearance(route: Route, host: String, value: String)
+}
+
+/** Names the browser on a request that names no one, where OkHttp would put its own name. */
+object DefaultUserAgent : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        if (request.header("User-Agent") != null) return chain.proceed(request)
+        return chain.proceed(request.newBuilder().header("User-Agent", UserAgents.browser).build())
+    }
+}
+
+/**
+ * Puts [withSiteHeaders] and the route's cookies on every request, keeps the cookies the answer
+ * sets for that route, and follows how the site treats a clearance: one that brings back an
+ * answer has worked; one that still meets the check is forgotten, since it would go on being
+ * carried in vain, under the browser's name. Without it, a Danbooru board is asked under the
+ * app's name again. A network interceptor, so the client itself must keep no cookies.
+ */
+class SiteHeaders(private val passes: SitePasses) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val url = request.url
+        val host = url.host
+        // Decided on the connection the request really takes, once OkHttp has picked it: a switch
+        // flipped while the request was on its way cannot hand it what the other route earned.
+        val route = Route.of(checkNotNull(chain.connection()) { "SiteHeaders runs as a network interceptor" })
+        val cookies = passes.cookiesFor(route, url)
+        val clearance = cookies.firstOrNull { it.name == Challenge.CLEARANCE_COOKIE }?.value
+        val sent = withSiteHeaders(request, passes.userAgentFor(route, host), cleared = clearance != null, cookies)
+        val response = chain.proceed(sent)
+        passes.saveFromResponse(route, url, Cookie.parseAll(url, response.headers))
+        when {
+            clearance == null -> Unit
+            response.header("cf-mitigated").equals("challenge", ignoreCase = true) -> passes.dropClearance(route, host, clearance)
+            response.code in 200..299 -> passes.clearanceWorked(route, host, clearance)
+        }
+        return response
+    }
 }
 
 suspend fun Call.await(): Response = suspendCancellableCoroutine { cont ->

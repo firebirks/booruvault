@@ -53,7 +53,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **No disk image cache:** browsed images stay in memory.
 - **Locking forgets the session:** settings, cookies, the queue, search results and vault contents are dropped from memory. A garbage collection is then requested so released key material is freed.
 - **Keyboard:** every text field asks the keyboard not to learn from what is typed, the built-in browser included.
-- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. Boards on the e926 API, which asks clients to name themselves, also get the app's name and, when the request is signed with an account, its login.
+- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. Boards on the e926 API, which asks clients to name themselves, also get the app's name and, when the request is signed with an account, its login. Boards on the Danbooru API get the app's name alone, `BooruVault`, without a version, for API calls, downloads and the viewer: Cloudflare on cdn.donmai.us puts an anti-bot check in front of original files for a client that calls itself Chrome without being Chrome, and lets one that names itself through. Once a check on such a board has been passed in the built-in browser, its requests carry that browser's name instead, since the pass is bound to it; once the site stops taking that pass, a request that carried it and still meets the check drops it, with the browser's name, and the board is told the app's name again. Grid thumbnails and the built-in browser stay Chrome.
 - **Built-in browser hardening:**
   - autofill excluded and third-party cookies blocked;
   - reduced User-Agent, without phone model or Android version;
@@ -112,7 +112,7 @@ All files live in the app's private storage, under `files/vault/`:
 | `media/<id>`, `thumbs/<id>` | File and thumbnail. Sealed. |
 | `index.bin` | Cache of all metadata, rebuilt from `meta/` if lost. Sealed. |
 | `config.bin` | Settings, sources, API keys. Sealed. |
-| `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with. Sealed. |
+| `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with, one set for Tor and one for the direct connection. Sealed. |
 | `downloads.bin` | Pending and failed downloads, and search collections in progress. Sealed. |
 
 File names are random UUIDs. The number of files and their approximate sizes remain visible.
@@ -130,6 +130,8 @@ On the JVM this is best effort and not a guarantee:
 
 ## Tor
 
+**Asked at the first start:** right after the vault is created, and before anything goes out, the app asks whether to use Tor through Orbot or a direct connection. The two answers look alike and neither is picked in advance. Until one is chosen, no screen that makes requests is shown, and the HTTP client and the built-in browser refuse anything that would leave; a unit test checks that no name is looked up and no connection made. Choosing Tor without Orbot offers to install it, and with Orbot installed but not answering, opens it. The choice can be changed in Settings › Network and built-in browser. Installs that already had a vault are not asked.
+
 BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 
 - **The app's network traffic** goes through one HTTP client, built once: API calls and page reads on one queue, images, video and downloads on another, sharing the same route and connections.
@@ -139,13 +141,14 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 - **Built-in browser:** goes through Orbot via a WebView proxy override with no direct rule, and WebRTC is removed before page scripts run. If the WebView cannot do either, the built-in browser does not open while Tor is on.
 - **Orbot integration:** since Orbot 17.9.6 other apps can neither start it nor hear its status, so the app finds out by itself whether a SOCKS5 server answers on the port, and offers to open Orbot when none does.
 - **The listener is not Tor until proven:** any local process that took the port first would answer the SOCKS5 greeting too, see every host name and go out in clear. So as soon as the port answers, and again whenever it stops and comes back, the app asks `check.torproject.org` whether its connections really exit through Tor; until that check passes, nothing but the check itself leaves, and the built-in browser does not open. A proxy that does forward to Tor while logging destinations cannot be told apart this way.
+- **Nothing crosses between routes:** cookies (logins included), anti-bot passes with the browser name that earned them, and TLS sessions are kept apart for Tor and for the direct connection, so a site cannot tie the Tor user to the one at your home address through something it handed out along the other route. Switching Tor on or off leaves the other route's set as it was, for when you switch back. A request takes the set of the connection it actually leaves on, so a switch flipped while it is on its way cannot mix them; a unit test plays both routes against one address.
 - **Installing Orbot:** if it is missing, the app lets you choose among the installed stores (F-Droid, Droid-ify, Aurora, Play…), or opens Orbot's site.
 
 - **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, the link can only be copied, to paste in a browser that goes through Orbot. Opening it in a normal browser is possible only with the risky option "Open links outside Tor" on, and then behind a warning that explains what a normal browser exposes and keeps; its "open anyway" button unlocks after a few seconds.
 
 **Orbot's VPN mode** with BooruVault selected is an extra, system-level safety net, mainly for the WebView.
 
-Tor hides where you connect from, not who you are. To every site you are not logged in to, you are just another Tor user. A site you are logged in to, or that recognises its own cookies, still knows which account is browsing, exactly as it would without Tor; what it no longer sees is your address. If some browsing should stay apart from an account, do it logged out, or clear that site's cookies in the Data section first.
+Tor hides where you connect from, not who you are. To every site you are not logged in to, you are just another Tor user. A site you are logged in to, or that recognises its own cookies, still knows which account is browsing, exactly as it would without Tor; what it no longer sees is your address. If some browsing should stay apart from an account, do it logged out, or clear that site's cookies in the Data section first. A login made without Tor is not carried over when Tor is turned on, nor the other way round: log in along the route you want to use.
 
 ## Building
 

@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.settings
 
 import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
+import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.crypto.Kdf
@@ -80,42 +81,42 @@ class SealedStateTest {
     fun cookiesAreSealedAndUnavailableWhileLocked() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope)
+        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
         vault.create("pw-123456".toCharArray(), fastKdf)
         val url = "https://e926.net/posts.json".toHttpUrl()
         // The jar loads asynchronously after the unlock.
         withTimeout(5000) {
             while (true) {
-                jar.recordClearance("e926.net", "TestAgent/1", listOf(Cookie.parse(url, "cf_clearance=CLEARANCE-VALUE-42; Max-Age=3600; Domain=e926.net")!!))
-                if (jar.userAgentFor("static1.e926.net") != null) break
+                jar.recordClearance(Route.DIRECT, "e926.net", "TestAgent/1", listOf(Cookie.parse(url, "cf_clearance=CLEARANCE-VALUE-42; Max-Age=3600; Domain=e926.net")!!))
+                if (jar.userAgentFor(Route.DIRECT, "static1.e926.net") != null) break
                 delay(20)
             }
         }
-        assertEquals("cf_clearance", jar.loadForRequest(url).single().name)
+        assertEquals("cf_clearance", jar.cookiesFor(Route.DIRECT, url).single().name)
         withTimeout(5000) { while (!File(root, "cookies.bin").exists()) delay(20) }
         assertFalse(root.containsText("CLEARANCE-VALUE-42"))
 
         vault.lock()
-        withTimeout(5000) { while (jar.loadForRequest(url).isNotEmpty()) delay(20) }
-        assertNull(jar.userAgentFor("e926.net"))
+        withTimeout(5000) { while (jar.cookiesFor(Route.DIRECT, url).isNotEmpty()) delay(20) }
+        assertNull(jar.userAgentFor(Route.DIRECT, "e926.net"))
 
         assertTrue(vault.unlock("pw-123456".toCharArray()))
-        withTimeout(5000) { while (jar.loadForRequest(url).isEmpty()) delay(20) }
-        assertEquals("TestAgent/1", jar.userAgentFor("e926.net"))
+        withTimeout(5000) { while (jar.cookiesFor(Route.DIRECT, url).isEmpty()) delay(20) }
+        assertEquals("TestAgent/1", jar.userAgentFor(Route.DIRECT, "e926.net"))
     }
 
     @Test
     fun cookiesStayOnlyForDownloadsRunningBehindTheLock() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope)
+        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
         var downloading = true
         jar.retainWhileLocked = { downloading }
         vault.create("pw-123456".toCharArray(), fastKdf)
         val url = "https://e926.net/posts.json".toHttpUrl()
         withTimeout(5000) {
-            while (jar.loadForRequest(url).isEmpty()) {
-                jar.recordClearance("e926.net", "TestAgent/1", listOf(Cookie.parse(url, "cf_clearance=V; Max-Age=3600; Domain=e926.net")!!))
+            while (jar.cookiesFor(Route.DIRECT, url).isEmpty()) {
+                jar.recordClearance(Route.DIRECT, "e926.net", "TestAgent/1", listOf(Cookie.parse(url, "cf_clearance=V; Max-Age=3600; Domain=e926.net")!!))
                 delay(20)
             }
         }
@@ -123,37 +124,37 @@ class SealedStateTest {
         vault.lock()
         delay(200)
         // Downloads still running behind the lock keep what they need to reach the site.
-        assertEquals(1, jar.loadForRequest(url).size)
-        assertEquals("TestAgent/1", jar.userAgentFor("e926.net"))
+        assertEquals(1, jar.cookiesFor(Route.DIRECT, url).size)
+        assertEquals("TestAgent/1", jar.userAgentFor(Route.DIRECT, "e926.net"))
 
         downloading = false
         jar.releaseIfLocked()
-        assertTrue(jar.loadForRequest(url).isEmpty())
-        assertNull(jar.userAgentFor("e926.net"))
+        assertTrue(jar.cookiesFor(Route.DIRECT, url).isEmpty())
+        assertNull(jar.userAgentFor(Route.DIRECT, "e926.net"))
     }
 
     @Test
     fun onlyCookiesBroughtFromTheBrowserAreKept() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope)
+        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
         vault.create("pw-123456".toCharArray(), fastKdf)
         val url = "https://gelbooru.com/index.php".toHttpUrl()
         withTimeout(5000) {
-            while (jar.userAgentFor("gelbooru.com") == null) {
-                jar.recordClearance("gelbooru.com", "UA", listOf(Cookie.parse(url, "fringeBenefits=yup; Max-Age=3600; Domain=gelbooru.com")!!))
+            while (jar.userAgentFor(Route.DIRECT, "gelbooru.com") == null) {
+                jar.recordClearance(Route.DIRECT, "gelbooru.com", "UA", listOf(Cookie.parse(url, "fringeBenefits=yup; Max-Age=3600; Domain=gelbooru.com")!!))
                 delay(20)
             }
         }
         // Set by the site on its own: usable now, but not kept.
-        jar.saveFromResponse(url, listOf(Cookie.parse(url, "PHPSESSID=tracker-id; Max-Age=3600")!!))
-        assertEquals(setOf("fringeBenefits", "PHPSESSID"), jar.loadForRequest(url).map { it.name }.toSet())
+        jar.saveFromResponse(Route.DIRECT, url, listOf(Cookie.parse(url, "PHPSESSID=tracker-id; Max-Age=3600")!!))
+        assertEquals(setOf("fringeBenefits", "PHPSESSID"), jar.cookiesFor(Route.DIRECT, url).map { it.name }.toSet())
 
         vault.lock()
-        withTimeout(5000) { while (jar.loadForRequest(url).isNotEmpty()) delay(20) }
+        withTimeout(5000) { while (jar.cookiesFor(Route.DIRECT, url).isNotEmpty()) delay(20) }
         assertTrue(vault.unlock("pw-123456".toCharArray()))
-        withTimeout(5000) { while (jar.loadForRequest(url).isEmpty()) delay(20) }
-        assertEquals(listOf("fringeBenefits"), jar.loadForRequest(url).map { it.name })
+        withTimeout(5000) { while (jar.cookiesFor(Route.DIRECT, url).isEmpty()) delay(20) }
+        assertEquals(listOf("fringeBenefits"), jar.cookiesFor(Route.DIRECT, url).map { it.name })
     }
 
     @Test

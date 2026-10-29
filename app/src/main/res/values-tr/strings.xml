@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor\'a ulaşılamıyor: Orbot\'un çalıştığından emin olun.</string>
     <string name="problem_tor_dns_blocked">Yerel DNS sorgusu engellendi: Tor açıkken adlar yalnızca Tor üzerinden çözümlenir.</string>
     <string name="problem_tor_unverified">Tor çıkışı henüz doğrulanmadı: bağlantıların gerçekten Tor üzerinden çıktığı denetleniyor.</string>
-    <string name="problem_challenge">Site bir anti-bot doğrulaması (Cloudflare) istiyor: bunu yerleşik tarayıcıda tamamlayın.</string>
+    <string name="problem_challenge">Site bir anti-bot doğrulaması (Cloudflare) istiyor: geçmek için “Tarayıcıda doğrula” düğmesine dokunun.</string>
+    <string name="problem_challenge_pass_refused">Doğrulama geçildi ama uygulama bu dosyayı indirirken site onu yeniden istiyor: tarayıcıda geçilen doğrulama indirmeler için geçerli değil, bu yüzden yeniden denemek işe yaramaz.</string>
+    <string name="problem_challenge_pass_refused_tor">Doğrulama geçildi ama site onu yeniden istiyor: Tor açıkken yerleşik tarayıcı ve indirmeler siteye farklı Tor çıkışlarından ulaşır ve birinden geçilen doğrulama diğeri için geçerli değildir. Tor açık olduğu sürece yeniden denemek işe yaramaz.</string>
     <string name="problem_access_denied">Erişim reddedildi (%1$s): bu kaynak oturum açmayı ve bir API anahtarını gerektirebilir.</string>
     <string name="problem_not_found">Adres bulunamadı (404): URL\'yi ve motor türünü kontrol edin.</string>
     <string name="problem_gone">Sayfa artık mevcut değil: site ne kadar ileri sayfalanabileceğini sınırlıyor.</string>
@@ -145,6 +147,13 @@
     <string name="delete_vault_confirm">Her şeyi sil</string>
     <string name="tor_use">Tor kullan (Orbot ile)</string>
     <string name="tor_use_hint">Uygulamanın tüm bağlantıları Orbot aracılığıyla Tor ağından geçer: aramalar, görseller, videolar, indirmeler ve yerleşik tarayıcı. Siteler sizinki yerine bir Tor düğümünün adresini görür ve site adları da Tor içinde çözümlenir (açık DNS isteği yok). Orbot çalışmıyorsa hiçbir şey yüklenmez: uygulama asla doğrudan bağlantıya dönmez. Daha yavaştır ve bazı siteler Tor\'u engeller ya da bot denetimini daha sık ister. Tor nereden bağlandığınızı gizler, kim olduğunuzu değil: oturum açtığınız ya da kendi çerezlerini tanıyan bir site hesabınızı yine bilir; geri kalan her şey ise yalnızca bir Tor kullanıcısı daha görür. Bir hesaptan ayrı kalması gereken gezinti için oturum açmayın ya da Veriler bölümünden sitenin çerezlerini silin.</string>
+    <string name="route_title">Uygulama nasıl bağlansın?</string>
+    <string name="route_text">BooruVault\'un sitelere nasıl ulaşacağını seçin. Siz seçene kadar hiçbir şey dışarı çıkmaz.</string>
+    <string name="route_tor_hint">Siteler sizin adresiniz yerine bir Tor düğümünün adresini görür. Orbot uygulaması gerekir ve daha yavaştır.</string>
+    <string name="route_direct">Doğrudan bağlantı</string>
+    <string name="route_direct_hint">Daha hızlı, başka uygulama gerekmez. Siteler ağınızın adresini görür.</string>
+    <string name="route_change_later">Bunu daha sonra Ayarlar\'da “%1$s” bölümünden değiştirebilirsiniz.</string>
+    <string name="route_orbot_missing">Orbot\'u yükleyin ve bir kez açın. Çalışmadığı sürece hiçbir şey yüklenmez: uygulama asla doğrudan bağlantıya geri dönmez.</string>
     <string name="tor_status_on">Orbot çalışıyor · SOCKS proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS bağlantı noktası</string>
     <string name="tor_port_hint">Varsayılan 9050. Uygulama bu telefonda yalnızca bu bağlantı noktasına bağlanır. Bağlantı noktasını, herhangi bir uygulamanın gönderebileceği Orbot durum iletilerinden almaz.</string>

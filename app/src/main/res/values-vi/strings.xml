@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Không kết nối được tới Tor: hãy kiểm tra xem Orbot có đang chạy không.</string>
     <string name="problem_tor_dns_blocked">Đã chặn tra cứu DNS cục bộ: khi bật Tor, tên miền chỉ được phân giải qua Tor.</string>
     <string name="problem_tor_unverified">Lối ra Tor chưa được xác minh: đang kiểm tra kết nối có thật sự đi ra qua Tor.</string>
-    <string name="problem_challenge">Trang web yêu cầu kiểm tra chống bot (Cloudflare): hãy hoàn tất trong trình duyệt tích hợp.</string>
+    <string name="problem_challenge">Trang web yêu cầu kiểm tra chống bot (Cloudflare): nhấn “Xác minh trong trình duyệt” để hoàn tất.</string>
+    <string name="problem_challenge_pass_refused">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu khi ứng dụng tải tệp này: kiểm tra đã vượt qua trong trình duyệt không áp dụng cho các lượt tải xuống, nên làm lại cũng không giúp được.</string>
+    <string name="problem_challenge_pass_refused_tor">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu: khi bật Tor, trình duyệt tích hợp và các lượt tải xuống đến trang web qua các lối ra Tor khác nhau, và kiểm tra đã vượt qua từ lối này không áp dụng cho lối kia. Làm lại cũng không giúp được khi Tor còn bật.</string>
     <string name="problem_access_denied">Truy cập bị từ chối (%1$s): nguồn này có thể cần đăng nhập và khóa API.</string>
     <string name="problem_not_found">Không tìm thấy địa chỉ (404): hãy kiểm tra URL và loại nền tảng.</string>
     <string name="problem_gone">Trang không còn khả dụng: trang web giới hạn số trang bạn có thể xem tiếp.</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">Xóa tất cả</string>
     <string name="tor_use">Dùng Tor (qua Orbot)</string>
     <string name="tor_use_hint">Mọi kết nối của ứng dụng đều đi qua mạng Tor nhờ Orbot: tìm kiếm, hình ảnh, video, tải xuống và trình duyệt tích hợp. Trang web thấy địa chỉ của một nút Tor thay vì địa chỉ của bạn, và tên trang cũng được phân giải bên trong Tor (không có truy vấn DNS lộ). Nếu Orbot không chạy thì không tải được gì: ứng dụng không bao giờ quay về kết nối trực tiếp. Chậm hơn, và một số trang chặn Tor hoặc yêu cầu kiểm tra chống bot thường xuyên hơn. Tor ẩn nơi bạn kết nối, chứ không ẩn bạn là ai: trang bạn đã đăng nhập, hoặc nhận ra cookie của chính nó, vẫn biết tài khoản của bạn, còn mọi thứ khác chỉ thấy thêm một người dùng Tor. Với việc duyệt cần tách khỏi tài khoản, hãy giữ trạng thái đăng xuất, hoặc xóa cookie của trang trong mục Dữ liệu.</string>
+    <string name="route_title">Ứng dụng nên kết nối thế nào?</string>
+    <string name="route_text">Chọn cách BooruVault truy cập các trang web. Cho đến khi bạn chọn, không có gì được gửi ra ngoài.</string>
+    <string name="route_tor_hint">Các trang web thấy địa chỉ của một nút Tor thay vì của bạn. Cần ứng dụng Orbot và chậm hơn.</string>
+    <string name="route_direct">Kết nối trực tiếp</string>
+    <string name="route_direct_hint">Nhanh hơn, không cần ứng dụng khác. Các trang web thấy địa chỉ mạng của bạn.</string>
+    <string name="route_change_later">Bạn có thể thay đổi sau trong Cài đặt, ở mục “%1$s”.</string>
+    <string name="route_orbot_missing">Hãy cài Orbot và mở nó một lần. Khi nó chưa chạy thì không có gì tải được: ứng dụng không bao giờ chuyển sang kết nối trực tiếp.</string>
     <string name="tor_status_on">Orbot đang chạy · Proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Cổng SOCKS của Orbot</string>
     <string name="tor_port_hint">Mặc định 9050. Ứng dụng chỉ kết nối tới cổng này trên điện thoại này. Cổng không được lấy từ thông báo trạng thái của Orbot, vốn ứng dụng nào cũng có thể gửi.</string>

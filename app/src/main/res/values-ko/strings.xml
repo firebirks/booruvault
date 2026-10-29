@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor에 연결할 수 없습니다. Orbot이 실행 중인지 확인하세요.</string>
     <string name="problem_tor_dns_blocked">로컬 DNS 조회가 차단되었습니다. Tor가 켜져 있으면 이름은 Tor를 통해서만 확인됩니다.</string>
     <string name="problem_tor_unverified">Tor 출구가 아직 확인되지 않았습니다. 연결이 정말 Tor를 통해 나가는지 확인 중입니다.</string>
-    <string name="problem_challenge">사이트에서 봇 방지 확인(Cloudflare)을 요구합니다. 내장 브라우저에서 완료하세요.</string>
+    <string name="problem_challenge">사이트에서 봇 방지 확인(Cloudflare)을 요구합니다. ‘브라우저에서 확인’을 눌러 완료하세요.</string>
+    <string name="problem_challenge_pass_refused">확인을 완료했지만 앱이 이 파일을 다운로드할 때 사이트가 다시 확인을 요구합니다. 브라우저에서 완료한 확인은 다운로드에 적용되지 않으므로 다시 해도 소용없습니다.</string>
+    <string name="problem_challenge_pass_refused_tor">확인을 완료했지만 사이트가 다시 확인을 요구합니다. Tor가 켜져 있으면 내장 브라우저와 다운로드가 서로 다른 Tor 출구를 통해 사이트에 접속하므로, 한쪽에서 완료한 확인은 다른 쪽에 적용되지 않습니다. Tor가 켜져 있는 동안에는 다시 해도 소용없습니다.</string>
     <string name="problem_access_denied">접근이 거부되었습니다(%1$s). 이 소스는 로그인과 API 키가 필요할 수 있습니다.</string>
     <string name="problem_not_found">주소를 찾을 수 없습니다(404). URL과 엔진 유형을 확인하세요.</string>
     <string name="problem_gone">더 이상 사용할 수 없는 페이지입니다. 사이트에서 넘겨 볼 수 있는 페이지 범위를 제한합니다.</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">모두 삭제</string>
     <string name="tor_use">Tor 사용(Orbot 경유)</string>
     <string name="tor_use_hint">앱의 모든 연결은 Orbot을 통해 Tor 네트워크를 거칩니다. 검색, 이미지, 동영상, 다운로드, 내장 브라우저 모두 해당합니다. 사이트에는 내 주소 대신 Tor 노드의 주소가 보이고, 사이트 이름도 Tor 안에서 해석됩니다(평문 DNS 요청 없음). Orbot이 실행 중이 아니면 아무것도 로드되지 않습니다. 앱은 절대 직접 연결로 되돌아가지 않습니다. 더 느리고, 일부 사이트는 Tor를 차단하거나 봇 방지 확인을 더 자주 요구합니다. Tor는 어디서 접속하는지를 숨기지, 누구인지를 숨기지는 않습니다. 로그인한 사이트나 자신의 쿠키를 알아보는 사이트는 여전히 내 계정을 알지만, 그 외에는 그저 또 한 명의 Tor 사용자로만 보입니다. 계정과 분리해야 하는 탐색은 로그아웃 상태로 하거나 데이터 섹션에서 해당 사이트의 쿠키를 지우세요.</string>
+    <string name="route_title">앱을 어떻게 연결할까요?</string>
+    <string name="route_text">BooruVault가 사이트에 접속하는 방법을 선택하세요. 선택하기 전에는 아무것도 전송되지 않습니다.</string>
+    <string name="route_tor_hint">사이트에는 내 주소 대신 Tor 노드의 주소가 보입니다. Orbot 앱이 필요하며 더 느립니다.</string>
+    <string name="route_direct">직접 연결</string>
+    <string name="route_direct_hint">더 빠르고 다른 앱이 필요 없습니다. 사이트에는 내 네트워크의 주소가 보입니다.</string>
+    <string name="route_change_later">나중에 설정의 ‘%1$s’에서 변경할 수 있습니다.</string>
+    <string name="route_orbot_missing">Orbot을 설치하고 한 번 여세요. Orbot이 실행될 때까지는 아무것도 로드되지 않습니다. 앱은 절대 직접 연결로 전환하지 않습니다.</string>
     <string name="tor_status_on">Orbot 실행 중 · SOCKS 프록시 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS 포트</string>
     <string name="tor_port_hint">기본값 9050. 앱은 이 휴대전화의 이 포트에만 연결합니다. 어떤 앱이든 보낼 수 있는 Orbot 상태 메시지에서 포트를 가져오지 않습니다.</string>

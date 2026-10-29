@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">无法连接 Tor：请检查 Orbot 是否正在运行。</string>
     <string name="problem_tor_dns_blocked">已阻止本地 DNS 查询：开启 Tor 后，域名只通过 Tor 解析。</string>
     <string name="problem_tor_unverified">Tor 出口尚未验证：正在确认连接确实经由 Tor。</string>
-    <string name="problem_challenge">该网站要求进行反机器人验证（Cloudflare）：请在内置浏览器中完成。</string>
+    <string name="problem_challenge">该网站要求进行反机器人验证（Cloudflare）：请点按“在浏览器中验证”完成验证。</string>
+    <string name="problem_challenge_pass_refused">验证已通过，但应用下载此文件时网站仍再次要求验证：在浏览器中通过的验证对下载无效，因此再验证一次也无济于事。</string>
+    <string name="problem_challenge_pass_refused_tor">验证已通过，但网站仍再次要求验证：开启 Tor 时，内置浏览器和下载通过不同的 Tor 出口访问网站，从一个出口通过的验证对另一个无效。只要 Tor 处于开启状态，再验证一次也无济于事。</string>
     <string name="problem_access_denied">访问被拒绝（%1$s）：此来源可能需要登录和 API 密钥。</string>
     <string name="problem_not_found">找不到网址（404）：请检查 URL 和引擎类型。</string>
     <string name="problem_gone">页面已不可用：该网站限制了可翻页的深度。</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">全部删除</string>
     <string name="tor_use">使用 Tor（通过 Orbot）</string>
     <string name="tor_use_hint">应用的所有连接都经由 Orbot 走 Tor 网络：搜索、图片、视频、下载和内置浏览器。网站看到的是 Tor 节点的地址而不是你的，站点名称也在 Tor 内解析（没有明文 DNS 请求）。Orbot 未运行时什么都不会加载：应用绝不会退回到直接连接。速度更慢，有些网站会屏蔽 Tor 或更频繁地要求反机器人验证。Tor 隐藏的是你从哪里连接，而不是你是谁：你已登录的网站，或能认出自己 Cookie 的网站，仍然知道你的账户；其他一切只会看到又一个 Tor 用户。若浏览需要与账户分开，请保持未登录，或在“数据”部分清除该网站的 Cookie。</string>
+    <string name="route_title">应用应如何连接？</string>
+    <string name="route_text">选择 BooruVault 访问网站的方式。在你选择之前，不会发出任何请求。</string>
+    <string name="route_tor_hint">网站看到的是 Tor 节点的地址，而不是你的地址。需要 Orbot 应用，速度较慢。</string>
+    <string name="route_direct">直接连接</string>
+    <string name="route_direct_hint">更快，无需其他应用。网站会看到你所在网络的地址。</string>
+    <string name="route_change_later">之后可以在“设置”的“%1$s”中更改。</string>
+    <string name="route_orbot_missing">请安装 Orbot 并打开一次。在它运行之前，什么都不会加载：应用绝不会改用直接连接。</string>
     <string name="tor_status_on">Orbot 正在运行 · SOCKS 代理 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS 端口</string>
     <string name="tor_port_hint">默认 9050。应用只连接本机上的这个端口，不会从 Orbot 的状态消息中获取端口，因为任何应用都能发送这类消息。</string>

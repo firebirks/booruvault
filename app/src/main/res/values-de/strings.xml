@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor ist nicht erreichbar: Prüfe, ob Orbot läuft.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-Abfrage blockiert: Mit aktivem Tor werden Namen nur über Tor aufgelöst.</string>
     <string name="problem_tor_unverified">Tor-Ausgang noch nicht geprüft: es wird geprüft, ob Verbindungen wirklich über Tor hinausgehen.</string>
-    <string name="problem_challenge">Die Website verlangt eine Anti-Bot-Prüfung (Cloudflare): Schließe sie im integrierten Browser ab.</string>
+    <string name="problem_challenge">Die Website verlangt eine Anti-Bot-Prüfung (Cloudflare): Tippe auf „Im Browser prüfen“, um sie zu bestehen.</string>
+    <string name="problem_challenge_pass_refused">Die Prüfung wurde bestanden, aber die Website verlangt sie erneut, wenn die App diese Datei herunterlädt: Eine im Browser bestandene Prüfung gilt nicht für Downloads, ein erneuter Versuch hilft daher nicht.</string>
+    <string name="problem_challenge_pass_refused_tor">Die Prüfung wurde bestanden, aber die Website verlangt sie erneut: Mit aktivem Tor erreichen der integrierte Browser und die Downloads die Website über verschiedene Tor-Ausgänge, und eine über den einen bestandene Prüfung gilt nicht für den anderen. Solange Tor aktiv ist, hilft ein erneuter Versuch nicht.</string>
     <string name="problem_access_denied">Zugriff verweigert (%1$s): Diese Quelle erfordert eventuell eine Anmeldung und einen API-Schlüssel.</string>
     <string name="problem_not_found">Adresse nicht gefunden (404): Prüfe die URL und den Engine-Typ.</string>
     <string name="problem_gone">Seite nicht mehr verfügbar: Die Website begrenzt, wie weit du blättern kannst.</string>
@@ -145,6 +147,13 @@
     <string name="delete_vault_confirm">Alles löschen</string>
     <string name="tor_use">Tor verwenden (über Orbot)</string>
     <string name="tor_use_hint">Alle Verbindungen der App laufen über das Tor-Netzwerk via Orbot: Suchen, Bilder, Videos, Downloads und der integrierte Browser. Seiten sehen die Adresse eines Tor-Knotens statt deiner, und auch Seitennamen werden innerhalb von Tor aufgelöst (keine DNS-Anfrage im Klartext). Läuft Orbot nicht, lädt nichts: Die App weicht nie auf eine direkte Verbindung aus. Es ist langsamer, und manche Seiten blockieren Tor oder verlangen die Anti-Bot-Prüfung öfter. Tor verbirgt, von wo du dich verbindest, nicht wer du bist: Eine Seite, bei der du angemeldet bist oder die ihre eigenen Cookies wiedererkennt, kennt weiterhin dein Konto, während alles andere nur einen weiteren Tor-Nutzer sieht. Für Surfen, das von einem Konto getrennt bleiben soll, bleib abgemeldet oder lösche die Cookies der Seite im Abschnitt Daten.</string>
+    <string name="route_title">Wie soll sich die App verbinden?</string>
+    <string name="route_text">Wähle, wie BooruVault die Websites erreicht. Bis du gewählt hast, geht nichts hinaus.</string>
+    <string name="route_tor_hint">Websites sehen die Adresse eines Tor-Knotens statt deiner. Benötigt die App Orbot und ist langsamer.</string>
+    <string name="route_direct">Direkte Verbindung</string>
+    <string name="route_direct_hint">Schneller, ohne weitere App. Websites sehen die Adresse deines Netzwerks.</string>
+    <string name="route_change_later">Du kannst das später in den Einstellungen unter „%1$s“ ändern.</string>
+    <string name="route_orbot_missing">Installiere Orbot und öffne es einmal. Solange es nicht läuft, lädt nichts: Die App weicht nie auf eine direkte Verbindung aus.</string>
     <string name="tor_status_on">Orbot läuft · SOCKS-Proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">SOCKS-Port von Orbot</string>
     <string name="tor_port_hint">Standard 9050. Die App verbindet sich nur mit diesem Port auf diesem Telefon. Sie übernimmt den Port nicht aus den Statusmeldungen von Orbot, die jede App senden könnte.</string>

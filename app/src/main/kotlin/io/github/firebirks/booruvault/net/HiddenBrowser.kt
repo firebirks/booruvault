@@ -13,6 +13,9 @@ import io.github.firebirks.booruvault.booru.HtmlFetcher
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -48,20 +51,34 @@ class HiddenBrowser(
         withContext(Dispatchers.Main) {
             val httpUrl = url.toHttpUrlOrNull() ?: throw BooruChallengeException(url)
             // With Tor on, a WebView that cannot be routed through it must not load anything.
-            WebViewRoute.apply(tor).getOrElse { throw BooruChallengeException(url) }
+            val route = WebViewRoute.apply(tor).getOrElse { throw BooruChallengeException(url) }
             val origin = "${httpUrl.scheme}://${httpUrl.host}/"
             val site = SecureCookieJar.siteOf(httpUrl.host)
-            val agent = cookies.userAgentFor(httpUrl.host) ?: Challenge.userAgent(context, null)
+            val agent = cookies.userAgentFor(route, httpUrl.host) ?: Challenge.userAgent(context, null)
             val manager = CookieManager.getInstance()
-            cookies.browserCookies(httpUrl).forEach { manager.setCookie(origin, it) }
+            cookies.browserCookies(route, httpUrl).forEach { manager.setCookie(origin, it) }
             val webView = PrivateWebView(context.applicationContext)
             try {
-                withTimeout(TIMEOUT_MS) { load(webView, url, agent, site, httpUrl.scheme) }
+                withTimeout(TIMEOUT_MS) {
+                    coroutineScope {
+                        // The visit carries this route's cookies: once the switch is flipped it
+                        // stops, before the next browser to open sends it the other way.
+                        val switched = launch {
+                            tor.state.first { Route.of(it.enabled) != route }
+                            throw BooruChallengeException(url)
+                        }
+                        try {
+                            load(webView, url, agent, site, httpUrl.scheme)
+                        } finally {
+                            switched.cancel()
+                        }
+                    }
+                }
             } catch (e: TimeoutCancellationException) {
                 // Still a check after the wait: it needs a person, in the visible browser.
                 throw BooruChallengeException(url)
             } finally {
-                cookies.renewFromBrowser(httpUrl.host, Challenge.cookiesFor(site, origin, url))
+                if (tor.route == route) cookies.renewFromBrowser(route, httpUrl.host, Challenge.cookiesFor(site, origin, url))
                 Challenge.wipe(context, webView)
                 webView.destroy()
             }

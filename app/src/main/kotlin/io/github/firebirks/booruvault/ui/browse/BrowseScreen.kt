@@ -119,6 +119,7 @@ import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.TagCategory
 import io.github.firebirks.booruvault.booru.TagSuggestion
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
+import io.github.firebirks.booruvault.ui.common.ChallengeMode
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
@@ -223,7 +224,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     onSelectSource = vm::selectSource,
                     // Login and site preferences without a trip through Settings; the results
                     // reload with the cookies the visit brought back.
-                    onOpenSite = state.source?.let { source -> { challenge.open(source, browserStart(source), browse = true) { vm.refresh() } } },
+                    onOpenSite = state.source?.let { source -> { challenge.open(source, browserStart(source), ChallengeMode.BROWSE) { vm.refresh() } } },
                     input = vm.input,
                     onInput = vm::onInput,
                     onSubmit = {
