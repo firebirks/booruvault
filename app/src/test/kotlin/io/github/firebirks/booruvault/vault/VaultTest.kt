@@ -154,6 +154,30 @@ class VaultTest {
     }
 
     @Test
+    fun aRetireMeantForAPairReplacedMeanwhileDropsNothing() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        val second = vault.keys!!.recipient
+        val data = Random(4).nextBytes(10_000)
+        add(store, data, "a")
+        awaitItems(store, 1)
+
+        // The first change's rekeyer re-sealed everything to the second pair and was waiting for
+        // the vault while a second change retired that pair too; it gets the vault after it.
+        assertTrue(vault.changePassword("second".toCharArray(), "third".toCharArray()))
+        vault.retireFinished(second)
+
+        assertTrue(vault.rekeyPending.value)
+        vault.lock()
+        assertTrue(vault.unlock("third".toCharArray()))
+        awaitItems(store, 1)
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+    }
+
+    @Test
     fun aFileDamagedPastItsFirstChunkIsGivenUp() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)

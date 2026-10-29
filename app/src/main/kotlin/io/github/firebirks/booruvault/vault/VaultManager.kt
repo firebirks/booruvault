@@ -190,11 +190,16 @@ class VaultManager(private val root: File, private val json: Json) {
         }
     }
 
-    /** Called once no file is sealed to a retired pair any more: the pairs are forgotten. */
-    suspend fun retireFinished() = mutex.withLock {
+    /**
+     * Called once no file is sealed to a retired pair any more, every one re-sealed to
+     * [resealedTo]: the retired pairs are forgotten, unless a password change since has retired
+     * [resealedTo] as well.
+     */
+    suspend fun retireFinished(resealedTo: Recipient) = mutex.withLock {
         withContext(Dispatchers.IO) {
             val current = header ?: return@withContext
             if (current.retired.isEmpty()) return@withContext
+            if (!current.publicKey.fromBase64().contentEquals(resealedTo.encoded)) return@withContext
             val updated = current.copy(retired = emptyList())
             writeHeader(updated)
             header = updated

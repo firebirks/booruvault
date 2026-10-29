@@ -93,7 +93,7 @@ class VaultRekeyer(
             // A write that read the old recipient just before the header changed may still land.
             val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
             if (settled) {
-                vault.retireFinished()
+                vault.retireFinished(keys.recipient)
                 return
             }
             delay(if (resealed == 0) 1000 else 50)
