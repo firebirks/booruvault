@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault.crypto
 
+import io.github.firebirks.booruvault.util.moveOver
 import java.io.Closeable
 import java.io.EOFException
 import java.io.File
@@ -327,7 +328,7 @@ object SealedBlob {
                 }
             }
             SealedOutputStream(raw.buffered(), recipient).use { it.write(bytes) }
-            if (!tmp.renameTo(file)) throw IOException("cannot write ${file.name}")
+            if (!tmp.moveOver(file)) throw IOException("cannot write ${file.name}")
         } catch (e: Exception) {
             tmp.delete()
             throw e

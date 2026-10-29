@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
@@ -127,9 +128,11 @@ class VaultRekeyer(
                         buffer.fill(0)
                     }
                 }
+                // Closed before the move, as Windows will not replace a file that is open.
+                source.close()
                 // Rewritten meanwhile, under the current pair, or deleted: the copy is stale.
                 val unchanged = file.isFile && file.lastModified() == modified && file.length() == length
-                if (!unchanged || !tmp.renameTo(file)) {
+                if (!unchanged || !tmp.moveOver(file)) {
                     tmp.delete()
                     return Outcome.FAILED
                 }

@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Aead
 import io.github.firebirks.booruvault.vault.crypto.EcKeys
 import io.github.firebirks.booruvault.vault.crypto.EciesBox
@@ -327,7 +328,7 @@ class VaultManager(private val root: File, private val json: Json) {
             out.write(json.encodeToString(VaultHeader.serializer(), value).toByteArray())
             out.fd.sync()
         }
-        if (!tmp.renameTo(headerFile)) throw java.io.IOException("cannot write vault header")
+        if (!tmp.moveOver(headerFile)) throw java.io.IOException("cannot write vault header")
     }
 
     private companion object {

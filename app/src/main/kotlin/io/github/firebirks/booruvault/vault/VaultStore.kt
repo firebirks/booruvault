@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
@@ -140,7 +141,7 @@ class VaultStore(
             try {
                 val sealed = SealedOutputStream(part.outputStream().buffered(256 * 1024), recipient)
                 sealed.use { block(CappedOutputStream(it, MAX_MEDIA_BYTES)) }
-                if (!part.renameTo(File(mediaDir, id))) throw IOException("cannot store media")
+                if (!part.moveOver(File(mediaDir, id))) throw IOException("cannot store media")
                 sealed.bytesWritten
             } catch (e: Throwable) {
                 part.delete()
@@ -159,7 +160,7 @@ class VaultStore(
             thumbDir.mkdirs()
             val part = File(thumbDir, "$id.part")
             SealedOutputStream(part.outputStream().buffered(), recipient()).use { it.write(jpeg) }
-            if (!part.renameTo(File(thumbDir, id))) throw IOException("cannot store thumbnail")
+            if (!part.moveOver(File(thumbDir, id))) throw IOException("cannot store thumbnail")
         } finally {
             inFlight.decrementAndGet()
         }
@@ -179,7 +180,7 @@ class VaultStore(
             } finally {
                 bytes.fill(0)
             }
-            if (!tmp.renameTo(File(metaDir, item.id))) throw IOException("cannot store metadata")
+            if (!tmp.moveOver(File(metaDir, item.id))) throw IOException("cannot store metadata")
         } finally {
             inFlight.decrementAndGet()
         }
@@ -270,7 +271,7 @@ class VaultStore(
         } finally {
             bytes.fill(0)
         }
-        if (!tmp.renameTo(indexFile)) tmp.delete()
+        if (!tmp.moveOver(indexFile)) tmp.delete()
     }
 
     /** Decodes decrypted bytes, then overwrites them. */

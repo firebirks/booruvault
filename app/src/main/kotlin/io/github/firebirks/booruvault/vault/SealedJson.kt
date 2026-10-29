@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedBlob
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
@@ -17,7 +18,7 @@ class SealedJson<T>(private val file: File, private val serializer: KSerializer<
             SealedBlob.read(file, keys)
         } catch (e: Exception) {
             // Unreadable: set aside rather than silently overwrite on the next save.
-            file.renameTo(File(file.path + ".corrupt"))
+            file.moveOver(File(file.path + ".corrupt"))
             null
         } ?: return null
         return try {
