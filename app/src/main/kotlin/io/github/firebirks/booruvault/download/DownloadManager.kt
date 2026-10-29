@@ -14,6 +14,7 @@ import io.github.firebirks.booruvault.settings.AppSettings
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.settings.allows
 import io.github.firebirks.booruvault.util.Mime
+import io.github.firebirks.booruvault.util.DebugLog
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
 import io.github.firebirks.booruvault.util.toProblem
@@ -320,6 +321,7 @@ class DownloadManager(
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.FAILED && task.status != DownloadStatus.CANCELLED) return
         if (!live) return
+        DebugLog.d { "retry source=${task.source.id} was=${task.problem?.code} checkedAt=${checkedAt[task.source.id]}" }
         set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1, problem = null) }
         launch(task)
         startService()
@@ -336,7 +338,9 @@ class DownloadManager(
      */
     fun retryAfterCheck(sourceId: String) {
         checkedAt[sourceId] = System.currentTimeMillis()
-        challengedKeys(_tasks.value, sourceId).forEach(::retry)
+        val keys = challengedKeys(_tasks.value, sourceId)
+        DebugLog.d { "retryAfterCheck source=$sourceId requeued=${keys.size}" }
+        keys.forEach(::retry)
     }
 
     /** A check passed along the other route says nothing about this one: it may be offered again. */
@@ -381,6 +385,7 @@ class DownloadManager(
             val urlExt = url.extensionFromUrl()?.takeIf { Mime.fromExtension(it) != "application/octet-stream" }
             var contentType: String? = null
             val size = client.newCall(downloadRequest(url, task.source)).await().use { response ->
+                traceDownload("file", response)
                 // The file host may guard the file itself rather than the site: the check is passed at this address.
                 if (response.header("cf-mitigated").equals("challenge", ignoreCase = true)) {
                     throw ProblemException(Problem.Code.CHALLENGE, url)
@@ -417,6 +422,7 @@ class DownloadManager(
             val hasThumb = post.previewUrl?.let { preview ->
                 runCatching {
                     client.newCall(downloadRequest(preview, task.source)).await().use { r ->
+                        traceDownload("preview", r)
                         if (r.isSuccessful) r.body.bytesUpTo(MAX_THUMBNAIL)?.takeIf { it.isNotEmpty() } else null
                     }
                 }.getOrNull()?.let { bytes ->
@@ -468,6 +474,7 @@ class DownloadManager(
             val guarded = (met.detail ?: task.source.baseUrl).toHttpUrlOrNull()?.host
             val expired = checked != null && guarded != null && passExpiredSince(guarded, checked)
             val problem = downloadProblem(met, checked, expired, System.currentTimeMillis(), torEnabled())
+            DebugLog.d { "download failed source=${task.source.id} problem=${met.code} reported=${problem.code} checkedAt=$checked passExpired=$expired" }
             set(key) { it.copy(status = DownloadStatus.FAILED, problem = problem) }
         }
     }
@@ -475,6 +482,13 @@ class DownloadManager(
     private companion object {
         /** A preview is a small JPEG; anything larger is not worth keeping as one. */
         const val MAX_THUMBNAIL = 4L shl 20
+    }
+
+    // TEMPORARY: what each download request really carried, for testing on the phone.
+    private fun traceDownload(kind: String, response: okhttp3.Response) = DebugLog.d {
+        val sent = response.networkResponse?.request ?: response.request
+        "download $kind ${sent.url.host}/${sent.url.pathSegments.firstOrNull().orEmpty()} ua=${sent.header("User-Agent")} " +
+            "clearance=${sent.header("Cookie")?.contains("cf_clearance=") == true} status=${response.code} cf-mitigated=${response.header("cf-mitigated")}"
     }
 
     private fun startService() {

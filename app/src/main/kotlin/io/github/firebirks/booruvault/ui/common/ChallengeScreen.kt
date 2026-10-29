@@ -53,6 +53,7 @@ import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.net.WebViewRoute
+import io.github.firebirks.booruvault.util.DebugLog
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import kotlinx.coroutines.delay
@@ -140,26 +141,29 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
     // Several paths lead out (the check passed, a tap, Back); only the first one counts.
     val closed = remember { AtomicBoolean(false) }
 
-    fun finish(solved: Boolean, record: Boolean = solved) {
+    fun finish(solved: Boolean, record: Boolean = solved, why: String) {
         if (!closed.compareAndSet(false, true)) return
+        val earned = Challenge.cookiesFor(site, origin, request.url, webView?.url ?: origin)
+        DebugLog.d {
+            "browser close why=$why solved=$solved record=$record recordedAgent=${if (record) userAgent else null} " +
+                "clearance=${earned.any { it.name == Challenge.CLEARANCE_COOKIE }}"
+        }
         // What the page earned belongs to the route it loaded along, and only while that holds.
         val loadedAlong = route?.getOrNull()
-        if (record && loadedAlong != null && loadedAlong == container.tor.route) {
-            cookies.recordClearance(loadedAlong, host, userAgent, Challenge.cookiesFor(site, origin, request.url, webView?.url ?: origin))
-        }
+        if (record && loadedAlong != null && loadedAlong == container.tor.route) cookies.recordClearance(loadedAlong, host, userAgent, earned)
         // The WebView's own stores are in clear; once the clearance is sealed, they are emptied.
         Challenge.wipe(context, webView)
         onClose(solved)
     }
 
-    BackHandler { finish(Challenge.hasClearance(target)) }
+    BackHandler { finish(Challenge.hasClearance(target), why = "back") }
 
     // The page title stays "Just a moment..." until the check is through.
     if (!browse && route?.isSuccess == true) LaunchedEffect(target) {
         while (true) {
             delay(1000)
             if (Challenge.hasClearance(target) && progress == 100 && !title.contains("moment", ignoreCase = true)) {
-                finish(true)
+                finish(true, why = "page loaded with clearance")
                 break
             }
         }
@@ -175,8 +179,8 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                             Text(currentHost, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     },
-                    navigationIcon = { IconButton(onClick = { finish(false) }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_close)) } },
-                    actions = { TextButton(onClick = { finish(true) }) { Text(stringResource(R.string.action_done)) } },
+                    navigationIcon = { IconButton(onClick = { finish(false, why = "close") }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_close)) } },
+                    actions = { TextButton(onClick = { finish(true, why = "done") }) { Text(stringResource(R.string.action_done)) } },
                 )
             },
             contentWindowInsets = WindowInsets(0),
@@ -232,7 +236,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                                     val url = request.url.toString()
                                     if (!exact || !Challenge.answersEmpty(target, url) { Challenge.hasClearance(url) }) return null
-                                    view.post { finish(true) }
+                                    view.post { finish(true, why = "file intercepted") }
                                     return Challenge.emptyResponse()
                                 }
 
@@ -241,7 +245,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                                 // again and say what they meet.
                                 override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
                                     if (exact && request.isForMainFrame && errorResponse.statusCode == 416 && Challenge.isGuardedFile(target, request.url.toString())) {
-                                        finish(true, record = false)
+                                        finish(true, record = false, why = "416 without check")
                                     }
                                 }
 
@@ -256,7 +260,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
 
                                 // A heavy page can take the renderer down; close the browser rather than the app.
                                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
-                                    finish(false)
+                                    finish(false, why = "renderer gone")
                                     return true
                                 }
                             }
@@ -269,6 +273,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                                     title = newTitle.orEmpty()
                                 }
                             }
+                            DebugLog.d { "browser start mode=${request.mode} host=$host ua=$userAgent" }
                             if (exact) loadUrl(target, mapOf("Range" to Challenge.NO_BYTES_RANGE)) else loadUrl(target)
                             webView = this
                         }

@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.booru
 import io.github.firebirks.booruvault.BuildConfig
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.Route
+import io.github.firebirks.booruvault.util.DebugLog
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -141,9 +142,16 @@ class SiteHeaders(private val passes: SitePasses) : Interceptor {
         val sent = withSiteHeaders(request, passes.userAgentFor(route, host), cleared = clearance != null, cookies)
         val response = chain.proceed(sent)
         passes.saveFromResponse(route, url, Cookie.parseAll(url, response.headers))
+        DebugLog.d {
+            "site $route $host/${url.pathSegments.firstOrNull().orEmpty()} ua=${sent.header("User-Agent")} cookies=${cookies.map { it.name }} " +
+                "status=${response.code} cf-mitigated=${response.header("cf-mitigated")}"
+        }
         when {
             clearance == null -> Unit
-            response.header("cf-mitigated").equals("challenge", ignoreCase = true) -> passes.dropClearance(route, host, clearance)
+            response.header("cf-mitigated").equals("challenge", ignoreCase = true) -> {
+                DebugLog.d { "clearance refused by $host ($route)" }
+                passes.dropClearance(route, host, clearance)
+            }
             response.code in 200..299 -> passes.clearanceWorked(route, host, clearance)
         }
         return response
