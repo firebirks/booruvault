@@ -259,4 +259,17 @@ class RouteSeparationTest {
         assertNotSame(tls.factoryFor(direct), tls.factoryFor(throughTor))
         listOf(direct, alsoDirect, throughTor).forEach { it.close() }
     }
+
+    @Test
+    fun noTlsSessionOutlivesAConnectionThroughTor() {
+        // Tor gives a new connection a new circuit sooner or later, hence another exit. A session
+        // cached from the last connection and resumed on this one would show the site that both
+        // exits serve the same client; so a connection through Tor gets a cache of its own.
+        val tls = RouteTls()
+        val first = Socket(Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved("127.0.0.1", 9050)))
+        val second = Socket(Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved("127.0.0.1", 9050)))
+        assertNotSame(tls.factoryFor(first), tls.factoryFor(second))
+        assertNotSame(tls.factoryFor(first), tls.factoryFor(first))
+        listOf(first, second).forEach { it.close() }
+    }
 }

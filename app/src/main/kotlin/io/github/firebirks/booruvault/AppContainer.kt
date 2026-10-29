@@ -85,7 +85,7 @@ class AppContainer(private val context: Context) {
         .readTimeout(30, TimeUnit.SECONDS)
         .proxySelector(tor.proxySelector)
         .dns(tor.dns)
-        // One TLS session cache per route, and cookies put on by SiteHeaders once the route is known.
+        // A TLS session cache for the direct route alone, and cookies put on by SiteHeaders once the route is known.
         .socketFactory(tls.socketFactory)
         .sslSocketFactory(tls.sslSocketFactory, tls.trustManager)
         // Nothing leaves before the user has chosen between Tor and a direct connection.
