@@ -15,11 +15,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarOutline
-import androidx.compose.material3.AssistChip
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +31,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -117,6 +116,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.booru.MediaKind
 import io.github.firebirks.booruvault.booru.Post
+import io.github.firebirks.booruvault.booru.TagCategory
 import io.github.firebirks.booruvault.booru.TagSuggestion
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
@@ -131,7 +131,7 @@ import io.github.firebirks.booruvault.vault.VaultState
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
     val container = LocalContainer.current
@@ -155,6 +155,13 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
 
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
     BackHandler(enabled = searchFocused) { focus.clearFocus() }
+    // Back first puts the keyboard away; the tags under the field go with it rather than on a second press.
+    val imeVisible = WindowInsets.isImeVisible
+    var imeWasVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(imeVisible) {
+        if (imeWasVisible && !imeVisible) focus.clearFocus()
+        imeWasVisible = imeVisible
+    }
 
     LaunchedEffect(state.generation) { gridState.scrollToItem(0) }
     LaunchedEffect(vm) {
@@ -292,10 +299,22 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                     }
                 }
             }
-            if (searchFocused && suggestions.isNotEmpty()) {
-                SuggestionList(suggestions, onPick = vm::applySuggestion)
-            } else if (searchFocused && shelf.isNotEmpty()) {
-                TagShelf(shelf, onPick = vm::insertTag, onToggleFavourite = vm::toggleFavourite)
+            if (searchFocused && (suggestions.isNotEmpty() || shelf.isNotEmpty())) {
+                // A tap beside the tags puts the search away instead of opening the post beneath.
+                Box(Modifier.fillMaxSize().clickable(interactionSource = null, indication = null) { focus.clearFocus() })
+                Box(Modifier.imePadding()) {
+                    if (suggestions.isNotEmpty()) {
+                        val favourites = settings.favouriteTags[state.source?.id].orEmpty()
+                        SuggestionList(
+                            suggestions,
+                            isFavourite = { it in favourites },
+                            onPick = vm::applySuggestion,
+                            onToggleFavourite = vm::toggleFavourite,
+                        )
+                    } else {
+                        TagShelf(shelf, onPick = vm::insertTag, onToggleFavourite = vm::toggleFavourite)
+                    }
+                }
             }
         }
     }
@@ -492,53 +511,86 @@ private fun BrowseTopBar(
 }
 
 /** The source's starred and most searched tags, while the search field is focused and quiet. */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TagShelf(tags: List<ShelfTag>, onPick: (String) -> Unit, onToggleFavourite: (String) -> Unit) {
     ElevatedCard(Modifier.padding(horizontal = 12.dp).fillMaxWidth().heightIn(max = 320.dp)) {
-        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp)) {
-            Text(stringResource(R.string.browse_tag_shelf), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                tags.forEach { tag ->
-                    AssistChip(
-                        onClick = { onPick(tag.name) },
-                        label = { Text(tag.name.replace('_', ' ')) },
-                        trailingIcon = {
-                            Icon(
-                                if (tag.favourite) Icons.Filled.Star else Icons.Outlined.StarOutline,
-                                stringResource(if (tag.favourite) R.string.tag_unfavourite else R.string.tag_favourite),
-                                Modifier.size(18.dp).clickable { onToggleFavourite(tag.name) },
-                            )
-                        },
-                    )
-                }
+        LazyColumn {
+            item {
+                Text(
+                    stringResource(R.string.browse_tag_shelf),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 4.dp),
+                )
+            }
+            items(tags, key = { it.name }) { tag ->
+                TagRow(
+                    name = tag.name.replace('_', ' '),
+                    favourite = tag.favourite,
+                    onPick = { onPick(tag.name) },
+                    onToggleFavourite = { onToggleFavourite(tag.name) },
+                )
+                HorizontalDivider()
             }
         }
     }
 }
 
 @Composable
-private fun SuggestionList(suggestions: List<TagSuggestion>, onPick: (TagSuggestion) -> Unit) {
+private fun SuggestionList(
+    suggestions: List<TagSuggestion>,
+    isFavourite: (String) -> Boolean,
+    onPick: (TagSuggestion) -> Unit,
+    onToggleFavourite: (String) -> Unit,
+) {
     ElevatedCard(Modifier.padding(horizontal = 12.dp).fillMaxWidth().heightIn(max = 320.dp)) {
         LazyColumn {
             items(suggestions, key = { it.name }) { suggestion ->
-                Row(
-                    Modifier.fillMaxWidth().clickable { onPick(suggestion) }.padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(Modifier.size(8.dp).clip(CircleShape).background(categoryColor(suggestion.category)))
-                    Spacer(Modifier.size(12.dp))
-                    Text(
-                        suggestion.name, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        color = categoryColor(suggestion.category).takeIf { suggestion.category != io.github.firebirks.booruvault.booru.TagCategory.GENERAL }
-                            ?: MaterialTheme.colorScheme.onSurface,
-                    )
-                    suggestion.count?.let {
-                        Text(formatCount(it), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                }
+                TagRow(
+                    name = suggestion.name,
+                    favourite = isFavourite(suggestion.name),
+                    onPick = { onPick(suggestion) },
+                    onToggleFavourite = { onToggleFavourite(suggestion.name) },
+                    category = suggestion.category,
+                    count = suggestion.count,
+                )
                 HorizontalDivider()
             }
+        }
+    }
+}
+
+/** A tag offered for the search; its star stands apart at the far end, so a short name is not missed for it. */
+@Composable
+private fun TagRow(
+    name: String,
+    favourite: Boolean,
+    onPick: () -> Unit,
+    onToggleFavourite: () -> Unit,
+    category: TagCategory? = null,
+    count: Long? = null,
+) {
+    Row(
+        Modifier.fillMaxWidth().clickable(onClick = onPick).padding(start = 16.dp, end = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (category != null) {
+            Box(Modifier.size(8.dp).clip(CircleShape).background(categoryColor(category)))
+            Spacer(Modifier.size(12.dp))
+        }
+        Text(
+            name, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
+            color = category?.takeIf { it != TagCategory.GENERAL }?.let { categoryColor(it) } ?: MaterialTheme.colorScheme.onSurface,
+        )
+        count?.let {
+            Text(formatCount(it), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        IconButton(onClick = onToggleFavourite) {
+            Icon(
+                if (favourite) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                stringResource(if (favourite) R.string.tag_unfavourite else R.string.tag_favourite),
+                tint = if (favourite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
