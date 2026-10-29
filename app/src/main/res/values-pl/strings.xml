@@ -199,7 +199,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Bez tych danych gelbooru.com i rule34.xxx są odczytywane ze stron WWW.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Potrzebne także do wyświetlania niektórych postów.</string>
     <string name="source_site_title">Witryna</string>
-    <string name="source_site_hint">Aby się zalogować, przejść weryfikację lub zmienić preferencje witryny, np. „Pokazuj wszystkie posty” („Display all site content” na Gelbooru). Pliki cookie pozostają zaszyfrowane w sejfie i działają zarówno dla API, jak i dla stron WWW.</string>
+    <string name="source_site_hint">Aby się zalogować, przejść weryfikację lub zmienić preferencje witryny. Pliki cookie pozostają zaszyfrowane w sejfie i działają zarówno dla API, jak i dla stron WWW.</string>
     <string name="source_open_browser">Otwórz witrynę we wbudowanej przeglądarce</string>
     <string name="source_cookies_saved">Zapisano pliki cookie witryny: dotknij przycisku Testuj, aby sprawdzić</string>
     <string name="source_test">Testuj</string>
@@ -250,7 +250,7 @@
     <string name="browser_title">Wbudowana przeglądarka</string>
     <string name="challenge_title">Kontrola bezpieczeństwa</string>
     <string name="action_done">Gotowe</string>
-    <string name="browser_hint">Zaloguj się, przejdź weryfikację lub zmień preferencje witryny (np. „Display all site content” na Gelbooru), a potem dotknij przycisku Gotowe: pliki cookie witryny zostaną zapisane w sejfie w postaci zaszyfrowanej.</string>
+    <string name="browser_hint">Zaloguj się, przejdź weryfikację lub zmień preferencje witryny, a potem dotknij przycisku Gotowe: pliki cookie witryny zostaną zapisane w sejfie w postaci zaszyfrowanej.</string>
     <string name="browser_blocked_outside">Ta przeglądarka zostaje na %1$s: link do innej witryny nie został otwarty.</string>
     <string name="browser_tor_unverified">Tor jest włączony, ale jeszcze niezweryfikowany: przeglądarka otworzy się, gdy kontrola potwierdzi, że połączenia wychodzą przez Tor.</string>
     <string name="challenge_hint">Witryna chce sprawdzić, czy jesteś człowiekiem. Ukończ weryfikację poniżej: gdy strona witryny otworzy się normalnie, BooruVault samodzielnie spróbuje ponownie.</string>

@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials。ない場合、gelbooru.com と rule34.xxx はウェブページから読み込みます。</string>
     <string name="source_hint_account_e621">Account → Manage API Access。一部の投稿を表示するためにも必要です。</string>
     <string name="source_site_title">サイト</string>
-    <string name="source_site_hint">ログインや確認の通過、または「すべての投稿を表示」（Gelbooru では「Display all site content」）などのサイト設定の変更に使用します。Cookie は保管庫内で暗号化されたまま保存され、API とウェブページの両方に適用されます。</string>
+    <string name="source_site_hint">ログインや確認の通過、サイト設定の変更に使用します。Cookie は保管庫内で暗号化されたまま保存され、API とウェブページの両方に適用されます。</string>
     <string name="source_open_browser">内蔵ブラウザでサイトを開く</string>
     <string name="source_cookies_saved">サイトの Cookie を保存しました。「テスト」をタップして確認してください</string>
     <string name="source_test">テスト</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">内蔵ブラウザ</string>
     <string name="challenge_title">セキュリティチェック</string>
     <string name="action_done">完了</string>
-    <string name="browser_hint">ログイン、確認の通過、サイト設定の変更（例：Gelbooru の「Display all site content」）を行ってから「完了」をタップしてください。サイトの Cookie は暗号化されて保管庫に保存されます。</string>
+    <string name="browser_hint">ログイン、確認の通過、サイト設定の変更を行ってから「完了」をタップしてください。サイトの Cookie は暗号化されて保管庫に保存されます。</string>
     <string name="browser_blocked_outside">このブラウザーは %1$s にとどまります。他のサイトへのリンクは開きませんでした。</string>
     <string name="browser_tor_unverified">Tor はオンですがまだ確認されていません。接続が Tor 経由であることを確認でき次第ブラウザーが開きます。</string>
     <string name="challenge_hint">サイトは、あなたが人間かどうかを確認しようとしています。下の確認を完了してください。サイトのページが正常に開いたら、BooruVault が自動的に再試行します。</string>

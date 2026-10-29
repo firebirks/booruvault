@@ -191,7 +191,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Bunlar olmadan gelbooru.com ve rule34.xxx web sayfalarından okunur.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Bazı gönderileri görmek için de gereklidir.</string>
     <string name="source_site_title">Site</string>
-    <string name="source_site_hint">Oturum açmak, bir doğrulamayı geçmek veya “Tüm gönderileri göster” gibi site tercihlerini (Gelbooru\'da “Display all site content”) değiştirmek için. Çerezler kasada şifreli kalır ve hem API hem de web sayfaları için geçerlidir.</string>
+    <string name="source_site_hint">Oturum açmak, bir doğrulamayı geçmek veya site tercihlerini değiştirmek için. Çerezler kasada şifreli kalır ve hem API hem de web sayfaları için geçerlidir.</string>
     <string name="source_open_browser">Siteyi yerleşik tarayıcıda aç</string>
     <string name="source_cookies_saved">Site çerezleri kaydedildi: kontrol etmek için Test\'e dokunun</string>
     <string name="source_test">Test</string>
@@ -240,7 +240,7 @@
     <string name="browser_title">Yerleşik tarayıcı</string>
     <string name="challenge_title">Güvenlik kontrolü</string>
     <string name="action_done">Bitti</string>
-    <string name="browser_hint">Oturum açın, doğrulamaları geçin veya sitenin tercihlerini değiştirin (ör. Gelbooru\'da “Display all site content”), ardından Bitti\'ye dokunun: sitenin çerezleri kasaya şifreli olarak kaydedilir.</string>
+    <string name="browser_hint">Oturum açın, doğrulamaları geçin veya sitenin tercihlerini değiştirin, ardından Bitti\'ye dokunun: sitenin çerezleri kasaya şifreli olarak kaydedilir.</string>
     <string name="browser_blocked_outside">Bu tarayıcı %1$s üzerinde kalır: başka bir siteye giden bağlantı açılmadı.</string>
     <string name="browser_tor_unverified">Tor açık ama henüz doğrulanmadı: bağlantıların Tor üzerinden çıktığı doğrulanınca tarayıcı açılır.</string>
     <string name="challenge_hint">Site, insan olduğunuzu doğrulamak istiyor. Aşağıdaki doğrulamayı tamamlayın: sitenin sayfası normal şekilde açıldığında BooruVault kendiliğinden yeniden dener.</string>

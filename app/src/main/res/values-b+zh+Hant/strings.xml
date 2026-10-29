@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials。沒有憑證時，會從網頁讀取 gelbooru.com 和 rule34.xxx。</string>
     <string name="source_hint_account_e621">Account → Manage API Access。查看部分貼文時也需要。</string>
     <string name="source_site_title">網站</string>
-    <string name="source_site_hint">用於登入、通過驗證或變更網站偏好設定，例如「顯示所有貼文」（在 Gelbooru 上為「Display all site content」）。Cookie 會加密儲存在保險庫中，同時適用於 API 和網頁。</string>
+    <string name="source_site_hint">用於登入、通過驗證或變更網站偏好設定。Cookie 會加密儲存在保險庫中，同時適用於 API 和網頁。</string>
     <string name="source_open_browser">在內建瀏覽器中開啟網站</string>
     <string name="source_cookies_saved">已儲存網站 Cookie：輕觸「測試」即可檢查</string>
     <string name="source_test">測試</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">內建瀏覽器</string>
     <string name="challenge_title">安全性驗證</string>
     <string name="action_done">完成</string>
-    <string name="browser_hint">登入、通過驗證或變更網站偏好設定（例如 Gelbooru 上的「Display all site content」），然後輕觸「完成」：網站的 Cookie 會加密儲存在保險庫中。</string>
+    <string name="browser_hint">登入、通過驗證或變更網站偏好設定，然後輕觸「完成」：網站的 Cookie 會加密儲存在保險庫中。</string>
     <string name="browser_blocked_outside">此瀏覽器只停留在 %1$s：指向其他網站的連結未開啟。</string>
     <string name="browser_tor_unverified">Tor 已開啟但尚未驗證：確認連線經由 Tor 後，瀏覽器才會開啟。</string>
     <string name="challenge_hint">網站想確認你是真人。請完成下方的驗證：網站頁面正常開啟後，BooruVault 會自動重試。</string>

@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. 없으면 gelbooru.com과 rule34.xxx는 웹 페이지에서 읽습니다.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. 일부 게시물을 보는 데도 필요합니다.</string>
     <string name="source_site_title">사이트</string>
-    <string name="source_site_hint">로그인하거나, 확인을 통과하거나, ‘모든 게시물 표시’(Gelbooru에서는 ‘Display all site content’) 같은 사이트 설정을 변경할 때 사용합니다. 쿠키는 보관함에 암호화된 상태로 유지되며 API와 웹 페이지 모두에 적용됩니다.</string>
+    <string name="source_site_hint">로그인하거나, 확인을 통과하거나, 사이트 설정을 변경할 때 사용합니다. 쿠키는 보관함에 암호화된 상태로 유지되며 API와 웹 페이지 모두에 적용됩니다.</string>
     <string name="source_open_browser">내장 브라우저에서 사이트 열기</string>
     <string name="source_cookies_saved">사이트 쿠키를 저장했습니다. ‘테스트’를 눌러 확인하세요</string>
     <string name="source_test">테스트</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">내장 브라우저</string>
     <string name="challenge_title">보안 확인</string>
     <string name="action_done">완료</string>
-    <string name="browser_hint">로그인하거나, 확인을 통과하거나, 사이트 설정을 변경한 다음(예: Gelbooru의 ‘Display all site content’) ‘완료’를 누르세요. 사이트 쿠키는 암호화되어 보관함에 저장됩니다.</string>
+    <string name="browser_hint">로그인하거나, 확인을 통과하거나, 사이트 설정을 변경한 다음 ‘완료’를 누르세요. 사이트 쿠키는 암호화되어 보관함에 저장됩니다.</string>
     <string name="browser_blocked_outside">이 브라우저는 %1$s에 머뭅니다. 다른 사이트로 가는 링크는 열지 않았습니다.</string>
     <string name="browser_tor_unverified">Tor가 켜져 있지만 아직 확인되지 않았습니다. 연결이 Tor를 통해 나가는 것이 확인되면 브라우저가 열립니다.</string>
     <string name="challenge_hint">사이트에서 사용자가 사람인지 확인하려고 합니다. 아래 확인을 완료하세요. 사이트 페이지가 정상적으로 열리면 BooruVault가 자동으로 다시 시도합니다.</string>

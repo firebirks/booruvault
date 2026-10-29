@@ -195,7 +195,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Sem credenciais, gelbooru.com e rule34.xxx são lidos pelas páginas web deles.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Também é necessário para ver alguns posts.</string>
     <string name="source_site_title">Site</string>
-    <string name="source_site_hint">Para fazer login, passar por uma verificação ou alterar preferências do site, como “Mostrar todos os posts” (“Display all site content” no Gelbooru). Os cookies ficam criptografados no cofre e valem tanto para a API quanto para as páginas web.</string>
+    <string name="source_site_hint">Para fazer login, passar por uma verificação ou alterar as preferências do site. Os cookies ficam criptografados no cofre e valem tanto para a API quanto para as páginas web.</string>
     <string name="source_open_browser">Abrir o site no navegador integrado</string>
     <string name="source_cookies_saved">Cookies do site salvos: toque em Testar para verificar</string>
     <string name="source_test">Testar</string>
@@ -245,7 +245,7 @@
     <string name="browser_title">Navegador integrado</string>
     <string name="challenge_title">Verificação de segurança</string>
     <string name="action_done">Concluído</string>
-    <string name="browser_hint">Faça login, passe pelas verificações ou altere as preferências do site (por exemplo, “Display all site content” no Gelbooru) e depois toque em Concluído: os cookies do site são salvos criptografados no cofre.</string>
+    <string name="browser_hint">Faça login, passe pelas verificações ou altere as preferências do site e depois toque em Concluído: os cookies do site são salvos criptografados no cofre.</string>
     <string name="browser_blocked_outside">Este navegador fica em %1$s: um link para outro site não foi aberto.</string>
     <string name="browser_tor_unverified">O Tor está ligado mas ainda não verificado: o navegador abre quando uma verificação confirmar que as conexões saem pelo Tor.</string>
     <string name="challenge_hint">O site quer verificar se você é uma pessoa. Conclua a verificação abaixo: assim que a página do site abrir normalmente, o BooruVault tentará de novo automaticamente.</string>

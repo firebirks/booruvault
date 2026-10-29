@@ -191,7 +191,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials। इसके बिना gelbooru.com और rule34.xxx को उनके वेब पेजों से पढ़ा जाता है।</string>
     <string name="source_hint_account_e621">Account → Manage API Access। कुछ पोस्ट देखने के लिए भी ज़रूरी है।</string>
     <string name="source_site_title">साइट</string>
-    <string name="source_site_hint">लॉग इन करने, कोई जांच पास करने या “सभी पोस्ट दिखाएं” जैसी साइट की प्राथमिकताएं बदलने के लिए (Gelbooru पर “Display all site content”)। कुकी तिजोरी में एन्क्रिप्टेड रहती हैं और API व वेब पेज, दोनों पर लागू होती हैं।</string>
+    <string name="source_site_hint">लॉग इन करने, कोई जांच पास करने या साइट की प्राथमिकताएं बदलने के लिए। कुकी तिजोरी में एन्क्रिप्टेड रहती हैं और API व वेब पेज, दोनों पर लागू होती हैं।</string>
     <string name="source_open_browser">बिल्ट-इन ब्राउज़र में साइट खोलें</string>
     <string name="source_cookies_saved">साइट की कुकी सेव हो गईं: जांचने के लिए टेस्ट पर टैप करें</string>
     <string name="source_test">टेस्ट</string>
@@ -240,7 +240,7 @@
     <string name="browser_title">बिल्ट-इन ब्राउज़र</string>
     <string name="challenge_title">सुरक्षा जांच</string>
     <string name="action_done">हो गया</string>
-    <string name="browser_hint">लॉग इन करें, जांचें पास करें या साइट की प्राथमिकताएं बदलें (जैसे Gelbooru पर “Display all site content”), फिर हो गया पर टैप करें: साइट की कुकी तिजोरी में एन्क्रिप्ट करके सेव की जाती हैं।</string>
+    <string name="browser_hint">लॉग इन करें, जांचें पास करें या साइट की प्राथमिकताएं बदलें, फिर हो गया पर टैप करें: साइट की कुकी तिजोरी में एन्क्रिप्ट करके सेव की जाती हैं।</string>
     <string name="browser_blocked_outside">यह ब्राउज़र %1$s पर ही रहता है: दूसरी साइट का लिंक नहीं खोला गया।</string>
     <string name="browser_tor_unverified">Tor चालू है पर अभी सत्यापित नहीं: जाँच से पुष्टि होने पर कि कनेक्शन Tor से बाहर जाते हैं, ब्राउज़र खुलेगा।</string>
     <string name="challenge_hint">साइट यह जांचना चाहती है कि आप इंसान हैं। नीचे दी गई जांच पूरी करें: जब साइट का पेज सामान्य रूप से खुल जाएगा, तो BooruVault अपने आप फिर से कोशिश करेगा।</string>

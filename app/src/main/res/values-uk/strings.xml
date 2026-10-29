@@ -199,7 +199,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Без них gelbooru.com і rule34.xxx читаються через вебсторінки.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Також потрібно, щоб бачити деякі дописи.</string>
     <string name="source_site_title">Сайт</string>
-    <string name="source_site_hint">Щоб увійти, пройти перевірку або змінити налаштування сайту, як-от «Показувати всі дописи» («Display all site content» на Gelbooru). Cookie зберігаються зашифрованими у сховищі й діють і для API, і для вебсторінок.</string>
+    <string name="source_site_hint">Щоб увійти, пройти перевірку або змінити налаштування сайту. Cookie зберігаються зашифрованими у сховищі й діють і для API, і для вебсторінок.</string>
     <string name="source_open_browser">Відкрити сайт у вбудованому браузері</string>
     <string name="source_cookies_saved">Cookie сайту збережено: натисніть «Перевірити»</string>
     <string name="source_test">Перевірити</string>
@@ -250,7 +250,7 @@
     <string name="browser_title">Вбудований браузер</string>
     <string name="challenge_title">Перевірка безпеки</string>
     <string name="action_done">Готово</string>
-    <string name="browser_hint">Увійдіть, пройдіть перевірки або змініть налаштування сайту (напр. «Display all site content» на Gelbooru), потім натисніть «Готово»: cookie сайту буде збережено у сховищі в зашифрованому вигляді.</string>
+    <string name="browser_hint">Увійдіть, пройдіть перевірки або змініть налаштування сайту, потім натисніть «Готово»: cookie сайту буде збережено у сховищі в зашифрованому вигляді.</string>
     <string name="browser_blocked_outside">Цей браузер залишається на %1$s: посилання на інший сайт не відкрито.</string>
     <string name="browser_tor_unverified">Tor увімкнено, але ще не перевірено: браузер відкриється, коли перевірка підтвердить, що з\'єднання виходять через Tor.</string>
     <string name="challenge_hint">Сайт хоче переконатися, що ви людина. Пройдіть перевірку нижче: щойно сторінка сайту відкриється нормально, BooruVault сам спробує знову.</string>

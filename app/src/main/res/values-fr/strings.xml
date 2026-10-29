@@ -195,7 +195,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Sans identifiants, gelbooru.com et rule34.xxx sont lus depuis leurs pages web.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Également nécessaire pour voir certains posts.</string>
     <string name="source_site_title">Site</string>
-    <string name="source_site_hint">Pour vous connecter, passer une vérification ou modifier des préférences du site comme « Afficher tous les posts » (« Display all site content » sur Gelbooru). Les cookies restent chiffrés dans le coffre et s\'appliquent à la fois à l\'API et aux pages web.</string>
+    <string name="source_site_hint">Pour vous connecter, passer une vérification ou modifier les préférences du site. Les cookies restent chiffrés dans le coffre et s\'appliquent à la fois à l\'API et aux pages web.</string>
     <string name="source_open_browser">Ouvrir le site dans le navigateur intégré</string>
     <string name="source_cookies_saved">Cookies du site enregistrés : appuyez sur Tester pour vérifier</string>
     <string name="source_test">Tester</string>
@@ -245,7 +245,7 @@
     <string name="browser_title">Navigateur intégré</string>
     <string name="challenge_title">Vérification de sécurité</string>
     <string name="action_done">Terminé</string>
-    <string name="browser_hint">Connectez-vous, passez les vérifications ou modifiez les préférences du site (par ex. « Display all site content » sur Gelbooru), puis appuyez sur Terminé : les cookies du site sont enregistrés chiffrés dans le coffre.</string>
+    <string name="browser_hint">Connectez-vous, passez les vérifications ou modifiez les préférences du site, puis appuyez sur Terminé : les cookies du site sont enregistrés chiffrés dans le coffre.</string>
     <string name="browser_blocked_outside">Ce navigateur reste sur %1$s : un lien vers un autre site n\'a pas été ouvert.</string>
     <string name="browser_tor_unverified">Tor est actif mais pas encore vérifié : le navigateur s\'ouvre quand une vérification confirme que les connexions sortent par Tor.</string>
     <string name="challenge_hint">Le site veut vérifier que vous êtes une personne. Effectuez la vérification ci-dessous : dès que la page du site s\'ouvre normalement, BooruVault réessaie automatiquement.</string>

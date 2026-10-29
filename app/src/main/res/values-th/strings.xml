@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials หากไม่มี จะอ่าน gelbooru.com และ rule34.xxx จากหน้าเว็บ</string>
     <string name="source_hint_account_e621">Account → Manage API Access จำเป็นสำหรับการดูบางโพสต์ด้วย</string>
     <string name="source_site_title">เว็บไซต์</string>
-    <string name="source_site_hint">ใช้เพื่อเข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ เช่น “แสดงโพสต์ทั้งหมด” (“Display all site content” บน Gelbooru) คุกกี้จะถูกเข้ารหัสเก็บไว้ในคลังนิรภัยและใช้ได้กับทั้ง API และหน้าเว็บ</string>
+    <string name="source_site_hint">ใช้เพื่อเข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ คุกกี้จะถูกเข้ารหัสเก็บไว้ในคลังนิรภัยและใช้ได้กับทั้ง API และหน้าเว็บ</string>
     <string name="source_open_browser">เปิดเว็บไซต์ในเบราว์เซอร์ในตัว</string>
     <string name="source_cookies_saved">บันทึกคุกกี้ของเว็บไซต์แล้ว: แตะ “ทดสอบ” เพื่อตรวจสอบ</string>
     <string name="source_test">ทดสอบ</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">เบราว์เซอร์ในตัว</string>
     <string name="challenge_title">การตรวจสอบความปลอดภัย</string>
     <string name="action_done">เสร็จสิ้น</string>
-    <string name="browser_hint">เข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ (เช่น “Display all site content” บน Gelbooru) จากนั้นแตะ “เสร็จสิ้น”: คุกกี้ของเว็บไซต์จะถูกเข้ารหัสและบันทึกไว้ในคลังนิรภัย</string>
+    <string name="browser_hint">เข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ จากนั้นแตะ “เสร็จสิ้น”: คุกกี้ของเว็บไซต์จะถูกเข้ารหัสและบันทึกไว้ในคลังนิรภัย</string>
     <string name="browser_blocked_outside">เบราว์เซอร์นี้อยู่บน %1$s เท่านั้น: ไม่ได้เปิดลิงก์ไปยังเว็บไซต์อื่น</string>
     <string name="browser_tor_unverified">Tor เปิดอยู่แต่ยังไม่ได้ยืนยัน: เบราว์เซอร์จะเปิดเมื่อการตรวจสอบยืนยันว่าการเชื่อมต่อออกผ่าน Tor</string>
     <string name="challenge_hint">เว็บไซต์ต้องการตรวจสอบว่าคุณเป็นมนุษย์ ทำการตรวจสอบด้านล่างให้เสร็จ: เมื่อหน้าเว็บของเว็บไซต์เปิดได้ตามปกติ BooruVault จะลองใหม่เอง</string>

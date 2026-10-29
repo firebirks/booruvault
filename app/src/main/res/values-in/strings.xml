@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Tanpa itu, gelbooru.com dan rule34.xxx dibaca dari halaman webnya.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Juga diperlukan untuk melihat beberapa postingan.</string>
     <string name="source_site_title">Situs</string>
-    <string name="source_site_hint">Untuk login, lolos pemeriksaan, atau mengubah preferensi situs seperti “Tampilkan semua postingan” (“Display all site content” di Gelbooru). Cookie tetap terenkripsi di brankas dan berlaku untuk API maupun halaman web.</string>
+    <string name="source_site_hint">Untuk login, lolos pemeriksaan, atau mengubah preferensi situs. Cookie tetap terenkripsi di brankas dan berlaku untuk API maupun halaman web.</string>
     <string name="source_open_browser">Buka situs di browser bawaan</string>
     <string name="source_cookies_saved">Cookie situs disimpan: ketuk Uji untuk memeriksa</string>
     <string name="source_test">Uji</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">Browser bawaan</string>
     <string name="challenge_title">Pemeriksaan keamanan</string>
     <string name="action_done">Selesai</string>
-    <string name="browser_hint">Login, lolos pemeriksaan, atau ubah preferensi situs (mis. “Display all site content” di Gelbooru), lalu ketuk Selesai: cookie situs disimpan terenkripsi di brankas.</string>
+    <string name="browser_hint">Login, lolos pemeriksaan, atau ubah preferensi situs, lalu ketuk Selesai: cookie situs disimpan terenkripsi di brankas.</string>
     <string name="browser_blocked_outside">Peramban ini tetap di %1$s: tautan ke situs lain tidak dibuka.</string>
     <string name="browser_tor_unverified">Tor aktif tetapi belum diverifikasi: peramban terbuka setelah pemeriksaan memastikan koneksi keluar lewat Tor.</string>
     <string name="challenge_hint">Situs ingin memastikan bahwa Anda manusia. Selesaikan pemeriksaan di bawah: setelah halaman situs terbuka seperti biasa, BooruVault akan mencoba lagi secara otomatis.</string>

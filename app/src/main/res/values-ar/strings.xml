@@ -207,7 +207,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. بدونها، تتم قراءة gelbooru.com و rule34.xxx من صفحات الويب الخاصة بهما.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. مطلوب أيضًا لرؤية بعض المنشورات.</string>
     <string name="source_site_title">الموقع</string>
-    <string name="source_site_hint">لتسجيل الدخول أو اجتياز تحقق أو تغيير تفضيلات الموقع مثل «إظهار كل المنشورات» («Display all site content» على Gelbooru). تبقى ملفات تعريف الارتباط مشفّرة في الخزنة وتنطبق على كلٍّ من API وصفحات الويب.</string>
+    <string name="source_site_hint">لتسجيل الدخول أو اجتياز تحقق أو تغيير تفضيلات الموقع. تبقى ملفات تعريف الارتباط مشفّرة في الخزنة وتنطبق على كلٍّ من API وصفحات الويب.</string>
     <string name="source_open_browser">فتح الموقع في المتصفح المدمج</string>
     <string name="source_cookies_saved">تم حفظ ملفات تعريف الارتباط للموقع: انقر على «اختبار» للتحقق</string>
     <string name="source_test">اختبار</string>
@@ -260,7 +260,7 @@
     <string name="browser_title">المتصفح المدمج</string>
     <string name="challenge_title">تحقق أمني</string>
     <string name="action_done">تم</string>
-    <string name="browser_hint">سجّل الدخول أو اجتز عمليات التحقق أو غيّر تفضيلات الموقع (مثل «Display all site content» على Gelbooru)، ثم انقر على «تم»: تُحفظ ملفات تعريف الارتباط الخاصة بالموقع مشفّرة في الخزنة.</string>
+    <string name="browser_hint">سجّل الدخول أو اجتز عمليات التحقق أو غيّر تفضيلات الموقع، ثم انقر على «تم»: تُحفظ ملفات تعريف الارتباط الخاصة بالموقع مشفّرة في الخزنة.</string>
     <string name="browser_blocked_outside">يبقى هذا المتصفح على %1$s: لم يُفتح رابط إلى موقع آخر.</string>
     <string name="browser_tor_unverified">Tor مفعّل لكنه لم يُتحقق منه بعد: يفتح المتصفح عندما يؤكد فحص أن الاتصالات تخرج عبر Tor.</string>
     <string name="challenge_hint">يريد الموقع التحقق من أنك إنسان. أكمل التحقق أدناه: بمجرد أن تُفتح صفحة الموقع بشكل طبيعي، سيعيد BooruVault المحاولة تلقائيًا.</string>

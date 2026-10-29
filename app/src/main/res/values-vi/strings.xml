@@ -187,7 +187,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Nếu không có, gelbooru.com và rule34.xxx sẽ được đọc từ các trang web.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Cũng cần để xem một số bài đăng.</string>
     <string name="source_site_title">Trang web</string>
-    <string name="source_site_hint">Dùng để đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web như “Hiển thị tất cả bài đăng” (“Display all site content” trên Gelbooru). Cookie luôn được mã hóa trong kho và áp dụng cho cả API lẫn các trang web.</string>
+    <string name="source_site_hint">Dùng để đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web. Cookie luôn được mã hóa trong kho và áp dụng cho cả API lẫn các trang web.</string>
     <string name="source_open_browser">Mở trang web trong trình duyệt tích hợp</string>
     <string name="source_cookies_saved">Đã lưu cookie của trang web: nhấn “Thử” để kiểm tra</string>
     <string name="source_test">Thử</string>
@@ -235,7 +235,7 @@
     <string name="browser_title">Trình duyệt tích hợp</string>
     <string name="challenge_title">Kiểm tra bảo mật</string>
     <string name="action_done">Xong</string>
-    <string name="browser_hint">Đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web (vd. “Display all site content” trên Gelbooru), rồi nhấn “Xong”: cookie của trang web được mã hóa và lưu trong kho.</string>
+    <string name="browser_hint">Đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web, rồi nhấn “Xong”: cookie của trang web được mã hóa và lưu trong kho.</string>
     <string name="browser_blocked_outside">Trình duyệt này ở lại %1$s: liên kết đến trang khác không được mở.</string>
     <string name="browser_tor_unverified">Tor đang bật nhưng chưa được xác minh: trình duyệt mở khi kiểm tra xác nhận kết nối đi ra qua Tor.</string>
     <string name="challenge_hint">Trang web muốn xác minh rằng bạn là người. Hãy hoàn tất kiểm tra bên dưới: khi trang web mở bình thường, BooruVault sẽ tự thử lại.</string>

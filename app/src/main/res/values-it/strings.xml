@@ -195,7 +195,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Senza, gelbooru.com e rule34.xxx vengono letti dalle pagine web.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Serve anche per vedere alcuni post.</string>
     <string name="source_site_title">Sito</string>
-    <string name="source_site_hint">Per accedere, superare una verifica o cambiare le preferenze del sito, come «Mostra tutti i post» («Display all site content» su Gelbooru). I cookie restano cifrati nel vault e valgono per API e pagine web.</string>
+    <string name="source_site_hint">Per accedere, superare una verifica o cambiare le preferenze del sito. I cookie restano cifrati nel vault e valgono per API e pagine web.</string>
     <string name="source_open_browser">Apri il sito nel browser integrato</string>
     <string name="source_cookies_saved">Cookie del sito salvati: premi Prova per verificare</string>
     <string name="source_test">Prova</string>
@@ -245,7 +245,7 @@
     <string name="browser_title">Browser integrato</string>
     <string name="challenge_title">Verifica di sicurezza</string>
     <string name="action_done">Fatto</string>
-    <string name="browser_hint">Accedi, supera le verifiche o cambia le preferenze del sito (es. «Display all site content» su Gelbooru), poi premi Fatto: i cookie del sito vengono salvati cifrati nel vault.</string>
+    <string name="browser_hint">Accedi, supera le verifiche o cambia le preferenze del sito, poi premi Fatto: i cookie del sito vengono salvati cifrati nel vault.</string>
     <string name="browser_blocked_outside">Questo browser resta su %1$s: un link verso un altro sito non è stato aperto.</string>
     <string name="browser_tor_unverified">Tor è attivo ma non ancora verificato: il browser si apre quando un controllo conferma che le connessioni escono via Tor.</string>
     <string name="challenge_hint">Il sito vuole verificare che tu sia una persona. Completa il controllo qui sotto: quando la pagina del sito si apre normalmente, BooruVault riprova da solo.</string>

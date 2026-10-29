@@ -197,7 +197,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Without one, gelbooru.com and rule34.xxx are read from their web pages.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Also needed to see some posts.</string>
     <string name="source_site_title">Site</string>
-    <string name="source_site_hint">To log in, pass a check or change site preferences such as “Show all posts” (“Display all site content” on Gelbooru). Cookies stay encrypted in the vault and apply to both the API and the web pages.</string>
+    <string name="source_site_hint">To log in, pass a check or change the site\'s preferences. Cookies stay encrypted in the vault and apply to both the API and the web pages.</string>
     <string name="source_open_browser">Open the site in the built-in browser</string>
     <string name="source_cookies_saved">Site cookies saved: tap Test to check</string>
     <string name="source_test">Test</string>
@@ -246,7 +246,7 @@
     <string name="browser_title">Built-in browser</string>
     <string name="challenge_title">Security check</string>
     <string name="action_done">Done</string>
-    <string name="browser_hint">Log in, pass the checks or change the site\'s preferences (e.g. “Display all site content” on Gelbooru), then tap Done: the site\'s cookies are saved encrypted in the vault.</string>
+    <string name="browser_hint">Log in, pass the checks or change the site\'s preferences, then tap Done: the site\'s cookies are saved encrypted in the vault.</string>
     <string name="browser_blocked_outside">This browser stays on %1$s: a link to another site was not opened.</string>
     <string name="browser_tor_unverified">Tor is on but not yet verified: the browser opens once a check confirms that connections leave through Tor.</string>
     <string name="challenge_hint">The site wants to check that you are a person. Complete the check below: once the site\'s page opens normally, BooruVault tries again by itself.</string>

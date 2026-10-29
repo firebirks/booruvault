@@ -191,7 +191,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Ohne diese Zugangsdaten werden gelbooru.com und rule34.xxx über ihre Webseiten gelesen.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Wird auch benötigt, um manche Posts zu sehen.</string>
     <string name="source_site_title">Website</string>
-    <string name="source_site_hint">Zum Anmelden, Bestehen einer Prüfung oder Ändern von Website-Einstellungen wie „Alle Posts anzeigen“ („Display all site content“ auf Gelbooru). Cookies bleiben verschlüsselt im Tresor und gelten sowohl für die API als auch für die Webseiten.</string>
+    <string name="source_site_hint">Zum Anmelden, Bestehen einer Prüfung oder Ändern der Website-Einstellungen. Cookies bleiben verschlüsselt im Tresor und gelten sowohl für die API als auch für die Webseiten.</string>
     <string name="source_open_browser">Website im integrierten Browser öffnen</string>
     <string name="source_cookies_saved">Website-Cookies gespeichert: Tippe zum Prüfen auf Testen</string>
     <string name="source_test">Testen</string>
@@ -240,7 +240,7 @@
     <string name="browser_title">Integrierter Browser</string>
     <string name="challenge_title">Sicherheitsprüfung</string>
     <string name="action_done">Fertig</string>
-    <string name="browser_hint">Melde dich an, bestehe die Prüfungen oder ändere die Einstellungen der Website (z. B. „Display all site content“ auf Gelbooru) und tippe dann auf Fertig: Die Cookies der Website werden verschlüsselt im Tresor gespeichert.</string>
+    <string name="browser_hint">Melde dich an, bestehe die Prüfungen oder ändere die Einstellungen der Website und tippe dann auf Fertig: Die Cookies der Website werden verschlüsselt im Tresor gespeichert.</string>
     <string name="browser_blocked_outside">Dieser Browser bleibt auf %1$s: ein Link zu einer anderen Seite wurde nicht geöffnet.</string>
     <string name="browser_tor_unverified">Tor ist an, aber noch nicht geprüft: der Browser öffnet sich, sobald eine Prüfung bestätigt, dass Verbindungen über Tor hinausgehen.</string>
     <string name="challenge_hint">Die Website möchte prüfen, ob du ein Mensch bist. Schließe die Prüfung unten ab: Sobald die Seite der Website normal lädt, versucht BooruVault es selbstständig erneut.</string>

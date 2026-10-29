@@ -191,7 +191,7 @@
     <string name="source_hint_account_gelbooru">Account → Options → API Access Credentials. Zonder deze gegevens worden gelbooru.com en rule34.xxx via hun webpagina\'s gelezen.</string>
     <string name="source_hint_account_e621">Account → Manage API Access. Ook nodig om sommige posts te zien.</string>
     <string name="source_site_title">Site</string>
-    <string name="source_site_hint">Om in te loggen, een controle te doorstaan of sitevoorkeuren te wijzigen, zoals ‘Alle posts tonen’ (‘Display all site content’ op Gelbooru). Cookies blijven versleuteld in de kluis en gelden voor zowel de API als de webpagina\'s.</string>
+    <string name="source_site_hint">Om in te loggen, een controle te doorstaan of de voorkeuren van de site te wijzigen. Cookies blijven versleuteld in de kluis en gelden voor zowel de API als de webpagina\'s.</string>
     <string name="source_open_browser">Site openen in de ingebouwde browser</string>
     <string name="source_cookies_saved">Cookies van de site opgeslagen: tik op Testen om te controleren</string>
     <string name="source_test">Testen</string>
@@ -240,7 +240,7 @@
     <string name="browser_title">Ingebouwde browser</string>
     <string name="challenge_title">Beveiligingscontrole</string>
     <string name="action_done">Klaar</string>
-    <string name="browser_hint">Log in, doorsta de controles of wijzig de voorkeuren van de site (bijv. ‘Display all site content’ op Gelbooru) en tik daarna op Klaar: de cookies van de site worden versleuteld in de kluis opgeslagen.</string>
+    <string name="browser_hint">Log in, doorsta de controles of wijzig de voorkeuren van de site en tik daarna op Klaar: de cookies van de site worden versleuteld in de kluis opgeslagen.</string>
     <string name="browser_blocked_outside">Deze browser blijft op %1$s: een link naar een andere site is niet geopend.</string>
     <string name="browser_tor_unverified">Tor staat aan maar is nog niet gecontroleerd: de browser opent zodra een controle bevestigt dat verbindingen via Tor naar buiten gaan.</string>
     <string name="challenge_hint">De site wil controleren of je een mens bent. Voltooi de controle hieronder: zodra de pagina van de site normaal opent, probeert BooruVault het vanzelf opnieuw.</string>
