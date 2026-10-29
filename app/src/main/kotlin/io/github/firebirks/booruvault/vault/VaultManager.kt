@@ -23,7 +23,6 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.security.GeneralSecurityException
 import javax.crypto.Cipher
-import javax.security.auth.Destroyable
 
 /** The vault's only clear-text file: how to turn the password into the private key. */
 @Serializable
@@ -128,13 +127,14 @@ class VaultManager(private val root: File, private val json: Json) {
     }
 
     /**
-     * Drops the private key. The JCA key object cannot be overwritten from Kotlin; once nothing
-     * references it the GC frees its native copy, which BoringSSL clears on release.
+     * Drops the private keys, the retired ones with the current. The JCA key objects cannot be
+     * overwritten from Kotlin; once nothing references them the GC frees their native copies,
+     * which BoringSSL clears on release.
      */
     fun lock() {
         val unlocked = _state.value as? VaultState.Unlocked ?: return
         _state.value = VaultState.Locked
-        (unlocked.keys.privateKey as? Destroyable)?.let { runCatching { it.destroy() } }
+        unlocked.keys.destroyPrivateKeys()
     }
 
     /**
@@ -199,7 +199,10 @@ class VaultManager(private val root: File, private val json: Json) {
             writeHeader(updated)
             header = updated
             _rekeyPending.value = false
-            (_state.value as? VaultState.Unlocked)?.let { _state.value = VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey)) }
+            (_state.value as? VaultState.Unlocked)?.let {
+                _state.value = VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey))
+                it.keys.retired.forEach { retired -> retired.destroyPrivateKeys() }
+            }
         }
     }
 
@@ -280,10 +283,12 @@ class VaultManager(private val root: File, private val json: Json) {
     /** Deletes the vault and everything in it. Irreversible. */
     suspend fun destroy() = mutex.withLock {
         withContext(Dispatchers.IO) {
+            val unlocked = _state.value as? VaultState.Unlocked
             _state.value = VaultState.Missing
             header = null
             _biometric.value = false
             _rekeyPending.value = false
+            unlocked?.keys?.destroyPrivateKeys()
             root.deleteRecursively()
         }
     }

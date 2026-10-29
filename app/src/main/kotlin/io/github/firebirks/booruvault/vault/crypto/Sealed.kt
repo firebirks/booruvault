@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import javax.security.auth.Destroyable
 
 /** The vault's public key together with the exact bytes it is stored as, which feed the KDF. */
 class Recipient(val key: PublicKey, val encoded: ByteArray) {
@@ -29,7 +30,16 @@ class Recipient(val key: PublicKey, val encoded: ByteArray) {
  * The vault's key pair, plus any [retired] pairs whose files are still being re-sealed after a
  * password change. A reader tries the current pair first, then the retired ones.
  */
-class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retired: List<VaultKeys> = emptyList())
+class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retired: List<VaultKeys> = emptyList()) {
+    /**
+     * Asks the private key, and every retired one, to wipe itself; a key that cannot stops none
+     * of the others. The platform's EC keys cannot be wiped this way: their native copy is
+     * cleared only when the GC frees it, so this is a try, not a guarantee.
+     */
+    fun destroyPrivateKeys() {
+        (listOf(this) + retired).forEach { keys -> (keys.privateKey as? Destroyable)?.let { runCatching { it.destroy() } } }
+    }
+}
 
 /**
  * A file sealed to the vault's public key: ECIES (P-256 ECDH, HKDF-SHA256) wrapping a chunked
