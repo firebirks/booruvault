@@ -21,6 +21,7 @@ import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.net.TorUnreachableException
 import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.settings.SettingsRepository
+import io.github.firebirks.booruvault.util.SensitiveClipboard
 import io.github.firebirks.booruvault.vault.AutoLock
 import io.github.firebirks.booruvault.vault.VaultImageFetcher
 import io.github.firebirks.booruvault.vault.VaultImageKeyer
@@ -41,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -124,6 +126,7 @@ class AppContainer(private val context: Context) {
         vaultStore, vault, settings, json, vaultDir, scope,
     )
     val autoLock = AutoLock(vault, settings, scope)
+    val clipboard = SensitiveClipboard.of(context)
 
     init {
         // The exit check needs the client, which needs the manager: wired here, then started.
@@ -192,6 +195,7 @@ class AppContainer(private val context: Context) {
      * Browsing requests are cancelled by their own screens; downloads the user lets run are not.
      */
     private suspend fun forgetSession() {
+        withContext(Dispatchers.Main) { clipboard.forget() }
         GelbooruApi.forgetSession()
         imageLoader.memoryCache?.clear()
         http.connectionPool.evictAll()

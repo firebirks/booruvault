@@ -10,7 +10,6 @@ import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
-import android.content.ClipData
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -80,8 +79,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -340,8 +337,7 @@ private fun PostInfoSheet(
 ) {
     val context = LocalContext.current
     val links = LocalLinkOpener.current
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
+    val clipboard = LocalContainer.current.clipboard
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 16.dp),
@@ -383,14 +379,7 @@ private fun PostInfoSheet(
                             onExclude = onExclude,
                             onCreateCollection = onCreateCollection,
                             onBlacklist = onBlacklist,
-                            onCopy = { text ->
-                                val clip = ClipData.newPlainText("tag", text).apply {
-                                    description.extras = android.os.PersistableBundle().apply {
-                                        putBoolean("android.content.extra.IS_SENSITIVE", true)
-                                    }
-                                }
-                                scope.launch { clipboard.setClipEntry(ClipEntry(clip)) }
-                            },
+                            onCopy = { text -> clipboard.copy("tag", text) },
                         )
                     }
                 }
