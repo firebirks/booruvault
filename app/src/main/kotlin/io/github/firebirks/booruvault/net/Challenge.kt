@@ -128,14 +128,19 @@ object Challenge {
 
     /** Leaves the WebView's storage as empty as the platform allows. */
     fun wipe(context: Context, webView: WebView?) {
-        runCatching {
-            webView?.clearCache(true)
-            webView?.clearHistory()
-            webView?.clearFormData()
-            CookieManager.getInstance().removeAllCookies(null)
-            CookieManager.getInstance().flush()
-            WebStorage.getInstance().deleteAllData()
-            WebViewDatabase.getInstance(context).clearHttpAuthUsernamePassword()
-        }
+        runEach(
+            { webView?.clearCache(true) },
+            { webView?.clearHistory() },
+            { webView?.clearFormData() },
+            {
+                CookieManager.getInstance().removeAllCookies(null)
+                CookieManager.getInstance().flush()
+            },
+            { WebStorage.getInstance().deleteAllData() },
+            { WebViewDatabase.getInstance(context).clearHttpAuthUsernamePassword() },
+        )
     }
 }
+
+/** Runs every step, each on its own: one that throws keeps none of the others from running. */
+internal fun runEach(vararg steps: () -> Unit) = steps.forEach { runCatching(it) }
