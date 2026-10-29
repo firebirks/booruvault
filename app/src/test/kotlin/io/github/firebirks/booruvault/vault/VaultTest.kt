@@ -10,11 +10,13 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -121,6 +123,54 @@ class VaultTest {
         freshStore.items.value.sortedBy { it.fileName }.forEachIndexed { i, item ->
             assertArrayEquals(contents[i], freshStore.openMedia(item.id).use { it.readAll() })
         }
+    }
+
+    @Test
+    fun aFileThatCannotBeRewrittenKeepsTheRetiredPair() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        VaultRekeyer(root, vault, store, scope)
+        val data = Random(2).nextBytes(10_000)
+        add(store, data, "a")
+        awaitItems(store, 1)
+        // Something in the way of the new copy, as a full disk would be.
+        val media = File(root, "media").listFiles()!!.single()
+        val obstacle = File(media.path + ".rekey").apply { mkdir() }
+        File(obstacle, "x").writeText("")
+
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        // Long past the five failed passes after which an unreadable file is given up.
+        assertNull(withTimeoutOrNull(8_000) { vault.rekeyPending.first { !it } })
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+
+        obstacle.deleteRecursively()
+        withTimeout(20_000) { vault.rekeyPending.first { !it } }
+        vault.lock()
+        assertTrue(vault.unlock("second".toCharArray()))
+        awaitItems(store, 1)
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+    }
+
+    @Test
+    fun aFileDamagedPastItsFirstChunkIsGivenUp() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        VaultRekeyer(root, vault, store, scope)
+        add(store, Random(3).nextBytes(200_000), "a")
+        awaitItems(store, 1)
+        // It opens, as its first chunk is sound, but cannot be read to the end under any key.
+        val media = File(root, "media").listFiles()!!.single()
+        val bytes = media.readBytes()
+        bytes[bytes.size - 100] = (bytes[bytes.size - 100].toInt() xor 1).toByte()
+        media.writeBytes(bytes)
+
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        withTimeout(20_000) { vault.rekeyPending.first { !it } }
+        Unit
     }
 
     @Test

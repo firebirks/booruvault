@@ -26,7 +26,9 @@ data class RekeyProgress(val done: Int, val total: Int)
  * sealed to a retired pair and nothing that fails to open, and no write that may have begun
  * under the old pair is still in flight, the retired pairs are dropped from the header. A file
  * that fails to open is not taken for re-sealed: it is tried again on the next passes, and only
- * after [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key.
+ * after [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key. A file that
+ * opens but cannot be written anew, on a full disk for one, is never given up: dropping the
+ * retired pairs would leave it sealed to a key the vault no longer has.
  */
 class VaultRekeyer(
     private val root: File,
@@ -51,7 +53,9 @@ class VaultRekeyer(
         }
     }
 
-    private enum class Outcome { RESEALED, CURRENT, FAILED }
+    private enum class Outcome { RESEALED, CURRENT, UNREADABLE, NOT_WRITTEN }
+
+    private class Unreadable(cause: Exception) : Exception(cause)
 
     private suspend fun run(keys: VaultKeys) {
         val started = System.currentTimeMillis()
@@ -72,10 +76,14 @@ class VaultRekeyer(
                         failures.remove(file.path)
                     }
                     Outcome.CURRENT -> failures.remove(file.path)
-                    Outcome.FAILED -> {
+                    Outcome.UNREADABLE -> {
                         val count = (failures[file.path] ?: 0) + 1
                         failures[file.path] = count
                         if (count < GIVE_UP_AFTER) failed++
+                    }
+                    Outcome.NOT_WRITTEN -> {
+                        failures.remove(file.path)
+                        failed++
                     }
                 }
                 done++
@@ -107,7 +115,7 @@ class VaultRekeyer(
         val sealed = try {
             SealedFile(file, keys)
         } catch (e: Exception) {
-            return if (file.isFile) Outcome.FAILED else Outcome.CURRENT
+            return if (file.isFile) Outcome.UNREADABLE else Outcome.CURRENT
         }
         sealed.use { source ->
             if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded)) return Outcome.CURRENT
@@ -120,7 +128,11 @@ class VaultRekeyer(
                     try {
                         val input = source.inputStream()
                         while (true) {
-                            val n = input.read(buffer)
+                            val n = try {
+                                input.read(buffer)
+                            } catch (e: Exception) {
+                                throw Unreadable(e)
+                            }
                             if (n < 0) break
                             out.write(buffer, 0, n)
                         }
@@ -134,12 +146,15 @@ class VaultRekeyer(
                 val unchanged = file.isFile && file.lastModified() == modified && file.length() == length
                 if (!unchanged || !tmp.moveOver(file)) {
                     tmp.delete()
-                    return Outcome.FAILED
+                    return Outcome.NOT_WRITTEN
                 }
                 return Outcome.RESEALED
+            } catch (e: Unreadable) {
+                tmp.delete()
+                return Outcome.UNREADABLE
             } catch (e: Exception) {
                 tmp.delete()
-                return Outcome.FAILED
+                return Outcome.NOT_WRITTEN
             }
         }
     }
