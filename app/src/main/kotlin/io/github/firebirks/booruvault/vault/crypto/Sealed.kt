@@ -13,6 +13,7 @@ import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 import java.security.PrivateKey
 import java.security.PublicKey
+import java.util.concurrent.ConcurrentHashMap
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -312,7 +313,10 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
 
 /** Small whole files sealed to the vault: written atomically, readable only when unlocked. */
 object SealedBlob {
-    fun write(file: File, recipient: Recipient, bytes: ByteArray) {
+    /** One writer at a time for each file: two at once would write over each other's copy. */
+    private val writing = ConcurrentHashMap<String, Any>()
+
+    fun write(file: File, recipient: Recipient, bytes: ByteArray) = synchronized(writing.computeIfAbsent(file.absolutePath) { Any() }) {
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, file.name + ".tmp")
         try {
