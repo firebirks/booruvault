@@ -78,3 +78,11 @@ class AutoLock(
         const val HOLD_SECONDS = 300
     }
 }
+
+/**
+ * Whether the vault going from [was] to [now] should close the screen: it locked while the screen
+ * was stopped. A stopped screen is not redrawn until the user comes back, so until then it would
+ * hold what it showed, a page in the built-in browser or the key of a file being played.
+ */
+internal fun closesOnLock(was: VaultState?, now: VaultState, started: Boolean): Boolean =
+    was is VaultState.Unlocked && now !is VaultState.Unlocked && !started
