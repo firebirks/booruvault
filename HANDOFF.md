@@ -11,8 +11,35 @@ Notes for continuing this work on another machine. Delete this file, and revert 
    `BooruVaultCheck`, debug builds only) used for the phone tests. Revert with
    `git revert <hash>` before merging.
 3. This file.
+4. Fixes from a security and leak review, each with its test written first and seen to
+   fail:
+   - `Let the vault replace its files when the tests run on Windows`: `File.moveOver`
+     (`util/Files.kt`, `Files.move` with `ATOMIC_MOVE`) replaces every `renameTo`, which
+     fails on Windows when the target exists.
+   - `Keep the old key pair while a file still needs it`: the rekeyer never gives up a
+     file it could read but not write (full disk), which used to drop the retired pair
+     and lose that file.
+   - `Open only web pages from a site's links`: `tel:`, `intent:`, `file:` and the like
+     are refused (`file:` crashed the app).
+   - `Wipe each part of the WebView's storage on its own`: one failing step of
+     `Challenge.wipe` no longer skips the rest.
+   - `Name no account to any site`: no User-Agent carries the e621 login any more.
+   - `Take copied links and tags off the clipboard on lock` (`util/SensitiveClipboard.kt`).
+   - `Close the screen when the vault locks behind it`: a lock while the activity is
+     stopped calls `finishAndRemoveTask()`, releasing the WebView and the player.
+   - `Let one writer at a time seal a vault file`: two concurrent saves of `cookies.bin`
+     shared one temp file and could put a torn copy in place.
+   - `Resume no TLS session from one connection through Tor to the next`.
+   - `Ask every private key the vault holds to wipe itself`: a try only; the platform's
+     EC keys refuse `destroy()`.
+   - `Keep the retired pairs when the password changed again meanwhile`: a rekeyer
+     finishing during a second password change dropped the pair everything had just been
+     re-sealed to, losing the whole vault.
+5. This file again, updated.
 
-Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commits.
+Unit tests: `./gradlew testDebugUnitTest`, 121 tests, all passing three runs in a row.
+`VaultTest.duplicatesFromTheSamePostAreDropped` fails now and then: unlock publishes the
+cached index before reconcile drops the duplicate. That predates the branch.
 
 ## What the work does
 
@@ -28,9 +55,10 @@ Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commit
   `CookieJar`: `SiteHeaders` is a network interceptor and reads the route from
   `chain.connection()` (SOCKS proxy = Tor), so a switch flipped mid-request cannot mix
   routes. `DefaultUserAgent` (application interceptor) names the browser before OkHttp
-  would add `okhttp/x`. TLS has one `SSLContext` per route: direct sockets come from
-  `RouteTls.socketFactory` (class `DirectSocket`), and OkHttp creates SOCKS sockets
-  itself, so the wrapped socket's class picks the session cache. The challenge WebView
+  would add `okhttp/x`. Direct connections share one `SSLContext`, and every
+  connection through Tor gets a fresh one, so no TLS session is resumed across exits:
+  direct sockets come from `RouteTls.socketFactory` (class `DirectSocket`), and OkHttp
+  creates SOCKS sockets itself, so the wrapped socket's class picks the factory. The challenge WebView
   records a clearance only into the route it loaded along, and only if that is still the
   current route. The hidden browser aborts if the route changes during a visit. Stored
   cookies in the old single-jar format go to the route in use when first read, then
@@ -51,8 +79,9 @@ Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commit
 - **Refused clearances are dropped** with their agent once none is left, so Danbooru
   boards go back to the app's own name.
 - **User-Agent.** Danbooru boards get `BooruVault` (no version) unless a pass is held,
-  in which case they get the agent that earned it. e926 gets `BooruVault/<version>`
-  plus the account name if set.
+  in which case they get the agent that earned it. e926 gets the browser name plus
+  `BooruVault/<version>`, never the account name. The built-in browser sends the
+  WebView's own name on every site.
 
 ## Findings from the phone tests (Galaxy A56, 2026-10-29)
 
@@ -77,6 +106,24 @@ Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commit
 
 ## Open items
 
+- Phone leak tests, started 2026-10-29 and cut short (see "Phone state left behind").
+  Still to do, with Safebooru and Pokémon searches only: download a few posts, then as
+  the app (`run-as`, debug build) list every private file and look for the search term
+  and JPEG/PNG/MP4 signatures outside sealed files (Coil, WebView, notifications);
+  repeat after a lock; read logcat for anything but the `BooruVaultCheck` traces; check
+  on the device that the clipboard is cleared on lock with the app in the background and
+  that a lock in the background closes the screen. Done so far: screenshots of the app
+  come out black (`FLAG_SECURE`); before the vault exists the data dir holds only the
+  WebView's start-up files and `shared_prefs/network.xml` (`route_chosen=false`).
+- From the review, not fixed: the built-in browser looks the same on both routes
+  (same Accept-Language, time zone and WebView fingerprint); `network.xml` and the
+  language preference are clear-text SharedPreferences, so the comment in
+  `AppContainer.kt` ("The one clear file is the vault header") is not accurate; http
+  sources are allowed in clear on API 26/27; on a full disk the rekeyer retries every
+  second for as long as the vault is open.
+- `SecureCookieJar.save()` takes its snapshot before `SealedBlob.write` takes the file's
+  lock, so in a rare interleaving an older snapshot can be written last.
+
 - Not yet seen on the device: the download row showing "Verify in browser" again after
   a clearance that had worked is refused. The grid path logged `had worked: true` as
   expected.
@@ -97,7 +144,10 @@ Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commit
 ## Working rules the user has set
 
 - Git as `firebirks`, remote `git@github-firebirks:firebirks/booruvault.git`. For the
-  `gh` CLI, set `GH_CONFIG_DIR=~/.config/gh-firebirks`.
+  `gh` CLI, set `GH_CONFIG_DIR=~/.config/gh-firebirks`. (The second machine uses
+  `https://github.com/firebirks/booruvault.git` and has no such `gh` config.)
+- Commit as `firebirks <336470935+firebirks@users.noreply.github.com>` with `TZ=UTC`. Keep
+  anything personal about the developer out of code, docs and commit messages.
 - Code, comments and docs in English. No co-author trailers. Commit and push only when
   asked.
 - Releases are tags `v<version>`. The user pushes tags. F-Droid metadata lives in
@@ -107,14 +157,23 @@ Unit tests: `./gradlew testDebugUnitTest`, 103 tests, all passing on both commit
   Do not set Orbot as a VPN; Orbot runs in "Power User Mode" (proxy only, SOCKS 9050).
   Do not install apps from stores; the user does that. Leave human-verification
   checkboxes to the user.
+- On-device tests use only the Safebooru board (the "Safebooru" preset,
+  safebooru.donmai.us) and only Pokémon names as searches (pikachu, eevee, bulbasaur...).
 - The test vault password is not written here; ask the user.
 - A debug APK cannot update a release-signed install (uninstall first). adb on the
-  original machine was in `~/Android/Sdk/platform-tools`.
+  original machine was in `~/Android/Sdk/platform-tools`. On the second machine (Windows)
+  the unit tests need `JAVA_HOME` set to Android Studio's `jbr` and `ANDROID_HOME` to the
+  SDK.
 
 ## Phone state left behind
 
 - NordVPN split tunneling currently excludes BooruVault (for the home-IP test) and also
   Orbot. Orbot was added either by the user or by NordVPN's "exclude apps not compatible
   with VPN". The user may want Orbot back inside the tunnel.
-- BooruVault: Tor off (direct), debug build with the traces, direct share holding a
-  donmai clearance.
+- BooruVault was uninstalled on 2026-10-29 and reinstalled from this branch (debug, with
+  the traces, at `Keep the retired pairs when the password changed again meanwhile`), so
+  the old vault and its clearances are gone. A new test vault exists, Tor chosen at first
+  start, no biometric unlock, source Safebooru. The Tor exit check passed; Safebooru's
+  API answered 403 with `cf-mitigated: challenge`, and the built-in browser was still on
+  Cloudflare's "verifying you are not a robot" page after about 40 s when the tests
+  stopped and it was closed. No search has been run yet.
