@@ -45,8 +45,6 @@
     <string name="tag_category_meta">中繼資料</string>
     <string name="tag_category_other">其他</string>
     <string name="preset_note_safe_only">僅限安全內容</string>
-    <string name="preset_note_two_tags">沒有帳號時每次搜尋最多 2 個標籤</string>
-    <string name="preset_note_web_without_key">沒有 API 金鑰時，會讀取網站的網頁</string>
     <string name="action_cancel">取消</string>
     <string name="action_delete">刪除</string>
     <string name="action_retry">重試</string>

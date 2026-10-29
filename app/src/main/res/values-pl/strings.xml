@@ -45,8 +45,6 @@
     <string name="tag_category_meta">Meta</string>
     <string name="tag_category_other">Inne</string>
     <string name="preset_note_safe_only">Tylko bezpieczne treści</string>
-    <string name="preset_note_two_tags">Bez konta maks. 2 tagi na wyszukiwanie</string>
-    <string name="preset_note_web_without_key">Bez klucza API dane są odczytywane ze stron WWW witryny</string>
     <string name="action_cancel">Anuluj</string>
     <string name="action_delete">Usuń</string>
     <string name="action_retry">Ponów</string>

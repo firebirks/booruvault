@@ -45,8 +45,6 @@
     <string name="tag_category_meta">Meta</string>
     <string name="tag_category_other">Diğer</string>
     <string name="preset_note_safe_only">Yalnızca güvenli içerik</string>
-    <string name="preset_note_two_tags">Hesap olmadan aramada en fazla 2 etiket</string>
-    <string name="preset_note_web_without_key">API anahtarı olmadan sitenin web sayfalarını okur</string>
     <string name="action_cancel">İptal</string>
     <string name="action_delete">Sil</string>
     <string name="action_retry">Yeniden dene</string>

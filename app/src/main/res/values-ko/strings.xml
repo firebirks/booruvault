@@ -45,8 +45,6 @@
     <string name="tag_category_meta">메타</string>
     <string name="tag_category_other">기타</string>
     <string name="preset_note_safe_only">안전한 콘텐츠만</string>
-    <string name="preset_note_two_tags">계정 없이는 검색당 태그 2개까지</string>
-    <string name="preset_note_web_without_key">API 키가 없으면 사이트의 웹 페이지를 읽습니다</string>
     <string name="action_cancel">취소</string>
     <string name="action_delete">삭제</string>
     <string name="action_retry">다시 시도</string>

@@ -18,7 +18,7 @@ All three are signed with the same key, so updates install over each other. A bu
 
 ### Browsing
 
-- **Sites:** any board that speaks the Danbooru, Moebooru, Gelbooru 0.2 or e926 API, through that API. Safebooru, Safebooru.org, Konachan.net and e926 are ready to use on a fresh install, together with Danbooru and Gelbooru; any other board is added from its address. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
+- **Sites:** any board that speaks the Danbooru, Moebooru, Gelbooru 0.2 or e926 API, through that API. Safebooru, Safebooru.org, Konachan.net and e926, one board meant to be safe for each of those APIs, are ready to use on a fresh install; any other board is added from its address. Accounts are optional; a Moebooru password is hashed on the phone the way the site expects, and only the hash is kept.
 - **API or web pages?** Through its API a site hands over complete posts (file, size, md5, tags by type), in small quick pages, and the vault recognises what it already holds. Read from its web pages, as a browser would, a site needs no API or key, but each post is opened on its own to find its file, loading is slower and heavier, less is known about a post, anti-bot checks come more often, and a redesign can break the reading. The source editor says which applies to the chosen engine.
 - **Sites without a usable API**, read from their web pages:
   - Gelbooru 0.2 sources fall back to the site's own pages when the API refuses, e.g. gelbooru.com without an API key.

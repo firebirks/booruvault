@@ -45,8 +45,6 @@
     <string name="tag_category_meta">मेटा</string>
     <string name="tag_category_other">अन्य</string>
     <string name="preset_note_safe_only">केवल सुरक्षित सामग्री</string>
-    <string name="preset_note_two_tags">बिना खाते के हर खोज में ज़्यादा से ज़्यादा 2 टैग</string>
-    <string name="preset_note_web_without_key">API कुंजी के बिना, साइट के वेब पेज पढ़ता है</string>
     <string name="action_cancel">रद्द करें</string>
     <string name="action_delete">मिटाएं</string>
     <string name="action_retry">फिर से कोशिश करें</string>

@@ -45,8 +45,6 @@
     <string name="tag_category_meta">Meta</string>
     <string name="tag_category_other">Khác</string>
     <string name="preset_note_safe_only">Chỉ nội dung an toàn</string>
-    <string name="preset_note_two_tags">Tối đa 2 thẻ mỗi lần tìm khi không có tài khoản</string>
-    <string name="preset_note_web_without_key">Khi không có khóa API, đọc trực tiếp các trang của trang web</string>
     <string name="action_cancel">Hủy</string>
     <string name="action_delete">Xóa</string>
     <string name="action_retry">Thử lại</string>
