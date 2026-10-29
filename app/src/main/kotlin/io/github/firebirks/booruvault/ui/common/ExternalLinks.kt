@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.R
 import kotlinx.coroutines.delay
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /** Opens a link outside the app, keeping to Tor when Tor is on. */
 fun interface LinkOpener {
@@ -58,6 +59,7 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
     val opener = remember(context) {
         LinkOpener { url ->
             when {
+                !isWebLink(url) -> Toast.makeText(context, context.getString(R.string.no_app_for_link), Toast.LENGTH_SHORT).show()
                 !container.tor.enabled -> context.openUrl(url)
                 else -> torBrowser(context)?.let { context.openIn(url, it) } ?: run { pending = url }
             }
@@ -132,6 +134,9 @@ private fun OutsideTorWarning(onOpen: () -> Unit, onCopy: () -> Unit, onDismiss:
         },
     )
 }
+
+/** Only web pages leave the app: a site's page may carry tel:, intent: or file: links too. */
+internal fun isWebLink(url: String): Boolean = url.toHttpUrlOrNull() != null
 
 private fun torBrowser(context: Context): String? = TOR_BROWSERS.firstOrNull { name ->
     try {
