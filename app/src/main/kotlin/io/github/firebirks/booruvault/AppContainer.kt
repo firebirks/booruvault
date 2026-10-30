@@ -23,6 +23,7 @@ import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.util.SensitiveClipboard
 import io.github.firebirks.booruvault.vault.AutoLock
+import io.github.firebirks.booruvault.vault.SystemLockAlarm
 import io.github.firebirks.booruvault.vault.VaultImageFetcher
 import io.github.firebirks.booruvault.vault.VaultImageKeyer
 import io.github.firebirks.booruvault.vault.VaultManager
@@ -125,7 +126,7 @@ class AppContainer(private val context: Context) {
         context, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
         vaultStore, vault, settings, json, vaultDir, scope,
     )
-    val autoLock = AutoLock(vault, settings, scope)
+    val autoLock = AutoLock(vault, settings, scope, SystemLockAlarm(context))
     val clipboard = SensitiveClipboard.of(context)
 
     init {

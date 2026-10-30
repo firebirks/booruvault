@@ -59,5 +59,10 @@
             android:name=".download.DownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
+
+        <!-- The timed auto-lock's alarm, sent only by the system on the app's behalf. -->
+        <receiver
+            android:name=".vault.AutoLockReceiver"
+            android:exported="false" />
     </application>
 </manifest>

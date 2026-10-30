@@ -42,7 +42,7 @@ All three are signed with the same key, so updates install over each other. A bu
 ### Vault
 
 - **Unlocking:** password of at least eight characters, plus optional biometric unlock. The key-derivation parameters in the header are checked against what the app would write, so an altered header cannot make the unlock eat the memory.
-- **Auto-lock:** after a configurable time in the background, five minutes by default. Locking also forgets the search and the open screens.
+- **Auto-lock:** after a configurable time in the background, five minutes by default. Android may run it a few minutes late, but coming back after the time has passed always finds the vault locked. Locking also forgets the search and the open screens.
 - **Contents:** grid with filtering (tags, `-tag`, `type:video|gif|image`, `source:name`), viewer, info sheet, delete.
 - **Collections:** bookmarked tag sets shown as chips at the top of the vault. A collection holds every item whose tags match its query (e.g. “Landscapes” = `landscape -rain`), including items saved later. The query uses booru syntax: exact tags, `-tag`, `~tag` alternatives, `*` wildcards, plus `type:`, `source:` and `rating:`. Collections can be created from the vault filter, from a search in Browse, or from a tag in a post's details. Their names and queries are sealed in the vault.
 - **Import** from the device, optionally deleting the originals. **Export** decrypted copies to a folder or a single file. A single file, downloaded or imported, may hold up to 2 GB.

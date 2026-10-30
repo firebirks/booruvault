@@ -11,13 +11,18 @@ import kotlinx.coroutines.launch
 
 /**
  * Locks the vault once the app has spent the configured time in the background. Registered on
- * the process lifecycle, so switching between the app's own screens never counts.
+ * the process lifecycle, so switching between the app's own screens never counts. A delayed job
+ * locks on time while the process runs, but Android freezes a cached app about a minute after it
+ * leaves the screen, so [alarm] has the system bring it back for the lock too.
  */
 class AutoLock(
     private val vault: VaultManager,
     private val settings: SettingsRepository,
     private val scope: CoroutineScope,
+    private val alarm: LockAlarm,
+    private val clock: () -> Long = SystemClock::elapsedRealtime,
 ) : DefaultLifecycleObserver {
+    @Volatile
     private var backgroundSince = 0L
     private var pending: Job? = null
 
@@ -26,6 +31,7 @@ class AutoLock(
     var holdCount = 0
 
     /** The timeout in force since the last stop: held, a picker gets at least [HOLD_SECONDS]. */
+    @Volatile
     private var seconds = 0
 
     private val timeout: Int
@@ -35,13 +41,16 @@ class AutoLock(
         }
 
     override fun onStop(owner: LifecycleOwner) {
-        backgroundSince = SystemClock.elapsedRealtime()
+        backgroundSince = clock()
         seconds = timeout
         when {
             seconds == 0 -> vault.lock()
-            seconds > 0 -> pending = scope.launch {
-                delay(seconds * 1000L)
-                vault.lock()
+            seconds > 0 && vault.state.value is VaultState.Unlocked -> {
+                pending = scope.launch {
+                    delay(seconds * 1000L)
+                    lockIfDue()
+                }
+                alarm.set(backgroundSince + seconds * 1000L)
             }
         }
     }
@@ -49,13 +58,15 @@ class AutoLock(
     override fun onStart(owner: LifecycleOwner) {
         pending?.cancel()
         pending = null
-        // The delayed job may not have run if the process was frozen; check the clock too.
-        if (backgroundSince > 0 && seconds >= 0 &&
-            SystemClock.elapsedRealtime() - backgroundSince >= seconds * 1000L
-        ) {
-            vault.lock()
-        }
+        alarm.cancel()
+        // The alarm is inexact and the job does not run while the process is frozen.
+        lockIfDue()
         backgroundSince = 0
+    }
+
+    /** Locks the vault if the app has been in the background for the timeout in force. */
+    fun lockIfDue() {
+        if (backgroundSince > 0 && seconds >= 0 && clock() - backgroundSince >= seconds * 1000L) vault.lock()
     }
 
     /**
