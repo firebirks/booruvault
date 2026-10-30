@@ -106,15 +106,38 @@ cached index before reconcile drops the duplicate. That predates the branch.
 
 ## Open items
 
-- Phone leak tests, started 2026-10-29 and cut short (see "Phone state left behind").
-  Still to do, with Safebooru and Pokémon searches only: download a few posts, then as
-  the app (`run-as`, debug build) list every private file and look for the search term
-  and JPEG/PNG/MP4 signatures outside sealed files (Coil, WebView, notifications);
-  repeat after a lock; read logcat for anything but the `BooruVaultCheck` traces; check
-  on the device that the clipboard is cleared on lock with the app in the background and
-  that a lock in the background closes the screen. Done so far: screenshots of the app
-  come out black (`FLAG_SECURE`); before the vault exists the data dir holds only the
-  WebView's start-up files and `shared_prefs/network.xml` (`route_chosen=false`).
+- **Decrypted text outlives a lock in memory** (phone, 2026-10-30). After "Lock now"
+  with the screen still open, `am dumpheap -g <pid>` (GC first, so live objects only)
+  still held, with the path from a GC root found by walking the dump's references:
+  - kotlinx.serialization's static `CharArrayPool`: whole JSON texts that went through
+    `Json` — the cookie jar with the values of `cf_clearance` and `_danbooru2_session`,
+    the settings with `tagUses` (`"pikachu":4`), vault item metadata (tags, post and
+    original URLs, md5). The pool hands its char arrays back without clearing them.
+  - okio's static `SegmentPool`: raw API responses (search results with their source
+    URLs, hundreds of thumbnail URLs). Segments are recycled without clearing too.
+  - `BrowseViewModel` (an activity ViewModel, alive while the screen is): `tagShelf`
+    with the searched tag and `saveStates` keyed by `<source>/<post id>`.
+
+  The password was not found. Ideas: clear `BrowseViewModel` state on lock; for the
+  pools, avoid them for vault data (they are library internals, so either overwrite them
+  on lock by pushing filler through, or encode/decode vault JSON without the pooled
+  paths) and decide whether network responses matter once the vault is locked.
+- **A timed auto-lock cannot fire in the background** (phone, 2026-10-30). With the
+  default 5 minutes, Android's cached-app freezer froze the process about 70 s after it
+  left the screen (`ActivityManager: freezing <pid> io.github.firebirks.booruvault`), so
+  the delayed lock never ran; keys, the WebView and the screen's state stayed in memory
+  until the app came back, where `AutoLock.onStart` locked it by the clock (verified).
+  So "Close the screen when the vault locks behind it" only takes effect with "Lock
+  immediately" or a timeout shorter than the freeze. Options: an alarm or a WorkManager
+  job for the lock (the system thaws the app to deliver it), or locking at `onStop` for
+  timeouts the freezer would outlast.
+- The built-in browser's WebView writes `shared_prefs/AwOriginVisitLoggerPrefs.xml` in
+  clear and it survives locks and `Challenge.wipe`: the date the browser was last used
+  plus one opaque number per visited origin and site (not the Java hash of the host
+  names tried). WebView metrics are opted out in the manifest, Safe Browsing is off.
+- Not checked: whether Samsung Keyboard's own clipboard history kept the copied tags
+  (the keyboard comes out black in screenshots over the protected screen). Check by hand:
+  copy a tag, lock, then open the keyboard's clipboard panel in another app.
 - From the review, not fixed: the built-in browser looks the same on both routes
   (same Accept-Language, time zone and WebView fingerprint); `network.xml` and the
   language preference are clear-text SharedPreferences, so the comment in
@@ -165,6 +188,33 @@ cached index before reconcile drops the duplicate. That predates the branch.
   the unit tests need `JAVA_HOME` set to Android Studio's `jbr` and `ANDROID_HOME` to the
   SDK.
 
+## Phone tests, 2026-10-30 (Tor route, Safebooru, "pikachu")
+
+What held up, besides the two memory findings under "Open items":
+- At rest, locked, with three posts in the vault: `files/vault` holds only sealed files;
+  no search term, tag, post id, host or source URL appears in clear in any file of the
+  app; no JPEG/PNG/GIF/WebP/MP4/WebM header outside sealed files; no Coil disk cache;
+  nothing on shared storage and no external app dir. Clear text left: `network.xml`
+  (`route_chosen`, `tor`), the WebView file above, WebView start-up and metrics files,
+  `databases/http_auth.db` (WebView), GPU shader caches in `user_de`.
+- logcat: the app logs nothing of note outside the temporary `BooruVaultCheck` traces
+  (hosts, paths, agent, cookie names, never queries or values).
+- Screenshots of the app come out black, the keyboard over it included.
+- With "Lock immediately", Home destroyed the activity and took it out of recents within
+  a second, and the clipboard was empty afterwards: pasting into the lock screen's
+  password field gave nothing, while a tag copied in the app did paste into the change
+  password dialog's field.
+- Over Tor with a fresh TLS context per connection: Tor exit check, search, thumbnails,
+  samples and original downloads all worked. Whether a session is resumed cannot be seen
+  without a capture.
+- A Cloudflare check over Tor that was left on screen passed by itself overnight; its
+  clearance worked for the app's requests the next morning.
+
+How the tests were driven: screenshots are useless (`FLAG_SECURE`), so the UI was read
+with `uiautomator dump` and driven with `input tap/text/keyevent`; files were read with
+`adb shell run-as io.github.firebirks.booruvault sh < script`; heap dumps were pulled and
+walked with a small hprof parser (instance fields, arrays, statics, GC roots).
+
 ## Phone state left behind
 
 - NordVPN split tunneling currently excludes BooruVault (for the home-IP test) and also
@@ -172,8 +222,7 @@ cached index before reconcile drops the duplicate. That predates the branch.
   with VPN". The user may want Orbot back inside the tunnel.
 - BooruVault was uninstalled on 2026-10-29 and reinstalled from this branch (debug, with
   the traces, at `Keep the retired pairs when the password changed again meanwhile`), so
-  the old vault and its clearances are gone. A new test vault exists, Tor chosen at first
-  start, no biometric unlock, source Safebooru. The Tor exit check passed; Safebooru's
-  API answered 403 with `cf-mitigated: challenge`, and the built-in browser was still on
-  Cloudflare's "verifying you are not a robot" page after about 40 s when the tests
-  stopped and it was closed. No search has been run yet.
+  the old vault is gone. The new test vault: Tor route, no biometric unlock, source
+  Safebooru, three Pikachu posts (19 MB), a donmai clearance in the Tor share,
+  auto-lock back at 5 minutes, left locked. Orbot must be started by hand before tests
+  over Tor.
