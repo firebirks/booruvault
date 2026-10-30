@@ -35,9 +35,16 @@ Notes for continuing this work on another machine. Delete this file, and revert 
    - `Keep the retired pairs when the password changed again meanwhile`: a rekeyer
      finishing during a second password change dropped the pair everything had just been
      re-sealed to, losing the whole vault.
-5. This file again, updated.
+   - `Have the system wake the app for a timed lock`: Android's cached-app freezer froze
+     the process about 70 s after it left the screen, so the delayed lock never ran.
+     Leaving the app now also sets an inexact `AlarmManager` alarm (`vault/LockAlarm.kt`,
+     receiver not exported); the delayed job and the clock check on return stay.
+   - `Sync a sealed blob's file on the first close only`: Android's `FileOutputStream`
+     finalizer closes the stream again, and syncing the released descriptor logged a
+     `SyncFailedException` after every blob write.
+5. This file again, updated each time.
 
-Unit tests: `./gradlew testDebugUnitTest`, 121 tests, all passing three runs in a row.
+Unit tests: `./gradlew testDebugUnitTest`, 127 tests, all passing.
 `VaultTest.duplicatesFromTheSamePostAreDropped` fails now and then: unlock publishes the
 cached index before reconcile drops the duplicate. That predates the branch.
 
@@ -122,15 +129,10 @@ cached index before reconcile drops the duplicate. That predates the branch.
   pools, avoid them for vault data (they are library internals, so either overwrite them
   on lock by pushing filler through, or encode/decode vault JSON without the pooled
   paths) and decide whether network responses matter once the vault is locked.
-- **A timed auto-lock cannot fire in the background** (phone, 2026-10-30). With the
-  default 5 minutes, Android's cached-app freezer froze the process about 70 s after it
-  left the screen (`ActivityManager: freezing <pid> io.github.firebirks.booruvault`), so
-  the delayed lock never ran; keys, the WebView and the screen's state stayed in memory
-  until the app came back, where `AutoLock.onStart` locked it by the clock (verified).
-  So "Close the screen when the vault locks behind it" only takes effect with "Lock
-  immediately" or a timeout shorter than the freeze. Options: an alarm or a WorkManager
-  job for the lock (the system thaws the app to deliver it), or locking at `onStop` for
-  timeouts the freezer would outlast.
+- The lock alarm is inexact: with 5 minutes it went off after 8 min 45 s, the latest
+  Android allows (75% of the delay late). An exact alarm needs `SCHEDULE_EXACT_ALARM`,
+  which the user must grant by hand on Android 14+; not worth it unless asked. An alarm
+  still pending when the process dies starts the process for nothing (harmless).
 - The built-in browser's WebView writes `shared_prefs/AwOriginVisitLoggerPrefs.xml` in
   clear and it survives locks and `Challenge.wipe`: the date the browser was last used
   plus one opaque number per visited origin and site (not the Java hash of the host
@@ -180,6 +182,8 @@ cached index before reconcile drops the duplicate. That predates the branch.
   Do not set Orbot as a VPN; Orbot runs in "Power User Mode" (proxy only, SOCKS 9050).
   Do not install apps from stores; the user does that. Leave human-verification
   checkboxes to the user.
+- Test on the real phone (Galaxy A56), never on an emulator that happens to be running;
+  with both attached, pass `-s <serial>` from `adb devices -l` (or set `ANDROID_SERIAL`).
 - On-device tests use only the Safebooru board (the "Safebooru" preset,
   safebooru.donmai.us) and only Pokémon names as searches (pikachu, eevee, bulbasaur...).
 - The test vault password is not written here; ask the user.
@@ -209,6 +213,15 @@ What held up, besides the two memory findings under "Open items":
   without a capture.
 - A Cloudflare check over Tor that was left on screen passed by itself overnight; its
   clearance worked for the app's requests the next morning.
+- Timed auto-lock, 5 minutes, after `Have the system wake the app for a timed lock`:
+  Home set the alarm (due 5:00 to 8:45 later); the process was frozen 70 s after Home;
+  8 min 45 s after Home the system unfroze it for the alarm, and within a second the
+  vault was locked and the activity destroyed and out of recents. Coming back after 20 s
+  cancelled the alarm (`alarm_cancelled` in `dumpsys alarm`) and left the vault open.
+  Check pending alarms with `dumpsys alarm | grep AutoLockReceiver`.
+- After `Sync a sealed blob's file on the first close only`, a lock (which rewrites
+  `cookies.bin` and `downloads.bin`, then forces a collection) no longer logs
+  `SyncFailedException` from the finalizer.
 
 How the tests were driven: screenshots are useless (`FLAG_SECURE`), so the UI was read
 with `uiautomator dump` and driven with `input tap/text/keyevent`; files were read with
@@ -221,8 +234,8 @@ walked with a small hprof parser (instance fields, arrays, statics, GC roots).
   Orbot. Orbot was added either by the user or by NordVPN's "exclude apps not compatible
   with VPN". The user may want Orbot back inside the tunnel.
 - BooruVault was uninstalled on 2026-10-29 and reinstalled from this branch (debug, with
-  the traces, at `Keep the retired pairs when the password changed again meanwhile`), so
-  the old vault is gone. The new test vault: Tor route, no biometric unlock, source
-  Safebooru, three Pikachu posts (19 MB), a donmai clearance in the Tor share,
-  auto-lock back at 5 minutes, left locked. Orbot must be started by hand before tests
-  over Tor.
+  the traces), so the old vault is gone. It was last updated in place to `Sync a sealed
+  blob's file on the first close only`. The new test vault: Tor route, no biometric
+  unlock, source Safebooru, three Pikachu posts (19 MB), a donmai clearance in the Tor
+  share, auto-lock at 5 minutes, left locked. Orbot must be started by hand before
+  tests over Tor.
