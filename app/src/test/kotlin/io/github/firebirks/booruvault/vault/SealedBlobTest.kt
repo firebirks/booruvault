@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.vault
 import io.github.firebirks.booruvault.vault.crypto.EcKeys
 import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedBlob
+import io.github.firebirks.booruvault.vault.crypto.SyncedFileOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -19,6 +20,15 @@ class SealedBlobTest {
 
     private val pair = EcKeys.generate()
     private val keys = VaultKeys(Recipient.fromEncoded(pair.public.encoded), pair.private)
+
+    @Test
+    fun aSyncedStreamClosedAgainThrowsNothing() {
+        val out = SyncedFileOutputStream(tmp.newFile())
+        out.write(1)
+        out.close()
+        // As Android's finalizer of a FileOutputStream does, closed or not.
+        out.close()
+    }
 
     @Test
     fun writesRacingForOneFileLeaveItWhole() {

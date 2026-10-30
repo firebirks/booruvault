@@ -332,16 +332,7 @@ object SealedBlob {
         try {
             // Synced before the rename, as the vault header is, so a power cut right after it
             // leaves the previous file in place rather than an empty new one.
-            val raw = object : FileOutputStream(tmp) {
-                override fun close() {
-                    try {
-                        fd.sync()
-                    } finally {
-                        super.close()
-                    }
-                }
-            }
-            SealedOutputStream(raw.buffered(), recipient).use { it.write(bytes) }
+            SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient).use { it.write(bytes) }
             if (!tmp.moveOver(file)) throw IOException("cannot write ${file.name}")
         } catch (e: Exception) {
             tmp.delete()
@@ -352,4 +343,23 @@ object SealedBlob {
     /** Null when the file does not exist. The caller wipes the result once decoded. */
     fun read(file: File, keys: VaultKeys): ByteArray? =
         if (!file.exists()) null else SealedFile(file, keys).use { it.readAll() }
+}
+
+/**
+ * Synced to storage as it closes, the first time only: Android's finalizer closes a stream again
+ * even if it was closed, and a sync then would fail on the released descriptor.
+ */
+internal class SyncedFileOutputStream(file: File) : FileOutputStream(file) {
+    @Volatile
+    private var closed = false
+
+    override fun close() {
+        if (closed) return
+        closed = true
+        try {
+            fd.sync()
+        } finally {
+            super.close()
+        }
+    }
 }
