@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.CookieManager
 import android.webkit.WebSettings
+import android.webkit.WebResourceResponse
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewDatabase
@@ -11,6 +12,7 @@ import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.UserAgents
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import java.io.ByteArrayInputStream
 
 /** The WebView side of anti-bot checks. The WebView keeps nothing once a check is over. */
 object Challenge {
@@ -53,6 +55,30 @@ object Challenge {
 
     fun hasClearance(url: String): Boolean =
         runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull()?.contains("cf_clearance=") == true
+
+    /**
+     * Sent with the browser's first request for a guarded file: a range that starts past the end of
+     * any file. A host that puts a check in front of it answers with the check's page; one that lets
+     * the browser through answers 416, without a byte of the file.
+     */
+    const val NO_BYTES_RANGE = "bytes=1099511627776-"
+
+    /** Whether [url] asks for the very file at [target]: same host and path, whatever query a check adds. */
+    fun isGuardedFile(target: String, url: String): Boolean {
+        val guarded = target.toHttpUrlOrNull() ?: return false
+        val asked = url.toHttpUrlOrNull() ?: return false
+        return guarded.host == asked.host && guarded.encodedPath == asked.encodedPath
+    }
+
+    /**
+     * Whether the browser answers [url] itself, with nothing: the guarded file asked for once its
+     * check is passed. The file then never reaches the browser, its cache or the screen.
+     */
+    fun answersEmpty(target: String, url: String, cleared: () -> Boolean): Boolean = isGuardedFile(target, url) && cleared()
+
+    /** That empty answer. */
+    fun emptyResponse(): WebResourceResponse =
+        WebResourceResponse("text/plain", "utf-8", 204, "No Content", mapOf("Cache-Control" to "no-store"), ByteArrayInputStream(ByteArray(0)))
 
     /**
      * The cookies the WebView holds for [urls] of [site]. CookieManager tells only names and
@@ -102,14 +128,19 @@ object Challenge {
 
     /** Leaves the WebView's storage as empty as the platform allows. */
     fun wipe(context: Context, webView: WebView?) {
-        runCatching {
-            webView?.clearCache(true)
-            webView?.clearHistory()
-            webView?.clearFormData()
-            CookieManager.getInstance().removeAllCookies(null)
-            CookieManager.getInstance().flush()
-            WebStorage.getInstance().deleteAllData()
-            WebViewDatabase.getInstance(context).clearHttpAuthUsernamePassword()
-        }
+        runEach(
+            { webView?.clearCache(true) },
+            { webView?.clearHistory() },
+            { webView?.clearFormData() },
+            {
+                CookieManager.getInstance().removeAllCookies(null)
+                CookieManager.getInstance().flush()
+            },
+            { WebStorage.getInstance().deleteAllData() },
+            { WebViewDatabase.getInstance(context).clearHttpAuthUsernamePassword() },
+        )
     }
 }
+
+/** Runs every step, each on its own: one that throws keeps none of the others from running. */
+internal fun runEach(vararg steps: () -> Unit) = steps.forEach { runCatching(it) }

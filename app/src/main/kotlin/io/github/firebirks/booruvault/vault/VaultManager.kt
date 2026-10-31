@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Aead
 import io.github.firebirks.booruvault.vault.crypto.EcKeys
 import io.github.firebirks.booruvault.vault.crypto.EciesBox
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -22,7 +24,6 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.security.GeneralSecurityException
 import javax.crypto.Cipher
-import javax.security.auth.Destroyable
 
 /** The vault's only clear-text file: how to turn the password into the private key. */
 @Serializable
@@ -53,6 +54,17 @@ sealed interface VaultState {
     data object Locked : VaultState
     class Unlocked(val keys: VaultKeys) : VaultState
 }
+
+/**
+ * Gives an open vault what [make] returns, in one atomic step: a vault that locks meanwhile stays
+ * locked, never opened again. Returns the state replaced, null if the vault was not open.
+ */
+internal fun MutableStateFlow<VaultState>.replaceKeys(make: (VaultState.Unlocked) -> VaultState.Unlocked): VaultState.Unlocked? =
+    getAndUpdate { if (it is VaultState.Unlocked) make(it) else it } as? VaultState.Unlocked
+
+/** Locks an open vault in one atomic step. Returns the state closed, null if it was not open. */
+internal fun MutableStateFlow<VaultState>.close(): VaultState.Unlocked? =
+    getAndUpdate { if (it is VaultState.Unlocked) VaultState.Locked else it } as? VaultState.Unlocked
 
 /**
  * Owns the vault's keys. The private key exists in memory only while unlocked; the public key is
@@ -127,13 +139,12 @@ class VaultManager(private val root: File, private val json: Json) {
     }
 
     /**
-     * Drops the private key. The JCA key object cannot be overwritten from Kotlin; once nothing
-     * references it the GC frees its native copy, which BoringSSL clears on release.
+     * Drops the private keys, the retired ones with the current. The JCA key objects cannot be
+     * overwritten from Kotlin; once nothing references them the GC frees their native copies,
+     * which BoringSSL clears on release.
      */
     fun lock() {
-        val unlocked = _state.value as? VaultState.Unlocked ?: return
-        _state.value = VaultState.Locked
-        (unlocked.keys.privateKey as? Destroyable)?.let { runCatching { it.destroy() } }
+        _state.close()?.keys?.destroyPrivateKeys()
     }
 
     /**
@@ -184,21 +195,29 @@ class VaultManager(private val root: File, private val json: Json) {
             header = updated
             _biometric.value = false
             _rekeyPending.value = true
-            if (_state.value is VaultState.Unlocked) _state.value = VaultState.Unlocked(VaultKeys(recipient, pair.private, retiredKeys))
+            val opened = VaultState.Unlocked(VaultKeys(recipient, pair.private, retiredKeys))
+            // Locked meanwhile: the new keys go to no one.
+            if (_state.replaceKeys { opened } == null) opened.keys.destroyPrivateKeys()
             true
         }
     }
 
-    /** Called once no file is sealed to a retired pair any more: the pairs are forgotten. */
-    suspend fun retireFinished() = mutex.withLock {
+    /**
+     * Called once no file is sealed to a retired pair any more, every one re-sealed to
+     * [resealedTo]: the retired pairs are forgotten, unless a password change since has retired
+     * [resealedTo] as well.
+     */
+    suspend fun retireFinished(resealedTo: Recipient) = mutex.withLock {
         withContext(Dispatchers.IO) {
             val current = header ?: return@withContext
             if (current.retired.isEmpty()) return@withContext
+            if (!current.publicKey.fromBase64().contentEquals(resealedTo.encoded)) return@withContext
             val updated = current.copy(retired = emptyList())
             writeHeader(updated)
             header = updated
             _rekeyPending.value = false
-            (_state.value as? VaultState.Unlocked)?.let { _state.value = VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey)) }
+            _state.replaceKeys { VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey)) }
+                ?.keys?.retired?.forEach { it.destroyPrivateKeys() }
         }
     }
 
@@ -279,10 +298,12 @@ class VaultManager(private val root: File, private val json: Json) {
     /** Deletes the vault and everything in it. Irreversible. */
     suspend fun destroy() = mutex.withLock {
         withContext(Dispatchers.IO) {
+            val unlocked = _state.value as? VaultState.Unlocked
             _state.value = VaultState.Missing
             header = null
             _biometric.value = false
             _rekeyPending.value = false
+            unlocked?.keys?.destroyPrivateKeys()
             root.deleteRecursively()
         }
     }
@@ -327,7 +348,7 @@ class VaultManager(private val root: File, private val json: Json) {
             out.write(json.encodeToString(VaultHeader.serializer(), value).toByteArray())
             out.fd.sync()
         }
-        if (!tmp.renameTo(headerFile)) throw java.io.IOException("cannot write vault header")
+        if (!tmp.moveOver(headerFile)) throw java.io.IOException("cannot write vault header")
     }
 
     private companion object {

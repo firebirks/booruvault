@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">無法連上 Tor：請確認 Orbot 正在執行。</string>
     <string name="problem_tor_dns_blocked">已封鎖本機 DNS 查詢：開啟 Tor 時，網域名稱只會透過 Tor 解析。</string>
     <string name="problem_tor_unverified">Tor 出口尚未驗證：正在確認連線確實經由 Tor。</string>
-    <string name="problem_challenge">網站要求進行防機器人驗證（Cloudflare）：請在內建瀏覽器中完成。</string>
+    <string name="problem_challenge">網站要求進行防機器人驗證（Cloudflare）：請輕觸「在瀏覽器中驗證」完成驗證。</string>
+    <string name="problem_challenge_pass_refused">驗證已通過，但應用程式下載此檔案時網站仍再次要求驗證：在瀏覽器中通過的驗證對下載無效，因此再驗證一次也無濟於事。</string>
+    <string name="problem_challenge_pass_refused_tor">驗證已通過，但網站仍再次要求驗證：開啟 Tor 時，內建瀏覽器和下載會經由不同的 Tor 出口連到網站，從一個出口通過的驗證對另一個無效。只要 Tor 保持開啟，再驗證一次也無濟於事。</string>
     <string name="problem_access_denied">存取遭拒（%1$s）：這個來源可能需要登入和 API 金鑰。</string>
     <string name="problem_not_found">找不到網址（404）：請檢查 URL 和引擎類型。</string>
     <string name="problem_gone">頁面已無法使用：網站限制了可翻頁的深度。</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">全部刪除</string>
     <string name="tor_use">使用 Tor（透過 Orbot）</string>
     <string name="tor_use_hint">應用程式的所有連線都經由 Orbot 走 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的，站點名稱也在 Tor 內解析（沒有明文 DNS 請求）。Orbot 未執行時什麼都不會載入：應用程式絕不會退回直接連線。速度較慢，有些網站會封鎖 Tor 或更常要求反機器人驗證。Tor 隱藏的是你從哪裡連線，而不是你是誰：你已登入的網站，或認得自己 Cookie 的網站，仍然知道你的帳戶；其他一切只會看到又一個 Tor 使用者。若瀏覽需要與帳戶分開，請保持未登入，或在「資料」部分清除該網站的 Cookie。</string>
+    <string name="route_title">應用程式要如何連線？</string>
+    <string name="route_text">選擇 BooruVault 連到網站的方式。在你選擇之前，不會送出任何請求。</string>
+    <string name="route_tor_hint">網站看到的是 Tor 節點的位址，而不是你的位址。需要 Orbot 應用程式，速度較慢。</string>
+    <string name="route_direct">直接連線</string>
+    <string name="route_direct_hint">較快，不需要其他應用程式。網站會看到你所在網路的位址。</string>
+    <string name="route_change_later">之後可以在「設定」的「%1$s」中變更。</string>
+    <string name="route_orbot_missing">請安裝 Orbot 並開啟一次。在它執行之前，什麼都不會載入：應用程式絕不會改用直接連線。</string>
     <string name="tor_status_on">Orbot 執行中 · SOCKS 代理伺服器 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS 連接埠</string>
     <string name="tor_port_hint">預設 9050。應用程式只會連線到本機上的這個連接埠，不會從 Orbot 的狀態訊息取得連接埠，因為任何應用程式都能發送這類訊息。</string>
@@ -148,7 +157,7 @@
     <string name="tor_status_not_installed">未安裝 Orbot：無法建立任何連線</string>
     <string name="tor_status_off">Orbot 未執行：在你啟動它之前，無法建立任何連線</string>
     <string name="tor_verified">已驗證：連線經由 Tor 對外（IP %1$s）</string>
-    <string name="tor_vpn_hint">如要獲得最完整的涵蓋範圍，請一併開啟 Orbot 的 VPN 模式並選取 BooruVault：它會在系統層級攔截所有封包，即使是代理伺服器以外的封包也一樣。</string>
+    <string name="tor_vpn_hint">如果你沒有使用其他 VPN，開啟 Orbot 的 VPN 模式並選取 BooruVault，還能在系統層級攔截所有封包，即使是代理伺服器以外的封包也一樣。Android 一次只能執行一個 VPN，因此若已開啟其他 VPN，請讓 Orbot 繼續作為代理伺服器：應用程式本來就會透過它傳送所有流量。</string>
     <string name="tor_open_orbot">開啟 Orbot</string>
     <string name="tor_verify">檢查</string>
     <string name="tor_verifying">正在檢查…</string>

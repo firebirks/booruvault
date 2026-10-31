@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault.crypto
 
+import io.github.firebirks.booruvault.util.moveOver
 import java.io.Closeable
 import java.io.EOFException
 import java.io.File
@@ -12,9 +13,11 @@ import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 import java.security.PrivateKey
 import java.security.PublicKey
+import java.util.concurrent.ConcurrentHashMap
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import javax.security.auth.Destroyable
 
 /** The vault's public key together with the exact bytes it is stored as, which feed the KDF. */
 class Recipient(val key: PublicKey, val encoded: ByteArray) {
@@ -27,7 +30,16 @@ class Recipient(val key: PublicKey, val encoded: ByteArray) {
  * The vault's key pair, plus any [retired] pairs whose files are still being re-sealed after a
  * password change. A reader tries the current pair first, then the retired ones.
  */
-class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retired: List<VaultKeys> = emptyList())
+class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retired: List<VaultKeys> = emptyList()) {
+    /**
+     * Asks the private key, and every retired one, to wipe itself; a key that cannot stops none
+     * of the others. The platform's EC keys cannot be wiped this way: their native copy is
+     * cleared only when the GC frees it, so this is a try, not a guarantee.
+     */
+    fun destroyPrivateKeys() {
+        (listOf(this) + retired).forEach { keys -> (keys.privateKey as? Destroyable)?.let { runCatching { it.destroy() } } }
+    }
+}
 
 /**
  * A file sealed to the vault's public key: ECIES (P-256 ECDH, HKDF-SHA256) wrapping a chunked
@@ -311,23 +323,17 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
 
 /** Small whole files sealed to the vault: written atomically, readable only when unlocked. */
 object SealedBlob {
-    fun write(file: File, recipient: Recipient, bytes: ByteArray) {
+    /** One writer at a time for each file: two at once would write over each other's copy. */
+    private val writing = ConcurrentHashMap<String, Any>()
+
+    fun write(file: File, recipient: Recipient, bytes: ByteArray) = synchronized(writing.computeIfAbsent(file.absolutePath) { Any() }) {
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, file.name + ".tmp")
         try {
             // Synced before the rename, as the vault header is, so a power cut right after it
             // leaves the previous file in place rather than an empty new one.
-            val raw = object : FileOutputStream(tmp) {
-                override fun close() {
-                    try {
-                        fd.sync()
-                    } finally {
-                        super.close()
-                    }
-                }
-            }
-            SealedOutputStream(raw.buffered(), recipient).use { it.write(bytes) }
-            if (!tmp.renameTo(file)) throw IOException("cannot write ${file.name}")
+            SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient).use { it.write(bytes) }
+            if (!tmp.moveOver(file)) throw IOException("cannot write ${file.name}")
         } catch (e: Exception) {
             tmp.delete()
             throw e
@@ -337,4 +343,23 @@ object SealedBlob {
     /** Null when the file does not exist. The caller wipes the result once decoded. */
     fun read(file: File, keys: VaultKeys): ByteArray? =
         if (!file.exists()) null else SealedFile(file, keys).use { it.readAll() }
+}
+
+/**
+ * Synced to storage as it closes, the first time only: Android's finalizer closes a stream again
+ * even if it was closed, and a sync then would fail on the released descriptor.
+ */
+internal class SyncedFileOutputStream(file: File) : FileOutputStream(file) {
+    @Volatile
+    private var closed = false
+
+    override fun close() {
+        if (closed) return
+        closed = true
+        try {
+            fd.sync()
+        } finally {
+            super.close()
+        }
+    }
 }

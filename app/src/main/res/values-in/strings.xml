@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor tidak dapat dijangkau: pastikan Orbot sedang berjalan.</string>
     <string name="problem_tor_dns_blocked">Pencarian DNS lokal diblokir: saat Tor aktif, nama domain hanya diterjemahkan melalui Tor.</string>
     <string name="problem_tor_unverified">Keluaran Tor belum diverifikasi: memeriksa bahwa koneksi benar-benar keluar lewat Tor.</string>
-    <string name="problem_challenge">Situs meminta pemeriksaan anti-bot (Cloudflare): selesaikan di browser bawaan.</string>
+    <string name="problem_challenge">Situs meminta pemeriksaan anti-bot (Cloudflare): ketuk “Verifikasi di browser” untuk menyelesaikannya.</string>
+    <string name="problem_challenge_pass_refused">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi saat aplikasi mengunduh file ini: pemeriksaan yang diselesaikan di browser tidak berlaku untuk unduhan, jadi mengulanginya tidak akan membantu.</string>
+    <string name="problem_challenge_pass_refused_tor">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi: dengan Tor aktif, browser bawaan dan unduhan mencapai situs lewat keluaran Tor yang berbeda, dan pemeriksaan yang diselesaikan dari satu keluaran tidak berlaku untuk yang lain. Mengulanginya tidak akan membantu selama Tor aktif.</string>
     <string name="problem_access_denied">Akses ditolak (%1$s): sumber ini mungkin memerlukan login dan kunci API.</string>
     <string name="problem_not_found">Alamat tidak ditemukan (404): periksa URL dan jenis mesin.</string>
     <string name="problem_gone">Halaman tidak lagi tersedia: situs membatasi seberapa jauh Anda bisa berpindah halaman.</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">Hapus semuanya</string>
     <string name="tor_use">Gunakan Tor (melalui Orbot)</string>
     <string name="tor_use_hint">Semua koneksi aplikasi lewat jaringan Tor melalui Orbot: pencarian, gambar, video, unduhan, dan peramban bawaan. Situs melihat alamat sebuah node Tor, bukan alamat Anda, dan nama situs juga diselesaikan di dalam Tor (tanpa permintaan DNS terbuka). Jika Orbot tidak berjalan, tidak ada yang dimuat: aplikasi tidak pernah beralih ke koneksi langsung. Lebih lambat, dan beberapa situs memblokir Tor atau lebih sering meminta pemeriksaan anti-bot. Tor menyembunyikan dari mana Anda terhubung, bukan siapa Anda: situs tempat Anda masuk, atau yang mengenali cookie-nya sendiri, tetap tahu akun Anda, sementara yang lain hanya melihat satu lagi pengguna Tor. Untuk penjelajahan yang harus terpisah dari akun, jangan masuk, atau hapus cookie situs di bagian Data.</string>
+    <string name="route_title">Bagaimana aplikasi harus terhubung?</string>
+    <string name="route_text">Pilih cara BooruVault menjangkau situs. Sampai Anda memilih, tidak ada yang keluar.</string>
+    <string name="route_tor_hint">Situs melihat alamat node Tor, bukan alamat Anda. Memerlukan aplikasi Orbot dan lebih lambat.</string>
+    <string name="route_direct">Koneksi langsung</string>
+    <string name="route_direct_hint">Lebih cepat, tanpa aplikasi lain. Situs melihat alamat jaringan Anda.</string>
+    <string name="route_change_later">Anda bisa mengubahnya nanti di Setelan, pada “%1$s”.</string>
+    <string name="route_orbot_missing">Pasang Orbot dan buka sekali. Selama belum berjalan, tidak ada yang dimuat: aplikasi tidak pernah beralih ke koneksi langsung.</string>
     <string name="tor_status_on">Orbot berjalan · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Port SOCKS Orbot</string>
     <string name="tor_port_hint">Bawaan 9050. Aplikasi hanya terhubung ke port ini di ponsel ini. Port tidak diambil dari pesan status Orbot, yang bisa dikirim oleh aplikasi mana pun.</string>
@@ -148,7 +157,7 @@
     <string name="tor_status_not_installed">Orbot tidak terpasang: tidak ada koneksi yang bisa dibuat</string>
     <string name="tor_status_off">Orbot tidak berjalan: tidak ada koneksi yang bisa dibuat sampai Anda menjalankannya</string>
     <string name="tor_verified">Terverifikasi: koneksi keluar melalui Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">Untuk cakupan maksimal, aktifkan juga mode VPN Orbot dengan BooruVault dipilih: mode ini menangkap setiap paket di tingkat sistem, bahkan di luar proxy.</string>
+    <string name="tor_vpn_hint">Jika Anda tidak memakai VPN lain, mode VPN Orbot dengan BooruVault dipilih juga menangkap setiap paket di tingkat sistem, bahkan di luar proxy. Android hanya menjalankan satu VPN dalam satu waktu, jadi jika VPN lain aktif, biarkan Orbot sebagai proxy: aplikasi ini sudah mengirim semua lalu lintasnya melalui Orbot.</string>
     <string name="tor_open_orbot">Buka Orbot</string>
     <string name="tor_verify">Periksa</string>
     <string name="tor_verifying">Memeriksa…</string>

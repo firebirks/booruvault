@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -160,7 +161,7 @@ class ParsingTest {
         assertEquals(TagCategory.ARTIST, p.tags.first().category)
         assertTrue(p.tags.any { it.category == TagCategory.SPECIES })
         val request = requests.single()
-        assertTrue(request.header("User-Agent")!!.contains("by me on e621"))
+        assertFalse(request.header("User-Agent")!!.contains("on e621"))
         assertTrue(request.header("Authorization")!!.startsWith("Basic "))
     }
 

@@ -15,6 +15,8 @@ data class Problem(val code: Code, val detail: String? = null) {
         TOR_DNS_BLOCKED,
         TOR_UNVERIFIED,
         CHALLENGE,
+        CHALLENGE_PASS_REFUSED,
+        CHALLENGE_PASS_REFUSED_TOR,
         ACCESS_DENIED,
         NOT_FOUND,
         GONE,

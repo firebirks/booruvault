@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor に接続できません。Orbot が起動しているか確認してください。</string>
     <string name="problem_tor_dns_blocked">ローカルの DNS 解決をブロックしました。Tor がオンのときは、名前は Tor 経由でのみ解決されます。</string>
     <string name="problem_tor_unverified">Tor の出口がまだ確認されていません。接続が本当に Tor 経由か確認中です。</string>
-    <string name="problem_challenge">サイトがボット対策の確認（Cloudflare）を求めています。内蔵ブラウザで完了してください。</string>
+    <string name="problem_challenge">サイトがボット対策の確認（Cloudflare）を求めています。「ブラウザで確認」をタップして完了してください。</string>
+    <string name="problem_challenge_pass_refused">確認は完了しましたが、アプリがこのファイルをダウンロードするとサイトが再び確認を求めます。ブラウザで完了した確認はダウンロードには適用されないため、もう一度行っても解決しません。</string>
+    <string name="problem_challenge_pass_refused_tor">確認は完了しましたが、サイトが再び確認を求めています。Tor がオンのときは、内蔵ブラウザとダウンロードが異なる Tor の出口からサイトに接続するため、一方で完了した確認はもう一方には適用されません。Tor がオンの間は、もう一度行っても解決しません。</string>
     <string name="problem_access_denied">アクセスが拒否されました（%1$s）。このソースにはログインと API キーが必要な場合があります。</string>
     <string name="problem_not_found">アドレスが見つかりません（404）。URL とエンジンの種類を確認してください。</string>
     <string name="problem_gone">このページはもう利用できません。サイトがページ送りできる範囲を制限しています。</string>
@@ -141,6 +143,13 @@
     <string name="delete_vault_confirm">すべて削除</string>
     <string name="tor_use">Tor を使用（Orbot 経由）</string>
     <string name="tor_use_hint">アプリのすべての通信はOrbot経由でTorネットワークを通ります。検索、画像、動画、ダウンロード、内蔵ブラウザーも同様です。サイトにはあなたのアドレスではなくTorノードのアドレスが見え、サイト名の解決もTor内で行われます（平文のDNS要求はありません）。Orbotが動いていなければ何も読み込まれません。アプリが直接接続に切り替えることは決してありません。速度は落ち、Torを遮断したりボット対策の確認を頻繁に求めたりするサイトもあります。Torが隠すのは「どこから接続しているか」であって「誰であるか」ではありません。ログイン中のサイトや、自分のCookieを認識するサイトは引き続きあなたのアカウントを知っていますが、それ以外にはただのTor利用者の一人として見えます。アカウントと切り離したい閲覧では、ログアウトしたままにするか、「データ」セクションでそのサイトのCookieを消去してください。</string>
+    <string name="route_title">アプリの接続方法を選んでください</string>
+    <string name="route_text">BooruVault がサイトに接続する方法を選びます。選ぶまでは何も送信されません。</string>
+    <string name="route_tor_hint">サイトにはあなたのアドレスではなく Tor ノードのアドレスが見えます。Orbot アプリが必要で、速度は遅くなります。</string>
+    <string name="route_direct">直接接続</string>
+    <string name="route_direct_hint">より速く、ほかのアプリは不要です。サイトにはあなたのネットワークのアドレスが見えます。</string>
+    <string name="route_change_later">あとで設定の「%1$s」から変更できます。</string>
+    <string name="route_orbot_missing">Orbot をインストールして一度開いてください。Orbot が動くまでは何も読み込まれません。アプリが直接接続に切り替わることはありません。</string>
     <string name="tor_status_on">Orbot 起動中 · SOCKS プロキシ 127.0.0.1:%1$d</string>
     <string name="tor_port">OrbotのSOCKSポート</string>
     <string name="tor_port_hint">既定は9050。アプリはこの端末のこのポートにのみ接続します。どのアプリでも送信できるOrbotの状態通知からポートを取得することはありません。</string>
@@ -148,7 +157,7 @@
     <string name="tor_status_not_installed">Orbot がインストールされていないため、接続できません</string>
     <string name="tor_status_off">Orbot が起動していません。起動するまで接続できません</string>
     <string name="tor_verified">確認済み：接続は Tor を経由しています（IP %1$s）</string>
-    <string name="tor_vpn_hint">最大限に保護するには、BooruVault を選択した状態で Orbot の VPN モードもオンにしてください。プロキシの外も含め、すべてのパケットをシステムレベルで捕捉します。</string>
+    <string name="tor_vpn_hint">ほかの VPN を使っていない場合は、BooruVault を選択した状態で Orbot の VPN モードをオンにすると、プロキシの外も含め、すべてのパケットをシステムレベルで捕捉できます。Android で同時に使える VPN は 1 つだけなので、ほかの VPN を使っている場合は Orbot をプロキシのままにしてください。アプリはもともと通信をすべて Orbot 経由で送ります。</string>
     <string name="tor_open_orbot">Orbot を開く</string>
     <string name="tor_verify">確認</string>
     <string name="tor_verifying">確認中…</string>

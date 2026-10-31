@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">Tor तक नहीं पहुंचा जा सका: जांचें कि Orbot चल रहा है।</string>
     <string name="problem_tor_dns_blocked">लोकल DNS लुकअप ब्लॉक किया गया: Tor चालू होने पर नाम केवल Tor के ज़रिए रिज़ॉल्व होते हैं।</string>
     <string name="problem_tor_unverified">Tor निकास अभी सत्यापित नहीं: जाँच हो रही है कि कनेक्शन सच में Tor से बाहर जाते हैं।</string>
-    <string name="problem_challenge">साइट एंटी-बॉट जांच (Cloudflare) मांग रही है: इसे बिल्ट-इन ब्राउज़र में पूरा करें।</string>
+    <string name="problem_challenge">साइट एंटी-बॉट जांच (Cloudflare) मांग रही है: इसे पूरा करने के लिए “ब्राउज़र में जांचें” पर टैप करें।</string>
+    <string name="problem_challenge_pass_refused">जांच पूरी हो गई थी, लेकिन ऐप के यह फ़ाइल डाउनलोड करते समय साइट इसे फिर मांग रही है: ब्राउज़र में पूरी की गई जांच डाउनलोड पर लागू नहीं होती, इसलिए इसे दोबारा करने से कोई फ़ायदा नहीं होगा।</string>
+    <string name="problem_challenge_pass_refused_tor">जांच पूरी हो गई थी, लेकिन साइट इसे फिर मांग रही है: Tor चालू होने पर बिल्ट-इन ब्राउज़र और डाउनलोड अलग-अलग Tor निकासों से साइट तक पहुंचते हैं, और एक से पूरी की गई जांच दूसरे पर लागू नहीं होती। Tor चालू रहते इसे दोबारा करने से कोई फ़ायदा नहीं होगा।</string>
     <string name="problem_access_denied">ऐक्सेस अस्वीकार (%1$s): इस स्रोत के लिए लॉग इन और API कुंजी की ज़रूरत हो सकती है।</string>
     <string name="problem_not_found">पता नहीं मिला (404): URL और इंजन का प्रकार जांचें।</string>
     <string name="problem_gone">पेज अब उपलब्ध नहीं है: साइट सीमित करती है कि आप कितने आगे तक पेज बदल सकते हैं।</string>
@@ -145,6 +147,13 @@
     <string name="delete_vault_confirm">सब कुछ मिटाएं</string>
     <string name="tor_use">Tor इस्तेमाल करें (Orbot के ज़रिए)</string>
     <string name="tor_use_hint">ऐप के सभी कनेक्शन Orbot के ज़रिए Tor नेटवर्क से गुज़रते हैं: खोज, चित्र, वीडियो, डाउनलोड और अंतर्निहित ब्राउज़र। साइटें आपके बजाय किसी Tor नोड का पता देखती हैं, और साइटों के नाम भी Tor के भीतर हल होते हैं (कोई खुला DNS अनुरोध नहीं)। यदि Orbot नहीं चल रहा तो कुछ लोड नहीं होता: ऐप कभी सीधे कनेक्शन पर नहीं लौटता। यह धीमा है, और कुछ साइटें Tor को रोकती हैं या बॉट-रोधी जाँच अधिक बार माँगती हैं। Tor छुपाता है कि आप कहाँ से जुड़ रहे हैं, यह नहीं कि आप कौन हैं: जिस साइट पर आप लॉग इन हैं, या जो अपनी कुकीज़ पहचानती है, वह आपका खाता फिर भी जानती है, जबकि बाकी सब बस एक और Tor उपयोगकर्ता देखते हैं। किसी खाते से अलग रहकर ब्राउज़ करने के लिए लॉग आउट रहें, या डेटा अनुभाग में साइट की कुकीज़ मिटा दें।</string>
+    <string name="route_title">ऐप कैसे कनेक्ट हो?</string>
+    <string name="route_text">चुनें कि BooruVault साइटों तक कैसे पहुंचे। जब तक आप नहीं चुनते, कुछ भी बाहर नहीं जाता।</string>
+    <string name="route_tor_hint">साइटें आपके पते के बजाय एक Tor नोड का पता देखती हैं। Orbot ऐप चाहिए, और यह धीमा है।</string>
+    <string name="route_direct">सीधा कनेक्शन</string>
+    <string name="route_direct_hint">तेज़, किसी और ऐप की ज़रूरत नहीं। साइटें आपके नेटवर्क का पता देखती हैं।</string>
+    <string name="route_change_later">इसे आप बाद में सेटिंग में “%1$s” के अंतर्गत बदल सकते हैं।</string>
+    <string name="route_orbot_missing">Orbot इंस्टॉल करें और एक बार खोलें। जब तक वह नहीं चलता, कुछ भी लोड नहीं होता: ऐप कभी सीधे कनेक्शन पर नहीं लौटता।</string>
     <string name="tor_status_on">Orbot चल रहा है · SOCKS प्रॉक्सी 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot का SOCKS पोर्ट</string>
     <string name="tor_port_hint">डिफ़ॉल्ट 9050. ऐप इस फ़ोन पर केवल इसी पोर्ट से जुड़ता है। यह पोर्ट Orbot के स्थिति संदेशों से नहीं लेता, जिन्हें कोई भी ऐप भेज सकता है।</string>
@@ -152,7 +161,7 @@
     <string name="tor_status_not_installed">Orbot इंस्टॉल नहीं है: कोई कनेक्शन संभव नहीं</string>
     <string name="tor_status_off">Orbot नहीं चल रहा है: जब तक आप उसे शुरू नहीं करते, कोई कनेक्शन संभव नहीं</string>
     <string name="tor_verified">पुष्टि हो गई: कनेक्शन Tor से होकर बाहर जाता है (IP %1$s)</string>
-    <string name="tor_vpn_hint">ज़्यादा से ज़्यादा कवरेज के लिए Orbot का VPN मोड भी चालू करें और उसमें BooruVault चुनें: यह सिस्टम स्तर पर हर पैकेट को पकड़ता है, प्रॉक्सी के बाहर वाले भी।</string>
+    <string name="tor_vpn_hint">अगर आप कोई दूसरा VPN इस्तेमाल नहीं करते, तो BooruVault चुनकर Orbot का VPN मोड सिस्टम स्तर पर हर पैकेट को भी पकड़ता है, प्रॉक्सी के बाहर वाले भी। Android एक समय में एक ही VPN चलाता है, इसलिए कोई दूसरा VPN चालू हो तो Orbot को प्रॉक्सी ही रहने दें: ऐप वैसे भी अपना सारा ट्रैफ़िक उसी से भेजता है।</string>
     <string name="tor_open_orbot">Orbot खोलें</string>
     <string name="tor_verify">जांचें</string>
     <string name="tor_verifying">जांच हो रही है…</string>

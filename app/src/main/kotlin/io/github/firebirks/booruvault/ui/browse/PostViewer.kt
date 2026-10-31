@@ -10,7 +10,6 @@ import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
-import android.content.ClipData
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -80,8 +79,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,12 +96,15 @@ import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
 import io.github.firebirks.booruvault.ui.common.categoryColor
 import io.github.firebirks.booruvault.ui.common.containerViewModel
+import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
 import io.github.firebirks.booruvault.util.formatBytes
 import io.github.firebirks.booruvault.util.formatDate
 import io.github.firebirks.booruvault.vault.VaultState
 import coil3.compose.AsyncImage
+import coil3.network.NetworkHeaders
+import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
@@ -125,6 +125,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     val askNotifications = rememberNotificationPermission()
     val resources = LocalResources.current
     val links = LocalLinkOpener.current
+    val challenge = LocalChallenge.current
     val posts = state.posts
     if (posts.isEmpty()) {
         LaunchedEffect(Unit) { onClose() }
@@ -161,7 +162,18 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
             if (post.needsResolve) {
                 // This and the neighbouring pages fetch their post page while being looked at.
                 LaunchedEffect(post.id) { vm.resolve(post) }
-                PendingPost(post, resolveErrors[post.id], onRetry = { vm.resolve(post) }, onTap = { chrome = !chrome })
+                val error = resolveErrors[post.id]
+                val source = state.source
+                PendingPost(
+                    post, error,
+                    onRetry = { vm.resolve(post) },
+                    onVerify = if (error?.code == Problem.Code.CHALLENGE && source != null) {
+                        { challenge.open(source, post.postUrl) { vm.resolve(post) } }
+                    } else {
+                        null
+                    },
+                    onTap = { chrome = !chrome },
+                )
             } else if (post.kind == MediaKind.VIDEO && url != null) {
                 if (page == pager.currentPage) {
                     VideoPlayer(Uri.parse(url), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it })
@@ -169,7 +181,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                     AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
             } else {
-                ZoomablePostImage(post, url, onTap = { chrome = !chrome })
+                ZoomablePostImage(post, url, UserAgents.forSource(state.source), onTap = { chrome = !chrome })
             }
         }
 
@@ -269,7 +281,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
 }
 
 @Composable
-private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onTap: () -> Unit) {
+private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onVerify: (() -> Unit)?, onTap: () -> Unit) {
     Box(Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures { onTap() } }, contentAlignment = Alignment.Center) {
         AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
         if (error == null) {
@@ -280,6 +292,7 @@ private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onTap:
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(problemText(error), color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                if (onVerify != null) TextButton(onClick = onVerify) { Text(stringResource(R.string.action_verify_in_browser)) }
                 TextButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
             }
         }
@@ -287,7 +300,7 @@ private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onTap:
 }
 
 @Composable
-private fun ZoomablePostImage(post: Post, url: String?, onTap: () -> Unit) {
+private fun ZoomablePostImage(post: Post, url: String?, userAgent: String, onTap: () -> Unit) {
     val context = LocalContext.current
     val zoomState = rememberZoomableImageState()
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -296,7 +309,10 @@ private fun ZoomablePostImage(post: Post, url: String?, onTap: () -> Unit) {
             CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
         }
         ZoomableAsyncImage(
-            model = remember(url) { ImageRequest.Builder(context).data(url).build() },
+            // Named as the source's other requests are: an original may be refused to the browser's name.
+            model = remember(url, userAgent) {
+                ImageRequest.Builder(context).data(url).httpHeaders(NetworkHeaders.Builder().set("User-Agent", userAgent).build()).build()
+            },
             contentDescription = post.tagNames.take(8).joinToString(" "),
             state = zoomState,
             onClick = { onTap() },
@@ -321,8 +337,7 @@ private fun PostInfoSheet(
 ) {
     val context = LocalContext.current
     val links = LocalLinkOpener.current
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
+    val clipboard = LocalContainer.current.clipboard
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 16.dp),
@@ -364,14 +379,7 @@ private fun PostInfoSheet(
                             onExclude = onExclude,
                             onCreateCollection = onCreateCollection,
                             onBlacklist = onBlacklist,
-                            onCopy = { text ->
-                                val clip = ClipData.newPlainText("tag", text).apply {
-                                    description.extras = android.os.PersistableBundle().apply {
-                                        putBoolean("android.content.extra.IS_SENSITIVE", true)
-                                    }
-                                }
-                                scope.launch { clipboard.setClipEntry(ClipEntry(clip)) }
-                            },
+                            onCopy = { text -> clipboard.copy("tag", text) },
                         )
                     }
                 }

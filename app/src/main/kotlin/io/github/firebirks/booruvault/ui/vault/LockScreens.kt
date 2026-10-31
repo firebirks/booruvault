@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -27,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -262,6 +264,44 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
             } else {
                 Text(stringResource(R.string.setup_create))
             }
+        }
+    }
+}
+
+/**
+ * The first start's last question, asked once the vault exists and before anything goes out: Tor
+ * through Orbot, or a direct connection. Both answers look alike and neither is picked in advance.
+ * Until one is given, no screen that makes requests is shown, and the HTTP client and the built-in
+ * browser refuse anything that would leave.
+ */
+@Composable
+fun RouteChoiceScreen(onChosen: (useTor: Boolean) -> Unit) {
+    LockLayout {
+        Icon(Icons.Outlined.Public, null, Modifier.size(64.dp), tint = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.route_title), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+        Text(
+            stringResource(R.string.route_text),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        RouteOption(stringResource(R.string.tor_use), stringResource(R.string.route_tor_hint)) { onChosen(true) }
+        RouteOption(stringResource(R.string.route_direct), stringResource(R.string.route_direct_hint)) { onChosen(false) }
+        Text(
+            stringResource(R.string.route_change_later, stringResource(R.string.settings_section_network)),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun RouteOption(title: String, hint: String, onClick: () -> Unit) {
+    OutlinedCard(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(hint, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

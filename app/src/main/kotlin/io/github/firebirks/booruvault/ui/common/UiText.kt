@@ -53,6 +53,8 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.TOR_DNS_BLOCKED -> getString(R.string.problem_tor_dns_blocked)
         Problem.Code.TOR_UNVERIFIED -> getString(R.string.problem_tor_unverified)
         Problem.Code.CHALLENGE -> getString(R.string.problem_challenge)
+        Problem.Code.CHALLENGE_PASS_REFUSED -> getString(R.string.problem_challenge_pass_refused)
+        Problem.Code.CHALLENGE_PASS_REFUSED_TOR -> getString(R.string.problem_challenge_pass_refused_tor)
         Problem.Code.ACCESS_DENIED -> getString(R.string.problem_access_denied, detail)
         Problem.Code.NOT_FOUND -> getString(R.string.problem_not_found)
         Problem.Code.GONE -> getString(R.string.problem_gone)

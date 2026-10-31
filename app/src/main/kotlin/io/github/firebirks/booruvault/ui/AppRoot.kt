@@ -63,7 +63,9 @@ import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.downloads.DownloadsScreen
+import io.github.firebirks.booruvault.ui.settings.OrbotSetup
 import io.github.firebirks.booruvault.ui.settings.SettingsTab
+import io.github.firebirks.booruvault.ui.vault.RouteChoiceScreen
 import io.github.firebirks.booruvault.ui.vault.UnlockScreen
 import io.github.firebirks.booruvault.ui.vault.VaultTab
 import io.github.firebirks.booruvault.ui.vault.VaultViewModel
@@ -87,20 +89,29 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
     CompositionLocalProvider(LocalContainer provides container) {
         val ready by container.settings.ready.collectAsStateWithLifecycle()
         val vaultState by container.vault.state.collectAsStateWithLifecycle()
+        val routeChosen by container.tor.routeChosen.collectAsStateWithLifecycle()
         var offerBiometric by rememberSaveable { mutableStateOf(false) }
+        var orbotSetup by rememberSaveable { mutableStateOf(false) }
         when (vaultState) {
             VaultState.Missing -> VaultSetupScreen(onCreated = { offerBiometric = true })
             VaultState.Locked -> UnlockScreen(
                 title = stringResource(R.string.unlock_title_app),
                 subtitle = stringResource(R.string.unlock_subtitle_app),
             )
-            is VaultState.Unlocked -> if (!ready) {
-                CenteredProgress(stringResource(R.string.opening_vault))
-            } else {
-                ProvideLinkOpener {
-                    MainScaffold(requestedTab)
+            is VaultState.Unlocked -> when {
+                !ready -> CenteredProgress(stringResource(R.string.opening_vault))
+                // Asked before anything goes out: the main screens are what make requests.
+                !routeChosen -> RouteChoiceScreen(onChosen = { useTor ->
+                    container.tor.chooseRoute(useTor)
+                    orbotSetup = useTor
+                })
+                else -> {
+                    ProvideLinkOpener {
+                        MainScaffold(requestedTab)
+                        if (orbotSetup) OrbotSetup(onDone = { orbotSetup = false })
+                    }
+                    if (offerBiometric && !orbotSetup) BiometricOffer(onDone = { offerBiometric = false })
                 }
-                if (offerBiometric) BiometricOffer(onDone = { offerBiometric = false })
             }
         }
     }
@@ -171,7 +182,7 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     BackHandler(enabled = tab != Tab.BROWSE) { tab = Tab.BROWSE }
 
     var challenge by remember { mutableStateOf<ChallengeRequest?>(null) }
-    val launcher = remember { ChallengeLauncher { source, url, browse, onDone -> challenge = ChallengeRequest(source, url, browse, onDone) } }
+    val launcher = remember { ChallengeLauncher { source, url, mode, onDone -> challenge = ChallengeRequest(source, url, mode, onDone) } }
 
     CompositionLocalProvider(LocalChallenge provides launcher) {
     Box(Modifier.fillMaxSize()) {

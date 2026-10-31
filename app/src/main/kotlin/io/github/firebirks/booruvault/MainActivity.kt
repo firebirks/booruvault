@@ -14,6 +14,8 @@ import io.github.firebirks.booruvault.settings.AppLanguage
 import io.github.firebirks.booruvault.ui.AppRoot
 import io.github.firebirks.booruvault.ui.common.IncognitoKeyboard
 import io.github.firebirks.booruvault.ui.theme.BooruVaultTheme
+import io.github.firebirks.booruvault.vault.VaultState
+import io.github.firebirks.booruvault.vault.closesOnLock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.combine
@@ -42,6 +44,18 @@ class MainActivity : FragmentActivity() {
                     .distinctUntilChanged().collect { secure ->
                     if (secure) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     else window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                }
+            }
+        }
+
+        // A lock that finds the screen stopped closes it and takes it out of recent apps, which
+        // releases the browser and the player with it; the next visit starts at the lock screen.
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                var last: VaultState? = null
+                container.vault.state.collect { state ->
+                    if (closesOnLock(last, state, lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))) finishAndRemoveTask()
+                    last = state
                 }
             }
         }

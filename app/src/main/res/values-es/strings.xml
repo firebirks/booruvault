@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">No se puede llegar a Tor: comprueba que Orbot esté en ejecución.</string>
     <string name="problem_tor_dns_blocked">Consulta DNS local bloqueada: con Tor activado, los nombres se resuelven solo a través de Tor.</string>
     <string name="problem_tor_unverified">Salida de Tor aún sin verificar: comprobando que las conexiones salen de verdad por Tor.</string>
-    <string name="problem_challenge">El sitio pide una verificación antibots (Cloudflare): complétala en el navegador integrado.</string>
+    <string name="problem_challenge">El sitio pide una verificación antibots (Cloudflare): toca “Verificar en el navegador” para superarla.</string>
+    <string name="problem_challenge_pass_refused">La verificación se superó, pero el sitio la vuelve a pedir cuando la app descarga este archivo: una verificación superada en el navegador no vale para las descargas, así que repetirla no servirá.</string>
+    <string name="problem_challenge_pass_refused_tor">La verificación se superó, pero el sitio la vuelve a pedir: con Tor activado, el navegador integrado y las descargas llegan al sitio por salidas de Tor distintas, y una verificación superada desde una no vale para la otra. Repetirla no servirá mientras Tor esté activado.</string>
     <string name="problem_access_denied">Acceso denegado (%1$s): puede que esta fuente necesite iniciar sesión y una clave de API.</string>
     <string name="problem_not_found">Dirección no encontrada (404): comprueba la URL y el tipo de motor.</string>
     <string name="problem_gone">La página ya no está disponible: el sitio limita hasta qué página puedes avanzar.</string>
@@ -149,6 +151,13 @@
     <string name="delete_vault_confirm">Eliminar todo</string>
     <string name="tor_use">Usar Tor (mediante Orbot)</string>
     <string name="tor_use_hint">Todas las conexiones de la app pasan por la red Tor a través de Orbot: búsquedas, imágenes, vídeos, descargas y el navegador integrado. Los sitios ven la dirección de un nodo Tor en lugar de la tuya, y los nombres de los sitios también se resuelven dentro de Tor (sin consultas DNS en claro). Si Orbot no está en marcha no se carga nada: la app nunca recurre a una conexión directa. Es más lento, y algunos sitios bloquean Tor o piden la verificación anti-bot más a menudo. Tor oculta desde dónde te conectas, no quién eres: un sitio en el que has iniciado sesión, o que reconoce sus propias cookies, sigue sabiendo cuál es tu cuenta, mientras que todo lo demás solo ve a otro usuario de Tor. Para navegar al margen de una cuenta, no inicies sesión o borra las cookies del sitio en la sección Datos.</string>
+    <string name="route_title">¿Cómo debe conectarse la app?</string>
+    <string name="route_text">Elige cómo llega BooruVault a los sitios. Hasta que elijas, no sale nada.</string>
+    <string name="route_tor_hint">Los sitios ven la dirección de un nodo de Tor en lugar de la tuya. Necesita la app Orbot y es más lento.</string>
+    <string name="route_direct">Conexión directa</string>
+    <string name="route_direct_hint">Más rápida, sin otra app. Los sitios ven la dirección de tu red.</string>
+    <string name="route_change_later">Puedes cambiarlo más tarde en Ajustes, en “%1$s”.</string>
+    <string name="route_orbot_missing">Instala Orbot y ábrelo una vez. Mientras no esté en marcha no se carga nada: la app nunca recurre a una conexión directa.</string>
     <string name="tor_status_on">Orbot en ejecución · proxy SOCKS 127.0.0.1:%1$d</string>
     <string name="tor_port">Puerto SOCKS de Orbot</string>
     <string name="tor_port_hint">Por defecto 9050. La app solo se conecta a este puerto en este teléfono. No toma el puerto de los mensajes de estado de Orbot, que cualquier app podría enviar.</string>
@@ -156,7 +165,7 @@
     <string name="tor_status_not_installed">Orbot no está instalado: no es posible ninguna conexión</string>
     <string name="tor_status_off">Orbot no está en ejecución: no es posible ninguna conexión hasta que lo inicies</string>
     <string name="tor_verified">Verificado: la conexión sale por Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">Para una cobertura máxima, activa también el modo VPN de Orbot con BooruVault seleccionada: captura todos los paquetes a nivel de sistema, incluso fuera del proxy.</string>
+    <string name="tor_vpn_hint">Si no usas otra VPN, el modo VPN de Orbot con BooruVault seleccionada también captura todos los paquetes a nivel de sistema, incluso fuera del proxy. Android solo mantiene una VPN a la vez: si tienes otra activa, deja Orbot como proxy; la app ya envía todo su tráfico a través de él.</string>
     <string name="tor_open_orbot">Abrir Orbot</string>
     <string name="tor_verify">Comprobar</string>
     <string name="tor_verifying">Comprobando…</string>

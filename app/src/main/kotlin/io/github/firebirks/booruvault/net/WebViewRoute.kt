@@ -9,18 +9,20 @@ import kotlin.coroutines.resume
 /** Points the app's WebViews at Orbot when Tor is on, with no direct fallback. */
 object WebViewRoute {
     /**
-     * Applies the route before any page loads. With Tor on, a WebView that cannot be proxied, or
-     * cannot have WebRTC removed before page scripts run, is not opened at all: either would let
-     * traffic out around Tor.
+     * Applies the route before any page loads, and says which one it is: what the page earns
+     * belongs to that route. With Tor on, a WebView that cannot be proxied, or cannot have WebRTC
+     * removed before page scripts run, is not opened at all: either would let traffic out around Tor.
      */
-    suspend fun apply(tor: TorManager): Result<Unit> {
+    suspend fun apply(tor: TorManager): Result<Route> {
+        // Before the user has chosen a route, no page loads by either.
+        if (!tor.routeChosen.value) return Result.failure(RouteNotChosenException())
         if (!tor.enabled) {
             if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
                 suspendCancellableCoroutine { cont ->
                     ProxyController.getInstance().clearProxyOverride({ it.run() }) { cont.resume(Unit) }
                 }
             }
-            return Result.success(Unit)
+            return Result.success(Route.DIRECT)
         }
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE) ||
             !WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)
@@ -37,6 +39,6 @@ object WebViewRoute {
         suspendCancellableCoroutine { cont ->
             ProxyController.getInstance().setProxyOverride(config, { it.run() }) { cont.resume(Unit) }
         }
-        return Result.success(Unit)
+        return Result.success(Route.TOR)
     }
 }

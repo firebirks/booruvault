@@ -5,7 +5,9 @@
     <string name="problem_tor_unreachable">Tor is unreachable: check that Orbot is running.</string>
     <string name="problem_tor_dns_blocked">Local DNS lookup blocked: with Tor on, names are resolved only through Tor.</string>
     <string name="problem_tor_unverified">Tor exit not verified yet: checking that connections really leave through Tor.</string>
-    <string name="problem_challenge">The site asks for an anti-bot check (Cloudflare): complete it in the built-in browser.</string>
+    <string name="problem_challenge">The site asks for an anti-bot check (Cloudflare): tap “Verify in the browser” to pass it.</string>
+    <string name="problem_challenge_pass_refused">The check was passed, but the site asks for it again when the app downloads this file: a check passed in the browser does not count for downloads, so passing it again will not help.</string>
+    <string name="problem_challenge_pass_refused_tor">The check was passed, but the site asks for it again: with Tor on, the built-in browser and the downloads reach the site through different Tor exits, and a check passed from one does not count for the other. Passing it again will not help while Tor is on.</string>
     <string name="problem_access_denied">Access denied (%1$s): this source may need a login and an API key.</string>
     <string name="problem_not_found">Address not found (404): check the URL and the engine type.</string>
     <string name="problem_gone">Page no longer available: the site limits how far you can page.</string>
@@ -151,6 +153,13 @@
     <string name="delete_vault_confirm">Delete everything</string>
     <string name="tor_use">Use Tor (through Orbot)</string>
     <string name="tor_use_hint">All of the app\'s connections go through the Tor network via Orbot: searches, images, videos, downloads and the built-in browser. Sites see the address of a Tor node instead of yours, and site names are resolved inside Tor too (no DNS request in clear). If Orbot is not running nothing loads: the app never falls back to a direct connection. It is slower, and some sites block Tor or ask for the anti-bot check more often. Tor hides where you connect from, not who you are: a site you are logged in to, or that recognises its own cookies, still knows your account, while everything else just sees another Tor user. For browsing that should stay apart from an account, stay logged out, or clear the site\'s cookies in the Data section.</string>
+    <string name="route_title">How should the app connect?</string>
+    <string name="route_text">Choose how BooruVault reaches the sites. Nothing goes out until you do.</string>
+    <string name="route_tor_hint">Sites see a Tor node\'s address instead of yours. Needs the Orbot app, and is slower.</string>
+    <string name="route_direct">Direct connection</string>
+    <string name="route_direct_hint">Faster, with no other app needed. Sites see your network\'s address.</string>
+    <string name="route_change_later">You can change this later in Settings, under “%1$s”.</string>
+    <string name="route_orbot_missing">Install Orbot and open it once. Until it runs nothing loads: the app never falls back to a direct connection.</string>
     <string name="tor_status_on">Orbot running · SOCKS proxy 127.0.0.1:%1$d</string>
     <string name="tor_port">Orbot SOCKS port</string>
     <string name="tor_port_hint">Default 9050. The app connects only to this port on this phone. It does not take the port from Orbot\'s status messages, which any app could send.</string>
@@ -158,7 +167,7 @@
     <string name="tor_status_not_installed">Orbot is not installed: no connection is possible</string>
     <string name="tor_status_off">Orbot is not running: no connection is possible until you start it</string>
     <string name="tor_verified">Verified: the connection exits through Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">For maximum coverage also turn on Orbot\'s VPN mode with BooruVault selected: it catches every packet at system level, even outside the proxy.</string>
+    <string name="tor_vpn_hint">If you use no other VPN, Orbot\'s VPN mode with BooruVault selected also catches every packet at system level, even outside the proxy. Android runs one VPN at a time, so with another one on, keep Orbot as a proxy: the app already sends all its traffic through it.</string>
     <string name="tor_open_orbot">Open Orbot</string>
     <string name="tor_verify">Check</string>
     <string name="tor_verifying">Checking…</string>

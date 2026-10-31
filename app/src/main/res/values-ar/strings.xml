@@ -4,7 +4,9 @@
     <string name="problem_tor_unreachable">يتعذّر الوصول إلى Tor: تأكّد من أن Orbot قيد التشغيل.</string>
     <string name="problem_tor_dns_blocked">تم حظر استعلام DNS المحلي: عند تفعيل Tor، لا تُحَلّ أسماء النطاقات إلا عبر Tor.</string>
     <string name="problem_tor_unverified">لم يُتحقق من مخرج Tor بعد: يجري التأكد من أن الاتصالات تخرج فعلًا عبر Tor.</string>
-    <string name="problem_challenge">يطلب الموقع تحققًا مضادًا للروبوتات (Cloudflare): أكمله في المتصفح المدمج.</string>
+    <string name="problem_challenge">يطلب الموقع تحققًا مضادًا للروبوتات (Cloudflare): انقر على «التحقق في المتصفح» لاجتيازه.</string>
+    <string name="problem_challenge_pass_refused">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا عندما ينزّل التطبيق هذا الملف: التحقق الذي يُجتاز في المتصفح لا يسري على التنزيلات، لذا لن تفيد إعادته.</string>
+    <string name="problem_challenge_pass_refused_tor">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا: عند تشغيل Tor يصل المتصفح المدمج والتنزيلات إلى الموقع عبر مخارج Tor مختلفة، والتحقق الذي يُجتاز من أحدها لا يسري على الآخر. لن تفيد إعادته ما دام Tor مشغّلًا.</string>
     <string name="problem_access_denied">تم رفض الوصول (%1$s): قد يتطلب هذا المصدر تسجيل الدخول ومفتاح API.</string>
     <string name="problem_not_found">العنوان غير موجود (404): تحقّق من عنوان URL ونوع المحرّك.</string>
     <string name="problem_gone">لم تعد الصفحة متاحة: يحدّ الموقع من عدد الصفحات التي يمكنك التنقل إليها.</string>
@@ -161,6 +163,13 @@
     <string name="delete_vault_confirm">حذف كل شيء</string>
     <string name="tor_use">استخدام Tor (عبر Orbot)</string>
     <string name="tor_use_hint">تمر كل اتصالات التطبيق عبر شبكة Tor من خلال Orbot: عمليات البحث والصور والفيديو والتنزيلات والمتصفح المدمج. ترى المواقع عنوان عقدة Tor بدلًا من عنوانك، وتُحلّ أسماء المواقع داخل Tor أيضًا (لا طلبات DNS مكشوفة). إن لم يكن Orbot يعمل فلن يُحمَّل شيء: لا يلجأ التطبيق أبدًا إلى اتصال مباشر. الأمر أبطأ، وبعض المواقع تحجب Tor أو تطلب فحص مكافحة الروبوتات أكثر. يخفي Tor من أين تتصل، لا من تكون: الموقع الذي سجّلت الدخول إليه، أو الذي يتعرّف على ملفات تعريف الارتباط الخاصة به، يظل يعرف حسابك، بينما لا يرى الباقون سوى مستخدم Tor آخر. للتصفح الذي يجب أن يبقى منفصلًا عن حساب، ابقَ غير مسجّل الدخول أو امسح ملفات تعريف الارتباط للموقع من قسم البيانات.</string>
+    <string name="route_title">كيف يتصل التطبيق؟</string>
+    <string name="route_text">اختر كيف يصل BooruVault إلى المواقع. لا يخرج شيء حتى تختار.</string>
+    <string name="route_tor_hint">ترى المواقع عنوان عقدة Tor بدلًا من عنوانك. يحتاج إلى تطبيق Orbot، وهو أبطأ.</string>
+    <string name="route_direct">اتصال مباشر</string>
+    <string name="route_direct_hint">أسرع، دون تطبيق آخر. ترى المواقع عنوان شبكتك.</string>
+    <string name="route_change_later">يمكنك تغيير ذلك لاحقًا من الإعدادات، ضمن «%1$s».</string>
+    <string name="route_orbot_missing">ثبّت Orbot وافتحه مرة واحدة. ما دام لا يعمل لا يُحمَّل شيء: لا يلجأ التطبيق أبدًا إلى اتصال مباشر.</string>
     <string name="tor_status_on">Orbot قيد التشغيل · وكيل SOCKS على 127.0.0.1:%1$d</string>
     <string name="tor_port">منفذ SOCKS لـ Orbot</string>
     <string name="tor_port_hint">الافتراضي 9050. لا يتصل التطبيق إلا بهذا المنفذ على هذا الهاتف، ولا يأخذ المنفذ من رسائل حالة Orbot التي يمكن لأي تطبيق إرسالها.</string>
@@ -168,7 +177,7 @@
     <string name="tor_status_not_installed">Orbot غير مثبّت: لا يمكن إجراء أي اتصال</string>
     <string name="tor_status_off">Orbot ليس قيد التشغيل: لا يمكن إجراء أي اتصال حتى تشغّله</string>
     <string name="tor_verified">تم التحقق: يخرج الاتصال عبر Tor (عنوان IP: %1$s)</string>
-    <string name="tor_vpn_hint">لأقصى تغطية، فعّل أيضًا وضع VPN في Orbot مع تحديد BooruVault: فهو يلتقط كل حزمة على مستوى النظام، حتى خارج الوكيل.</string>
+    <string name="tor_vpn_hint">إذا لم تكن تستخدم VPN آخر، فإن وضع VPN في Orbot مع تحديد BooruVault يلتقط أيضًا كل حزمة على مستوى النظام، حتى خارج الوكيل. يشغّل Android شبكة VPN واحدة فقط في كل مرة، لذا إذا كانت لديك VPN أخرى مفعّلة فأبقِ Orbot وكيلًا: فالتطبيق يرسل كل حركة بياناته عبره أصلًا.</string>
     <string name="tor_open_orbot">فتح Orbot</string>
     <string name="tor_verify">تحقّق</string>
     <string name="tor_verifying">جارٍ التحقق…</string>

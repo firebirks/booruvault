@@ -2,19 +2,24 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.toBase64
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -90,6 +95,47 @@ class VaultTest {
     }
 
     @Test
+    fun aWriteBegunUnderTheOldPairThatLandsDuringAPassIsResealed() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        val rekeyer = VaultRekeyer(root, vault, store, scope)
+        // Enough files for a pass to take a while, so that a write can land while one runs.
+        val media = File(root, "media").apply { mkdirs() }
+        repeat(800) { n -> SealedOutputStream(File(media, store.newId()).outputStream(), vault.recipient!!).use { it.write(n) } }
+        val data = Random(5).nextBytes(10_000)
+        val id = store.newId()
+        val started = CompletableDeferred<Unit>()
+        val release = CompletableDeferred<Unit>()
+        // A download that read the recipient before the password change.
+        val download = scope.launch {
+            store.writeMedia(id) { out ->
+                started.complete(Unit)
+                release.await()
+                out.write(data)
+            }
+        }
+        started.await()
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        // The first pass re-seals the files and the second finds nothing to do; the write lands in
+        // the middle of the third, after its listing, and that pass would be the second clean one.
+        var passes = 0
+        var last = -1
+        withTimeout(60_000) {
+            rekeyer.progress.first { p ->
+                if (p != null && p.done < last) passes++
+                last = p?.done ?: last
+                p != null && passes >= 2 && p.done in p.total / 5..p.total * 3 / 5
+            }
+        }
+        release.complete(Unit)
+        download.join()
+        withTimeout(60_000) { vault.rekeyPending.first { !it } }
+        SealedFile(File(media, id), vault.keys!!).use { assertArrayEquals(data, it.readAll()) }
+    }
+
+    @Test
     fun rekeyingResumesAfterRestart() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
@@ -121,6 +167,78 @@ class VaultTest {
         freshStore.items.value.sortedBy { it.fileName }.forEachIndexed { i, item ->
             assertArrayEquals(contents[i], freshStore.openMedia(item.id).use { it.readAll() })
         }
+    }
+
+    @Test
+    fun aFileThatCannotBeRewrittenKeepsTheRetiredPair() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        VaultRekeyer(root, vault, store, scope)
+        val data = Random(2).nextBytes(10_000)
+        add(store, data, "a")
+        awaitItems(store, 1)
+        // Something in the way of the new copy, as a full disk would be.
+        val media = File(root, "media").listFiles()!!.single()
+        val obstacle = File(media.path + ".rekey").apply { mkdir() }
+        File(obstacle, "x").writeText("")
+
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        // Long past the five failed passes after which an unreadable file is given up.
+        assertNull(withTimeoutOrNull(8_000) { vault.rekeyPending.first { !it } })
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+
+        obstacle.deleteRecursively()
+        withTimeout(20_000) { vault.rekeyPending.first { !it } }
+        vault.lock()
+        assertTrue(vault.unlock("second".toCharArray()))
+        awaitItems(store, 1)
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+    }
+
+    @Test
+    fun aRetireMeantForAPairReplacedMeanwhileDropsNothing() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        val second = vault.keys!!.recipient
+        val data = Random(4).nextBytes(10_000)
+        add(store, data, "a")
+        awaitItems(store, 1)
+
+        // The first change's rekeyer re-sealed everything to the second pair and was waiting for
+        // the vault while a second change retired that pair too; it gets the vault after it.
+        assertTrue(vault.changePassword("second".toCharArray(), "third".toCharArray()))
+        vault.retireFinished(second)
+
+        assertTrue(vault.rekeyPending.value)
+        vault.lock()
+        assertTrue(vault.unlock("third".toCharArray()))
+        awaitItems(store, 1)
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+    }
+
+    @Test
+    fun aFileDamagedPastItsFirstChunkIsGivenUp() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        VaultRekeyer(root, vault, store, scope)
+        add(store, Random(3).nextBytes(200_000), "a")
+        awaitItems(store, 1)
+        // It opens, as its first chunk is sound, but cannot be read to the end under any key.
+        val media = File(root, "media").listFiles()!!.single()
+        val bytes = media.readBytes()
+        bytes[bytes.size - 100] = (bytes[bytes.size - 100].toInt() xor 1).toByte()
+        media.writeBytes(bytes)
+
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        withTimeout(20_000) { vault.rekeyPending.first { !it } }
+        Unit
     }
 
     @Test

@@ -64,6 +64,7 @@ import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.MoebooruApi
 import io.github.firebirks.booruvault.booru.Presets
+import io.github.firebirks.booruvault.ui.common.ChallengeMode
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
@@ -294,7 +295,7 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
             )
             OutlinedButton(enabled = valid, onClick = {
                 val draft = draft()
-                challenge.open(draft, browserStart(draft), browse = true) {
+                challenge.open(draft, browserStart(draft), ChallengeMode.BROWSE) {
                     testResult = UiText.Res(R.string.source_cookies_saved)
                 }
             }) { Text(stringResource(R.string.source_open_browser)) }

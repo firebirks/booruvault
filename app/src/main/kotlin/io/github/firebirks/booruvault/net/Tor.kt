@@ -64,8 +64,31 @@ const val DEFAULT_SOCKS_PORT = 9050
  * against the Tor Project's exit test as soon as the port answers, and again whenever it stops
  * and comes back; until the check passes, [TorExitGate] lets nothing but the check itself out.
  */
-class TorManager(private val context: Context, private val scope: CoroutineScope) {
+class TorManager(private val context: Context, private val scope: CoroutineScope, hasVault: Boolean) {
     private val prefs = context.getSharedPreferences("network", Context.MODE_PRIVATE)
+
+    private val _routeChosen = MutableStateFlow(
+        routeChosenAtStart(if (prefs.contains(KEY_ROUTE_CHOSEN)) prefs.getBoolean(KEY_ROUTE_CHOSEN, false) else null, hasVault).also {
+            // Written at once, so a vault created and closed before the question is still asked it.
+            if (!prefs.contains(KEY_ROUTE_CHOSEN)) prefs.edit().putBoolean(KEY_ROUTE_CHOSEN, it).commit()
+        },
+    )
+
+    /**
+     * Whether the user has said how the app reaches sites: through Tor or directly. A fresh install
+     * asks right after the vault is created, and until the answer [RouteChoiceGate] lets nothing out.
+     */
+    val routeChosen: StateFlow<Boolean> = _routeChosen.asStateFlow()
+
+    /** Records the answer to the first start's question; Settings can change the route afterwards. */
+    fun chooseRoute(useTor: Boolean) {
+        // The route is set before the gate opens, so nothing can leave by the other one; Orbot is
+        // greeted, and its exit checked, once the gate lets the check through.
+        if (useTor != enabled) setEnabled(useTor, refresh = false)
+        prefs.edit().putBoolean(KEY_ROUTE_CHOSEN, true).commit()
+        _routeChosen.value = true
+        refreshStatus()
+    }
 
     private val _state = MutableStateFlow(
         prefs.getBoolean(KEY_ENABLED, false).let { enabled ->
@@ -79,6 +102,9 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     val state: StateFlow<TorState> = _state.asStateFlow()
 
     val enabled: Boolean get() = _state.value.enabled
+
+    /** The route new connections take. */
+    val route: Route get() = Route.of(enabled)
 
     val proxySelector: ProxySelector = TorProxySelector({ enabled }, { _state.value.socksPort })
 
@@ -106,11 +132,11 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
         false
     }
 
-    fun setEnabled(value: Boolean) {
+    fun setEnabled(value: Boolean, refresh: Boolean = true) {
         prefs.edit().putBoolean(KEY_ENABLED, value).commit()
         _state.value = TorState(value, if (value) TorStatus.CHECKING else TorStatus.DISABLED, socksPort = _state.value.socksPort)
         onRouteChanged()
-        if (value) refreshStatus()
+        if (value && refresh) refreshStatus()
     }
 
     /** Sets the local port the app connects to Orbot on. Returns false for an invalid port. */
@@ -177,6 +203,12 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     companion object {
         const val ORBOT_PACKAGE = "org.torproject.android"
 
+        /**
+         * Whether the route counts as chosen when the app starts: the answer once given; otherwise
+         * a vault already there means the install predates the question, and is not asked it.
+         */
+        internal fun routeChosenAtStart(stored: Boolean?, hasVault: Boolean): Boolean = stored ?: hasVault
+
         /** The exit check's host: the one request allowed out before the check has passed. */
         const val VERIFY_HOST = "check.torproject.org"
 
@@ -184,6 +216,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
         private const val VERIFY_INTERVAL_MS = 10_000L
         private const val KEY_ENABLED = "tor"
         private const val KEY_PORT = "socks_port"
+        private const val KEY_ROUTE_CHOSEN = "route_chosen"
     }
 }
 
@@ -246,6 +279,20 @@ class TorExitGate(
         return chain.proceed(chain.request())
     }
 }
+
+/**
+ * Lets nothing out until the user has said how the app reaches sites: a request is refused before
+ * any name is looked up or any connection made, whichever part of the app asked for it.
+ */
+class RouteChoiceGate(private val chosen: () -> Boolean) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        if (!chosen()) throw RouteNotChosenException()
+        return chain.proceed(chain.request())
+    }
+}
+
+/** A request held back because the user has not yet chosen between Tor and a direct connection. */
+class RouteNotChosenException : IOException("No route chosen yet: nothing goes out before Tor or a direct connection is chosen")
 
 /** A request held back because Tor is on and the exit check has not passed yet. */
 class TorUnverifiedException : IOException("Tor exit not verified yet"), HasProblem {

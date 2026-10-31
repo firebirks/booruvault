@@ -1,12 +1,9 @@
 package io.github.firebirks.booruvault.ui.common
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -29,7 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.R
+import io.github.firebirks.booruvault.util.SensitiveClipboard
 import kotlinx.coroutines.delay
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /** Opens a link outside the app, keeping to Tor when Tor is on. */
 fun interface LinkOpener {
@@ -55,9 +54,11 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val settings by container.settings.settings.collectAsStateWithLifecycle()
     var pending by remember { mutableStateOf<String?>(null) }
-    val opener = remember(context) {
+    val noApp = stringResource(R.string.no_app_for_link)
+    val opener = remember(context, noApp) {
         LinkOpener { url ->
             when {
+                !isWebLink(url) -> Toast.makeText(context, noApp, Toast.LENGTH_SHORT).show()
                 !container.tor.enabled -> context.openUrl(url)
                 else -> torBrowser(context)?.let { context.openIn(url, it) } ?: run { pending = url }
             }
@@ -73,7 +74,7 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
                 },
                 onCopy = {
                     pending = null
-                    copySensitive(context, url)
+                    copySensitive(context, container.clipboard, url)
                 },
                 onDismiss = { pending = null },
             )
@@ -81,7 +82,7 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
             NoTorBrowserDialog(
                 onCopy = {
                     pending = null
-                    copySensitive(context, url)
+                    copySensitive(context, container.clipboard, url)
                 },
                 onDismiss = { pending = null },
             )
@@ -133,6 +134,9 @@ private fun OutsideTorWarning(onOpen: () -> Unit, onCopy: () -> Unit, onDismiss:
     )
 }
 
+/** Only web pages leave the app: a site's page may carry tel:, intent: or file: links too. */
+internal fun isWebLink(url: String): Boolean = url.toHttpUrlOrNull() != null
+
 private fun torBrowser(context: Context): String? = TOR_BROWSERS.firstOrNull { name ->
     try {
         context.packageManager.getPackageInfo(name, 0)
@@ -150,11 +154,7 @@ private fun Context.openIn(url: String, packageName: String) {
     }
 }
 
-/** Marked sensitive, so the clipboard preview does not show it. */
-private fun copySensitive(context: Context, text: String) {
-    val clip = ClipData.newPlainText("link", text).apply {
-        description.extras = PersistableBundle().apply { putBoolean("android.content.extra.IS_SENSITIVE", true) }
-    }
-    context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(clip)
+private fun copySensitive(context: Context, clipboard: SensitiveClipboard, text: String) {
+    clipboard.copy("link", text)
     Toast.makeText(context, context.getString(R.string.external_link_copied), Toast.LENGTH_SHORT).show()
 }
