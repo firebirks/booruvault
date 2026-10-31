@@ -1,0 +1,1 @@
+Downloading many results from Gelbooru without an API key, or from a booru.org site, no longer stops early or skips and repeats posts: the size of their web pages is now read right from every page, which also fixes scrolling far down their grids. A post that turns up twice while a search is being collected, as new uploads push the pages along, now counts once toward the maximum.
