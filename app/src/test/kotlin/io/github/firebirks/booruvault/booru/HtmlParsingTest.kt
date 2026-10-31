@@ -82,6 +82,17 @@ class HtmlParsingTest {
     }
 
     @Test
+    fun gelbooruPageSizeFromAListPageOtherThanTheFirst() {
+        // Page 2 links page 1 at offset 0 and page 3 at 84, but not itself.
+        val second = """
+            <article class="thumbnail-preview"><a id="p1" href="index.php?page=post&amp;s=view&amp;id=1"><img src="t.jpg" title="a rating:general"/></a></article>
+            <div id="paginator"><a href="?page=post&amp;s=list&amp;tags=t&amp;pid=0">&laquo;</a><a href="?page=post&amp;s=list&amp;tags=t&amp;pid=0">1</a>
+            <b>2</b><a href="?page=post&amp;s=list&amp;tags=t&amp;pid=84">3</a><a href="?page=post&amp;s=list&amp;tags=t&amp;pid=840">&raquo;</a></div>
+        """
+        assertEquals(42, GelbooruHtml.parseList(second, "https://gelbooru.com/index.php?page=post&s=list&tags=t&pid=42", "g").perPage)
+    }
+
+    @Test
     fun booruOrgListAndPost() {
         val page = GelbooruHtml.parseList(booruOrgList, "https://site.booru.org/index.php?page=post&s=list&tags=all", "b")
         assertEquals(20, page.perPage)

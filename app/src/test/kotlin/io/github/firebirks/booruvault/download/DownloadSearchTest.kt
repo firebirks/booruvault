@@ -116,6 +116,17 @@ class DownloadSearchTest {
     }
 
     @Test
+    fun `posts a page repeats from the one before count once toward the maximum`() = runBlocking {
+        // Uploads while collecting push newest-first pages along: each starts where the one before ended.
+        val downloads = manager(FakeApi { page -> if (page > 3) emptyList() else (1..100).map { post((page - 1) * 95L + it) } })
+
+        downloads.downloadSearch(source, "pikachu", 200)
+        downloads.settled()
+
+        assertEquals((1L..200L).toSet(), downloads.queuedIds())
+    }
+
+    @Test
     fun `a page that fails keeps what came before and is reported on the batch`() = runBlocking {
         val pages = sized(42, 100, 37)
         val downloads = manager(FakeApi { page -> if (page == 2) throw ProblemException(Problem.Code.RATE_LIMITED) else pages(page) })

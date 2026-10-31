@@ -15,15 +15,19 @@ object GelbooruHtml {
     fun parseList(html: String, pageUrl: String, sourceId: String): ListPage {
         val doc = Jsoup.parse(html, pageUrl)
         val posts = doc.select("span.thumb, article.thumbnail-preview, div.thumbnail-preview").mapNotNull { thumb(it, sourceId) }
-        // The paginator links by offset; the smallest one is the page size.
+        // The paginator links by offset, to every page near this one but not to this one: the
+        // nearest offset either side of this page's is a page away.
+        val offset = pid(pageUrl) ?: 0
         val perPage = doc.select("#paginator a[href], .pagination a[href]")
-            .mapNotNull { Regex("[?&]pid=(\\d+)").find(it.attr("href"))?.groupValues?.get(1)?.toIntOrNull() }
+            .mapNotNull { pid(it.attr("href"))?.let { linked -> kotlin.math.abs(linked - offset) } }
             .filter { it > 0 }
             .minOrNull()
         val looksLikeList = posts.isNotEmpty() || doc.selectFirst("#paginator, .pagination") != null ||
             html.contains("Nobody here but us chickens", ignoreCase = true)
         return ListPage(posts, perPage, looksLikeList)
     }
+
+    private fun pid(address: String): Int? = Regex("[?&]pid=(\\d+)").find(address)?.groupValues?.get(1)?.toIntOrNull()
 
     private fun thumb(el: Element, sourceId: String): Post? {
         val link = el.selectFirst("a[href*=s=view]") ?: el.selectFirst("a[id^=p]") ?: return null

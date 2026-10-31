@@ -316,11 +316,13 @@ class DownloadManager(
                 var page = batch.nextPage
                 var found = batch.found
                 var barren = 0
+                // Uploads while it runs push newest-first pages along, so a page may repeat posts.
+                val seen = HashSet<Long>()
                 // Filters that let nothing through would otherwise have every page read.
                 while (found < batch.target && barren < MAX_BARREN_PAGES) {
                     val posts = api.posts(batch.tags, page, limit)
                     if (posts.isEmpty()) break
-                    val allowed = posts.filter { policy.allows(it) }.take(batch.target - found)
+                    val allowed = posts.filter { seen.add(it.id) && policy.allows(it) }.take(batch.target - found)
                     barren = if (allowed.isEmpty()) barren + 1 else 0
                     found += allowed.size
                     enqueue(allowed, batch.source)
