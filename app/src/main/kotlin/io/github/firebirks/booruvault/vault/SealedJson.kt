@@ -30,6 +30,7 @@ class SealedJson<T>(private val file: File, private val serializer: KSerializer<
         }
     }
 
+    @Synchronized
     fun write(recipient: Recipient, value: T) {
         val bytes = json.encodeToString(serializer, value).toByteArray()
         try {
@@ -37,6 +38,15 @@ class SealedJson<T>(private val file: File, private val serializer: KSerializer<
         } finally {
             bytes.fill(0)
         }
+    }
+
+    /**
+     * Writes the copy [take] returns, taken under the same lock as the write: of two saves that
+     * race, the copy taken later is the one left. Null writes nothing.
+     */
+    @Synchronized
+    fun write(recipient: Recipient, take: () -> T?) {
+        write(recipient, take() ?: return)
     }
 
     fun delete() {

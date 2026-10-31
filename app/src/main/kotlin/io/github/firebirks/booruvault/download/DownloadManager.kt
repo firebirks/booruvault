@@ -143,9 +143,12 @@ class DownloadManager(
         batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage) },
     )
 
-    private fun persist(queue: SavedQueue = snapshot()) {
-        val recipient = vault.recipient ?: return
-        runCatching { saved.write(recipient, queue) }
+    /** Seals the queue as it stands, and returns it as sealed. */
+    private fun persist(): SavedQueue {
+        var queue: SavedQueue? = null
+        val recipient = vault.recipient
+        if (recipient != null) runCatching { saved.write(recipient) { snapshot().also { queue = it } } }
+        return queue ?: snapshot()
     }
 
     private fun suspendForLock() {
@@ -157,8 +160,7 @@ class DownloadManager(
             return
         }
         live = false
-        val queue = snapshot()
-        persist(queue)
+        val queue = persist()
         stopAll()
         // Keep only the switch: everything else from the settings goes with the lock.
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
