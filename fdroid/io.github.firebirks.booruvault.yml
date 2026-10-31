@@ -20,14 +20,14 @@ RepoType: git
 Repo: https://github.com/firebirks/booruvault.git
 
 Builds:
-  - versionName: 0.2.1
-    versionCode: 3
-    commit: b67288fb52955d0f7387390be67dd5cc7aa747dd
+  - versionName: 0.3.0
+    versionCode: 4
+    commit: v0.3.0
     subdir: app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 0.2.1
-CurrentVersionCode: 3
+CurrentVersion: 0.3.0
+CurrentVersionCode: 4
