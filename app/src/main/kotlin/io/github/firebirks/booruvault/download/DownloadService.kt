@@ -47,10 +47,11 @@ class DownloadService : Service() {
                 combine(downloads.tasks, downloads.batches, downloads.paused) { tasks, batches, paused -> Triple(tasks, batches, paused) }.collect { (tasks, batches, paused) ->
                     val counted = tasks.filter { it.status != DownloadStatus.CANCELLED }
                     val finished = counted.count { !it.active }
-                    if (counted.none { it.active } && batches.isEmpty()) {
+                    val collecting = batches.any { it.active }
+                    if (counted.none { it.active } && !collecting) {
                         finish(counted.count { it.status == DownloadStatus.DONE }, counted.count { it.status == DownloadStatus.FAILED }, paused)
                     } else {
-                        notify(PROGRESS_ID, progress(finished, counted.size, batches.isNotEmpty()))
+                        notify(PROGRESS_ID, progress(finished, counted.size, collecting))
                     }
                 }
             }

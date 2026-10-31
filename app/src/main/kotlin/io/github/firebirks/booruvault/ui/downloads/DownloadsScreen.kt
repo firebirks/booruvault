@@ -126,7 +126,19 @@ fun DownloadsScreen() {
             return@Scaffold
         }
         LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
-            items(batches, key = { "batch-${it.key}" }) { batch -> BatchRow(batch, onCancel = { downloads.cancelBatch(batch.key) }) }
+            items(batches, key = { "batch-${it.key}" }) { batch ->
+                BatchRow(
+                    batch,
+                    onCancel = { downloads.cancelBatch(batch.key) },
+                    onRetry = { downloads.retryBatch(batch.key) },
+                    // A check met reading the search is the site's own, passed at its home.
+                    onVerify = if (batch.problem?.code == Problem.Code.CHALLENGE) {
+                        { challenge.open(batch.source, batch.source.baseUrl, ChallengeMode.SITE) { downloads.retryBatch(batch.key) } }
+                    } else {
+                        null
+                    },
+                )
+            }
             items(ordered, key = { it.key }) { task ->
                 val check = task.problem?.takeIf { task.status == DownloadStatus.FAILED && it.code == Problem.Code.CHALLENGE }
                 TaskRow(
@@ -148,17 +160,31 @@ fun DownloadsScreen() {
 }
 
 @Composable
-private fun BatchRow(batch: BatchJob, onCancel: () -> Unit) {
+private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
         headlineContent = { Text(stringResource(R.string.batch_title, batch.tags.ifBlank { stringResource(R.string.batch_everything) })) },
         supportingContent = {
             Column {
                 Text(stringResource(R.string.batch_progress, batch.source.name, batch.found, batch.target))
-                LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
+                val problem = batch.problem
+                if (problem == null) {
+                    LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
+                } else {
+                    Text(problemText(problem), color = MaterialTheme.colorScheme.error)
+                }
+                if (onVerify != null) {
+                    TextButton(onClick = onVerify, contentPadding = PaddingValues(0.dp)) { Text(stringResource(R.string.action_verify_in_browser)) }
+                }
             }
         },
         leadingContent = { Icon(Icons.Outlined.CloudDownload, null) },
-        trailingContent = { IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.batch_stop)) } },
+        trailingContent = {
+            if (batch.active) {
+                IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.batch_stop)) }
+            } else {
+                IconButton(onClick = onRetry) { Icon(Icons.Outlined.Refresh, stringResource(R.string.action_retry)) }
+            }
+        },
     )
 }
 

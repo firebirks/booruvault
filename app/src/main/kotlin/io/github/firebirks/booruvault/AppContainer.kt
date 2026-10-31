@@ -1,7 +1,9 @@
 package io.github.firebirks.booruvault
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruApiFactory
@@ -10,6 +12,7 @@ import io.github.firebirks.booruvault.booru.DefaultUserAgent
 import io.github.firebirks.booruvault.booru.GelbooruApi
 import io.github.firebirks.booruvault.booru.SiteHeaders
 import io.github.firebirks.booruvault.download.DownloadManager
+import io.github.firebirks.booruvault.download.DownloadService
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.RouteChoiceGate
@@ -127,7 +130,7 @@ class AppContainer(private val context: Context) {
     val transfer = VaultTransfer(context, vaultStore)
     val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
     val downloads = DownloadManager(
-        context, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
+        { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
         vaultStore, vault, settings, json, vaultDir, scope,
     )
     val autoLock = AutoLock(vault, settings, scope, SystemLockAlarm(context))

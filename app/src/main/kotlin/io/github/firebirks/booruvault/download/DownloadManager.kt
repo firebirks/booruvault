@@ -1,8 +1,5 @@
 package io.github.firebirks.booruvault.download
 
-import android.content.Context
-import android.content.Intent
-import androidx.core.content.ContextCompat
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
@@ -68,8 +65,21 @@ data class DownloadTask(
     val progress: Float? get() = if (total > 0) (bytes.toFloat() / total).coerceIn(0f, 1f) else null
 }
 
-/** A search whose results are being gathered page by page to be downloaded. */
-data class BatchJob(val key: Long, val source: BooruSource, val tags: String, val target: Int, val found: Int = 0, val nextPage: Int = 1)
+/**
+ * A search whose results are being gathered page by page to be downloaded. A [problem] stopped it:
+ * it stays listed, with what it found, until retried or cleared.
+ */
+data class BatchJob(
+    val key: Long,
+    val source: BooruSource,
+    val tags: String,
+    val target: Int,
+    val found: Int = 0,
+    val nextPage: Int = 1,
+    val problem: Problem? = null,
+) {
+    val active: Boolean get() = problem == null
+}
 
 /** What survives a lock or a restart: sealed in the vault as `downloads.bin`. */
 @Serializable
@@ -79,7 +89,14 @@ private data class SavedQueue(val tasks: List<SavedTask> = emptyList(), val batc
 private data class SavedTask(val post: Post, val source: BooruSource, val status: DownloadStatus, val problem: Problem? = null)
 
 @Serializable
-private data class SavedBatch(val source: BooruSource, val tags: String, val target: Int, val found: Int, val nextPage: Int)
+private data class SavedBatch(
+    val source: BooruSource,
+    val tags: String,
+    val target: Int,
+    val found: Int,
+    val nextPage: Int,
+    val problem: Problem? = null,
+)
 
 /**
  * Downloads posts straight into the vault: the response body is sealed as it streams, so the
@@ -90,7 +107,8 @@ private data class SavedBatch(val source: BooruSource, val tags: String, val tar
  * picks it up again.
  */
 class DownloadManager(
-    private val context: Context,
+    /** Starts [DownloadService], which keeps the process alive while there is work. */
+    private val wakeService: () -> Unit,
     private val api: (BooruSource) -> BooruApi,
     private val client: OkHttpClient,
     private val torEnabled: () -> Boolean,
@@ -127,7 +145,7 @@ class DownloadManager(
     /** Called when downloads that ran behind a locked vault are over and their data is dropped. */
     var onLockedWorkDone: () -> Unit = {}
 
-    private fun hasWork(): Boolean = _tasks.value.any { it.active } || _batches.value.isNotEmpty()
+    private fun hasWork(): Boolean = _tasks.value.any { it.active } || _batches.value.any { it.active }
     private val saveRequests = Channel<Unit>(Channel.CONFLATED)
 
     private val _paused = MutableStateFlow(0)
@@ -139,7 +157,7 @@ class DownloadManager(
         tasks = _tasks.value.filter { it.active || it.status == DownloadStatus.FAILED }.map {
             SavedTask(it.post, it.source, if (it.active) DownloadStatus.QUEUED else it.status, it.problem)
         },
-        batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage) },
+        batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem) },
     )
 
     /** Seals the queue as it stands, and returns it as sealed. */
@@ -163,7 +181,7 @@ class DownloadManager(
         stopAll()
         // Keep only the switch: everything else from the settings goes with the lock.
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
-        _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.size
+        _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null }
         onLockedWorkDone()
     }
 
@@ -200,7 +218,11 @@ class DownloadManager(
         queue.tasks.filter { it.status == DownloadStatus.QUEUED }.groupBy { it.source }.forEach { (source, list) ->
             enqueue(list.map { it.post }, source)
         }
-        queue.batches.forEach { downloadSearch(it.source, it.tags, it.target, it.found, it.nextPage) }
+        val (stopped, pending) = queue.batches.partition { it.problem != null }
+        _batches.update { list ->
+            list + stopped.map { BatchJob(keys.incrementAndGet(), it.source, it.tags, it.target, it.found, it.nextPage, it.problem) }
+        }
+        pending.forEach { downloadSearch(it.source, it.tags, it.target, it.found, it.nextPage) }
     }
     private val _tasks = MutableStateFlow<List<DownloadTask>>(emptyList())
     val tasks: StateFlow<List<DownloadTask>> = _tasks.asStateFlow()
@@ -234,13 +256,13 @@ class DownloadManager(
                 .collect { current -> if (current != null) policy = current.copy(sources = emptyList(), selectedSourceId = null) }
         }
         scope.launch {
-            combine(_tasks, _batches) { tasks, batches -> tasks.any { it.active } || batches.isNotEmpty() }
+            combine(_tasks, _batches) { tasks, batches -> tasks.any { it.active } || batches.any { it.active } }
                 .distinctUntilChanged()
                 .collect { working -> if (!working) drainedWhileLocked() }
         }
         scope.launch(Dispatchers.IO) {
             // Only status changes matter for what is saved, not byte counts.
-            combine(_tasks, _batches) { tasks, batches -> tasks.map { it.key to it.status } to batches.map { it.key to it.nextPage } }
+            combine(_tasks, _batches) { tasks, batches -> tasks.map { it.key to it.status } to batches.map { Triple(it.key, it.nextPage, it.problem) } }
                 .distinctUntilChanged()
                 .collect { if (live) saveRequests.trySend(Unit) }
         }
@@ -276,36 +298,63 @@ class DownloadManager(
         if (!live) return
         val batch = BatchJob(keys.incrementAndGet(), source, tags, max, alreadyFound, startPage)
         _batches.update { it + batch }
+        collect(batch)
+    }
+
+    /**
+     * Reads the search's pages from [BatchJob.nextPage] on. Danbooru drops the posts it does not
+     * show after paging, so a page shorter than asked for is not the last: only an empty one is.
+     * A page that fails stops the batch, which stays listed with the reason.
+     */
+    private fun collect(batch: BatchJob) {
         startService()
         jobs[batch.key] = scope.launch(Dispatchers.IO) {
+            var problem: Problem? = null
             try {
-                val api = api(source)
+                val api = api(batch.source)
                 val limit = 100
-                var page = startPage
-                var found = alreadyFound
-                while (found < max) {
-                    val posts = api.posts(tags, page, limit)
+                var page = batch.nextPage
+                var found = batch.found
+                var barren = 0
+                // Filters that let nothing through would otherwise have every page read.
+                while (found < batch.target && barren < MAX_BARREN_PAGES) {
+                    val posts = api.posts(batch.tags, page, limit)
                     if (posts.isEmpty()) break
-                    val allowed = posts.filter { policy.allows(it) }.take(max - found)
+                    val allowed = posts.filter { policy.allows(it) }.take(batch.target - found)
+                    barren = if (allowed.isEmpty()) barren + 1 else 0
                     found += allowed.size
-                    enqueue(allowed, source)
+                    enqueue(allowed, batch.source)
                     page++
                     _batches.update { list -> list.map { if (it.key == batch.key) it.copy(found = found, nextPage = page) else it } }
-                    if (posts.size < limit) break
                 }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 // Whatever was queued before the failure still downloads.
+                problem = e.toProblem()
             } finally {
                 jobs.remove(batch.key)
-                _batches.update { list -> list.filterNot { it.key == batch.key } }
+                val stopped = problem
+                _batches.update { list ->
+                    if (stopped == null) list.filterNot { it.key == batch.key } else list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
+                }
             }
         }
     }
 
     fun cancelBatch(key: Long) {
         jobs[key]?.cancel()
+    }
+
+    /** Takes up a stopped batch again from the page it could not read. */
+    fun retryBatch(key: Long) {
+        if (!live) return
+        var resumed: BatchJob? = null
+        _batches.update { list ->
+            resumed = null
+            list.map { if (it.key == key && !it.active) it.copy(problem = null).also { again -> resumed = again } else it }
+        }
+        resumed?.let(::collect)
     }
 
     fun cancel(key: Long) {
@@ -346,6 +395,7 @@ class DownloadManager(
 
     fun clearFinished() {
         _tasks.update { list -> list.filter { it.active } }
+        _batches.update { list -> list.filter { it.active } }
     }
 
     private fun set(key: Long, transform: (DownloadTask) -> DownloadTask) {
@@ -477,10 +527,13 @@ class DownloadManager(
     private companion object {
         /** A preview is a small JPEG; anything larger is not worth keeping as one. */
         const val MAX_THUMBNAIL = 4L shl 20
+
+        /** Pages in a row that add nothing the filters allow, after which a batch stops looking. */
+        const val MAX_BARREN_PAGES = 10
     }
 
     private fun startService() {
-        runCatching { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }
+        runCatching(wakeService)
     }
 }
 
