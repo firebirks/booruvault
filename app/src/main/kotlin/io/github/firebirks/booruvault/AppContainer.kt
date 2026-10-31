@@ -21,6 +21,7 @@ import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.net.TorUnreachableException
 import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.settings.SettingsRepository
+import io.github.firebirks.booruvault.util.LibraryBuffers
 import io.github.firebirks.booruvault.util.SensitiveClipboard
 import io.github.firebirks.booruvault.vault.AutoLock
 import io.github.firebirks.booruvault.vault.SystemLockAlarm
@@ -189,10 +190,11 @@ class AppContainer(private val context: Context) {
     }
 
     /**
-     * After a lock: drop what is still cached outside the components that clear themselves, then
-     * ask for a collection so released key objects and buffers are reclaimed promptly; native key
-     * copies are cleared by BoringSSL when freed. Kotlin cannot overwrite immutable strings or
-     * memory the runtime has already moved, so this narrows the window rather than guaranteeing it.
+     * After a lock: drop what is still cached outside the components that clear themselves,
+     * overwrite okio's pooled segments, then ask for a collection so released key objects and
+     * buffers are reclaimed promptly; native key copies are cleared by BoringSSL when freed.
+     * Kotlin cannot overwrite immutable strings or memory the runtime has already moved, so this
+     * narrows the window rather than guaranteeing it.
      * Browsing requests are cancelled by their own screens; downloads the user lets run are not.
      */
     private suspend fun forgetSession() {
@@ -202,6 +204,7 @@ class AppContainer(private val context: Context) {
         http.connectionPool.evictAll()
         // Let cancelled transfers unwind and the UI drop its state first.
         delay(500)
+        LibraryBuffers.wipeOkioSegments()
         Runtime.getRuntime().gc()
         @Suppress("DEPRECATION")
         System.runFinalization()
