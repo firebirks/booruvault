@@ -157,7 +157,7 @@
     <string name="tor_status_not_installed">Orbot이 설치되어 있지 않아 연결할 수 없습니다</string>
     <string name="tor_status_off">Orbot이 실행 중이 아닙니다. 시작할 때까지 연결할 수 없습니다</string>
     <string name="tor_verified">확인됨: 연결이 Tor를 통해 나갑니다(IP %1$s)</string>
-    <string name="tor_vpn_hint">최대한 보호하려면 BooruVault를 선택한 상태로 Orbot의 VPN 모드도 켜세요. 프록시 밖의 패킷까지 모든 패킷을 시스템 수준에서 잡아냅니다.</string>
+    <string name="tor_vpn_hint">다른 VPN을 쓰지 않는다면 BooruVault를 선택한 상태로 Orbot의 VPN 모드를 켜서 프록시 밖의 패킷까지 모든 패킷을 시스템 수준에서 잡아낼 수도 있습니다. Android는 한 번에 VPN 하나만 실행하므로 다른 VPN을 켜 두었다면 Orbot을 프록시로 그대로 두세요. 앱은 원래 모든 트래픽을 Orbot을 통해 보냅니다.</string>
     <string name="tor_open_orbot">Orbot 열기</string>
     <string name="tor_verify">확인</string>
     <string name="tor_verifying">확인 중…</string>

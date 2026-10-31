@@ -161,7 +161,7 @@
     <string name="tor_status_not_installed">Orbot इंस्टॉल नहीं है: कोई कनेक्शन संभव नहीं</string>
     <string name="tor_status_off">Orbot नहीं चल रहा है: जब तक आप उसे शुरू नहीं करते, कोई कनेक्शन संभव नहीं</string>
     <string name="tor_verified">पुष्टि हो गई: कनेक्शन Tor से होकर बाहर जाता है (IP %1$s)</string>
-    <string name="tor_vpn_hint">ज़्यादा से ज़्यादा कवरेज के लिए Orbot का VPN मोड भी चालू करें और उसमें BooruVault चुनें: यह सिस्टम स्तर पर हर पैकेट को पकड़ता है, प्रॉक्सी के बाहर वाले भी।</string>
+    <string name="tor_vpn_hint">अगर आप कोई दूसरा VPN इस्तेमाल नहीं करते, तो BooruVault चुनकर Orbot का VPN मोड सिस्टम स्तर पर हर पैकेट को भी पकड़ता है, प्रॉक्सी के बाहर वाले भी। Android एक समय में एक ही VPN चलाता है, इसलिए कोई दूसरा VPN चालू हो तो Orbot को प्रॉक्सी ही रहने दें: ऐप वैसे भी अपना सारा ट्रैफ़िक उसी से भेजता है।</string>
     <string name="tor_open_orbot">Orbot खोलें</string>
     <string name="tor_verify">जांचें</string>
     <string name="tor_verifying">जांच हो रही है…</string>

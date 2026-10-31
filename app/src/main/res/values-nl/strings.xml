@@ -161,7 +161,7 @@
     <string name="tor_status_not_installed">Orbot is niet geïnstalleerd: geen verbinding mogelijk</string>
     <string name="tor_status_off">Orbot is niet actief: geen verbinding mogelijk tot je Orbot start</string>
     <string name="tor_verified">Geverifieerd: de verbinding gaat via Tor naar buiten (IP %1$s)</string>
-    <string name="tor_vpn_hint">Zet voor maximale dekking ook de VPN-modus van Orbot aan en selecteer daarin BooruVault: die vangt elk pakket op systeemniveau af, ook buiten de proxy.</string>
+    <string name="tor_vpn_hint">Gebruik je geen andere VPN, dan vangt de VPN-modus van Orbot met BooruVault geselecteerd ook elk pakket op systeemniveau af, ook buiten de proxy. Android draait maar één VPN tegelijk: staat er al een andere aan, laat Orbot dan als proxy werken; de app stuurt al zijn verkeer er sowieso doorheen.</string>
     <string name="tor_open_orbot">Orbot openen</string>
     <string name="tor_verify">Controleren</string>
     <string name="tor_verifying">Controleren…</string>

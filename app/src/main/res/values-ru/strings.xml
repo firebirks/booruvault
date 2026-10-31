@@ -169,7 +169,7 @@
     <string name="tor_status_not_installed">Orbot не установлен: подключение невозможно</string>
     <string name="tor_status_off">Orbot не запущен: подключение невозможно, пока вы его не запустите</string>
     <string name="tor_verified">Проверено: соединение выходит через Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">Для максимального охвата также включите в Orbot режим VPN, выбрав BooruVault: он перехватывает каждый пакет на уровне системы, даже вне прокси.</string>
+    <string name="tor_vpn_hint">Если вы не пользуетесь другим VPN, режим VPN в Orbot с выбранным BooruVault дополнительно перехватывает каждый пакет на уровне системы, даже вне прокси. Android одновременно держит только один VPN, поэтому если включён другой, оставьте Orbot в роли прокси: приложение и так отправляет через него весь свой трафик.</string>
     <string name="tor_open_orbot">Открыть Orbot</string>
     <string name="tor_verify">Проверить</string>
     <string name="tor_verifying">Проверка…</string>

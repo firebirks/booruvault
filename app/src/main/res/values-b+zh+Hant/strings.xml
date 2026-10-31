@@ -157,7 +157,7 @@
     <string name="tor_status_not_installed">未安裝 Orbot：無法建立任何連線</string>
     <string name="tor_status_off">Orbot 未執行：在你啟動它之前，無法建立任何連線</string>
     <string name="tor_verified">已驗證：連線經由 Tor 對外（IP %1$s）</string>
-    <string name="tor_vpn_hint">如要獲得最完整的涵蓋範圍，請一併開啟 Orbot 的 VPN 模式並選取 BooruVault：它會在系統層級攔截所有封包，即使是代理伺服器以外的封包也一樣。</string>
+    <string name="tor_vpn_hint">如果你沒有使用其他 VPN，開啟 Orbot 的 VPN 模式並選取 BooruVault，還能在系統層級攔截所有封包，即使是代理伺服器以外的封包也一樣。Android 一次只能執行一個 VPN，因此若已開啟其他 VPN，請讓 Orbot 繼續作為代理伺服器：應用程式本來就會透過它傳送所有流量。</string>
     <string name="tor_open_orbot">開啟 Orbot</string>
     <string name="tor_verify">檢查</string>
     <string name="tor_verifying">正在檢查…</string>

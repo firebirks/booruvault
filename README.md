@@ -146,7 +146,7 @@ BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 
 - **Links outside the app** ("open in browser", a post's source) open in Tor Browser while Tor is on. Without Tor Browser, the link can only be copied, to paste in a browser that goes through Orbot. Opening it in a normal browser is possible only with the risky option "Open links outside Tor" on, and then behind a warning that explains what a normal browser exposes and keeps; its "open anyway" button unlocks after a few seconds.
 
-**Orbot's VPN mode** with BooruVault selected is an extra, system-level safety net, mainly for the WebView.
+**Orbot's VPN mode** with BooruVault selected is an extra, system-level safety net, mainly for the WebView. Android runs one VPN at a time, so it is an option only for those who use no other VPN; without it, the app still sends all its traffic through Orbot's proxy.
 
 Tor hides where you connect from, not who you are. To every site you are not logged in to, you are just another Tor user. A site you are logged in to, or that recognises its own cookies, still knows which account is browsing, exactly as it would without Tor; what it no longer sees is your address. If some browsing should stay apart from an account, do it logged out, or clear that site's cookies in the Data section first. A login made without Tor is not carried over when Tor is turned on, nor the other way round: log in along the route you want to use.
 

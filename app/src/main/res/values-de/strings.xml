@@ -161,7 +161,7 @@
     <string name="tor_status_not_installed">Orbot ist nicht installiert: Keine Verbindung möglich</string>
     <string name="tor_status_off">Orbot läuft nicht: Keine Verbindung möglich, bis du Orbot startest</string>
     <string name="tor_verified">Bestätigt: Die Verbindung läuft über Tor nach außen (IP %1$s)</string>
-    <string name="tor_vpn_hint">Für maximale Abdeckung aktiviere auch den VPN-Modus von Orbot und wähle dort BooruVault aus: Er fängt jedes Paket auf Systemebene ab, auch außerhalb des Proxys.</string>
+    <string name="tor_vpn_hint">Wenn du kein anderes VPN nutzt, fängt der VPN-Modus von Orbot mit ausgewähltem BooruVault zusätzlich jedes Paket auf Systemebene ab, auch außerhalb des Proxys. Android betreibt nur ein VPN zur selben Zeit; ist ein anderes aktiv, lass Orbot als Proxy laufen: Die App schickt ihren gesamten Verkehr ohnehin darüber.</string>
     <string name="tor_open_orbot">Orbot öffnen</string>
     <string name="tor_verify">Prüfen</string>
     <string name="tor_verifying">Wird geprüft…</string>

@@ -177,7 +177,7 @@
     <string name="tor_status_not_installed">Orbot غير مثبّت: لا يمكن إجراء أي اتصال</string>
     <string name="tor_status_off">Orbot ليس قيد التشغيل: لا يمكن إجراء أي اتصال حتى تشغّله</string>
     <string name="tor_verified">تم التحقق: يخرج الاتصال عبر Tor (عنوان IP: %1$s)</string>
-    <string name="tor_vpn_hint">لأقصى تغطية، فعّل أيضًا وضع VPN في Orbot مع تحديد BooruVault: فهو يلتقط كل حزمة على مستوى النظام، حتى خارج الوكيل.</string>
+    <string name="tor_vpn_hint">إذا لم تكن تستخدم VPN آخر، فإن وضع VPN في Orbot مع تحديد BooruVault يلتقط أيضًا كل حزمة على مستوى النظام، حتى خارج الوكيل. يشغّل Android شبكة VPN واحدة فقط في كل مرة، لذا إذا كانت لديك VPN أخرى مفعّلة فأبقِ Orbot وكيلًا: فالتطبيق يرسل كل حركة بياناته عبره أصلًا.</string>
     <string name="tor_open_orbot">فتح Orbot</string>
     <string name="tor_verify">تحقّق</string>
     <string name="tor_verifying">جارٍ التحقق…</string>

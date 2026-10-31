@@ -157,7 +157,7 @@
     <string name="tor_status_not_installed">Chưa cài đặt Orbot: không thể kết nối</string>
     <string name="tor_status_off">Orbot không chạy: không thể kết nối cho đến khi bạn khởi động Orbot</string>
     <string name="tor_verified">Đã xác minh: kết nối đi ra qua Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">Để bảo vệ tối đa, hãy bật thêm chế độ VPN của Orbot và chọn BooruVault: chế độ này bắt mọi gói tin ở cấp hệ thống, kể cả bên ngoài proxy.</string>
+    <string name="tor_vpn_hint">Nếu bạn không dùng VPN nào khác, chế độ VPN của Orbot với BooruVault được chọn còn bắt mọi gói tin ở cấp hệ thống, kể cả bên ngoài proxy. Android chỉ chạy một VPN mỗi lúc, nên nếu đang bật VPN khác, hãy giữ Orbot ở chế độ proxy: ứng dụng vốn đã gửi toàn bộ lưu lượng qua Orbot.</string>
     <string name="tor_open_orbot">Mở Orbot</string>
     <string name="tor_verify">Kiểm tra</string>
     <string name="tor_verifying">Đang kiểm tra…</string>

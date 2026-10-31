@@ -157,7 +157,7 @@
     <string name="tor_status_not_installed">Orbot tidak terpasang: tidak ada koneksi yang bisa dibuat</string>
     <string name="tor_status_off">Orbot tidak berjalan: tidak ada koneksi yang bisa dibuat sampai Anda menjalankannya</string>
     <string name="tor_verified">Terverifikasi: koneksi keluar melalui Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">Untuk cakupan maksimal, aktifkan juga mode VPN Orbot dengan BooruVault dipilih: mode ini menangkap setiap paket di tingkat sistem, bahkan di luar proxy.</string>
+    <string name="tor_vpn_hint">Jika Anda tidak memakai VPN lain, mode VPN Orbot dengan BooruVault dipilih juga menangkap setiap paket di tingkat sistem, bahkan di luar proxy. Android hanya menjalankan satu VPN dalam satu waktu, jadi jika VPN lain aktif, biarkan Orbot sebagai proxy: aplikasi ini sudah mengirim semua lalu lintasnya melalui Orbot.</string>
     <string name="tor_open_orbot">Buka Orbot</string>
     <string name="tor_verify">Periksa</string>
     <string name="tor_verifying">Memeriksa…</string>

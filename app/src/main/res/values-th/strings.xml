@@ -157,7 +157,7 @@
     <string name="tor_status_not_installed">ไม่ได้ติดตั้ง Orbot: เชื่อมต่อไม่ได้</string>
     <string name="tor_status_off">Orbot ไม่ได้ทำงาน: เชื่อมต่อไม่ได้จนกว่าคุณจะเริ่ม Orbot</string>
     <string name="tor_verified">ยืนยันแล้ว: การเชื่อมต่อออกผ่าน Tor (IP %1$s)</string>
-    <string name="tor_vpn_hint">เพื่อความครอบคลุมสูงสุด ให้เปิดโหมด VPN ของ Orbot และเลือก BooruVault ด้วย: โหมดนี้จะดักทุกแพ็กเก็ตในระดับระบบ แม้แต่แพ็กเก็ตที่อยู่นอกพร็อกซี</string>
+    <string name="tor_vpn_hint">หากคุณไม่ได้ใช้ VPN อื่น โหมด VPN ของ Orbot ที่เลือก BooruVault ไว้จะดักทุกแพ็กเก็ตในระดับระบบด้วย แม้แต่แพ็กเก็ตที่อยู่นอกพร็อกซี Android ใช้ VPN ได้ทีละหนึ่งตัวเท่านั้น หากเปิด VPN อื่นอยู่ ให้ใช้ Orbot เป็นพร็อกซีต่อไป: แอปส่งทราฟฟิกทั้งหมดผ่าน Orbot อยู่แล้ว</string>
     <string name="tor_open_orbot">เปิด Orbot</string>
     <string name="tor_verify">ตรวจสอบ</string>
     <string name="tor_verifying">กำลังตรวจสอบ…</string>
