@@ -120,10 +120,10 @@ class RouteSeparationTest {
         return server
     }
 
-    private suspend fun openJar(root: File = tmp.newFolder(), route: () -> Route): SecureCookieJar {
+    private suspend fun openJar(root: File = tmp.newFolder()): SecureCookieJar {
         val vault = VaultManager(root, json)
         vault.create("test password".toCharArray(), Kdf.newParams(memoryKiB = 1024, iterations = 1))
-        return SecureCookieJar(root, vault, json, scope, route).also { it.awaitLoaded() }
+        return SecureCookieJar(root, vault, json, scope).also { it.awaitLoaded() }
     }
 
     /** The jar reads the vault on a thread of its own once it is open; until then it keeps nothing. */
@@ -157,7 +157,7 @@ class RouteSeparationTest {
         home(atHome).use { site ->
             torExit(atExit).use { socks ->
                 var tor = true
-                val jar = openJar { Route.of(tor) }
+                val jar = openJar()
                 val client = client(jar, { tor }, socks.localPort)
                 val url = "http://127.0.0.1:${site.localPort}/posts.json"
 
@@ -182,7 +182,7 @@ class RouteSeparationTest {
         home(atHome).use { site ->
             torExit(atExit).use { socks ->
                 var tor = false
-                val jar = openJar { Route.of(tor) }
+                val jar = openJar()
                 val url = "http://127.0.0.1:${site.localPort}/original/a.jpg"
                 val clearance = Cookie.Builder().name(Challenge.CLEARANCE_COOKIE).value("earned-over-tor").hostOnlyDomain("127.0.0.1").path("/").build()
                 jar.recordClearance(Route.TOR, "127.0.0.1", "TorBrowser/1", listOf(clearance))
@@ -207,7 +207,7 @@ class RouteSeparationTest {
         home(atHome).use { site ->
             torExit(atExit).use { socks ->
                 var tor = true
-                val jar = openJar { Route.of(tor) }
+                val jar = openJar()
                 val url = "http://127.0.0.1:${site.localPort}/posts.json"
                 client(jar, { tor }, socks.localPort).get(url)
                 // The request starts along Tor; the switch is flipped before its connection is made.
@@ -220,7 +220,7 @@ class RouteSeparationTest {
     }
 
     @Test
-    fun whatOneJarForBothRoutesStoredGoesToTheRouteInUse() = runBlocking {
+    fun whatOneJarForBothRoutesStoredGoesToNeither() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
         vault.create("test password".toCharArray(), Kdf.newParams(memoryKiB = 1024, iterations = 1))
@@ -233,19 +233,23 @@ class RouteSeparationTest {
                     """"secure":true,"httpOnly":false,"hostOnly":false}],"userAgents":{"donmai.us":"OldAgent"}}""",
             ),
         )
-        val jar = SecureCookieJar(root, vault, json, scope) { Route.TOR }
+        val jar = SecureCookieJar(root, vault, json, scope)
         val url = "https://cdn.donmai.us/original/a.jpg".toHttpUrl()
-        withTimeout(5_000) { while (jar.cookiesFor(Route.TOR, url).isEmpty()) delay(20) }
-
-        assertEquals("OldAgent", jar.userAgentFor(Route.TOR, "cdn.donmai.us"))
-        assertTrue(jar.cookiesFor(Route.DIRECT, url).isEmpty())
-        assertNull(jar.userAgentFor(Route.DIRECT, "cdn.donmai.us"))
-        // Stored again at once in the split form.
+        // Stored again at once in the split form, with nothing from the old one.
         val keys = (vault.state.value as VaultState.Unlocked).keys
         withTimeout(5_000) { while (stored.read(keys)?.jsonObject?.get("tor") == null) delay(20) }
+
+        // Brought along either route, it cannot be told which: offered along neither.
+        for (route in Route.entries) {
+            assertTrue(jar.cookiesFor(route, url).isEmpty())
+            assertNull(jar.userAgentFor(route, "cdn.donmai.us"))
+        }
         val split = stored.read(keys)!!.jsonObject
         assertTrue("nothing left in the old form", split["cookies"]?.jsonArray.orEmpty().isEmpty())
-        assertEquals(1, split.getValue("tor").jsonObject.getValue("cookies").jsonArray.size)
+        for (share in listOf("tor", "direct")) {
+            assertTrue(split.getValue(share).jsonObject["cookies"]?.jsonArray.orEmpty().isEmpty())
+            assertTrue(split.getValue(share).jsonObject["userAgents"]?.jsonObject.orEmpty().isEmpty())
+        }
     }
 
     @Test

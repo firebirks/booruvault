@@ -57,14 +57,14 @@ private data class CookieState(
  * Each [Route] has a jar of its own, and nothing in one is ever offered along the other: a
  * session, a clearance or the agent that earned it, shown from the home address after a Tor exit,
  * would tell the site both are the same person. Switching back finds the route's jar as it was.
- * What builds before the split stored is given to the route in use when it is first read.
+ * What builds before the split stored, in one jar for both routes, is dropped when first read:
+ * it cannot be told which route each cookie came along.
  */
 class SecureCookieJar(
     root: File,
     private val vault: VaultManager,
     json: Json,
     scope: CoroutineScope,
-    private val currentRoute: () -> Route,
 ) : SitePasses {
     private val store = SealedJson(File(root, "cookies.bin"), CookieState.serializer(), json)
     private val lock = Any()
@@ -107,17 +107,13 @@ class SecureCookieJar(
                 when (state) {
                     is VaultState.Unlocked -> {
                         val stored = store.read(state.keys)
-                        val legacy = stored?.takeIf { it.direct == null && it.tor == null && (it.cookies.isNotEmpty() || it.userAgents.isNotEmpty()) }
-                            ?.let { RouteCookies(it.cookies, it.userAgents) }
+                        val legacy = stored != null && stored.direct == null && stored.tor == null &&
+                            (stored.cookies.isNotEmpty() || stored.userAgents.isNotEmpty())
                         synchronized(lock) {
                             jars.values.forEach { it.clear() }
                             val now = System.currentTimeMillis()
                             for ((route, jar) in jars) {
-                                val share = when {
-                                    legacy != null -> legacy.takeIf { route == currentRoute() }
-                                    route == Route.TOR -> stored?.tor
-                                    else -> stored?.direct
-                                } ?: continue
+                                val share = (if (route == Route.TOR) stored?.tor else stored?.direct) ?: continue
                                 share.cookies.mapNotNull { it.toCookie() }.filter { it.expiresAt > now }.forEach {
                                     jar.cookies += it
                                     jar.kept += it.key()
@@ -127,7 +123,7 @@ class SecureCookieJar(
                             loaded = true
                         }
                         // Written at once in the split form, so the old one is never read again.
-                        if (legacy != null) saves.trySend(Unit)
+                        if (legacy) saves.trySend(Unit)
                     }
                     VaultState.Locked -> if (!retainWhileLocked()) forget()
                     VaultState.Missing -> forget()

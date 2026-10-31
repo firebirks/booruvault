@@ -81,7 +81,7 @@ class SealedStateTest {
     fun cookiesAreSealedAndUnavailableWhileLocked() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
+        val jar = SecureCookieJar(root, vault, json, scope)
         vault.create("pw-123456".toCharArray(), fastKdf)
         val url = "https://e926.net/posts.json".toHttpUrl()
         // The jar loads asynchronously after the unlock.
@@ -109,7 +109,7 @@ class SealedStateTest {
     fun cookiesStayOnlyForDownloadsRunningBehindTheLock() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
+        val jar = SecureCookieJar(root, vault, json, scope)
         var downloading = true
         jar.retainWhileLocked = { downloading }
         vault.create("pw-123456".toCharArray(), fastKdf)
@@ -137,7 +137,7 @@ class SealedStateTest {
     fun onlyCookiesBroughtFromTheBrowserAreKept() = runBlocking {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
-        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
+        val jar = SecureCookieJar(root, vault, json, scope)
         vault.create("pw-123456".toCharArray(), fastKdf)
         val url = "https://gelbooru.com/index.php".toHttpUrl()
         withTimeout(5000) {

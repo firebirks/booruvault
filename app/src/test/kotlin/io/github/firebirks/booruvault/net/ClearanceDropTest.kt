@@ -54,7 +54,7 @@ class ClearanceDropTest {
         val root = tmp.newFolder()
         val vault = VaultManager(root, json)
         vault.create("test password".toCharArray(), Kdf.newParams(memoryKiB = 1024, iterations = 1))
-        val jar = SecureCookieJar(root, vault, json, scope) { Route.DIRECT }
+        val jar = SecureCookieJar(root, vault, json, scope)
         val earned = listOf(cookie(Challenge.CLEARANCE_COOKIE, value, "donmai.us"), cookie("session", "login", "safebooru.donmai.us", hostOnly = true))
         // The jar reads the vault on a thread of its own once it is open; until then it keeps nothing.
         withTimeout(5_000) {

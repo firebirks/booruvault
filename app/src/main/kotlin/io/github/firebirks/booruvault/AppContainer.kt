@@ -78,7 +78,7 @@ class AppContainer(private val context: Context) {
 
     // An install that already has a vault is not asked how to connect: it chose long ago.
     val tor = TorManager(context, scope, hasVault = vault.state.value != VaultState.Missing)
-    val cookies = SecureCookieJar(vaultDir, vault, json, scope) { tor.route }
+    val cookies = SecureCookieJar(vaultDir, vault, json, scope)
     private val tls = RouteTls()
 
     /**
