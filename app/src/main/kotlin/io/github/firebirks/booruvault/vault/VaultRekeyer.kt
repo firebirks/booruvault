@@ -22,11 +22,11 @@ data class RekeyProgress(val done: Int, val total: Int)
 /**
  * After a password change, re-seals every file to the new key pair. Runs whenever the vault is
  * unlocked and still holds a retired pair; locking stops it and the next unlock resumes it, so
- * a crash or an auto-lock midway costs nothing. Once two full passes in a row find nothing
- * sealed to a retired pair and nothing that fails to open, and no write that may have begun
- * under the old pair is still in flight, the retired pairs are dropped from the header. A file
- * that fails to open is not taken for re-sealed: it is tried again on the next passes, and only
- * after [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key. A file that
+ * a crash or an auto-lock midway costs nothing. Once two full passes in a row, each begun with
+ * no write in flight, find nothing sealed to a retired pair and nothing that fails to open, and
+ * no write is in flight still, the retired pairs are dropped from the header. A file that fails
+ * to open is not taken for re-sealed: it is tried again on the next passes, and only after
+ * [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key. A file that
  * opens but cannot be written anew, on a full disk for one, is never given up: dropping the
  * retired pairs would leave it sealed to a key the vault no longer has.
  */
@@ -63,6 +63,8 @@ class VaultRekeyer(
         val failures = HashMap<String, Int>()
         var cleanPasses = 0
         while (true) {
+            // A write begun under the old pair can land after the listing, unseen by this pass.
+            val writesBefore = store.writesInFlight
             val files = candidates()
             var done = 0
             var resealed = 0
@@ -89,7 +91,7 @@ class VaultRekeyer(
                 done++
                 _progress.value = RekeyProgress(done, files.size)
             }
-            cleanPasses = if (resealed == 0 && failed == 0) cleanPasses + 1 else 0
+            cleanPasses = if (resealed == 0 && failed == 0 && writesBefore == 0) cleanPasses + 1 else 0
             // A write that read the old recipient just before the header changed may still land.
             val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
             if (settled) {

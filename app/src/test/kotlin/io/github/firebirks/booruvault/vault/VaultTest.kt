@@ -2,12 +2,15 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.toBase64
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
@@ -89,6 +92,47 @@ class VaultTest {
         } catch (_: java.security.GeneralSecurityException) {
         }
         Unit
+    }
+
+    @Test
+    fun aWriteBegunUnderTheOldPairThatLandsDuringAPassIsResealed() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        val rekeyer = VaultRekeyer(root, vault, store, scope)
+        // Enough files for a pass to take a while, so that a write can land while one runs.
+        val media = File(root, "media").apply { mkdirs() }
+        repeat(800) { n -> SealedOutputStream(File(media, store.newId()).outputStream(), vault.recipient!!).use { it.write(n) } }
+        val data = Random(5).nextBytes(10_000)
+        val id = store.newId()
+        val started = CompletableDeferred<Unit>()
+        val release = CompletableDeferred<Unit>()
+        // A download that read the recipient before the password change.
+        val download = scope.launch {
+            store.writeMedia(id) { out ->
+                started.complete(Unit)
+                release.await()
+                out.write(data)
+            }
+        }
+        started.await()
+        assertTrue(vault.changePassword("first".toCharArray(), "second".toCharArray()))
+        // The first pass re-seals the files and the second finds nothing to do; the write lands in
+        // the middle of the third, after its listing, and that pass would be the second clean one.
+        var passes = 0
+        var last = -1
+        withTimeout(60_000) {
+            rekeyer.progress.first { p ->
+                if (p != null && p.done < last) passes++
+                last = p?.done ?: last
+                p != null && passes >= 2 && p.done in p.total / 5..p.total * 3 / 5
+            }
+        }
+        release.complete(Unit)
+        download.join()
+        withTimeout(60_000) { vault.rekeyPending.first { !it } }
+        SealedFile(File(media, id), vault.keys!!).use { assertArrayEquals(data, it.readAll()) }
     }
 
     @Test
