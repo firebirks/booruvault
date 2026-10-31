@@ -59,6 +59,14 @@ enum class SaveState { NONE, QUEUED, SAVED }
 /** A tag offered under the search field: starred by the user, or among the source's most searched. */
 data class ShelfTag(val name: String, val favourite: Boolean)
 
+/**
+ * Kept while a screen shows it and for a moment after, then dropped. The view model outlives a
+ * lock while the screen is open, and a value nothing collects is not recomputed when the vault
+ * locks, so it must not be held on to.
+ */
+internal fun whileShown(stopTimeoutMillis: Long = 5000): SharingStarted =
+    SharingStarted.WhileSubscribed(stopTimeoutMillis, replayExpirationMillis = 0)
+
 class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private val _state = MutableStateFlow(BrowseState())
     val state: StateFlow<BrowseState> = _state.asStateFlow()
@@ -83,7 +91,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val used = settings.tagUses[sourceId].orEmpty().entries
             .filter { it.key !in favourites }.sortedByDescending { it.value }.take(MAX_SHELF_USED).map { it.key }
         favourites.map { ShelfTag(it, favourite = true) } + used.map { ShelfTag(it, favourite = false) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, whileShown(), emptyList())
 
     /** "sourceId/postId" → whether it is in the vault or on its way there. */
     val saveStates: StateFlow<Map<String, SaveState>> = combine(c.vaultStore.items, c.downloads.tasks) { items, tasks ->
@@ -98,7 +106,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
             }
             items.forEach { item -> if (item.sourceId != null && item.postId != null) put("${item.sourceId}/${item.postId}", SaveState.SAVED) }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+    }.stateIn(viewModelScope, whileShown(), emptyMap())
 
     /** A web page opened on the spot: browsed like a source, never saved among the sources. */
     private val webPage = MutableStateFlow<BooruSource?>(null)
