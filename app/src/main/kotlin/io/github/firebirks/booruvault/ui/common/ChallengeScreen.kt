@@ -10,6 +10,7 @@ import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import android.webkit.WebSettings
 import android.widget.Toast
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -89,6 +90,13 @@ fun challengeStart(url: String, mode: ChallengeMode): String {
     val parsed = url.toHttpUrlOrNull() ?: return url
     return "${parsed.scheme}://${parsed.host}/"
 }
+
+/**
+ * How the built-in browser uses its cache for [mode]. A file host's check guards a file the vault
+ * is to keep: every load of it goes to the network, never to a copy the cache holds.
+ */
+fun challengeCacheMode(mode: ChallengeMode): Int =
+    if (mode == ChallengeMode.ADDRESS) WebSettings.LOAD_NO_CACHE else WebSettings.LOAD_DEFAULT
 
 /**
  * Where the built-in browser starts for [source]'s settings and login: Gelbooru's options page
@@ -215,6 +223,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                             settings.allowFileAccess = false
                             settings.allowContentAccess = false
                             settings.safeBrowsingEnabled = safeBrowsing
+                            settings.cacheMode = challengeCacheMode(request.mode)
                             CookieManager.getInstance().setAcceptCookie(true)
                             // Third-party cookies are how ad networks follow a visit; Cloudflare's
                             // check works without them.

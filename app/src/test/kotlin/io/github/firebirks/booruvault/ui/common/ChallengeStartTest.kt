@@ -1,9 +1,10 @@
 package io.github.firebirks.booruvault.ui.common
 
+import android.webkit.WebSettings
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-/** Where the built-in browser opens for each kind of check. */
+/** Where, and how, the built-in browser opens for each kind of check. */
 class ChallengeStartTest {
     private val file = "https://cdn.donmai.us/original/36/0c/360cf286248a3f253df7155558f92d98.jpg"
 
@@ -22,5 +23,16 @@ class ChallengeStartTest {
     fun `browsing opens the address itself`() {
         val options = "https://gelbooru.com/index.php?page=account&s=options"
         assertEquals(options, challengeStart(options, ChallengeMode.BROWSE))
+    }
+
+    @Test
+    fun `a file host's check is never answered from the browser's cache`() {
+        assertEquals(WebSettings.LOAD_NO_CACHE, challengeCacheMode(ChallengeMode.ADDRESS))
+    }
+
+    @Test
+    fun `a site's check and browsing use the cache as usual`() {
+        assertEquals(WebSettings.LOAD_DEFAULT, challengeCacheMode(ChallengeMode.SITE))
+        assertEquals(WebSettings.LOAD_DEFAULT, challengeCacheMode(ChallengeMode.BROWSE))
     }
 }
