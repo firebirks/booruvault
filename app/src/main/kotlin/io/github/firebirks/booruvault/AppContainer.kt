@@ -57,7 +57,10 @@ import java.util.concurrent.TimeUnit
  *
  * Nothing about what the user browses or keeps is stored in clear: settings, sources, cookies and
  * the download queue are sealed in the vault next to its contents, and the image cache is memory
- * only. The one clear file is the vault header, which holds no user data.
+ * only. In clear are the vault header, which holds no user data, and what must be read before an
+ * unlock: the route (`network.xml`: Tor on or off, Orbot's port, whether the route was chosen)
+ * and, before Android 13, the app's language (`ui.xml`). The built-in browser's WebView keeps
+ * files of its own.
  */
 class AppContainer(private val context: Context) {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)

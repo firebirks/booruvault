@@ -12,7 +12,7 @@ Nothing at all until, right after creating the vault, you choose between Tor (th
 
 ## What stays on the phone
 
-Everything the app keeps is encrypted in the vault: downloaded files, settings, sources and their keys, the cookies you bring back from the built-in browser and the download queue. The vault opens with your password, optionally with your fingerprint. Browsed images are cached in memory only. Locking forgets the session. The full design is in the README, under "Security design".
+Everything the app keeps is encrypted in the vault: downloaded files, settings, sources and their keys, the cookies you bring back from the built-in browser and the download queue. Only the network choice (Tor or direct, and Orbot's port) and, before Android 13, the app's language are kept outside it, as they are needed before the vault opens. The vault opens with your password, optionally with your fingerprint. Browsed images are cached in memory only. Locking forgets the session. The full design is in the README, under "Security design".
 
 ## What is never collected
 

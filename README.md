@@ -117,7 +117,7 @@ All files live in the app's private storage, under `files/vault/`:
 
 File names are random UUIDs. The number of files and their approximate sizes remain visible.
 
-The other clear-text settings are the Tor on/off switch and Orbot's port (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only that the app is set to use Tor, and on which local port.
+The other clear-text settings are the Tor on/off switch, Orbot's port and whether the route was chosen at first start (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only whether the app is set to use Tor, and on which local port. Before Android 13 the app's language is kept in clear too (`shared_prefs/ui.xml`), as it must show on the lock screen; from Android 13 the system keeps it.
 
 ### Memory
 
