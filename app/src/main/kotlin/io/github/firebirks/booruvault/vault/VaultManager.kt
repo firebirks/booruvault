@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -53,6 +54,17 @@ sealed interface VaultState {
     data object Locked : VaultState
     class Unlocked(val keys: VaultKeys) : VaultState
 }
+
+/**
+ * Gives an open vault what [make] returns, in one atomic step: a vault that locks meanwhile stays
+ * locked, never opened again. Returns the state replaced, null if the vault was not open.
+ */
+internal fun MutableStateFlow<VaultState>.replaceKeys(make: (VaultState.Unlocked) -> VaultState.Unlocked): VaultState.Unlocked? =
+    getAndUpdate { if (it is VaultState.Unlocked) make(it) else it } as? VaultState.Unlocked
+
+/** Locks an open vault in one atomic step. Returns the state closed, null if it was not open. */
+internal fun MutableStateFlow<VaultState>.close(): VaultState.Unlocked? =
+    getAndUpdate { if (it is VaultState.Unlocked) VaultState.Locked else it } as? VaultState.Unlocked
 
 /**
  * Owns the vault's keys. The private key exists in memory only while unlocked; the public key is
@@ -132,9 +144,7 @@ class VaultManager(private val root: File, private val json: Json) {
      * which BoringSSL clears on release.
      */
     fun lock() {
-        val unlocked = _state.value as? VaultState.Unlocked ?: return
-        _state.value = VaultState.Locked
-        unlocked.keys.destroyPrivateKeys()
+        _state.close()?.keys?.destroyPrivateKeys()
     }
 
     /**
@@ -185,7 +195,9 @@ class VaultManager(private val root: File, private val json: Json) {
             header = updated
             _biometric.value = false
             _rekeyPending.value = true
-            if (_state.value is VaultState.Unlocked) _state.value = VaultState.Unlocked(VaultKeys(recipient, pair.private, retiredKeys))
+            val opened = VaultState.Unlocked(VaultKeys(recipient, pair.private, retiredKeys))
+            // Locked meanwhile: the new keys go to no one.
+            if (_state.replaceKeys { opened } == null) opened.keys.destroyPrivateKeys()
             true
         }
     }
@@ -204,10 +216,8 @@ class VaultManager(private val root: File, private val json: Json) {
             writeHeader(updated)
             header = updated
             _rekeyPending.value = false
-            (_state.value as? VaultState.Unlocked)?.let {
-                _state.value = VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey))
-                it.keys.retired.forEach { retired -> retired.destroyPrivateKeys() }
-            }
+            _state.replaceKeys { VaultState.Unlocked(VaultKeys(it.keys.recipient, it.keys.privateKey)) }
+                ?.keys?.retired?.forEach { it.destroyPrivateKeys() }
         }
     }
 
