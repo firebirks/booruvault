@@ -1,7 +1,6 @@
 package io.github.firebirks.booruvault.net
 
 import io.github.firebirks.booruvault.booru.SitePasses
-import io.github.firebirks.booruvault.util.DebugLog
 import io.github.firebirks.booruvault.vault.SealedJson
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.VaultState
@@ -161,7 +160,7 @@ class SecureCookieJar(
 
     override fun clearanceWorked(route: Route, host: String, value: String) {
         synchronized(lock) {
-            if (loaded && jars.getValue(route).worked.add(value)) DebugLog.d { "clearance of ${siteOf(host)} worked ($route)" }
+            if (loaded) jars.getValue(route).worked.add(value)
         }
     }
 
@@ -190,9 +189,7 @@ class SecureCookieJar(
             refused.forEach { jar.kept -= it.key() }
             val agentGone = jar.cookies.none { it.name == Challenge.CLEARANCE_COOKIE && siteOf(it.domain) == site }
             if (agentGone) jar.userAgents.remove(site)
-            val hadWorked = jar.worked.remove(value)
-            jar.refusals[site] = Refusal(hadWorked, System.currentTimeMillis())
-            DebugLog.d { "clearance of $site dropped ($route), agent dropped too: $agentGone, had worked: $hadWorked" }
+            jar.refusals[site] = Refusal(hadWorked = jar.worked.remove(value), at = System.currentTimeMillis())
         }
         saves.trySend(Unit)
     }
