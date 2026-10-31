@@ -54,10 +54,11 @@ fun ProvideLinkOpener(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val settings by container.settings.settings.collectAsStateWithLifecycle()
     var pending by remember { mutableStateOf<String?>(null) }
-    val opener = remember(context) {
+    val noApp = stringResource(R.string.no_app_for_link)
+    val opener = remember(context, noApp) {
         LinkOpener { url ->
             when {
-                !isWebLink(url) -> Toast.makeText(context, context.getString(R.string.no_app_for_link), Toast.LENGTH_SHORT).show()
+                !isWebLink(url) -> Toast.makeText(context, noApp, Toast.LENGTH_SHORT).show()
                 !container.tor.enabled -> context.openUrl(url)
                 else -> torBrowser(context)?.let { context.openIn(url, it) } ?: run { pending = url }
             }
