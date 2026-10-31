@@ -52,9 +52,17 @@ Notes for continuing this work on another machine. Delete this file, and revert 
      use); on lock, `forgetSession` sends a zero-filled buffer through each of okio's
      per-thread `SegmentPool` buckets. Okio has no switch, and R8 rules out reflection on
      its internals in release builds, so the wipe uses only its public `Buffer`.
+   - `Leave the later of two racing saves on disk`: `SealedJson.write(recipient) { copy }`
+     takes the copy under the same lock as the write. Used by `SecureCookieJar.save()`
+     and `DownloadManager.persist()`, whose queued save and save on lock could race.
+   - `Name every file the app keeps in clear`: the `AppContainer` comment, the README
+     and `PRIVACY.md` now name `network.xml` (route) and, before Android 13, `ui.xml`
+     (language), besides the vault header.
+   - `Suggest Orbot's VPN mode only without another VPN`: `tor_vpn_hint` in all 20
+     languages, and the README.
 5. This file again, updated each time.
 
-Unit tests: `./gradlew testDebugUnitTest`, 130 tests, all passing.
+Unit tests: `./gradlew testDebugUnitTest`, 131 tests, all passing.
 `VaultTest.duplicatesFromTheSamePostAreDropped` fails now and then: unlock publishes the
 cached index before reconcile drops the duplicate. That predates the branch.
 
@@ -135,14 +143,9 @@ cached index before reconcile drops the duplicate. That predates the branch.
   (the keyboard comes out black in screenshots over the protected screen). Check by hand:
   copy a tag, lock, then open the keyboard's clipboard panel in another app.
 - From the review, not fixed: the built-in browser looks the same on both routes
-  (same Accept-Language, time zone and WebView fingerprint); `network.xml` and the
-  language preference are clear-text SharedPreferences, so the comment in
-  `AppContainer.kt` ("The one clear file is the vault header") is not accurate; http
-  sources are allowed in clear on API 26/27; on a full disk the rekeyer retries every
-  second for as long as the vault is open.
-- `SecureCookieJar.save()` takes its snapshot before `SealedBlob.write` takes the file's
-  lock, so in a rare interleaving an older snapshot can be written last.
-
+  (same Accept-Language, time zone and WebView fingerprint); http sources are allowed in
+  clear on API 26/27; on a full disk the rekeyer retries every second for as long as the
+  vault is open.
 - Not yet seen on the device: the download row showing "Verify in browser" again after
   a clearance that had worked is refused. The grid path logged `had worked: true` as
   expected.
@@ -155,8 +158,6 @@ cached index before reconcile drops the duplicate. That predates the branch.
 - Unverified: the WebView's own TLS session cache (Chromium) may or may not be keyed by
   proxy. There is no public API to clear it; the HTTP cache is already cleared after
   each use.
-- The Tor settings hint recommends Orbot's VPN mode. That does not work for users who run
-  another VPN (Android allows one); consider rewording.
 - Before merging: revert the `TEMPORARY` commit, delete this file, and do the usual
   release steps (version bump, fastlane/fdroid metadata) if this goes out as a release.
 
@@ -229,6 +230,9 @@ What held up:
   `preview_file_url`, `cdn.donmai.us` URL, saved post id or source. The remaining hits
   are code constants (the cookie name, serializer field names), "ryukyu" in OkHttp's
   public suffix list and Android's URL pattern, and an interned `com.instagram.android`.
+- After `Leave the later of two racing saves on disk`, a lock and an unlock kept the
+  clearance: the "pikachu" search went through without a new check. The new
+  `tor_vpn_hint` shows as written in the Italian settings.
 
 How the tests were driven: screenshots are useless (`FLAG_SECURE`), so the UI was read
 with `uiautomator dump` and driven with `input tap/text/keyevent`; files were read with
@@ -237,6 +241,8 @@ walked with a small hprof parser (instance fields, arrays, statics, GC roots).
 Cloudflare asked for a checkbox on the Pokémon search over Tor on 2026-10-31; the user
 ticked it. An adb server left running from the day before held the phone on port 5038
 (`adb -P 5038`, or `ANDROID_ADB_SERVER_PORT=5038`); `adb devices` on 5037 showed nothing.
+Later that day an emulator came up on 5038 and the phone was back on 5037; check both
+with `adb -P <port> devices -l` before a test.
 
 ## Phone state left behind
 
@@ -244,8 +250,8 @@ ticked it. An adb server left running from the day before held the phone on port
   Orbot. Orbot was added either by the user or by NordVPN's "exclude apps not compatible
   with VPN". The user may want Orbot back inside the tunnel.
 - BooruVault was uninstalled on 2026-10-29 and reinstalled from this branch (debug, with
-  the traces), so the old vault is gone. It was last updated in place to `Keep library
-  buffer pools from holding what went through them`. The new test vault: Tor route, no
-  biometric unlock, source Safebooru, three Pikachu posts (19 MB), a donmai clearance in
-  the Tor share, auto-lock at 5 minutes, left locked. Orbot must be started by hand before
-  tests over Tor.
+  the traces), so the old vault is gone. It was last updated in place to `Suggest Orbot's
+  VPN mode only without another VPN`. The new test vault: Tor route, no biometric unlock,
+  source Safebooru, three Pikachu posts (19 MB), a donmai clearance in the Tor share,
+  auto-lock at 5 minutes, left locked. Orbot must be started by hand before tests over
+  Tor.
