@@ -42,9 +42,19 @@ Notes for continuing this work on another machine. Delete this file, and revert 
    - `Sync a sealed blob's file on the first close only`: Android's `FileOutputStream`
      finalizer closes the stream again, and syncing the released descriptor logged a
      `SyncFailedException` after every blob write.
+   - `Drop the browse screen's derived state once nothing shows it`: `tagShelf` and
+     `saveStates` used `WhileSubscribed(5000)`, which keeps the last value for good; a lock
+     from another tab left the searched tags and the vault's post ids in the view model.
+     `whileShown()` adds `replayExpirationMillis = 0`.
+   - `Keep library buffer pools from holding what went through them`
+     (`util/LibraryBuffers.kt`): `kotlinx.serialization.json.pool.size` is set to 0 in
+     `BooruVaultApp`'s constructor, before any JSON (the library reads it once, on first
+     use); on lock, `forgetSession` sends a zero-filled buffer through each of okio's
+     per-thread `SegmentPool` buckets. Okio has no switch, and R8 rules out reflection on
+     its internals in release builds, so the wipe uses only its public `Buffer`.
 5. This file again, updated each time.
 
-Unit tests: `./gradlew testDebugUnitTest`, 127 tests, all passing.
+Unit tests: `./gradlew testDebugUnitTest`, 130 tests, all passing.
 `VaultTest.duplicatesFromTheSamePostAreDropped` fails now and then: unlock publishes the
 cached index before reconcile drops the duplicate. That predates the branch.
 
@@ -113,22 +123,6 @@ cached index before reconcile drops the duplicate. That predates the branch.
 
 ## Open items
 
-- **Decrypted text outlives a lock in memory** (phone, 2026-10-30). After "Lock now"
-  with the screen still open, `am dumpheap -g <pid>` (GC first, so live objects only)
-  still held, with the path from a GC root found by walking the dump's references:
-  - kotlinx.serialization's static `CharArrayPool`: whole JSON texts that went through
-    `Json` — the cookie jar with the values of `cf_clearance` and `_danbooru2_session`,
-    the settings with `tagUses` (`"pikachu":4`), vault item metadata (tags, post and
-    original URLs, md5). The pool hands its char arrays back without clearing them.
-  - okio's static `SegmentPool`: raw API responses (search results with their source
-    URLs, hundreds of thumbnail URLs). Segments are recycled without clearing too.
-  - `BrowseViewModel` (an activity ViewModel, alive while the screen is): `tagShelf`
-    with the searched tag and `saveStates` keyed by `<source>/<post id>`.
-
-  The password was not found. Ideas: clear `BrowseViewModel` state on lock; for the
-  pools, avoid them for vault data (they are library internals, so either overwrite them
-  on lock by pushing filler through, or encode/decode vault JSON without the pooled
-  paths) and decide whether network responses matter once the vault is locked.
 - The lock alarm is inexact: with 5 minutes it went off after 8 min 45 s, the latest
   Android allows (75% of the delay late). An exact alarm needs `SCHEDULE_EXACT_ALARM`,
   which the user must grant by hand on Android 14+; not worth it unless asked. An alarm
@@ -192,9 +186,9 @@ cached index before reconcile drops the duplicate. That predates the branch.
   the unit tests need `JAVA_HOME` set to Android Studio's `jbr` and `ANDROID_HOME` to the
   SDK.
 
-## Phone tests, 2026-10-30 (Tor route, Safebooru, "pikachu")
+## Phone tests, 2026-10-30 and 31 (Tor route, Safebooru, "pikachu")
 
-What held up, besides the two memory findings under "Open items":
+What held up:
 - At rest, locked, with three posts in the vault: `files/vault` holds only sealed files;
   no search term, tag, post id, host or source URL appears in clear in any file of the
   app; no JPEG/PNG/GIF/WebP/MP4/WebM header outside sealed files; no Coil disk cache;
@@ -222,11 +216,27 @@ What held up, besides the two memory findings under "Open items":
 - After `Sync a sealed blob's file on the first close only`, a lock (which rewrites
   `cookies.bin` and `downloads.bin`, then forces a collection) no longer logs
   `SyncFailedException` from the finalizer.
+- Memory after a lock (2026-10-30, before the last two fixes): after "Lock now" with the
+  screen open, `am dumpheap -g <pid>` (GC first, so live objects only) still held, on
+  paths from GC roots: in kotlinx.serialization's static `CharArrayPool`, the cookie jar
+  JSON with the values of `cf_clearance` and `_danbooru2_session`, the settings with
+  `tagUses` (`"pikachu":4`) and vault item metadata; in okio's static `SegmentPool`, raw
+  search responses and hundreds of thumbnail URLs; in `BrowseViewModel`, `tagShelf` and
+  `saveStates`. The password was not found.
+- The same after `Keep library buffer pools from holding what went through them`
+  (2026-10-31): search "pikachu" over Tor, three pages scrolled, the Vault tab, more than
+  5 s, "Lock now", dump. None of the above is left: no searched tag, cookie value,
+  `preview_file_url`, `cdn.donmai.us` URL, saved post id or source. The remaining hits
+  are code constants (the cookie name, serializer field names), "ryukyu" in OkHttp's
+  public suffix list and Android's URL pattern, and an interned `com.instagram.android`.
 
 How the tests were driven: screenshots are useless (`FLAG_SECURE`), so the UI was read
 with `uiautomator dump` and driven with `input tap/text/keyevent`; files were read with
 `adb shell run-as io.github.firebirks.booruvault sh < script`; heap dumps were pulled and
 walked with a small hprof parser (instance fields, arrays, statics, GC roots).
+Cloudflare asked for a checkbox on the Pokémon search over Tor on 2026-10-31; the user
+ticked it. An adb server left running from the day before held the phone on port 5038
+(`adb -P 5038`, or `ANDROID_ADB_SERVER_PORT=5038`); `adb devices` on 5037 showed nothing.
 
 ## Phone state left behind
 
@@ -234,8 +244,8 @@ walked with a small hprof parser (instance fields, arrays, statics, GC roots).
   Orbot. Orbot was added either by the user or by NordVPN's "exclude apps not compatible
   with VPN". The user may want Orbot back inside the tunnel.
 - BooruVault was uninstalled on 2026-10-29 and reinstalled from this branch (debug, with
-  the traces), so the old vault is gone. It was last updated in place to `Sync a sealed
-  blob's file on the first close only`. The new test vault: Tor route, no biometric
-  unlock, source Safebooru, three Pikachu posts (19 MB), a donmai clearance in the Tor
-  share, auto-lock at 5 minutes, left locked. Orbot must be started by hand before
+  the traces), so the old vault is gone. It was last updated in place to `Keep library
+  buffer pools from holding what went through them`. The new test vault: Tor route, no
+  biometric unlock, source Safebooru, three Pikachu posts (19 MB), a donmai clearance in
+  the Tor share, auto-lock at 5 minutes, left locked. Orbot must be started by hand before
   tests over Tor.
