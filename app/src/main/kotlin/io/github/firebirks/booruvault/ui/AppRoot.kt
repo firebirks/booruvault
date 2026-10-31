@@ -46,6 +46,7 @@ import io.github.firebirks.booruvault.ui.vault.VaultSetupScreen
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
 import io.github.firebirks.booruvault.vault.BiometricKey
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -79,6 +80,8 @@ private enum class Tab(@param:StringRes val label: Int, val icon: ImageVector) {
     DOWNLOADS(R.string.tab_downloads, Icons.Outlined.Download),
     SETTINGS(R.string.tab_settings, Icons.Outlined.Settings),
 }
+
+private val TrailSaver = listSaver<List<Tab>, String>(save = { trail -> trail.map { it.name } }, restore = { names -> names.map(Tab::valueOf) })
 
 /**
  * Nothing opens without the vault: settings, sources and everything browsed live inside it, so
@@ -157,7 +160,11 @@ private fun BiometricOffer(onDone: () -> Unit) {
 @Composable
 private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     val container = LocalContainer.current
-    var tab by rememberSaveable { mutableStateOf(Tab.BROWSE) }
+    var trail by rememberSaveable(stateSaver = TrailSaver) { mutableStateOf(listOf(Tab.BROWSE)) }
+    val tab = trail.last()
+    fun open(item: Tab) {
+        trail = trail.visit(item)
+    }
     // Index into the browse results, or id of a vault item, of the open full-screen viewer.
     var postViewer by rememberSaveable { mutableStateOf<Int?>(null) }
     var vaultViewer by rememberSaveable { mutableStateOf<String?>(null) }
@@ -173,13 +180,14 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
         if (requested == "downloads") {
             postViewer = null
             vaultViewer = null
-            tab = Tab.DOWNLOADS
+            open(Tab.DOWNLOADS)
             requestedTab.value = null
         }
     }
 
-    // Registered before any screen's own handler, so those still win while they are enabled.
-    BackHandler(enabled = tab != Tab.BROWSE) { tab = Tab.BROWSE }
+    // Registered before any screen's own handler, so those still win while they are enabled:
+    // Back undoes what was done in the tab first, then returns to the tab visited before.
+    BackHandler(enabled = trail.size > 1) { trail = trail.dropLast(1) }
 
     var challenge by remember { mutableStateOf<ChallengeRequest?>(null) }
     val launcher = remember { ChallengeLauncher { source, url, mode, onDone -> challenge = ChallengeRequest(source, url, mode, onDone) } }
@@ -192,7 +200,7 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
                     Tab.entries.forEach { item ->
                         NavigationBarItem(
                             selected = tab == item,
-                            onClick = { tab = item },
+                            onClick = { open(item) },
                             icon = {
                                 val icon = if (item == Tab.VAULT && vaultState is VaultState.Unlocked) Icons.Outlined.LockOpen else item.icon
                                 if (item == Tab.DOWNLOADS && active > 0) {
@@ -211,7 +219,7 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
             Box(Modifier.padding(padding).consumeWindowInsets(padding)) {
                 holder.SaveableStateProvider(tab.name) {
                     when (tab) {
-                        Tab.BROWSE -> BrowseScreen(onOpenPost = { postViewer = it }, onNeedVault = { tab = Tab.VAULT })
+                        Tab.BROWSE -> BrowseScreen(onOpenPost = { postViewer = it }, onNeedVault = { open(Tab.VAULT) })
                         Tab.VAULT -> VaultTab(onOpenItem = { vaultViewer = it })
                         Tab.DOWNLOADS -> DownloadsScreen()
                         Tab.SETTINGS -> SettingsTab()
@@ -226,12 +234,12 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
                 onClose = { postViewer = null },
                 onSearchTag = { tag ->
                     postViewer = null
-                    tab = Tab.BROWSE
+                    open(Tab.BROWSE)
                     browse.search(tag)
                 },
                 onNeedVault = {
                     postViewer = null
-                    tab = Tab.VAULT
+                    open(Tab.VAULT)
                 },
             )
         }
@@ -254,3 +262,6 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     }
     }
 }
+
+/** Tabs in the order last visited, the current one last: Back returns to the one before it. */
+internal fun <T> List<T>.visit(tab: T): List<T> = if (lastOrNull() == tab) this else this - tab + tab

@@ -134,6 +134,8 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
             if (index >= 0 && index !in visible) gridState.scrollToItem(index)
         }
     }
+    // Registered first, so a selection is put away before the collection is left for all items.
+    BackHandler(enabled = vm.collectionId != null) { vm.collectionId = null }
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
 
     // System pickers put the app in the background; keep the vault open while they are up.

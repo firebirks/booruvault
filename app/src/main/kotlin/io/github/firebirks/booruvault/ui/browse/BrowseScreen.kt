@@ -102,6 +102,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -154,6 +155,8 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
     var showWebPage by rememberSaveable { mutableStateOf(false) }
     var saveSearch by rememberSaveable { mutableStateOf(false) }
 
+    // Registered first, so a selection or the keyboard is put away before a search is undone.
+    BackHandler(enabled = vm.canGoBack) { vm.back() }
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
     BackHandler(enabled = searchFocused) { focus.clearFocus() }
     // Back first puts the keyboard away; the tags under the field go with it rather than on a second press.
@@ -164,7 +167,17 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
         imeWasVisible = imeVisible
     }
 
-    LaunchedEffect(state.generation) { gridState.scrollToItem(0) }
+    // Once per search: coming back from another tab finds the grid where it was left.
+    var shownGeneration by rememberSaveable { mutableIntStateOf(-1) }
+    LaunchedEffect(state.generation) {
+        if (state.generation == shownGeneration) return@LaunchedEffect
+        gridState.scrollToItem(state.startIndex, state.startOffset)
+        shownGeneration = state.generation
+    }
+    LaunchedEffect(gridState) {
+        snapshotFlow { gridState.firstVisibleItemIndex to gridState.firstVisibleItemScrollOffset }
+            .collect { (index, offset) -> vm.scrolled(index, offset) }
+    }
     LaunchedEffect(vm) {
         vm.scrollTo.collect { index ->
             val visible = gridState.layoutInfo.visibleItemsInfo.map { it.index }

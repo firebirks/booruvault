@@ -51,7 +51,17 @@ data class BrowseState(
     val hidden: Int = 0,
     /** Bumped on every new search so the grid can jump back to the top. */
     val generation: Int = 0,
+    /** Where the grid of this [generation] opens: the top, or where Back found it left. */
+    val startIndex: Int = 0,
+    val startOffset: Int = 0,
 )
+
+/** The same source, or the same page opened on the spot: those all share one id. */
+private fun BooruSource?.sameAs(other: BooruSource?): Boolean =
+    if (this?.id == BrowseViewModel.WEB_PAGE_SOURCE) this == other else this?.id == other?.id
+
+/** A grid as it was left: its results, how far they were read, and where it was scrolled to. */
+private class LeftGrid(val state: BrowseState, val page: Int, val seen: Set<Long>, val index: Int, val offset: Int, val filters: Any)
 
 /** Where a post stands with respect to the vault. */
 enum class SaveState { NONE, QUEUED, SAVED }
@@ -123,6 +133,17 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private var loadJob: Job? = null
     private var suggestJob: Job? = null
 
+    private val history = BrowseHistory<LeftGrid>()
+
+    /** Whether Back has a grid to return to. */
+    val canGoBack: Boolean get() = history.canGoBack
+
+    /** The grid Back is returning to, shown once its source is the one selected. */
+    private var returning: LeftGrid? = null
+
+    /** The first item the grid shows, and how far it is scrolled past. */
+    private var position = 0 to 0
+
     init {
         viewModelScope.launch {
             // Settings exist only while the vault is open; so does everything browsed with them.
@@ -136,8 +157,17 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 if (sources.any { it.id == WEB_PAGE_SOURCE }) c.settings.setSources(sources.filterNot { it.id == WEB_PAGE_SOURCE })
                 coroutineScope {
                     launch {
+                        var selectedId: String? = null
                         combine(c.settings.settings.map { it.selectedSource }, webPage) { selected, page -> page ?: selected }
                             .distinctUntilChanged().collect { source ->
+                                val back = returning?.takeIf { it.state.source.sameAs(source) }
+                                returning = null
+                                if (back != null) return@collect show(back, source)
+                                // Another source chosen: what Back kept was found on a different site.
+                                if (source?.id != WEB_PAGE_SOURCE && source?.id != selectedId) {
+                                    history.clear()
+                                    selectedId = source?.id
+                                }
                                 _state.update { it.copy(source = source) }
                                 restart(refreshing = false)
                             }
@@ -168,6 +198,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         cancelResolves()
         _resolveErrors.value = emptyMap()
         webPage.value = null
+        history.clear()
+        returning = null
+        position = 0 to 0
         _state.value = BrowseState(generation = _state.value.generation + 1)
     }
 
@@ -221,9 +254,64 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
             it.copy(
                 posts = emptyList(), loading = false, refreshing = refreshing, endReached = false,
                 error = null, challengeUrl = null, hidden = 0, generation = it.generation + 1,
+                startIndex = 0, startOffset = 0,
             )
         }
         loadMore()
+    }
+
+    private fun filters(): Any = c.settings.settings.value.let { Triple(it.allowedRatings, it.blacklist, it.pageSize) }
+
+    /** Keeps the grid shown, for Back to return to. */
+    private fun leave(beforeWebPage: Boolean = false) {
+        val current = _state.value
+        if (current.source == null) return
+        val (index, offset) = position
+        history.push(LeftGrid(current, page, seen.toSet(), index, offset, filters()), beforeWebPage)
+    }
+
+    /** Back to the grid the last search, or page opened on the spot, replaced. */
+    fun back() {
+        history.pop()?.let(::returnTo)
+    }
+
+    private fun returnTo(grid: LeftGrid) {
+        val target = grid.state.source
+        val current = _state.value.source
+        if (target.sameAs(current)) return show(grid, current)
+        // Another source: shown once the switch to it comes through.
+        returning = grid
+        webPage.value = target?.takeIf { it.id == WEB_PAGE_SOURCE }
+    }
+
+    /** Shows a grid as it was left; one found under other filters, or with nothing yet, is searched again. */
+    private fun show(grid: LeftGrid, source: BooruSource?) {
+        val query = grid.state.query
+        input = TextFieldValue(query, TextRange(query.length))
+        _suggestions.value = emptyList()
+        if (grid.state.posts.isEmpty() || grid.filters != filters()) {
+            _state.update { it.copy(source = source, query = query) }
+            restart(refreshing = false)
+            return
+        }
+        loadJob?.cancel()
+        cancelResolves()
+        page = grid.page
+        seen.clear()
+        seen.addAll(grid.seen)
+        _selection.value = emptySet()
+        position = grid.index to grid.offset
+        _state.update {
+            grid.state.copy(
+                source = source, loading = false, refreshing = false, generation = it.generation + 1,
+                startIndex = grid.index, startOffset = grid.offset,
+            )
+        }
+    }
+
+    /** Where the grid is scrolled to, kept with it when a search replaces it. */
+    fun scrolled(index: Int, offset: Int) {
+        position = index to offset
     }
 
     fun refresh() = restart(refreshing = true)
@@ -265,9 +353,15 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val source = BooruSource(WEB_PAGE_SOURCE, host, BooruEngine.HTML_GENERIC, url)
         input = TextFieldValue("")
         _suggestions.value = emptyList()
-        _state.update { it.copy(query = "") }
         // The same page again: the collector sees no change, so reload it here.
-        if (webPage.value == source) refresh() else webPage.value = source
+        if (webPage.value == source) {
+            _state.update { it.copy(query = "") }
+            return refresh()
+        }
+        // Closing the page returns to the source it was opened from, past any other page opened from it.
+        leave(beforeWebPage = _state.value.source?.id != WEB_PAGE_SOURCE)
+        _state.update { it.copy(query = "") }
+        webPage.value = source
     }
 
     companion object {
@@ -281,6 +375,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val normalized = query.trim().replace(Regex("\\s+"), " ")
         input = TextFieldValue(normalized, TextRange(normalized.length))
         _suggestions.value = emptyList()
+        // The same search again only reloads it: there is nothing to go back to.
+        if (normalized != _state.value.query) leave()
         _state.update { it.copy(query = normalized) }
         rememberTags(normalized)
         restart(refreshing = false)
@@ -310,9 +406,10 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         viewModelScope.launch { c.settings.selectSource(id) }
     }
 
-    /** Back to the selected source from a page opened on the spot. */
+    /** Back to the selected source from a page opened on the spot, as it was before the page opened. */
     fun closeWebPage() {
-        webPage.value = null
+        val before = history.popToBeforeWebPage()
+        if (before != null) returnTo(before) else webPage.value = null
     }
 
     fun onInput(value: TextFieldValue) {
@@ -373,7 +470,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         _selection.value = emptySet()
     }
 
+    /** Brings a post into view, and makes it where the grid is left if a search replaces it now. */
     fun requestScroll(index: Int) {
+        position = index to 0
         _scrollTo.tryEmit(index)
     }
 

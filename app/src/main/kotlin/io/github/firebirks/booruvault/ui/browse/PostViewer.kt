@@ -239,18 +239,20 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
             isFavourite = { it in favourites },
             onToggleFavourite = vm::toggleFavourite,
             onDismiss = { info = null },
+            // Back from the search a tag starts returns to the grid at this post.
             onSearch = { tag ->
                 info = null
+                vm.requestScroll(pager.currentPage)
                 onSearchTag(tag)
             },
             onAddToSearch = { tag ->
                 info = null
-                onClose()
+                close()
                 vm.addToSearch(tag)
             },
             onExclude = { tag ->
                 info = null
-                onClose()
+                close()
                 vm.excludeFromSearch(tag)
             },
             onCreateCollection = { tag ->
