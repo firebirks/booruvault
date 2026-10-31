@@ -2,7 +2,7 @@
 
 Your collection, encrypted and reached through Tor. BooruVault is an Android app that browses booru image boards and keeps what you save in a vault only your password opens.
 
-Everything the app stores about you is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Downloads are sealed to the vault's public key as they stream, so they can land even while the vault is locked and plaintext never touches storage. With Orbot installed, every connection goes through Tor, with no direct fallback.
+Everything the app stores about you is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Downloads are sealed to the vault's public key as they stream, so they can land even while the vault is locked and plaintext never touches storage. Choose Tor at first start and every connection goes through it, by way of Orbot, with no direct fallback; what sites hand out along one route is never shown along the other.
 
 The interface follows the phone's language, with English as the fallback. See [Languages](#languages).
 

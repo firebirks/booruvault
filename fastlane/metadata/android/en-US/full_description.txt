@@ -1,6 +1,6 @@
 BooruVault keeps the pictures you save from booru image boards in an encrypted vault and, if you want, reaches every site through Tor.
 
-Everything the app stores is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Nothing opens without the vault password, and with Orbot installed all traffic goes through Tor, with no direct fallback.
+Everything the app stores is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Nothing opens without the vault password. At first start you choose Tor, through Orbot, or a direct connection; with Tor, all traffic goes through it, with no direct fallback.
 
 Vault
 • A password hardened with Argon2id, optional fingerprint unlock, auto-lock after a time in the background.
@@ -10,6 +10,7 @@ Vault
 
 Tor and privacy
 • Tor via Orbot, fail-closed: no direct fallback, no local DNS, and the exit is verified before any traffic leaves.
+• Cookies, anti-bot passes and TLS sessions are kept apart for Tor and for the direct connection, so neither route shows what the other was handed.
 • No image cache on disk; locking forgets the session; every keyboard is asked not to learn.
 • Options that trade privacy for convenience are off by default, each one explaining its cost before it can be turned on.
 • No Google Play services needed, no telemetry, no crash reports.
