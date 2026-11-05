@@ -69,8 +69,9 @@ data class Post(
         get() = if (width > 0 && height > 0) (width.toFloat() / height).coerceIn(0.4f, 2.5f) else 1f
 }
 
+/** [unrated]: the engine's posts carry no rating as a rule, so only "Unrated" lets them through. */
 @Serializable
-enum class BooruEngine(val html: Boolean = false) {
+enum class BooruEngine(val html: Boolean = false, val unrated: Boolean = false) {
     DANBOORU,
     MOEBOORU,
     GELBOORU,
@@ -78,10 +79,10 @@ enum class BooruEngine(val html: Boolean = false) {
 
     /** Gelbooru 0.1 (booru.org) and 0.2 sites read through their web pages. */
     GELBOORU_HTML(html = true),
-    SHIMMIE(html = true),
+    SHIMMIE(html = true, unrated = true),
 
     /** Any page: its images and videos. The address may hold {tags} and {page}. */
-    HTML_GENERIC(html = true),
+    HTML_GENERIC(html = true, unrated = true),
 }
 
 /** A configured site. [login] is the user name, or the numeric user id on Gelbooru. */

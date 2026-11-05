@@ -212,11 +212,13 @@
     <string name="sources_custom_hint">Danbooru أو Moebooru أو Gelbooru أو e621 أو booru.org أو Shimmie2 أو أي صفحة ويب</string>
     <string name="source_new">مصدر جديد</string>
     <string name="source_name">الاسم</string>
+    <string name="source_name_needed">مطلوب للحفظ</string>
     <string name="source_engine">المحرّك: %1$s</string>
     <string name="source_mode_api">يقرأ الموقع عبر واجهته البرمجية (API): تصل المنشورات كاملة (الملف والحجم وmd5 والوسوم حسب النوع)، والصفحات خفيفة وسريعة، وما في الخزنة أصلًا يُتعرَّف عليه. قد يتطلب بعض المحتوى حسابًا أو مفتاحًا.</string>
     <string name="source_mode_html">يقرأ صفحات الموقع كما يفعل المتصفح: لا حاجة إلى API أو مفتاح، والمواقع بلا API تعمل أيضًا. في المقابل يُفتح كل منشور على حدة للعثور على ملفه، والتحميل أبطأ وأثقل، ويُعرف عن المنشور أقل (لا حجم ولا md5 للتعرف على المكررات)، وفحوص مكافحة الروبوتات أكثر تكرارًا، وقد يعطّله تغيير تصميم الموقع.</string>
     <string name="source_mode_gelbooru">مع معرّف المستخدم والمفتاح يُقرأ الموقع عبر API؛ ومن دونهما عبر صفحاته، بما يكلّفه ذلك: كل منشور يُفتح على حدة، وتحميل أبطأ، ومعلومات أقل عن المنشور، وفحوص مكافحة روبوتات أكثر.</string>
     <string name="source_address">العنوان</string>
+    <string name="source_address_invalid">أدخل عنوان الموقع مع نطاقه، مثل https://example.com</string>
     <string name="source_hint_default">مثال: https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">مثال: https://name.booru.org، أو موقع Gelbooru بدون API</string>
     <string name="source_hint_shimmie">مثال: https://rule34.paheal.net</string>
@@ -487,6 +489,7 @@
         <item quantity="many">تم إخفاء %d منشورًا بسبب فلاتر المحتوى.</item>
         <item quantity="other">تم إخفاء %d منشور بسبب فلاتر المحتوى.</item>
     </plurals>
+    <string name="browse_hidden_unrated">هذا المصدر لا يقدّم تصنيفات: فعّل «%1$s» في مرشّح المحتوى لرؤية منشوراته.</string>
     <string name="browse_try_other_tags">جرّب وسومًا أخرى.</string>
     <string name="browse_open_web_title">فتح صفحة ويب</string>
     <string name="browse_open_web_text">يعرض الصور والفيديوهات في أي صفحة لتصفّحها أو حفظها في الخزنة.</string>
@@ -518,7 +521,7 @@
     <string name="viewer_blacklisted">تمت إضافة «%1$s» إلى القائمة السوداء</string>
     <string name="viewer_score">النقاط: %1$d</string>
     <string name="viewer_source">المصدر: </string>
-    <string name="tag_search">بحث</string>
+    <string name="tag_search">البحث عن هذا الوسم فقط</string>
     <string name="tag_add_to_search">إضافة إلى البحث</string>
     <string name="tag_exclude">استبعاد من البحث</string>
     <string name="tag_blacklist">إضافة إلى القائمة السوداء</string>

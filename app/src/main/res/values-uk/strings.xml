@@ -204,11 +204,13 @@
     <string name="sources_custom_hint">Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 або будь-яка вебсторінка</string>
     <string name="source_new">Нове джерело</string>
     <string name="source_name">Назва</string>
+    <string name="source_name_needed">Потрібно для збереження</string>
     <string name="source_engine">Рушій: %1$s</string>
     <string name="source_mode_api">Читає сайт через його API: дописи надходять повними (файл, розмір, md5, теги за типами), сторінки легкі й швидкі, а те, що вже є у сховищі, розпізнається. Для частини вмісту може знадобитися обліковий запис або ключ.</string>
     <string name="source_mode_html">Читає вебсторінки сайту, як браузер: не потрібні ні API, ні ключ, і сайти без API теж працюють. Натомість кожен допис відкривається окремо, щоб знайти його файл, завантаження повільніше й важче, про допис відомо менше (немає розміру та md5 для розпізнавання дублікатів), антибот-перевірки частіші, а редизайн сайту може все зламати.</string>
     <string name="source_mode_gelbooru">З ID користувача та ключем сайт читається через API; без них — через вебсторінки, з усіма витратами: кожен допис відкривається окремо, завантаження повільніше, про допис відомо менше, антибот-перевірок більше.</string>
     <string name="source_address">Адреса</string>
+    <string name="source_address_invalid">Введіть адресу сайту з доменом, наприклад https://example.com</string>
     <string name="source_hint_default">Напр. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Напр. https://name.booru.org або сайт Gelbooru без API</string>
     <string name="source_hint_shimmie">Напр. https://rule34.paheal.net</string>
@@ -445,6 +447,7 @@
         <item quantity="many">%d дописів приховано фільтрами вмісту.</item>
         <item quantity="other">%d допису приховано фільтрами вмісту.</item>
     </plurals>
+    <string name="browse_hidden_unrated">Це джерело не дає оцінок: увімкніть «%1$s» у фільтрі вмісту, щоб бачити його дописи.</string>
     <string name="browse_try_other_tags">Спробуйте інші теги.</string>
     <string name="browse_open_web_title">Відкрити вебсторінку</string>
     <string name="browse_open_web_text">Показує зображення й відео будь-якої сторінки, щоб переглядати їх або зберігати у сховище.</string>
@@ -474,7 +477,7 @@
     <string name="viewer_blacklisted">«%1$s» додано до чорного списку</string>
     <string name="viewer_score">Оцінка %1$d</string>
     <string name="viewer_source">Джерело: </string>
-    <string name="tag_search">Шукати</string>
+    <string name="tag_search">Шукати лише цей тег</string>
     <string name="tag_add_to_search">Додати до пошуку</string>
     <string name="tag_exclude">Виключити з пошуку</string>
     <string name="tag_blacklist">Додати до чорного списку</string>

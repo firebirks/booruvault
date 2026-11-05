@@ -61,7 +61,7 @@ import androidx.compose.material.icons.outlined.Gif
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.OpenInBrowser
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Schedule
@@ -121,6 +121,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.booru.MediaKind
 import io.github.firebirks.booruvault.booru.Post
+import io.github.firebirks.booruvault.booru.Rating
 import io.github.firebirks.booruvault.booru.TagCategory
 import io.github.firebirks.booruvault.booru.TagSuggestion
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
@@ -142,7 +143,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
+fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenContentFilter: () -> Unit) {
     val container = LocalContainer.current
     val vm = containerViewModel { BrowseViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -282,13 +283,16 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                         Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), state.error?.let { problemText(it) },
                         actionLabel = stringResource(R.string.action_retry), onAction = { vm.loadMore(force = true) },
                     )
-                    state.posts.isEmpty() && state.endReached -> MessageState(
+                    // Results all hidden by the filters: the filters are a tap away, and a source
+                    // without ratings, whose every post is unrated, is told as such.
+                    state.posts.isEmpty() && state.endReached && state.hidden > 0 -> MessageState(
                         Icons.Outlined.SearchOff, stringResource(R.string.browse_no_results),
-                        if (state.hidden > 0) {
-                            pluralStringResource(R.plurals.browse_hidden, state.hidden, state.hidden)
-                        } else {
-                            stringResource(R.string.browse_try_other_tags)
-                        },
+                        pluralStringResource(R.plurals.browse_hidden, state.hidden, state.hidden) +
+                            if (state.source?.engine?.unrated == true && Rating.UNKNOWN !in settings.allowedRatings) " " + stringResource(R.string.browse_hidden_unrated, stringResource(R.string.rating_unknown)) else "",
+                        actionLabel = stringResource(R.string.settings_page_content), onAction = onOpenContentFilter,
+                    )
+                    state.posts.isEmpty() && state.endReached -> MessageState(
+                        Icons.Outlined.SearchOff, stringResource(R.string.browse_no_results), stringResource(R.string.browse_try_other_tags),
                     )
                     state.posts.isEmpty() -> CenteredProgress()
                     else -> LazyVerticalStaggeredGrid(
@@ -451,7 +455,8 @@ private fun BrowseTopBar(
                     }
                 }
                 if (onOpenSite != null) {
-                    IconButton(onClick = onOpenSite) { Icon(Icons.Outlined.OpenInBrowser, stringResource(R.string.source_open_browser)) }
+                    // Not the icon of a link that leaves the app: this opens the site inside it, for its account.
+                    IconButton(onClick = onOpenSite) { Icon(Icons.Outlined.AccountCircle, stringResource(R.string.source_open_browser)) }
                 }
                 Spacer(Modifier.weight(1f))
                 Box {

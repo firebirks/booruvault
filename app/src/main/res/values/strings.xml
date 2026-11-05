@@ -202,11 +202,13 @@
     <string name="sources_custom_hint">Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 or any web page</string>
     <string name="source_new">New source</string>
     <string name="source_name">Name</string>
+    <string name="source_name_needed">Needed to save</string>
     <string name="source_engine">Engine: %1$s</string>
     <string name="source_mode_api">Reads the site through its API: posts arrive complete (file, size, md5, tags by type), pages are small and quick, and what the vault already holds is recognised. Some content may need an account or a key.</string>
     <string name="source_mode_html">Reads the site\'s web pages, as a browser would: no API or key is needed, and sites without an API work too. In return each post is opened on its own to find its file, loading is slower and heavier, less is known about a post (no size or md5 to recognise duplicates), anti-bot checks come more often, and a redesign of the site can break it.</string>
     <string name="source_mode_gelbooru">With a user ID and key the site is read through its API; without them, through its web pages, with the costs of that: each post opened on its own, slower loading, less known about a post, more anti-bot checks.</string>
     <string name="source_address">Address</string>
+    <string name="source_address_invalid">Enter the site\'s address, with its domain, e.g. https://example.com</string>
     <string name="source_hint_default">E.g. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">E.g. https://name.booru.org, or a Gelbooru site without an API</string>
     <string name="source_hint_shimmie">E.g. https://rule34.paheal.net</string>
@@ -409,6 +411,7 @@
         <item quantity="one">%d post hidden by the content filters.</item>
         <item quantity="other">%d posts hidden by the content filters.</item>
     </plurals>
+    <string name="browse_hidden_unrated">This source gives no ratings: turn on “%1$s” in the content filter to see its posts.</string>
     <string name="browse_try_other_tags">Try other tags.</string>
     <string name="browse_open_web_title">Open a web page</string>
     <string name="browse_open_web_text">Shows the images and videos of any page, to browse or save to the vault.</string>
@@ -436,7 +439,7 @@
     <string name="viewer_blacklisted">“%1$s” added to the blacklist</string>
     <string name="viewer_score">Score %1$d</string>
     <string name="viewer_source">Source: </string>
-    <string name="tag_search">Search</string>
+    <string name="tag_search">Search only this tag</string>
     <string name="tag_add_to_search">Add to the search</string>
     <string name="tag_exclude">Exclude from the search</string>
     <string name="tag_blacklist">Add to the blacklist</string>

@@ -417,6 +417,7 @@ private fun TagChip(
             label = { Text(tag.name.replace('_', ' '), color = categoryColor(tag.category)) },
             colors = AssistChipDefaults.assistChipColors(),
         )
+        // Three things one does with a tag, each in its own group: search with it, keep it, hide it.
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
             DropdownMenuItem(text = { Text(stringResource(R.string.tag_search)) }, leadingIcon = { Icon(Icons.Outlined.Search, null) }, onClick = {
                 menu = false
@@ -430,6 +431,7 @@ private fun TagChip(
                 menu = false
                 onExclude(tag.name)
             })
+            HorizontalDivider()
             DropdownMenuItem(
                 text = { Text(stringResource(if (favourite) R.string.tag_unfavourite else R.string.tag_favourite)) },
                 leadingIcon = { Icon(if (favourite) Icons.Filled.Star else Icons.Outlined.StarOutline, null) },
@@ -442,13 +444,14 @@ private fun TagChip(
                 menu = false
                 onCreateCollection(tag.name)
             })
-            DropdownMenuItem(text = { Text(stringResource(R.string.tag_blacklist)) }, leadingIcon = { Icon(Icons.Outlined.Block, null) }, onClick = {
-                menu = false
-                onBlacklist(tag.name)
-            })
             DropdownMenuItem(text = { Text(stringResource(R.string.tag_copy)) }, leadingIcon = { Icon(Icons.Outlined.ContentCopy, null) }, onClick = {
                 menu = false
                 onCopy(tag.name)
+            })
+            HorizontalDivider()
+            DropdownMenuItem(text = { Text(stringResource(R.string.tag_blacklist)) }, leadingIcon = { Icon(Icons.Outlined.Block, null) }, onClick = {
+                menu = false
+                onBlacklist(tag.name)
             })
         }
     }

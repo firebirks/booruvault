@@ -200,11 +200,13 @@
     <string name="sources_custom_hint">Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 o cualquier página web</string>
     <string name="source_new">Nueva fuente</string>
     <string name="source_name">Nombre</string>
+    <string name="source_name_needed">Necesario para guardar</string>
     <string name="source_engine">Motor: %1$s</string>
     <string name="source_mode_api">Lee el sitio a través de su API: las publicaciones llegan completas (archivo, tamaño, md5, etiquetas por tipo), las páginas son ligeras y rápidas, y lo que la bóveda ya tiene se reconoce. Algún contenido puede requerir una cuenta o una clave.</string>
     <string name="source_mode_html">Lee las páginas web del sitio, como lo haría un navegador: no hace falta API ni clave, y los sitios sin API también funcionan. A cambio, cada publicación se abre por separado para encontrar su archivo, la carga es más lenta y pesada, se sabe menos de cada publicación (sin tamaño ni md5 para reconocer duplicados), las verificaciones anti-bot son más frecuentes, y un rediseño del sitio puede romperlo.</string>
     <string name="source_mode_gelbooru">Con ID de usuario y clave el sitio se lee por su API; sin ellos, por sus páginas web, con sus costes: cada publicación abierta por separado, carga más lenta, menos datos de cada publicación, más verificaciones anti-bot.</string>
     <string name="source_address">Dirección</string>
+    <string name="source_address_invalid">Escribe la dirección del sitio, con su dominio, p. ej. https://example.com</string>
     <string name="source_hint_default">Ej.: https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Ej.: https://name.booru.org, o un sitio Gelbooru sin API</string>
     <string name="source_hint_shimmie">Ej.: https://rule34.paheal.net</string>
@@ -424,6 +426,7 @@
         <item quantity="many">%d posts ocultos por los filtros de contenido.</item>
         <item quantity="other">%d posts ocultos por los filtros de contenido.</item>
     </plurals>
+    <string name="browse_hidden_unrated">Esta fuente no da clasificaciones: activa “%1$s” en el filtro de contenido para ver sus publicaciones.</string>
     <string name="browse_try_other_tags">Prueba con otras etiquetas.</string>
     <string name="browse_open_web_title">Abrir una página web</string>
     <string name="browse_open_web_text">Muestra las imágenes y los videos de cualquier página, para explorarlos o guardarlos en la bóveda.</string>
@@ -452,7 +455,7 @@
     <string name="viewer_blacklisted">“%1$s” añadido a la lista negra</string>
     <string name="viewer_score">Puntuación %1$d</string>
     <string name="viewer_source">Fuente: </string>
-    <string name="tag_search">Buscar</string>
+    <string name="tag_search">Buscar solo esta etiqueta</string>
     <string name="tag_add_to_search">Añadir a la búsqueda</string>
     <string name="tag_exclude">Excluir de la búsqueda</string>
     <string name="tag_blacklist">Añadir a la lista negra</string>

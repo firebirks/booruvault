@@ -196,11 +196,13 @@
     <string name="sources_custom_hint">Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2 veya herhangi bir web sayfası</string>
     <string name="source_new">Yeni kaynak</string>
     <string name="source_name">Ad</string>
+    <string name="source_name_needed">Kaydetmek için gerekli</string>
     <string name="source_engine">Motor: %1$s</string>
     <string name="source_mode_api">Siteyi API\'si üzerinden okur: gönderiler eksiksiz gelir (dosya, boyut, md5, türüne göre etiketler), sayfalar hafif ve hızlıdır, kasada zaten olanlar tanınır. Bazı içerikler hesap veya anahtar gerektirebilir.</string>
     <string name="source_mode_html">Sitenin web sayfalarını bir tarayıcı gibi okur: API veya anahtar gerekmez, API\'si olmayan siteler de çalışır. Karşılığında her gönderi dosyasını bulmak için ayrı ayrı açılır, yükleme daha yavaş ve ağırdır, gönderi hakkında daha az şey bilinir (kopyaları tanımak için boyut veya md5 yoktur), bot karşıtı denetimler daha sık gelir ve sitenin yeniden tasarlanması bunu bozabilir.</string>
     <string name="source_mode_gelbooru">Kullanıcı kimliği ve anahtarla site API üzerinden okunur; onlar olmadan web sayfalarından, bedeliyle: her gönderi ayrı açılır, yükleme daha yavaş, gönderi hakkında daha az bilgi, daha çok bot karşıtı denetim.</string>
     <string name="source_address">Adres</string>
+    <string name="source_address_invalid">Sitenin adresini alan adıyla girin, örn. https://example.com</string>
     <string name="source_hint_default">Ör. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Ör. https://name.booru.org veya API\'si olmayan bir Gelbooru sitesi</string>
     <string name="source_hint_shimmie">Ör. https://rule34.paheal.net</string>
@@ -403,6 +405,7 @@
         <item quantity="one">%d gönderi içerik filtreleri tarafından gizlendi.</item>
         <item quantity="other">%d gönderi içerik filtreleri tarafından gizlendi.</item>
     </plurals>
+    <string name="browse_hidden_unrated">Bu kaynak derecelendirme vermiyor: gönderilerini görmek için içerik filtresinde “%1$s” seçeneğini açın.</string>
     <string name="browse_try_other_tags">Başka etiketler deneyin.</string>
     <string name="browse_open_web_title">Bir web sayfası aç</string>
     <string name="browse_open_web_text">Herhangi bir sayfadaki görselleri ve videoları, göz atmanız veya kasaya kaydetmeniz için gösterir.</string>
@@ -430,7 +433,7 @@
     <string name="viewer_blacklisted">“%1$s” kara listeye eklendi</string>
     <string name="viewer_score">Puan %1$d</string>
     <string name="viewer_source">Kaynak: </string>
-    <string name="tag_search">Ara</string>
+    <string name="tag_search">Yalnızca bu etiketi ara</string>
     <string name="tag_add_to_search">Aramaya ekle</string>
     <string name="tag_exclude">Aramadan hariç tut</string>
     <string name="tag_blacklist">Kara listeye ekle</string>

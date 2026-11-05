@@ -192,11 +192,13 @@
     <string name="sources_custom_hint">Danbooru, Moebooru, Gelbooru, e621, booru.org, Shimmie2, atau halaman web apa pun</string>
     <string name="source_new">Sumber baru</string>
     <string name="source_name">Nama</string>
+    <string name="source_name_needed">Diperlukan untuk menyimpan</string>
     <string name="source_engine">Mesin: %1$s</string>
     <string name="source_mode_api">Membaca situs lewat API-nya: kiriman tiba lengkap (berkas, ukuran, md5, tag per jenis), halaman ringan dan cepat, dan yang sudah ada di brankas dikenali. Sebagian konten mungkin memerlukan akun atau kunci.</string>
     <string name="source_mode_html">Membaca halaman web situs seperti peramban: tidak perlu API atau kunci, dan situs tanpa API pun bisa. Imbalannya, setiap kiriman dibuka sendiri-sendiri untuk menemukan berkasnya, pemuatan lebih lambat dan berat, lebih sedikit yang diketahui tentang kiriman (tanpa ukuran atau md5 untuk mengenali duplikat), pemeriksaan anti-bot lebih sering, dan perombakan situs bisa merusaknya.</string>
     <string name="source_mode_gelbooru">Dengan ID pengguna dan kunci, situs dibaca lewat API; tanpa itu lewat halaman web, dengan konsekuensinya: setiap kiriman dibuka sendiri-sendiri, pemuatan lebih lambat, info kiriman lebih sedikit, pemeriksaan anti-bot lebih banyak.</string>
     <string name="source_address">Alamat</string>
+    <string name="source_address_invalid">Masukkan alamat situs beserta domainnya, mis. https://example.com</string>
     <string name="source_hint_default">Mis. https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">Mis. https://name.booru.org, atau situs Gelbooru tanpa API</string>
     <string name="source_hint_shimmie">Mis. https://rule34.paheal.net</string>
@@ -382,6 +384,7 @@
     <plurals name="browse_hidden">
         <item quantity="other">%d postingan disembunyikan oleh filter konten.</item>
     </plurals>
+    <string name="browse_hidden_unrated">Sumber ini tidak memberi peringkat: aktifkan “%1$s” di filter konten untuk melihat kirimannya.</string>
     <string name="browse_try_other_tags">Coba tag lain.</string>
     <string name="browse_open_web_title">Buka halaman web</string>
     <string name="browse_open_web_text">Menampilkan gambar dan video dari halaman apa pun, untuk dijelajahi atau disimpan ke brankas.</string>
@@ -408,7 +411,7 @@
     <string name="viewer_blacklisted">“%1$s” ditambahkan ke daftar hitam</string>
     <string name="viewer_score">Skor %1$d</string>
     <string name="viewer_source">Sumber: </string>
-    <string name="tag_search">Cari</string>
+    <string name="tag_search">Cari tag ini saja</string>
     <string name="tag_add_to_search">Tambahkan ke pencarian</string>
     <string name="tag_exclude">Kecualikan dari pencarian</string>
     <string name="tag_blacklist">Tambahkan ke daftar hitam</string>

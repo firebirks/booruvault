@@ -178,6 +178,8 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     // Index into the browse results, or id of a vault item, of the open full-screen viewer.
     var postViewer by rememberSaveable { mutableStateOf<Int?>(null) }
     var vaultViewer by rememberSaveable { mutableStateOf<String?>(null) }
+    // A page of the settings another tab asked for, until the settings have opened it.
+    var settingsPage by rememberSaveable { mutableStateOf<String?>(null) }
     val holder = rememberSaveableStateHolder()
     val browse = containerViewModel { BrowseViewModel(it) }
     val vault = containerViewModel { VaultViewModel(it) }
@@ -231,10 +233,17 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
             Box(Modifier.padding(padding).consumeWindowInsets(padding)) {
                 holder.SaveableStateProvider(tab.name) {
                     when (tab) {
-                        Tab.BROWSE -> BrowseScreen(onOpenPost = { postViewer = it }, onNeedVault = { open(Tab.VAULT) })
+                        Tab.BROWSE -> BrowseScreen(
+                            onOpenPost = { postViewer = it },
+                            onNeedVault = { open(Tab.VAULT) },
+                            onOpenContentFilter = {
+                                settingsPage = "content"
+                                open(Tab.SETTINGS)
+                            },
+                        )
                         Tab.VAULT -> VaultTab(onOpenItem = { vaultViewer = it })
                         Tab.DOWNLOADS -> DownloadsScreen()
-                        Tab.SETTINGS -> SettingsTab()
+                        Tab.SETTINGS -> SettingsTab(requestedPage = settingsPage, onRequestShown = { settingsPage = null })
                     }
                 }
             }

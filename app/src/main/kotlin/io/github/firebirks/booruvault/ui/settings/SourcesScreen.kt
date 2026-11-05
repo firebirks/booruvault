@@ -59,7 +59,6 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.booru.BooruChallengeException
@@ -71,6 +70,7 @@ import io.github.firebirks.booruvault.ui.common.ChallengeMode
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
+import io.github.firebirks.booruvault.ui.common.PasswordField
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -169,6 +169,12 @@ private fun credentialLabels(engine: BooruEngine): Triple<Int, Int, Int>? = when
     BooruEngine.GELBOORU_HTML, BooruEngine.SHIMMIE, BooruEngine.HTML_GENERIC -> null
 }
 
+/** [url] as typed, with https in front when no scheme was. */
+private fun withScheme(url: String): String {
+    val trimmed = url.trim()
+    return if (trimmed.isEmpty() || trimmed.contains("://")) trimmed else "https://$trimmed"
+}
+
 private fun addressHint(engine: BooruEngine): Int = when (engine) {
     BooruEngine.GELBOORU_HTML -> R.string.source_hint_gelbooru_html
     BooruEngine.SHIMMIE -> R.string.source_hint_shimmie
@@ -200,7 +206,11 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     val challenge = LocalChallenge.current
     var confirmDelete by remember { mutableStateOf(false) }
     val credentials = credentialLabels(engine)
-    val valid = name.isNotBlank() && url.trim().matches(Regex("https?://[^\\s/]+.*"))
+    // An address typed without its scheme is taken as https; one without a domain is not an address.
+    val address = withScheme(url)
+    val addressValid = address.matches(Regex("https?://[^\\s/]+\\.[^\\s/]+.*"))
+    val addressWrong = url.isNotBlank() && url.trim() != "https://" && !addressValid
+    val valid = name.isNotBlank() && addressValid
 
     fun key(): String = when {
         engine != BooruEngine.MOEBOORU -> apiKey.trim()
@@ -213,7 +223,7 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
         id = existing?.id ?: "custom-" + UUID.randomUUID().toString().take(8),
         name = name.trim(),
         engine = engine,
-        baseUrl = url.trim().trimEnd('/'),
+        baseUrl = address.trimEnd('/'),
         login = login.trim(),
         apiKey = key(),
     )
@@ -236,7 +246,12 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
             Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            OutlinedTextField(name, { name = it }, label = { Text(stringResource(R.string.source_name)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                name, { name = it }, label = { Text(stringResource(R.string.source_name)) }, singleLine = true,
+                // What keeps Save grey is said under the field, not left to be guessed.
+                supportingText = if (name.isBlank()) ({ Text(stringResource(R.string.source_name_needed)) }) else null,
+                modifier = Modifier.fillMaxWidth(),
+            )
             Column {
                 OutlinedButton(onClick = { engineMenu = true }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.source_engine, stringResource(engine.labelRes())), Modifier.weight(1f))
@@ -268,7 +283,8 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
             )
             OutlinedTextField(
                 url, { url = it }, label = { Text(stringResource(R.string.source_address)) }, singleLine = true,
-                supportingText = { Text(stringResource(addressHint(engine))) },
+                isError = addressWrong,
+                supportingText = { Text(stringResource(if (addressWrong) R.string.source_address_invalid else addressHint(engine))) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, autoCorrectEnabled = false),
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -282,11 +298,10 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                 )
                 val keepsHash = engine == BooruEngine.MOEBOORU && existing?.engine == BooruEngine.MOEBOORU && existing.apiKey.isNotBlank()
-                OutlinedTextField(
-                    apiKey, { apiKey = it }, label = { Text(stringResource(keyLabel)) }, singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false),
-                    supportingText = if (keepsHash) ({ Text(stringResource(R.string.source_password_keep)) }) else null,
+                // A key is long and pasted or copied by hand: it can be shown to be checked.
+                PasswordField(
+                    apiKey, { apiKey = it }, stringResource(keyLabel),
+                    supportingText = if (keepsHash) stringResource(R.string.source_password_keep) else null,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

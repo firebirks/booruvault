@@ -107,8 +107,15 @@ import java.io.IOException
  * shows where every page stands, so most answers are there without opening one.
  */
 @Composable
-fun SettingsTab() {
+fun SettingsTab(requestedPage: String? = null, onRequestShown: () -> Unit = {}) {
     var page by rememberSaveable { mutableStateOf("main") }
+    // Another tab can send here with a page in mind, such as the content filter from empty results.
+    LaunchedEffect(requestedPage) {
+        if (requestedPage != null) {
+            page = requestedPage
+            onRequestShown()
+        }
+    }
     BackHandler(enabled = page != "main") { page = if (page.startsWith("source:")) "sources" else "main" }
     val back = { page = "main" }
     when {

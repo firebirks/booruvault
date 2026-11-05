@@ -192,11 +192,13 @@
     <string name="sources_custom_hint">Danbooru、Moebooru、Gelbooru、e621、booru.org、Shimmie2、または任意のウェブページ</string>
     <string name="source_new">新しいソース</string>
     <string name="source_name">名前</string>
+    <string name="source_name_needed">保存に必要です</string>
     <string name="source_engine">エンジン：%1$s</string>
     <string name="source_mode_api">サイトの API で読み込みます。投稿は完全な形で届き（ファイル、サイズ、md5、種類別タグ）、ページは軽く速く、保管庫にすでにあるものは認識されます。一部のコンテンツにはアカウントやキーが必要な場合があります。</string>
     <string name="source_mode_html">ブラウザーのようにサイトのウェブページを読み込みます。API もキーも不要で、API のないサイトでも使えます。その代わり、各投稿はファイルを探すために個別に開かれ、読み込みは遅く重くなり、投稿について分かることが少なく（重複を見分けるサイズや md5 がない）、ボット対策の確認が増え、サイトのデザイン変更で動かなくなることがあります。</string>
     <string name="source_mode_gelbooru">ユーザー ID とキーがあれば API で、なければウェブページから読み込みます。その場合、各投稿を個別に開き、読み込みが遅く、投稿の情報が少なく、ボット対策の確認が増えます。</string>
     <string name="source_address">アドレス</string>
+    <string name="source_address_invalid">サイトのアドレスをドメイン付きで入力してください。例: https://example.com</string>
     <string name="source_hint_default">例：https://danbooru.donmai.us</string>
     <string name="source_hint_gelbooru_html">例：https://name.booru.org、または API のない Gelbooru サイト</string>
     <string name="source_hint_shimmie">例：https://rule34.paheal.net</string>
@@ -382,6 +384,7 @@
     <plurals name="browse_hidden">
         <item quantity="other">%d 件の投稿がコンテンツフィルタで非表示になっています。</item>
     </plurals>
+    <string name="browse_hidden_unrated">このソースにはレーティングがありません。投稿を見るには、コンテンツフィルターで「%1$s」をオンにしてください。</string>
     <string name="browse_try_other_tags">別のタグを試してください。</string>
     <string name="browse_open_web_title">ウェブページを開く</string>
     <string name="browse_open_web_text">任意のページの画像と動画を表示し、閲覧したり保管庫に保存したりできます。</string>
@@ -408,7 +411,7 @@
     <string name="viewer_blacklisted">「%1$s」をブラックリストに追加しました</string>
     <string name="viewer_score">スコア %1$d</string>
     <string name="viewer_source">ソース：</string>
-    <string name="tag_search">検索</string>
+    <string name="tag_search">このタグだけで検索</string>
     <string name="tag_add_to_search">検索に追加</string>
     <string name="tag_exclude">検索から除外</string>
     <string name="tag_blacklist">ブラックリストに追加</string>
