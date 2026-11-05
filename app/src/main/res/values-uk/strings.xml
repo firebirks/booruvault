@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Сховище заблоковано.</string>
     <string name="problem_folder_unavailable">Немає доступу до папки.</string>
     <string name="problem_not_through_tor">З\'єднання НЕ проходить через Tor.</string>
+    <string name="problem_storage_write">Не вдалося записати в пам\'ять телефона: %1$s</string>
     <string name="problem_unknown">Помилка: %1$s</string>
     <string name="rating_general">Загальний</string>
     <string name="rating_sensitive">Чутливий</string>
@@ -235,6 +236,8 @@
     <string name="password">Пароль</string>
     <string name="password_wrong">Неправильний пароль</string>
     <string name="vault_header_mismatch">Заголовок сховища неузгоджений: відкритий ключ не відповідає закритому. Файл було змінено або пошкоджено, тому сховище не можна відкрити.</string>
+    <string name="vault_damaged_title">Сховище не вдається прочитати</string>
+    <string name="vault_damaged_text">Заголовок сховища, файл, що перетворює пароль на ключ, не вдається прочитати: він пошкоджений або записаний новішою версією застосунку. Без нього нічого у сховищі відкрити не можна. Новіша версія застосунку, можливо, ще зможе його прочитати; видалення сховища стирає його вміст і починає все спочатку.</string>
     <string name="biometric_changed">Біометричні дані пристрою змінилися: скористайтеся паролем і знову ввімкніть відбиток.</string>
     <string name="unlock_failed">Не вдалося розблокувати</string>
     <string name="unlock_deriving">Обчислення ключа…</string>

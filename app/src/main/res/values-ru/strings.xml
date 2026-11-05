@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Хранилище заблокировано.</string>
     <string name="problem_folder_unavailable">Нет доступа к папке.</string>
     <string name="problem_not_through_tor">Соединение НЕ идёт через Tor.</string>
+    <string name="problem_storage_write">Не удалось записать в память телефона: %1$s</string>
     <string name="problem_unknown">Ошибка: %1$s</string>
     <string name="rating_general">Общий</string>
     <string name="rating_sensitive">Чувствительный</string>
@@ -235,6 +236,8 @@
     <string name="password">Пароль</string>
     <string name="password_wrong">Неверный пароль</string>
     <string name="vault_header_mismatch">Заголовок хранилища несогласован: открытый ключ не соответствует закрытому. Файл был изменён или повреждён, поэтому хранилище нельзя открыть.</string>
+    <string name="vault_damaged_title">Хранилище не удаётся прочитать</string>
+    <string name="vault_damaged_text">Заголовок хранилища, файл, который превращает пароль в ключ, не удаётся прочитать: он повреждён или записан более новой версией приложения. Без него ничего в хранилище открыть нельзя. Более новая версия приложения, возможно, ещё сможет его прочитать; удаление хранилища стирает его содержимое и начинает всё заново.</string>
     <string name="biometric_changed">Биометрические данные устройства изменились: войдите по паролю и снова включите отпечаток.</string>
     <string name="unlock_failed">Не удалось разблокировать</string>
     <string name="unlock_deriving">Вычисление ключа…</string>

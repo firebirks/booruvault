@@ -37,6 +37,8 @@ data class Problem(val code: Code, val detail: String? = null) {
         VAULT_LOCKED,
         FOLDER_UNAVAILABLE,
         NOT_THROUGH_TOR,
+        /** The phone's storage refused a write: full, or failing. */
+        STORAGE_WRITE,
         UNKNOWN,
     }
 }

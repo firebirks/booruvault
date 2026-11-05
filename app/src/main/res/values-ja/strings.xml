@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">保管庫はロックされています。</string>
     <string name="problem_folder_unavailable">フォルダにアクセスできません。</string>
     <string name="problem_not_through_tor">接続は Tor を経由していません。</string>
+    <string name="problem_storage_write">端末のストレージに書き込めませんでした: %1$s</string>
     <string name="problem_unknown">エラー：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">センシティブ</string>
@@ -220,6 +221,8 @@
     <string name="password">パスワード</string>
     <string name="password_wrong">パスワードが違います</string>
     <string name="vault_header_mismatch">保管庫のヘッダーが整合していません。公開鍵が秘密鍵のものではありません。ファイルが改変または破損しているため、保管庫を開けません。</string>
+    <string name="vault_damaged_title">保管庫を読み取れません</string>
+    <string name="vault_damaged_text">保管庫のヘッダー、つまりパスワードを鍵に変えるファイルを読み取れません。破損しているか、より新しいバージョンのアプリで書き込まれたものです。これがなければ保管庫の中身は何も開けません。より新しいバージョンのアプリなら読めるかもしれません。保管庫を削除すると中身は消去され、最初からやり直しになります。</string>
     <string name="biometric_changed">デバイスの生体認証データが変更されました。パスワードを使用して、指紋認証をもう一度オンにしてください。</string>
     <string name="unlock_failed">ロックを解除できませんでした</string>
     <string name="unlock_deriving">鍵を導出中…</string>

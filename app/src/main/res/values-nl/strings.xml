@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">De kluis is vergrendeld.</string>
     <string name="problem_folder_unavailable">De map is niet toegankelijk.</string>
     <string name="problem_not_through_tor">De verbinding loopt NIET via Tor.</string>
+    <string name="problem_storage_write">Kon niet naar de opslag van de telefoon schrijven: %1$s</string>
     <string name="problem_unknown">Fout: %1$s</string>
     <string name="rating_general">Algemeen</string>
     <string name="rating_sensitive">Gevoelig</string>
@@ -225,6 +226,8 @@
     <string name="password">Wachtwoord</string>
     <string name="password_wrong">Onjuist wachtwoord</string>
     <string name="vault_header_mismatch">De kluisheader is inconsistent: de publieke sleutel hoort niet bij de privésleutel. Het bestand is gewijzigd of beschadigd, dus de kluis kan niet worden geopend.</string>
+    <string name="vault_damaged_title">De kluis kan niet worden gelezen</string>
+    <string name="vault_damaged_text">De kluisheader, het bestand dat het wachtwoord in de sleutel omzet, kan niet worden gelezen: het is beschadigd of geschreven door een nieuwere versie van de app. Zonder dit bestand kan niets in de kluis worden geopend. Een nieuwere versie van de app kan het misschien nog lezen; de kluis verwijderen wist de inhoud en begint opnieuw.</string>
     <string name="biometric_changed">De biometrische gegevens van het apparaat zijn gewijzigd: gebruik het wachtwoord en zet de vingerafdruk opnieuw aan.</string>
     <string name="unlock_failed">Ontgrendelen mislukt</string>
     <string name="unlock_deriving">Sleutel afleiden…</string>

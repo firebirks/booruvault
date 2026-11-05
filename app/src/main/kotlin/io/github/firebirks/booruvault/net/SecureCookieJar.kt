@@ -125,7 +125,7 @@ class SecureCookieJar(
                         if (legacy) saves.trySend(Unit)
                     }
                     VaultState.Locked -> if (!retainWhileLocked()) forget()
-                    VaultState.Missing -> forget()
+                    VaultState.Missing, VaultState.Damaged -> forget()
                 }
             }
         }

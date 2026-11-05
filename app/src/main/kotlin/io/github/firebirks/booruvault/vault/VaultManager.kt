@@ -46,11 +46,17 @@ data class VaultHeader(
 @Serializable
 data class RetiredKey(val publicKey: String, val boxedPrivateKey: String)
 
-/** The header's public key is not the private key's: the header was altered or damaged. */
-class VaultHeaderException : GeneralSecurityException("vault header public key does not match the private key")
+/** The header does not hold together: altered, damaged, or not this app's to read. */
+class VaultHeaderException(message: String = "vault header public key does not match the private key") : GeneralSecurityException(message)
 
 sealed interface VaultState {
     data object Missing : VaultState
+
+    /**
+     * A header is there but cannot be read: not JSON, a version this app does not know, or
+     * fields that do not decode. Nothing in the vault can be reached; it can only be deleted.
+     */
+    data object Damaged : VaultState
     data object Locked : VaultState
     class Unlocked(val keys: VaultKeys) : VaultState
 }
@@ -74,8 +80,16 @@ class VaultManager(private val root: File, private val json: Json) {
     private val headerFile = File(root, "vault.json")
     private val mutex = Mutex()
 
-    private var header: VaultHeader? = readHeader()
-    private val _state = MutableStateFlow<VaultState>(if (header == null) VaultState.Missing else VaultState.Locked)
+    /** The header as found at start: null when there is none, a failure when it cannot be read. */
+    private val found: Result<VaultHeader?> = runCatching { readHeader() }
+    private var header: VaultHeader? = found.getOrNull()
+    private val _state = MutableStateFlow<VaultState>(
+        when {
+            found.isFailure -> VaultState.Damaged
+            header == null -> VaultState.Missing
+            else -> VaultState.Locked
+        },
+    )
     val state: StateFlow<VaultState> = _state.asStateFlow()
 
     /** The sealing key, or null before a vault exists. */
@@ -240,6 +254,8 @@ class VaultManager(private val root: File, private val json: Json) {
             } catch (_: GeneralSecurityException) {
                 // A damaged entry: its files are unreadable either way.
                 return@mapNotNull null
+            } catch (_: IllegalArgumentException) {
+                return@mapNotNull null
             }
             val pair = try {
                 VaultKeys(Recipient.fromEncoded(entry.publicKey.fromBase64()), EcKeys.privateKey(pkcs8))
@@ -339,8 +355,25 @@ class VaultManager(private val root: File, private val json: Json) {
         _state.value = VaultState.Unlocked(withRetired(current, VaultKeys(recipient, privateKey)))
     }
 
-    private fun readHeader(): VaultHeader? =
-        headerFile.takeIf { it.exists() }?.let { json.decodeFromString(VaultHeader.serializer(), it.readText()) }
+    /**
+     * Null when there is no header; throws when there is one this app cannot use, so that the
+     * vault is reported as damaged at start rather than failing at the unlock, or crashing.
+     */
+    private fun readHeader(): VaultHeader? {
+        val file = headerFile.takeIf { it.exists() } ?: return null
+        val read = json.decodeFromString(VaultHeader.serializer(), file.readText())
+        if (read.version != 1) throw VaultHeaderException("vault header version ${read.version} is not known to this app")
+        // Everything the unlock will decode, decoded now: a field that is not what it says is a damaged header.
+        Recipient.fromEncoded(read.publicKey.fromBase64())
+        read.wrappedPrivateKey.fromBase64()
+        read.biometricWrapped?.fromBase64()
+        read.biometricIv?.fromBase64()
+        read.retired.forEach {
+            it.publicKey.fromBase64()
+            it.boxedPrivateKey.fromBase64()
+        }
+        return read
+    }
 
     private fun writeHeader(value: VaultHeader) {
         val tmp = File(root, "vault.json.tmp")

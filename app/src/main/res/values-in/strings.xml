@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Brankas terkunci.</string>
     <string name="problem_folder_unavailable">Folder tidak dapat diakses.</string>
     <string name="problem_not_through_tor">Koneksi TIDAK melewati Tor.</string>
+    <string name="problem_storage_write">Tidak dapat menulis ke penyimpanan ponsel: %1$s</string>
     <string name="problem_unknown">Kesalahan: %1$s</string>
     <string name="rating_general">Umum</string>
     <string name="rating_sensitive">Sensitif</string>
@@ -220,6 +221,8 @@
     <string name="password">Sandi</string>
     <string name="password_wrong">Sandi salah</string>
     <string name="vault_header_mismatch">Header brankas tidak konsisten: kunci publiknya bukan milik kunci privat. Berkas telah diubah atau rusak, sehingga brankas tidak dapat dibuka.</string>
+    <string name="vault_damaged_title">Brankas tidak dapat dibaca</string>
+    <string name="vault_damaged_text">Header brankas, berkas yang mengubah kata sandi menjadi kunci, tidak dapat dibaca: berkas itu rusak, atau ditulis oleh versi aplikasi yang lebih baru. Tanpa berkas itu, tidak ada isi brankas yang dapat dibuka. Versi aplikasi yang lebih baru mungkin masih dapat membacanya; menghapus brankas akan menghapus isinya dan memulai dari awal.</string>
     <string name="biometric_changed">Data biometrik perangkat berubah: gunakan sandi, lalu aktifkan sidik jari lagi.</string>
     <string name="unlock_failed">Gagal membuka kunci</string>
     <string name="unlock_deriving">Menurunkan kunci…</string>

@@ -76,6 +76,7 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.VAULT_LOCKED -> getString(R.string.problem_vault_locked)
         Problem.Code.FOLDER_UNAVAILABLE -> getString(R.string.problem_folder_unavailable)
         Problem.Code.NOT_THROUGH_TOR -> getString(R.string.problem_not_through_tor)
+        Problem.Code.STORAGE_WRITE -> getString(R.string.problem_storage_write, detail)
         Problem.Code.UNKNOWN -> getString(R.string.problem_unknown, detail)
     }
 }

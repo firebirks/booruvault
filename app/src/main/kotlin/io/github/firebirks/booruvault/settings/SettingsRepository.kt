@@ -3,13 +3,17 @@ package io.github.firebirks.booruvault.settings
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Presets
 import io.github.firebirks.booruvault.booru.Rating
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.vault.SealedJson
 import io.github.firebirks.booruvault.vault.TagCollection
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.VaultState
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -85,6 +89,14 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     /** True while the vault is unlocked and its settings have been read. */
     val ready: StateFlow<Boolean> = _ready.asStateFlow()
 
+    private val _writeFailures = MutableSharedFlow<Problem>(extraBufferCapacity = 4)
+
+    /**
+     * Each time the settings could not be sealed to storage. The change holds in memory for the
+     * session, as the user made it; the screen says that it did not land.
+     */
+    val writeFailures: SharedFlow<Problem> = _writeFailures
+
     init {
         scope.launch(Dispatchers.IO) {
             vault.state.collect { state ->
@@ -108,7 +120,15 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
         val next = transform(_settings.value)
         _settings.value = next
         val recipient = vault.recipient ?: return@withLock
-        withContext(Dispatchers.IO) { store.write(recipient, next) }
+        try {
+            withContext(Dispatchers.IO) { store.write(recipient, next) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Every screen edits the settings from a coroutine of its own with no handler: a full
+            // disk must be told, not crash the app.
+            _writeFailures.tryEmit(Problem(Problem.Code.STORAGE_WRITE, e.message ?: e.javaClass.simpleName))
+        }
     }
 
     suspend fun setSources(sources: List<BooruSource>) = edit { current ->

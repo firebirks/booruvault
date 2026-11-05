@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">保险库已锁定。</string>
     <string name="problem_folder_unavailable">无法访问该文件夹。</string>
     <string name="problem_not_through_tor">连接并未经过 Tor。</string>
+    <string name="problem_storage_write">无法写入手机存储：%1$s</string>
     <string name="problem_unknown">错误：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">敏感</string>
@@ -220,6 +221,8 @@
     <string name="password">密码</string>
     <string name="password_wrong">密码错误</string>
     <string name="vault_header_mismatch">保险库头部不一致：公钥与私钥不匹配。文件已被篡改或损坏，因此无法打开保险库。</string>
+    <string name="vault_damaged_title">无法读取保险库</string>
+    <string name="vault_damaged_text">保险库头部，即将密码转换为密钥的文件，无法读取：它已损坏，或由更新版本的应用写入。没有它，保险库中的任何内容都无法打开。更新版本的应用或许仍能读取它；删除保险库会清除其中的内容并重新开始。</string>
     <string name="biometric_changed">设备的生物识别数据已更改：请使用密码，然后重新开启指纹解锁。</string>
     <string name="unlock_failed">解锁失败</string>
     <string name="unlock_deriving">正在派生密钥…</string>

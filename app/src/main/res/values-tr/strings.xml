@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Kasa kilitli.</string>
     <string name="problem_folder_unavailable">Klasöre erişilemiyor.</string>
     <string name="problem_not_through_tor">Bağlantı Tor üzerinden GEÇMİYOR.</string>
+    <string name="problem_storage_write">Telefonun depolama alanına yazılamadı: %1$s</string>
     <string name="problem_unknown">Hata: %1$s</string>
     <string name="rating_general">Genel</string>
     <string name="rating_sensitive">Hassas</string>
@@ -225,6 +226,8 @@
     <string name="password">Parola</string>
     <string name="password_wrong">Yanlış parola</string>
     <string name="vault_header_mismatch">Kasa başlığı tutarsız: genel anahtar, özel anahtara ait değil. Dosya değiştirilmiş veya bozulmuş, bu yüzden kasa açılamıyor.</string>
+    <string name="vault_damaged_title">Kasa okunamıyor</string>
+    <string name="vault_damaged_text">Kasa başlığı, yani parolayı anahtara dönüştüren dosya okunamıyor: bozulmuş ya da uygulamanın daha yeni bir sürümü tarafından yazılmış. O olmadan kasadaki hiçbir şey açılamaz. Uygulamanın daha yeni bir sürümü onu hâlâ okuyabilir; kasayı silmek içeriğini siler ve sıfırdan başlar.</string>
     <string name="biometric_changed">Cihazın biyometrik verileri değişti: parolayı kullanın ve parmak izini yeniden açın.</string>
     <string name="unlock_failed">Kilit açılamadı</string>
     <string name="unlock_deriving">Anahtar türetiliyor…</string>

@@ -15,6 +15,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -38,6 +41,41 @@ class VaultTest {
 
     @After
     fun tearDown() = scope.cancel()
+
+    @Test
+    fun aHeaderThatIsNotJsonMakesTheVaultDamagedRatherThanThrowing() = runBlocking {
+        val root = tmp.newFolder()
+        File(root, "vault.json").writeText("{ this is not a header")
+        val vault = VaultManager(root, json)
+        assertEquals(VaultState.Damaged, vault.state.value)
+        assertNull(vault.recipient)
+        assertFalse(vault.unlock("anything".toCharArray()))
+        // The one way on: delete it and start over.
+        vault.destroy()
+        assertEquals(VaultState.Missing, vault.state.value)
+        vault.create("fresh start".toCharArray(), fastKdf)
+        assertTrue(vault.state.value is VaultState.Unlocked)
+    }
+
+    @Test
+    fun aHeaderOfALaterVersionIsDamagedToThisApp() = runBlocking {
+        val root = tmp.newFolder()
+        VaultManager(root, json).create("pw".toCharArray(), fastKdf)
+        val file = File(root, "vault.json")
+        val header = json.parseToJsonElement(file.readText()).jsonObject
+        file.writeText(json.encodeToString(JsonObject.serializer(), JsonObject(header + ("version" to JsonPrimitive(2)))))
+        assertEquals(VaultState.Damaged, VaultManager(root, json).state.value)
+    }
+
+    @Test
+    fun aHeaderWhoseFieldsDoNotDecodeIsDamagedAtStartNotAtTheUnlock() = runBlocking {
+        val root = tmp.newFolder()
+        VaultManager(root, json).create("pw".toCharArray(), fastKdf)
+        val file = File(root, "vault.json")
+        val header = json.parseToJsonElement(file.readText()).jsonObject
+        file.writeText(json.encodeToString(JsonObject.serializer(), JsonObject(header + ("publicKey" to JsonPrimitive("not base64!")))))
+        assertEquals(VaultState.Damaged, VaultManager(root, json).state.value)
+    }
 
     @Test
     fun passwordUnlocksAndWrongPasswordDoesNot() = runBlocking {

@@ -42,6 +42,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
 import io.github.firebirks.booruvault.ui.common.findActivity
+import io.github.firebirks.booruvault.ui.common.problemText
+import io.github.firebirks.booruvault.ui.vault.VaultDamagedScreen
 import io.github.firebirks.booruvault.ui.vault.VaultSetupScreen
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
 import io.github.firebirks.booruvault.vault.BiometricKey
@@ -95,8 +97,14 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
         val routeChosen by container.tor.routeChosen.collectAsStateWithLifecycle()
         var offerBiometric by rememberSaveable { mutableStateOf(false) }
         var orbotSetup by rememberSaveable { mutableStateOf(false) }
+        val context = LocalContext.current
+        // A settings change that could not be sealed to storage is said once, wherever the user is.
+        LaunchedEffect(Unit) {
+            container.settings.writeFailures.collect { Toast.makeText(context, context.problemText(it), Toast.LENGTH_LONG).show() }
+        }
         when (vaultState) {
             VaultState.Missing -> VaultSetupScreen(onCreated = { offerBiometric = true })
+            VaultState.Damaged -> VaultDamagedScreen()
             VaultState.Locked -> UnlockScreen(
                 title = stringResource(R.string.unlock_title_app),
                 subtitle = stringResource(R.string.unlock_subtitle_app),

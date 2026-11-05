@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">La bóveda está bloqueada.</string>
     <string name="problem_folder_unavailable">No se puede acceder a la carpeta.</string>
     <string name="problem_not_through_tor">La conexión NO pasa por Tor.</string>
+    <string name="problem_storage_write">No se pudo escribir en el almacenamiento del teléfono: %1$s</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensible</string>
@@ -230,6 +231,8 @@
     <string name="password">Contraseña</string>
     <string name="password_wrong">Contraseña incorrecta</string>
     <string name="vault_header_mismatch">La cabecera de la bóveda es incoherente: la clave pública no corresponde a la privada. El archivo fue alterado o dañado, así que la bóveda no puede abrirse.</string>
+    <string name="vault_damaged_title">La bóveda no se puede leer</string>
+    <string name="vault_damaged_text">La cabecera de la bóveda, el archivo que convierte la contraseña en la clave, no se puede leer: está dañada o la escribió una versión más reciente de la aplicación. Sin ella no se puede abrir nada de la bóveda. Una versión más reciente de la aplicación quizá aún pueda leerla; eliminar la bóveda borra su contenido y empieza de cero.</string>
     <string name="biometric_changed">Los datos biométricos del dispositivo han cambiado: usa la contraseña y vuelve a activar la huella.</string>
     <string name="unlock_failed">No se pudo desbloquear</string>
     <string name="unlock_deriving">Derivando la clave…</string>

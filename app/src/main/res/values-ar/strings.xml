@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">الخزنة مقفلة.</string>
     <string name="problem_folder_unavailable">لا يمكن الوصول إلى المجلد.</string>
     <string name="problem_not_through_tor">الاتصال لا يمرّ عبر Tor.</string>
+    <string name="problem_storage_write">تعذّرت الكتابة في ذاكرة الهاتف: %1$s</string>
     <string name="problem_unknown">خطأ: %1$s</string>
     <string name="rating_general">عام</string>
     <string name="rating_sensitive">حسّاس</string>
@@ -245,6 +246,8 @@
     <string name="password">كلمة المرور</string>
     <string name="password_wrong">كلمة المرور غير صحيحة</string>
     <string name="vault_header_mismatch">ترويسة الخزنة غير متسقة: المفتاح العام لا يطابق المفتاح الخاص. تم تعديل الملف أو تلف، لذا لا يمكن فتح الخزنة.</string>
+    <string name="vault_damaged_title">تعذّر قراءة الخزنة</string>
+    <string name="vault_damaged_text">تعذّرت قراءة ترويسة الخزنة، وهي الملف الذي يحوّل كلمة المرور إلى المفتاح: فهي تالفة، أو كتبها إصدار أحدث من التطبيق. من دونها لا يمكن فتح أي شيء في الخزنة. قد يظل إصدار أحدث من التطبيق قادرًا على قراءتها؛ أما حذف الخزنة فيمحو محتواها ويبدأ من جديد.</string>
     <string name="biometric_changed">تغيّرت البيانات البيومترية للجهاز: استخدم كلمة المرور وفعّل بصمة الإصبع مجددًا.</string>
     <string name="unlock_failed">تعذّر فتح القفل</string>
     <string name="unlock_deriving">جارٍ اشتقاق المفتاح…</string>

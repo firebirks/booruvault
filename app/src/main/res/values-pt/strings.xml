@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">O cofre está bloqueado.</string>
     <string name="problem_folder_unavailable">Não é possível acessar a pasta.</string>
     <string name="problem_not_through_tor">A conexão NÃO passa pelo Tor.</string>
+    <string name="problem_storage_write">Não foi possível gravar no armazenamento do telefone: %1$s</string>
     <string name="problem_unknown">Erro: %1$s</string>
     <string name="rating_general">Geral</string>
     <string name="rating_sensitive">Sensível</string>
@@ -230,6 +231,8 @@
     <string name="password">Senha</string>
     <string name="password_wrong">Senha incorreta</string>
     <string name="vault_header_mismatch">O cabeçalho do cofre está inconsistente: a chave pública não corresponde à privada. O arquivo foi alterado ou danificado, então o cofre não pode ser aberto.</string>
+    <string name="vault_damaged_title">O cofre não pode ser lido</string>
+    <string name="vault_damaged_text">O cabeçalho do cofre, o arquivo que transforma a senha na chave, não pode ser lido: está danificado ou foi escrito por uma versão mais recente do aplicativo. Sem ele, nada no cofre pode ser aberto. Uma versão mais recente do aplicativo talvez ainda consiga lê-lo; excluir o cofre apaga seu conteúdo e recomeça do zero.</string>
     <string name="biometric_changed">Os dados biométricos do dispositivo mudaram: use a senha e ative a digital novamente.</string>
     <string name="unlock_failed">Falha no desbloqueio</string>
     <string name="unlock_deriving">Derivando a chave…</string>

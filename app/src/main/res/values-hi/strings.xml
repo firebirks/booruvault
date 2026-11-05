@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">तिजोरी लॉक है।</string>
     <string name="problem_folder_unavailable">फ़ोल्डर को ऐक्सेस नहीं किया जा सकता।</string>
     <string name="problem_not_through_tor">कनेक्शन Tor से होकर नहीं जा रहा है।</string>
+    <string name="problem_storage_write">फ़ोन के स्टोरेज में लिखा नहीं जा सका: %1$s</string>
     <string name="problem_unknown">त्रुटि: %1$s</string>
     <string name="rating_general">सामान्य</string>
     <string name="rating_sensitive">संवेदनशील</string>
@@ -225,6 +226,8 @@
     <string name="password">पासवर्ड</string>
     <string name="password_wrong">गलत पासवर्ड</string>
     <string name="vault_header_mismatch">वॉल्ट का हेडर असंगत है: सार्वजनिक कुंजी निजी कुंजी से मेल नहीं खाती। फ़ाइल बदली या क्षतिग्रस्त हुई है, इसलिए वॉल्ट नहीं खोला जा सकता।</string>
+    <string name="vault_damaged_title">वॉल्ट पढ़ा नहीं जा सकता</string>
+    <string name="vault_damaged_text">वॉल्ट का हेडर, यानी वह फ़ाइल जो पासवर्ड को कुंजी में बदलती है, पढ़ा नहीं जा सकता: वह क्षतिग्रस्त है, या ऐप के किसी नए संस्करण ने उसे लिखा है। उसके बिना वॉल्ट में कुछ भी नहीं खोला जा सकता। ऐप का कोई नया संस्करण शायद उसे अब भी पढ़ सके; वॉल्ट मिटाने से उसकी सामग्री मिट जाती है और सब कुछ नए सिरे से शुरू होता है।</string>
     <string name="biometric_changed">डिवाइस का बायोमेट्रिक डेटा बदल गया है: पासवर्ड इस्तेमाल करें और फ़िंगरप्रिंट फिर से चालू करें।</string>
     <string name="unlock_failed">अनलॉक नहीं हो सका</string>
     <string name="unlock_deriving">कुंजी डिराइव की जा रही है…</string>

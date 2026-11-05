@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Le coffre est verrouillé.</string>
     <string name="problem_folder_unavailable">Le dossier est inaccessible.</string>
     <string name="problem_not_through_tor">La connexion ne passe PAS par Tor.</string>
+    <string name="problem_storage_write">Impossible d\'écrire dans la mémoire du téléphone : %1$s</string>
     <string name="problem_unknown">Erreur : %1$s</string>
     <string name="rating_general">Général</string>
     <string name="rating_sensitive">Sensible</string>
@@ -230,6 +231,8 @@
     <string name="password">Mot de passe</string>
     <string name="password_wrong">Mot de passe incorrect</string>
     <string name="vault_header_mismatch">L\'en-tête du coffre est incohérent : la clé publique ne correspond pas à la clé privée. Le fichier a été modifié ou endommagé, le coffre ne peut donc pas être ouvert.</string>
+    <string name="vault_damaged_title">Le coffre ne peut pas être lu</string>
+    <string name="vault_damaged_text">L\'en-tête du coffre, le fichier qui transforme le mot de passe en clé, ne peut pas être lu : il est endommagé, ou il a été écrit par une version plus récente de l\'application. Sans lui, rien dans le coffre ne peut être ouvert. Une version plus récente de l\'application pourra peut-être encore le lire ; supprimer le coffre efface son contenu et repart de zéro.</string>
     <string name="biometric_changed">Les données biométriques de l\'appareil ont changé : utilisez le mot de passe et réactivez l\'empreinte.</string>
     <string name="unlock_failed">Échec du déverrouillage</string>
     <string name="unlock_deriving">Dérivation de la clé…</string>

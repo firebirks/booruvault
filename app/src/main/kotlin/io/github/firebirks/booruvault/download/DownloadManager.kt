@@ -246,7 +246,7 @@ class DownloadManager(
                 when (state) {
                     is VaultState.Unlocked -> restore(state)
                     VaultState.Locked -> suspendForLock()
-                    VaultState.Missing -> {
+                    VaultState.Missing, VaultState.Damaged -> {
                         live = false
                         stopAll()
                         _paused.value = 0

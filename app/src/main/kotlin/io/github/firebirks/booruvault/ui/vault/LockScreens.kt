@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,11 +50,17 @@ import androidx.fragment.app.FragmentActivity
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
 import io.github.firebirks.booruvault.ui.common.findActivity
+import io.github.firebirks.booruvault.ui.common.problemText
+import io.github.firebirks.booruvault.ui.settings.DestroyVaultDialog
+import io.github.firebirks.booruvault.util.Problem
+import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.vault.BiometricKey
 import io.github.firebirks.booruvault.vault.VaultHeaderException
 import io.github.firebirks.booruvault.vault.VaultManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 const val MIN_PASSWORD = 8
 
@@ -207,11 +214,13 @@ fun UnlockScreen(
 @Composable
 fun VaultSetupScreen(onCreated: () -> Unit) {
     val vault = LocalContainer.current.vault
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var password by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var understood by rememberSaveable { mutableStateOf(false) }
     var working by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
     val tooShort = password.isNotEmpty() && password.length < MIN_PASSWORD
     val mismatch = confirm.isNotEmpty() && confirm != password
     val valid = password.length >= MIN_PASSWORD && password == confirm && understood
@@ -219,8 +228,18 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
     fun create() {
         if (!valid || working) return
         working = true
+        error = null
         scope.launch {
-            vault.create(password.toCharArray())
+            try {
+                vault.create(password.toCharArray())
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // The header could not be written: a full disk, most likely. Said here, not thrown.
+                working = false
+                error = context.problemText(e.storageProblem())
+                return@launch
+            }
             password = ""
             confirm = ""
             working = false
@@ -265,8 +284,37 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
                 Text(stringResource(R.string.setup_create))
             }
         }
+        error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center) }
     }
 }
+
+/**
+ * Shown when a vault header is there but cannot be read: nothing behind it can be reached, and
+ * the one way on is to delete the vault and start over. The deletion asks to be confirmed in
+ * writing, as it does from the settings.
+ */
+@Composable
+fun VaultDamagedScreen() {
+    var confirm by remember { mutableStateOf(false) }
+    LockLayout {
+        Icon(Icons.Outlined.Warning, null, Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
+        Text(stringResource(R.string.vault_damaged_title), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+        Text(
+            stringResource(R.string.vault_damaged_text),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        OutlinedButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error)
+        }
+    }
+    if (confirm) DestroyVaultDialog(onDismiss = { confirm = false })
+}
+
+/** What a write that failed stands for: the storage, when the system said so; whatever else it said otherwise. */
+private fun Throwable.storageProblem(): Problem =
+    if (this is IOException) Problem(Problem.Code.STORAGE_WRITE, message ?: javaClass.simpleName) else toProblem()
 
 /**
  * The first start's last question, asked once the vault exists and before anything goes out: Tor

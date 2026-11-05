@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">보관함이 잠겨 있습니다.</string>
     <string name="problem_folder_unavailable">폴더에 접근할 수 없습니다.</string>
     <string name="problem_not_through_tor">연결이 Tor를 거치지 않습니다.</string>
+    <string name="problem_storage_write">휴대전화 저장소에 쓸 수 없습니다: %1$s</string>
     <string name="problem_unknown">오류: %1$s</string>
     <string name="rating_general">일반</string>
     <string name="rating_sensitive">민감</string>
@@ -220,6 +221,8 @@
     <string name="password">비밀번호</string>
     <string name="password_wrong">비밀번호가 틀렸습니다</string>
     <string name="vault_header_mismatch">금고 헤더가 일치하지 않습니다. 공개 키가 개인 키의 것이 아닙니다. 파일이 변조되었거나 손상되어 금고를 열 수 없습니다.</string>
+    <string name="vault_damaged_title">금고를 읽을 수 없습니다</string>
+    <string name="vault_damaged_text">비밀번호를 키로 바꾸는 파일인 금고 헤더를 읽을 수 없습니다. 손상되었거나 더 새로운 버전의 앱이 기록한 것입니다. 이 파일이 없으면 금고의 어떤 것도 열 수 없습니다. 더 새로운 버전의 앱이라면 읽을 수 있을지도 모릅니다. 금고를 삭제하면 내용이 지워지고 처음부터 다시 시작합니다.</string>
     <string name="biometric_changed">기기의 생체 인식 데이터가 변경되었습니다. 비밀번호를 사용한 후 지문을 다시 켜세요.</string>
     <string name="unlock_failed">잠금 해제 실패</string>
     <string name="unlock_deriving">키 도출 중…</string>

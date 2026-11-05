@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">คลังนิรภัยถูกล็อกอยู่</string>
     <string name="problem_folder_unavailable">เข้าถึงโฟลเดอร์ไม่ได้</string>
     <string name="problem_not_through_tor">การเชื่อมต่อนี้ไม่ได้ผ่าน Tor</string>
+    <string name="problem_storage_write">เขียนลงที่เก็บข้อมูลของโทรศัพท์ไม่ได้: %1$s</string>
     <string name="problem_unknown">ข้อผิดพลาด: %1$s</string>
     <string name="rating_general">ทั่วไป</string>
     <string name="rating_sensitive">ละเอียดอ่อน</string>
@@ -220,6 +221,8 @@
     <string name="password">รหัสผ่าน</string>
     <string name="password_wrong">รหัสผ่านไม่ถูกต้อง</string>
     <string name="vault_header_mismatch">ส่วนหัวของห้องนิรภัยไม่สอดคล้องกัน: กุญแจสาธารณะไม่ตรงกับกุญแจส่วนตัว ไฟล์ถูกแก้ไขหรือเสียหาย จึงเปิดห้องนิรภัยไม่ได้</string>
+    <string name="vault_damaged_title">อ่านห้องนิรภัยไม่ได้</string>
+    <string name="vault_damaged_text">ส่วนหัวของห้องนิรภัย ซึ่งเป็นไฟล์ที่เปลี่ยนรหัสผ่านให้เป็นกุญแจ อ่านไม่ได้: ไฟล์เสียหาย หรือถูกเขียนโดยแอปรุ่นที่ใหม่กว่า หากไม่มีไฟล์นี้ จะเปิดสิ่งใดในห้องนิรภัยไม่ได้เลย แอปรุ่นที่ใหม่กว่าอาจยังอ่านได้ ส่วนการลบห้องนิรภัยจะลบเนื้อหาทั้งหมดและเริ่มต้นใหม่</string>
     <string name="biometric_changed">ข้อมูลไบโอเมตริกของอุปกรณ์มีการเปลี่ยนแปลง: ใช้รหัสผ่าน แล้วเปิดการปลดล็อกด้วยลายนิ้วมืออีกครั้ง</string>
     <string name="unlock_failed">ปลดล็อกไม่สำเร็จ</string>
     <string name="unlock_deriving">กำลังสร้างคีย์…</string>

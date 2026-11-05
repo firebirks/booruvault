@@ -94,9 +94,11 @@ import io.github.firebirks.booruvault.ui.vault.MIN_PASSWORD
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
 import io.github.firebirks.booruvault.util.hasGooglePlayServices
 import io.github.firebirks.booruvault.vault.BiometricKey
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.vault.VaultHeaderException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 /**
  * Settings as a hub of short pages, one per theme, each with its own back stack entry. The hub
@@ -634,6 +636,11 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
                         Toast.makeText(context, headerMismatch, Toast.LENGTH_LONG).show()
                         onDismiss()
                         return@launch
+                    } catch (e: IOException) {
+                        // The new header could not be written; the old one, and the old password, stand.
+                        working = false
+                        Toast.makeText(context, context.problemText(Problem(Problem.Code.STORAGE_WRITE, e.message ?: e.javaClass.simpleName)), Toast.LENGTH_LONG).show()
+                        return@launch
                     }
                     working = false
                     if (ok) {
@@ -653,8 +660,9 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
     )
 }
 
+/** Asks for the vault's deletion to be confirmed in writing, then deletes it. Also the way out of a damaged vault. */
 @Composable
-private fun DestroyVaultDialog(onDismiss: () -> Unit) {
+internal fun DestroyVaultDialog(onDismiss: () -> Unit) {
     val container = LocalContainer.current
     val scope = rememberCoroutineScope()
     var typed by remember { mutableStateOf("") }

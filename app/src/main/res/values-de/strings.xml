@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Der Tresor ist gesperrt.</string>
     <string name="problem_folder_unavailable">Auf den Ordner kann nicht zugegriffen werden.</string>
     <string name="problem_not_through_tor">Die Verbindung läuft NICHT über Tor.</string>
+    <string name="problem_storage_write">In den Speicher des Telefons konnte nicht geschrieben werden: %1$s</string>
     <string name="problem_unknown">Fehler: %1$s</string>
     <string name="rating_general">Allgemein</string>
     <string name="rating_sensitive">Sensibel</string>
@@ -225,6 +226,8 @@
     <string name="password">Passwort</string>
     <string name="password_wrong">Falsches Passwort</string>
     <string name="vault_header_mismatch">Der Tresor-Header ist inkonsistent: Der öffentliche Schlüssel gehört nicht zum privaten. Die Datei wurde verändert oder beschädigt, daher kann der Tresor nicht geöffnet werden.</string>
+    <string name="vault_damaged_title">Der Tresor kann nicht gelesen werden</string>
+    <string name="vault_damaged_text">Der Tresor-Header, die Datei, die das Passwort in den Schlüssel verwandelt, kann nicht gelesen werden: Er ist beschädigt oder wurde von einer neueren Version der App geschrieben. Ohne ihn lässt sich nichts im Tresor öffnen. Eine neuere Version der App kann ihn vielleicht noch lesen; das Löschen des Tresors entfernt seinen Inhalt und beginnt von vorn.</string>
     <string name="biometric_changed">Die biometrischen Daten des Geräts haben sich geändert: Verwende das Passwort und aktiviere den Fingerabdruck erneut.</string>
     <string name="unlock_failed">Entsperren fehlgeschlagen</string>
     <string name="unlock_deriving">Schlüssel wird abgeleitet…</string>

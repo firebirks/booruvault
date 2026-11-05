@@ -27,6 +27,7 @@
     <string name="problem_vault_locked">Il vault è bloccato.</string>
     <string name="problem_folder_unavailable">La cartella non è accessibile.</string>
     <string name="problem_not_through_tor">La connessione NON passa da Tor.</string>
+    <string name="problem_storage_write">Impossibile scrivere nella memoria del telefono: %1$s</string>
     <string name="problem_unknown">Errore: %1$s</string>
     <string name="rating_general">Generale</string>
     <string name="rating_sensitive">Sensibile</string>
@@ -230,6 +231,8 @@
     <string name="password">Password</string>
     <string name="password_wrong">Password errata</string>
     <string name="vault_header_mismatch">L\'header del vault è incoerente: la chiave pubblica non corrisponde a quella privata. Il file è stato alterato o danneggiato, quindi il vault non può essere aperto.</string>
+    <string name="vault_damaged_title">Il vault non può essere letto</string>
+    <string name="vault_damaged_text">L\'header del vault, il file che trasforma la password nella chiave, non può essere letto: è danneggiato, oppure è stato scritto da una versione più recente dell\'app. Senza di esso nulla nel vault può essere aperto. Una versione più recente dell\'app potrebbe ancora leggerlo; eliminare il vault ne cancella il contenuto e si riparte da zero.</string>
     <string name="biometric_changed">I dati biometrici del dispositivo sono cambiati: usa la password e riattiva l\'impronta.</string>
     <string name="unlock_failed">Sblocco non riuscito</string>
     <string name="unlock_deriving">Derivazione chiave…</string>
