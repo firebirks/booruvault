@@ -274,6 +274,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
             _state.update { if (it.generation == generation) transform(it) else it }
         update { it.copy(loading = true, error = null, challengeUrl = null) }
         fetchRoute = c.tor.state.value.routeChanges
+        var cutShort = false
         try {
             val api = c.api(source)
             val settings = c.settings.settings.value
@@ -294,10 +295,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            update { it.copy(error = e.toProblem(), challengeUrl = (e as? BooruChallengeException)?.url) }
+            // The route changed and settled under the fetch, whose connection went with the old
+            // route's: it failed as a cancelled call does, in no words of Tor's, and is made again
+            // along the new route rather than shown. The other order, the failure landing before
+            // the route has settled, is seen by the collector of the route count.
+            cutShort = fetchRoute != c.tor.state.value.routeChanges
+            if (!cutShort) update { it.copy(error = e.toProblem(), challengeUrl = (e as? BooruChallengeException)?.url) }
         } finally {
             update { it.copy(loading = false, refreshing = false) }
         }
+        if (cutShort && _state.value.generation == generation) loadMore(force = true)
     }
 
     /** This state showing, of [fetched], what the filters allow now. */

@@ -199,7 +199,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
                     }
                 }
                 val now = System.currentTimeMillis()
-                if (status == TorStatus.ON && !verified && !verifying.get() && now - lastVerifyAt >= VERIFY_INTERVAL_MS) {
+                if (checkDue(_state.value, verifying.get(), now, lastVerifyAt)) {
                     lastVerifyAt = now
                     onVerifyNeeded()
                 }
@@ -239,8 +239,10 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
         if (!verifying.compareAndSet(false, true)) return@withContext
         val port = _state.value.socksPort
-        _state.update { it.copy(verifiedExit = null, verifyError = null) }
         try {
+            // Switched off since the check was asked for: nothing to check, and nothing goes out.
+            if (!enabled) return@withContext
+            _state.update { it.copy(verifiedExit = null, verifyError = null) }
             val request = Request.Builder().url("https://$VERIFY_HOST/api/ip").header("User-Agent", UserAgents.browser).build()
             val body = client.newCall(request).await().use { it.body.utf8UpTo(MAX_VERIFY_BODY) ?: "" }
             val result = json.parseToJsonElement(body).jsonObject
@@ -276,6 +278,14 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
         /** The least time between two automatic checks, so a check that keeps failing does not loop. */
         private const val VERIFY_INTERVAL_MS = 10_000L
+
+        /**
+         * Whether the exit check should run now: Tor on, its port answering, no verdict yet, no
+         * check running, and the last one not too recent. Decided on the state as it stands, not
+         * on what a probe found: Tor switched off while the port was probed gets no check.
+         */
+        internal fun checkDue(state: TorState, verifying: Boolean, now: Long, lastVerifyAt: Long): Boolean =
+            state.enabled && state.status == TorStatus.ON && state.verifiedExit == null && !verifying && now - lastVerifyAt >= VERIFY_INTERVAL_MS
 
         /** The exit check answers with a few bytes of JSON; anything bigger is not it. */
         private const val MAX_VERIFY_BODY = 64L * 1024
@@ -375,15 +385,23 @@ class TorUnverifiedException : IOException("Tor exit not verified yet"), HasProb
  * asks once per call, before anything connects; this runs once per attempt, so a redirect or a
  * retry of a call that was let through finds the verdict withdrawn meanwhile. By then the
  * listener has seen the host name in the CONNECT; it does not get the request, nor its cookies.
+ *
+ * And it lets the exit check out through the listener only, whether Tor is on or off: a check
+ * on its way when Tor was switched off would otherwise go out directly.
  */
 class TorRouteGuard(private val enabled: () -> Boolean, private val verified: () -> Boolean = { true }) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val connection = chain.connection()
-        if (enabled() && connection != null && connection.route().proxy.type() != Proxy.Type.SOCKS) {
-            runCatching { connection.socket().close() }
-            throw TorUnreachableException(IOException("connection does not go through Orbot"))
+        val throughListener = connection == null || connection.route().proxy.type() == Proxy.Type.SOCKS
+        val exitCheck = chain.request().url.host == TorManager.VERIFY_HOST
+        // The exit check goes nowhere but through the listener, Tor on or off: switched off while
+        // the check was on its way, it would otherwise name the app to the Tor Project from the
+        // home address.
+        if (!throughListener && (enabled() || exitCheck)) {
+            runCatching { connection!!.socket().close() }
+            throw TorUnreachableException(IOException(if (exitCheck) "the exit check does not go through Orbot" else "connection does not go through Orbot"))
         }
-        if (enabled() && !verified() && chain.request().url.host != TorManager.VERIFY_HOST) throw TorUnverifiedException()
+        if (enabled() && !verified() && !exitCheck) throw TorUnverifiedException()
         return chain.proceed(chain.request())
     }
 }
@@ -394,6 +412,9 @@ class TorRouteGuard(private val enabled: () -> Boolean, private val verified: ()
  */
 class TorListenerWatch(private val onListenerLost: () -> Unit) : EventListener() {
     override fun connectFailed(call: Call, inetSocketAddress: InetSocketAddress, proxy: Proxy, protocol: Protocol?, ioe: IOException) {
+        // A call cancelled while it connects fails on its own closed socket, which says nothing
+        // of the listener: the grid scrolls on, a viewer closes, the vault locks.
+        if (call.isCanceled()) return
         if (proxy.type() == Proxy.Type.SOCKS && socksListenerLost(ioe)) onListenerLost()
     }
 }

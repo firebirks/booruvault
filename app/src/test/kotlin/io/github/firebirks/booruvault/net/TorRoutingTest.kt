@@ -17,6 +17,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.UnknownHostException
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -277,5 +278,80 @@ class TorRoutingTest {
         assertTrue(socksListenerLost(SocketException("Reply from SOCKS server has bad version")))
         assertTrue(socksListenerLost(SocketException("Malformed reply from SOCKS server")))
         assertTrue(socksListenerLost(EOFException()))
+    }
+
+    @Test
+    fun aCallCancelledWhileConnectingSaysNothingOfTheListener() {
+        val lost = AtomicInteger()
+        // A listener that takes the connection and answers nothing, as Orbot does while it builds a circuit.
+        ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).use { silent ->
+            val connected = CountDownLatch(1)
+            thread(isDaemon = true) {
+                silent.accept().use { socket ->
+                    connected.countDown()
+                    socket.getInputStream().readBytes() // until the client hangs up
+                }
+            }
+            val client = OkHttpClient.Builder()
+                .proxySelector(TorProxySelector({ true }, { silent.localPort }))
+                .dns(TorAwareDns { true })
+                .eventListener(TorListenerWatch { lost.incrementAndGet() })
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .build()
+            val call = client.newCall(Request.Builder().url("http://booru.example.invalid/").build())
+            // The viewer is swiped on, the vault locks: the call goes while the listener still thinks.
+            thread(isDaemon = true) {
+                connected.await()
+                call.cancel()
+            }
+            try {
+                call.execute().close()
+                fail("the call was cancelled")
+            } catch (e: IOException) {
+                // expected
+            }
+            assertTrue(call.isCanceled())
+        }
+        assertEquals("a call cancelled while connecting says nothing about the listener", 0, lost.get())
+    }
+
+    @Test
+    fun theExitCheckNeverLeavesButThroughTheListener() {
+        // Tor switched off while a check was on its way: without Orbot's port the check would go
+        // out directly, and its request names the app to the Tor Project from the home address.
+        val asked = AtomicInteger()
+        ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).use { site ->
+            thread(isDaemon = true) {
+                site.accept().use { socket ->
+                    if (socket.getInputStream().bufferedReader().readLine() != null) asked.incrementAndGet()
+                    socket.getOutputStream().write("HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\nok".toByteArray())
+                }
+            }
+            val client = OkHttpClient.Builder()
+                .dns { listOf(InetAddress.getByName("127.0.0.1")) }
+                .addNetworkInterceptor(TorRouteGuard({ false }))
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .build()
+            try {
+                client.newCall(Request.Builder().url("http://${TorManager.VERIFY_HOST}:${site.localPort}/api/ip").build()).execute().close()
+                fail("the exit check must not go out but through the listener")
+            } catch (e: IOException) {
+                assertTrue(e.toString(), e is TorUnreachableException || e.cause is TorUnreachableException)
+            }
+        }
+        assertEquals("the check's request never reached the site", 0, asked.get())
+    }
+
+    @Test
+    fun theExitCheckIsDueOnlyWhileTorIsOnAndItsPortAnswersUnproven() {
+        val on = TorState(enabled = true, status = TorStatus.ON)
+        assertTrue(TorManager.checkDue(on, verifying = false, now = 20_000, lastVerifyAt = 0))
+        // Switched off while the port was probed: the state of now decides, not the probe's answer.
+        assertTrue(!TorManager.checkDue(TorState(enabled = false, status = TorStatus.DISABLED), verifying = false, now = 20_000, lastVerifyAt = 0))
+        assertTrue(!TorManager.checkDue(on.copy(status = TorStatus.OFF), verifying = false, now = 20_000, lastVerifyAt = 0))
+        assertTrue(!TorManager.checkDue(on.copy(verifiedExit = "1.2.3.4"), verifying = false, now = 20_000, lastVerifyAt = 0))
+        assertTrue(!TorManager.checkDue(on, verifying = true, now = 20_000, lastVerifyAt = 0))
+        assertTrue(!TorManager.checkDue(on, verifying = false, now = 5_000, lastVerifyAt = 0))
     }
 }
