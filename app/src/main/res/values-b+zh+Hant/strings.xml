@@ -153,7 +153,7 @@
     <string name="delete_vault_type_to_confirm">輸入「%1$s」以確認</string>
     <string name="delete_vault_confirm">全部刪除</string>
     <string name="tor_use">使用 Tor（透過 Orbot）</string>
-    <string name="tor_use_hint">應用程式的所有連線都經由 Orbot 走 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的，站點名稱也在 Tor 內解析（沒有明文 DNS 請求）。Orbot 未執行時什麼都不會載入：應用程式絕不會退回直接連線。速度較慢，有些網站會封鎖 Tor 或更常要求反機器人驗證。Tor 隱藏的是你從哪裡連線，而不是你是誰：你已登入的網站，或認得自己 Cookie 的網站，仍然知道你的帳戶；其他一切只會看到又一個 Tor 使用者。若瀏覽需要與帳戶分開，請保持未登入，或在「資料」部分清除該網站的 Cookie。</string>
+    <string name="tor_use_hint">應用程式的所有連線都經由 Orbot 走 Tor 網路：搜尋、圖片、影片、下載和內建瀏覽器。網站看到的是 Tor 節點的位址而不是你的，站點名稱也在 Tor 內解析（沒有明文 DNS 請求）。Orbot 未執行時什麼都不會載入：應用程式絕不會退回直接連線。速度較慢，有些網站會封鎖 Tor 或更常要求反機器人驗證。Tor 隱藏的是你從哪裡連線，而不是你是誰：你已登入的網站，或認得自己 Cookie 的網站，仍然知道你的帳戶；其他一切只會看到又一個 Tor 使用者。若瀏覽需要與帳戶分開，請保持未登入，或在「網路與內建瀏覽器」中刪除網站 Cookie，這會一次登出所有網站。</string>
     <string name="route_title">應用程式要如何連線？</string>
     <string name="route_text">選擇 BooruVault 連到網站的方式。在你選擇之前，不會送出任何請求。</string>
     <string name="route_tor_hint">網站看到的是 Tor 節點的位址，而不是你的位址。需要 Orbot 應用程式，速度較慢。</string>

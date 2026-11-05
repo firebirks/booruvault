@@ -153,7 +153,7 @@
     <string name="delete_vault_type_to_confirm">输入“%1$s”以确认</string>
     <string name="delete_vault_confirm">全部删除</string>
     <string name="tor_use">使用 Tor（通过 Orbot）</string>
-    <string name="tor_use_hint">应用的所有连接都经由 Orbot 走 Tor 网络：搜索、图片、视频、下载和内置浏览器。网站看到的是 Tor 节点的地址而不是你的，站点名称也在 Tor 内解析（没有明文 DNS 请求）。Orbot 未运行时什么都不会加载：应用绝不会退回到直接连接。速度更慢，有些网站会屏蔽 Tor 或更频繁地要求反机器人验证。Tor 隐藏的是你从哪里连接，而不是你是谁：你已登录的网站，或能认出自己 Cookie 的网站，仍然知道你的账户；其他一切只会看到又一个 Tor 用户。若浏览需要与账户分开，请保持未登录，或在“数据”部分清除该网站的 Cookie。</string>
+    <string name="tor_use_hint">应用的所有连接都经由 Orbot 走 Tor 网络：搜索、图片、视频、下载和内置浏览器。网站看到的是 Tor 节点的地址而不是你的，站点名称也在 Tor 内解析（没有明文 DNS 请求）。Orbot 未运行时什么都不会加载：应用绝不会退回到直接连接。速度更慢，有些网站会屏蔽 Tor 或更频繁地要求反机器人验证。Tor 隐藏的是你从哪里连接，而不是你是谁：你已登录的网站，或能认出自己 Cookie 的网站，仍然知道你的账户；其他一切只会看到又一个 Tor 用户。若浏览需要与账户分开，请保持未登录，或在“网络与内置浏览器”中删除网站 Cookie，这会一次退出所有网站。</string>
     <string name="route_title">应用应如何连接？</string>
     <string name="route_text">选择 BooruVault 访问网站的方式。在你选择之前，不会发出任何请求。</string>
     <string name="route_tor_hint">网站看到的是 Tor 节点的地址，而不是你的地址。需要 Orbot 应用，速度较慢。</string>

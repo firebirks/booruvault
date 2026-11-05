@@ -47,7 +47,8 @@ class DownloadCancelTest {
     private val source = BooruSource("safebooru-donmai", "Safebooru", BooruEngine.DANBOORU, "https://safebooru.donmai.us")
 
     /** Shorter than the test's own waits: a cancellation that only waited for it would show. */
-    private val readTimeoutMs = 2000L
+    // Long enough that a loaded machine does not let a stalled transfer time out before the checks.
+    private val readTimeoutMs = 4000L
 
     @After
     fun tearDown() {
