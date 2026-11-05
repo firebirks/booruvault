@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Locks the vault once the app has spent the configured time in the background. Registered on
@@ -26,9 +27,12 @@ class AutoLock(
     private var backgroundSince = 0L
     private var pending: Job? = null
 
-    /** Raised while a system picker is in front, which would otherwise lock the vault midway. */
-    @Volatile
-    var holdCount = 0
+    /** Holds taken by screens with a system picker in front, which would otherwise lock the vault midway. */
+    private val holds = HashSet<Long>()
+    private val nextHold = AtomicLong()
+
+    /** How many holds are in force. */
+    val holdCount: Int get() = synchronized(holds) { holds.size }
 
     /** The timeout in force since the last stop: held, a picker gets at least [HOLD_SECONDS]. */
     @Volatile
@@ -62,6 +66,10 @@ class AutoLock(
         // The alarm is inexact and the job does not run while the process is frozen.
         lockIfDue()
         backgroundSince = 0
+        // A hold covers the trip through a picker that just ended: one its screen did not
+        // release, because the screen was recreated meanwhile, must not stretch every timeout
+        // from now on.
+        synchronized(holds) { holds.clear() }
     }
 
     /** Locks the vault if the app has been in the background for the timeout in force. */
@@ -72,17 +80,13 @@ class AutoLock(
     /**
      * Returns a release for a hold. While held, "lock immediately" and short timeouts stretch
      * to [HOLD_SECONDS], so a trip through a system picker does not lock the vault, but leaving
-     * the app with the picker in front still does, after that.
+     * the app with the picker in front still does, after that. A hold lasts at most until the
+     * app is back in front; releasing it later is harmless.
      */
     fun hold(): () -> Unit {
-        holdCount++
-        var released = false
-        return {
-            if (!released) {
-                released = true
-                holdCount--
-            }
-        }
+        val token = nextHold.incrementAndGet()
+        synchronized(holds) { holds += token }
+        return { synchronized(holds) { holds -= token } }
     }
 
     private companion object {

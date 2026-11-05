@@ -8,7 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -49,7 +51,9 @@ class AutoLockTest {
     @After
     fun tearDown() = scope.cancel()
 
-    private fun autoLock(vault: VaultManager) = AutoLock(vault, SettingsRepository(tmp.root, vault, json, scope), scope, alarm) { now }
+    private fun autoLock(vault: VaultManager) = AutoLock(vault, settings(vault), scope, alarm) { now }
+
+    private fun settings(vault: VaultManager) = SettingsRepository(tmp.root, vault, json, scope)
 
     private fun openVault() = runBlocking { VaultManager(tmp.root, json).also { it.create("pw".toCharArray(), fastKdf) } }
 
@@ -98,5 +102,40 @@ class AutoLockTest {
         vault.lock()
         autoLock(vault).onStop(owner)
         assertNull(alarm.at)
+    }
+
+    @Test
+    fun aHoldStretchesLockImmediatelyForOneTripOnly() = runBlocking {
+        val vault = openVault()
+        val settings = settings(vault)
+        withTimeout(5000) { settings.ready.first { it } }
+        settings.setAutoLock(0)
+        val lock = AutoLock(vault, settings, scope, alarm) { now }
+        // A picker is opened, and the screen that opened it is gone when it closes: never released.
+        lock.hold()
+        lock.onStop(owner)
+        assertTrue("the picker's trip does not lock the vault", vault.state.value is VaultState.Unlocked)
+        assertEquals(now + 300_000, alarm.at)
+        now += 10_000
+        lock.onStart(owner)
+        assertEquals("a hold ends with the trip it covered", 0, lock.holdCount)
+        // The next time the app is left, the setting is back in force.
+        lock.onStop(owner)
+        assertEquals(VaultState.Locked, vault.state.value)
+    }
+
+    @Test
+    fun aHoldReleasedAfterItsTripIsHarmless() = runBlocking {
+        val vault = openVault()
+        val lock = autoLock(vault)
+        val release = lock.hold()
+        lock.onStop(owner)
+        lock.onStart(owner)
+        release()
+        assertEquals(0, lock.holdCount)
+        val another = lock.hold()
+        assertEquals(1, lock.holdCount)
+        another()
+        assertEquals(0, lock.holdCount)
     }
 }

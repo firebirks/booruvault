@@ -43,10 +43,13 @@
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="false" />
 
+        <!-- Compose lays itself out again on these changes; recreating the activity instead
+             would throw away the built-in browser's page, a picker's purpose and the dialogs. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode|density|fontScale"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.BooruVault">
             <intent-filter>

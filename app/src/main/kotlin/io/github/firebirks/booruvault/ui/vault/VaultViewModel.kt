@@ -65,6 +65,31 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     private val _selection = MutableStateFlow<Set<String>>(emptySet())
     val selection: StateFlow<Set<String>> = _selection.asStateFlow()
 
+    // What a system picker was opened for. Kept here, not in the screen: the picker puts the app
+    // in the background, and a screen recreated meanwhile would come back knowing nothing of it.
+
+    /** Files picked for import, awaiting the question about their originals. */
+    var pendingImport by mutableStateOf<List<Uri>>(emptyList())
+
+    /** Items to export into the folder being picked. */
+    var exportIds by mutableStateOf<Set<String>>(emptySet())
+
+    /** The item to export into the file being picked. */
+    var exportItem by mutableStateOf<VaultItem?>(null)
+
+    private var pickerHold: (() -> Unit)? = null
+
+    /** Keeps the vault open while a system picker is in front; [pickerClosed] ends that. */
+    fun pickerOpened() {
+        pickerHold?.invoke()
+        pickerHold = c.autoLock.hold()
+    }
+
+    fun pickerClosed() {
+        pickerHold?.invoke()
+        pickerHold = null
+    }
+
     private val _transfer = MutableStateFlow<Transfer?>(null)
     val transfer: StateFlow<Transfer?> = _transfer.asStateFlow()
 
@@ -89,6 +114,9 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
                 _selection.value = emptySet()
                 query = ""
                 collectionId = null
+                pendingImport = emptyList()
+                exportIds = emptySet()
+                exportItem = null
             }
         }
     }

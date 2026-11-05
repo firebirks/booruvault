@@ -96,19 +96,17 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
     var chrome by rememberSaveable { mutableStateOf(true) }
     var info by remember { mutableStateOf<VaultItem?>(null) }
     var confirmDelete by remember { mutableStateOf<VaultItem?>(null) }
-    var exporting by remember { mutableStateOf<VaultItem?>(null) }
-    var releaseHold by remember { mutableStateOf<(() -> Unit)?>(null) }
     val videoSource = remember { SealedDataSource.Factory(container.vaultStore) }
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
     // The vault screen's own snackbar sits under this viewer, where nothing is seen.
     LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it.resolve(context)) } }
+    // The view model keeps the vault open while the picker is up, and the item it was opened for.
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
-        releaseHold?.invoke()
-        releaseHold = null
-        val item = exporting
+        vm.pickerClosed()
+        val item = vm.exportItem
+        vm.exportItem = null
         if (uri != null && item != null) vm.exportOne(item, uri)
-        exporting = null
     }
 
     val current = items.getOrNull(pager.currentPage)
@@ -170,8 +168,8 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
                 }
                 IconButton(onClick = { info = item }) { Icon(Icons.Outlined.Info, stringResource(R.string.vault_details), tint = Color.White) }
                 IconButton(onClick = {
-                    exporting = item
-                    releaseHold = container.autoLock.hold()
+                    vm.exportItem = item
+                    vm.pickerOpened()
                     exportLauncher.launch(item.fileName)
                 }) { Icon(Icons.Outlined.FileDownload, stringResource(R.string.vault_export_clear), tint = Color.White) }
                 IconButton(onClick = { confirmDelete = item }) { Icon(Icons.Outlined.Delete, stringResource(R.string.action_delete), tint = Color.White) }

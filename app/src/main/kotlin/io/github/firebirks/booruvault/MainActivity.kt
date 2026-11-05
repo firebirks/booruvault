@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
@@ -72,6 +73,13 @@ class MainActivity : FragmentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.getStringExtra(EXTRA_TAB)?.let { requestedTab.value = it }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // The activity survives a change of dark mode (see the manifest); the system bars' icons
+        // are coloured for the mode current when edge-to-edge was set up, so set it up again.
+        enableEdgeToEdge()
     }
 
     companion object {

@@ -12,7 +12,6 @@ import io.github.firebirks.booruvault.ui.common.resolve
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -116,10 +115,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     val settings by container.settings.settings.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val gridState = rememberLazyGridState()
-    var pendingImport by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var confirmDelete by remember { mutableStateOf(false) }
-    var releaseHold by remember { mutableStateOf<(() -> Unit)?>(null) }
-    var exportIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     val collections by vm.collections.collectAsStateWithLifecycle()
     val counts by vm.counts.collectAsStateWithLifecycle()
     var creating by remember { mutableStateOf<String?>(null) }
@@ -138,16 +134,17 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     BackHandler(enabled = vm.collectionId != null) { vm.collectionId = null }
     BackHandler(enabled = selection.isNotEmpty()) { vm.clearSelection() }
 
-    // System pickers put the app in the background; keep the vault open while they are up.
+    // System pickers put the app in the background; the view model keeps the vault open while
+    // they are up, and remembers what they were opened for should this screen be recreated.
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
-        releaseHold?.invoke()
-        releaseHold = null
-        if (uris.isNotEmpty()) pendingImport = uris
+        vm.pickerClosed()
+        if (uris.isNotEmpty()) vm.pendingImport = uris
     }
     val folderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        releaseHold?.invoke()
-        releaseHold = null
-        if (uri != null) vm.exportToFolder(exportIds, uri)
+        vm.pickerClosed()
+        val ids = vm.exportIds
+        vm.exportIds = emptySet()
+        if (uri != null) vm.exportToFolder(ids, uri)
     }
 
     Scaffold(
@@ -159,8 +156,8 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     actions = {
                         IconButton(onClick = vm::selectAll) { Icon(Icons.Outlined.SelectAll, stringResource(R.string.action_select_all)) }
                         IconButton(onClick = {
-                            exportIds = selection
-                            releaseHold = container.autoLock.hold()
+                            vm.exportIds = selection
+                            vm.pickerOpened()
                             folderLauncher.launch(null)
                         }) { Icon(Icons.Outlined.FolderOpen, stringResource(R.string.vault_export_folder)) }
                         IconButton(onClick = { confirmDelete = true }) { Icon(Icons.Outlined.Delete, stringResource(R.string.action_delete)) }
@@ -181,7 +178,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     },
                     actions = {
                         IconButton(onClick = {
-                            releaseHold = container.autoLock.hold()
+                            vm.pickerOpened()
                             importLauncher.launch(arrayOf("image/*", "video/*"))
                         }) { Icon(Icons.Outlined.Add, stringResource(R.string.vault_import)) }
                         IconButton(onClick = { vm.newestFirst = !vm.newestFirst }) {
@@ -324,10 +321,11 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
         )
     }
 
+    val pendingImport = vm.pendingImport
     if (pendingImport.isNotEmpty()) {
         var deleteOriginals by remember { mutableStateOf(false) }
         AlertDialog(
-            onDismissRequest = { pendingImport = emptyList() },
+            onDismissRequest = { vm.pendingImport = emptyList() },
             title = { Text(pluralStringResource(R.plurals.vault_import_title, pendingImport.size, pendingImport.size)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -341,10 +339,10 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
             confirmButton = {
                 TextButton(onClick = {
                     vm.import(pendingImport, deleteOriginals)
-                    pendingImport = emptyList()
+                    vm.pendingImport = emptyList()
                 }) { Text(stringResource(R.string.action_import)) }
             },
-            dismissButton = { TextButton(onClick = { pendingImport = emptyList() }) { Text(stringResource(R.string.action_cancel)) } },
+            dismissButton = { TextButton(onClick = { vm.pendingImport = emptyList() }) { Text(stringResource(R.string.action_cancel)) } },
         )
     }
 
