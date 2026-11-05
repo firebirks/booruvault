@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.ui.browse
 import io.github.firebirks.booruvault.util.blockedByTor
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.util.Problem
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.getValue
@@ -156,6 +157,12 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
      */
     private var replaceOnNextPage = false
     private var loadJob: Job? = null
+
+    /** The count of settled route changes when the last fetch began: one cut short by a route change is tried again once it settles. */
+    private var fetchRoute = -1
+
+    /** The message that offers to undo a blacklist, for as long as it is up; a lock takes it down. */
+    private var undoJob: Job? = null
     private var suggestJob: Job? = null
 
     private val history = BrowseHistory<LeftGrid>()
@@ -217,9 +224,12 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                             val before = previous
                             previous = key
                             if (before == null) return@collect
+                            val error = _state.value.error ?: return@collect
                             val verified = key.first && !before.first
                             val settled = key.second != before.second
-                            if ((verified || settled) && _state.value.error?.blockedByTor() == true) loadMore(force = true)
+                            // A load the route change cut short failed as a cancelled one, in no words of Tor's.
+                            val cutShort = settled && fetchRoute != key.second
+                            if ((verified && error.blockedByTor()) || (settled && error.blockedByTor()) || cutShort) loadMore(force = true)
                         }
                     }
                 }
@@ -231,6 +241,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private fun forget() {
         loadJob?.cancel()
         suggestJob?.cancel()
+        undoJob?.cancel()
+        snackbar.currentSnackbarData?.dismiss()
         page = 0
         seen.clear()
         fetched = emptyList()
@@ -261,6 +273,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         fun update(transform: (BrowseState) -> BrowseState) =
             _state.update { if (it.generation == generation) transform(it) else it }
         update { it.copy(loading = true, error = null, challengeUrl = null) }
+        fetchRoute = c.tor.state.value.routeChanges
         try {
             val api = c.api(source)
             val settings = c.settings.settings.value
@@ -275,7 +288,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 replaceOnNextPage = false
                 update { it.refiltered().copy(endReached = raw.isEmpty(), refreshing = false) }
                 // A page the filters emptied entirely would leave nothing to scroll to; fetch on.
-                if (raw.isEmpty() || fresh.any { settings.allows(it) } || ++emptyPages >= 5) break
+                // The filters of now: they may have been tightened since the fetch began.
+                if (raw.isEmpty() || fresh.any { c.settings.settings.value.allows(it) } || ++emptyPages >= 5) break
             }
         } catch (e: CancellationException) {
             throw e
@@ -409,6 +423,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 if (_state.value.generation == generation) {
                     fetched = fetched.map { if (it.id == post.id) resolved else it }
                     _state.update { it.refiltered() }
+                    loadIfEmptied()
                 }
             } catch (e: CancellationException) {
                 throw e
@@ -541,12 +556,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     // Tag actions offered by the viewer's info sheet.
     fun addToSearch(tag: String) = search("${_state.value.query} $tag")
     fun excludeFromSearch(tag: String) = search("${_state.value.query} -$tag")
-    /** Blacklists [tag] and says so with [message], offering to undo it under [undoLabel]. */
+    /** Blacklists [tag] and says so with [message], offering to undo it under [undoLabel] for a while. */
     fun blacklist(tag: String, message: String, undoLabel: String) {
-        viewModelScope.launch {
+        undoJob?.cancel()
+        undoJob = viewModelScope.launch {
             c.settings.addToBlacklist(tag)
-            // Undone: the rule goes, and what it hid is back where it was.
-            if (snackbar.showSnackbar(message, actionLabel = undoLabel) == SnackbarResult.ActionPerformed) c.settings.removeFromBlacklist(tag)
+            // For a while, not for good: with an action a message would otherwise stay up until
+            // it is taken, over every other message. Undone: the rule goes, and what it hid is
+            // back where it was.
+            val result = snackbar.showSnackbar(message, actionLabel = undoLabel, duration = SnackbarDuration.Long)
+            if (result == SnackbarResult.ActionPerformed) c.settings.removeFromBlacklist(tag)
         }
     }
 

@@ -106,7 +106,10 @@ import coil3.compose.AsyncImage
 import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
+import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.runtime.rememberCoroutineScope
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -135,6 +138,19 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     var chrome by rememberSaveable { mutableStateOf(true) }
     var info by remember { mutableStateOf<Post?>(null) }
     var collectionFromTag by remember { mutableStateOf<String?>(null) }
+    // The post blacklisted from the viewer and the ones that followed it: once the rule has taken
+    // it away, the viewer lands on the first of those still shown rather than on whatever moved
+    // into its index, which skips the posts the rule took from before it.
+    var landAfter by remember { mutableStateOf<List<Long>?>(null) }
+    LaunchedEffect(landAfter) {
+        val ids = landAfter ?: return@LaunchedEffect
+        val gone = withTimeoutOrNull(3000) { snapshotFlow { state.posts }.first { list -> list.none { it.id == ids[0] } } }
+        if (gone != null) {
+            val index = ids.drop(1).firstNotNullOfOrNull { id -> gone.indexOfFirst { it.id == id }.takeIf { it >= 0 } }
+            if (index != null && index != pager.currentPage) pager.scrollToPage(index)
+        }
+        landAfter = null
+    }
     val scope = rememberCoroutineScope()
     val snackbar = vm.snackbar
     val videoSource = remember { OkHttpDataSource.Factory(container.http).setUserAgent(UserAgents.forSource(state.source)) }
@@ -264,6 +280,8 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
             // the message either way.
             onBlacklist = { tag ->
                 info = null
+                val at = posts.indexOfFirst { it.id == post.id }
+                landAfter = listOf(post.id) + (if (at >= 0) posts.drop(at + 1).map { it.id } else emptyList())
                 vm.blacklist(tag, resources.getString(R.string.viewer_blacklisted, tag), resources.getString(R.string.action_undo))
             },
         )

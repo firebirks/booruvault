@@ -82,6 +82,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -217,7 +218,9 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
     // A site that asks for a pause gets one, counted down on screen, then the load repeats by
     // itself: a few times, each pause twice the last, then it is left to a tap on Retry.
     var retryIn by remember { mutableIntStateOf(0) }
-    var autoRetries by remember(state.generation) { mutableIntStateOf(0) }
+    // Counted in a row: a load that comes through starts the count over; a visit to another tab does not.
+    var autoRetries by rememberSaveable(state.generation) { mutableIntStateOf(0) }
+    LaunchedEffect(state.loading, state.error) { if (!state.loading && state.error == null) autoRetries = 0 }
     LaunchedEffect(state.error, state.generation) {
         if (state.error?.code != Problem.Code.RATE_LIMITED || autoRetries >= RATE_LIMIT_RETRIES) {
             retryIn = 0
@@ -237,7 +240,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
     fun queue(action: () -> Int) {
         if (vaultState is VaultState.Missing) {
             scope.launch {
-                val result = snackbar.showSnackbar(resources.getString(R.string.browse_need_vault), actionLabel = resources.getString(R.string.browse_create))
+                val result = snackbar.showSnackbar(resources.getString(R.string.browse_need_vault), actionLabel = resources.getString(R.string.browse_create), duration = SnackbarDuration.Long)
                 if (result == SnackbarResult.ActionPerformed) onNeedVault()
             }
             return

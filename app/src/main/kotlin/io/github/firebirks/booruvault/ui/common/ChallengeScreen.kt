@@ -152,15 +152,16 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
         if (!closed.compareAndSet(false, true)) return
         // What the page earned belongs to the route it loaded along, and only while that holds.
         val loadedAlong = route?.getOrNull()
-        val recorded = record && loadedAlong != null && loadedAlong == container.tor.route
+        val routeHeld = loadedAlong != null && loadedAlong == container.tor.route
+        val recorded = record && routeHeld
         if (recorded) {
             cookies.recordClearance(loadedAlong, host, userAgent, Challenge.cookiesFor(site, origin, request.url, webView?.url ?: origin))
         }
         // The WebView's own stores are in clear; once the clearance is sealed, they are emptied.
         Challenge.wipe(context, webView)
-        // A visit counts as done when something of it was kept: a browser that never opened,
-        // or whose route changed meanwhile, has nothing for the caller to reload with.
-        onClose(if (browse) recorded else solved)
+        // A visit counts as done when what it earned holds: a browser that never opened, or
+        // whose route changed meanwhile, has nothing for the caller to try again with.
+        onClose(if (browse) recorded else solved && routeHeld)
     }
 
     // A visit for a login or the site's preferences is kept however it ends: a login thrown away
@@ -276,7 +277,8 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
 
                                 // A heavy page can take the renderer down; close the browser rather than the app.
                                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail?): Boolean {
-                                    finish(false)
+                                    // A visit for a login keeps what it brought, as it does on every other way out.
+                                    finish(browse)
                                     return true
                                 }
                             }

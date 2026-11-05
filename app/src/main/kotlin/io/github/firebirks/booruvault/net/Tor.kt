@@ -158,7 +158,9 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
     fun setEnabled(value: Boolean, refresh: Boolean = true) {
         prefs.edit().putBoolean(KEY_ENABLED, value).commit()
-        _state.value = TorState(value, if (value) TorStatus.CHECKING else TorStatus.DISABLED, socksPort = _state.value.socksPort)
+        // The port and the count of settled route changes are kept: the count going back would
+        // read as a change settled, before this one's connections are dropped.
+        _state.update { TorState(value, if (value) TorStatus.CHECKING else TorStatus.DISABLED, socksPort = it.socksPort, routeChanges = it.routeChanges) }
         onRouteChanged()
         if (value && refresh) refreshStatus()
     }
