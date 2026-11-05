@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Немає доступу до папки.</string>
     <string name="problem_not_through_tor">З\'єднання НЕ проходить через Tor.</string>
     <string name="problem_storage_write">Не вдалося записати в пам\'ять телефона: %1$s</string>
+    <string name="problem_file_unreadable">Не вдалося прочитати файл: %1$s</string>
     <string name="problem_unknown">Помилка: %1$s</string>
     <string name="rating_general">Загальний</string>
     <string name="rating_sensitive">Чутливий</string>
@@ -358,6 +359,7 @@
         <item quantity="many">%d з помилкою</item>
         <item quantity="other">%d з помилкою</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d оригінал не видалено</item>
         <item quantity="few">%d оригінали не видалено</item>
@@ -365,12 +367,14 @@
         <item quantity="other">%d оригіналу не видалено</item>
     </plurals>
     <string name="vault_export_failed">Помилка експорту: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d файл експортовано без шифрування</item>
-        <item quantity="few">%d файли експортовано без шифрування</item>
-        <item quantity="many">%d файлів експортовано без шифрування</item>
-        <item quantity="other">%d файлу експортовано без шифрування</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d файл експортовано без шифрування до %2$s</item>
+        <item quantity="few">%1$d файли експортовано без шифрування до %2$s</item>
+        <item quantity="many">%1$d файлів експортовано без шифрування до %2$s</item>
+        <item quantity="other">%1$d файлу експортовано без шифрування до %2$s</item>
     </plurals>
+    <string name="vault_export_partial">Експортовано без шифрування %1$d з %2$d файлів до %3$s. Решту не вдалося записати: %4$s</string>
+    <string name="vault_export_folder_fallback">теки</string>
     <string name="vault_exported_one">Експортовано без шифрування</string>
     <string name="vault_details">Подробиці</string>
     <string name="vault_export_clear">Експорт без шифрування</string>

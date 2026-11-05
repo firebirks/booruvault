@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">फ़ोल्डर को ऐक्सेस नहीं किया जा सकता।</string>
     <string name="problem_not_through_tor">कनेक्शन Tor से होकर नहीं जा रहा है।</string>
     <string name="problem_storage_write">फ़ोन के स्टोरेज में लिखा नहीं जा सका: %1$s</string>
+    <string name="problem_file_unreadable">फ़ाइल पढ़ी नहीं जा सकी: %1$s</string>
     <string name="problem_unknown">त्रुटि: %1$s</string>
     <string name="rating_general">सामान्य</string>
     <string name="rating_sensitive">संवेदनशील</string>
@@ -330,15 +331,18 @@
         <item quantity="one">%d विफल रहा</item>
         <item quantity="other">%d विफल रहे</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d ओरिजिनल नहीं मिटाया गया</item>
         <item quantity="other">%d ओरिजिनल नहीं मिटाए गए</item>
     </plurals>
     <string name="vault_export_failed">एक्सपोर्ट नहीं हो सका: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d फ़ाइल बिना एन्क्रिप्शन के एक्सपोर्ट हुई</item>
-        <item quantity="other">%d फ़ाइलें बिना एन्क्रिप्शन के एक्सपोर्ट हुईं</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d फ़ाइल बिना एन्क्रिप्शन के एक्सपोर्ट हुई (%2$s में)</item>
+        <item quantity="other">%1$d फ़ाइलें बिना एन्क्रिप्शन के एक्सपोर्ट हुईं (%2$s में)</item>
     </plurals>
+    <string name="vault_export_partial">%2$d में से %1$d फ़ाइलें बिना एन्क्रिप्शन के %3$s में एक्सपोर्ट हुईं। बाकी लिखी नहीं जा सकीं: %4$s</string>
+    <string name="vault_export_folder_fallback">फ़ोल्डर</string>
     <string name="vault_exported_one">बिना एन्क्रिप्शन के एक्सपोर्ट हुआ</string>
     <string name="vault_details">विवरण</string>
     <string name="vault_export_clear">बिना एन्क्रिप्शन के एक्सपोर्ट करें</string>

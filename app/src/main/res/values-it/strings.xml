@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">La cartella non è accessibile.</string>
     <string name="problem_not_through_tor">La connessione NON passa da Tor.</string>
     <string name="problem_storage_write">Impossibile scrivere nella memoria del telefono: %1$s</string>
+    <string name="problem_file_unreadable">Impossibile leggere il file: %1$s</string>
     <string name="problem_unknown">Errore: %1$s</string>
     <string name="rating_general">Generale</string>
     <string name="rating_sensitive">Sensibile</string>
@@ -344,17 +345,20 @@
         <item quantity="many">%d non riusciti</item>
         <item quantity="other">%d non riusciti</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d originale non eliminato</item>
         <item quantity="many">%d originali non eliminati</item>
         <item quantity="other">%d originali non eliminati</item>
     </plurals>
     <string name="vault_export_failed">Esportazione non riuscita: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d file esportato in chiaro</item>
-        <item quantity="many">%d file esportati in chiaro</item>
-        <item quantity="other">%d file esportati in chiaro</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d file esportato in chiaro in %2$s</item>
+        <item quantity="many">%1$d file esportati in chiaro in %2$s</item>
+        <item quantity="other">%1$d file esportati in chiaro in %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d file su %2$d esportati in chiaro in %3$s. Gli altri non sono stati scritti: %4$s</string>
+    <string name="vault_export_folder_fallback">la cartella</string>
     <string name="vault_exported_one">Esportato in chiaro</string>
     <string name="vault_details">Dettagli</string>
     <string name="vault_export_clear">Esporta in chiaro</string>

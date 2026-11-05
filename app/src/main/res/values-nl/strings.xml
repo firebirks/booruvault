@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">De map is niet toegankelijk.</string>
     <string name="problem_not_through_tor">De verbinding loopt NIET via Tor.</string>
     <string name="problem_storage_write">Kon niet naar de opslag van de telefoon schrijven: %1$s</string>
+    <string name="problem_file_unreadable">Het bestand kon niet worden gelezen: %1$s</string>
     <string name="problem_unknown">Fout: %1$s</string>
     <string name="rating_general">Algemeen</string>
     <string name="rating_sensitive">Gevoelig</string>
@@ -330,15 +331,18 @@
         <item quantity="one">%d mislukt</item>
         <item quantity="other">%d mislukt</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d origineel niet verwijderd</item>
         <item quantity="other">%d originelen niet verwijderd</item>
     </plurals>
     <string name="vault_export_failed">Exporteren mislukt: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d bestand onversleuteld geëxporteerd</item>
-        <item quantity="other">%d bestanden onversleuteld geëxporteerd</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d bestand onversleuteld geëxporteerd naar %2$s</item>
+        <item quantity="other">%1$d bestanden onversleuteld geëxporteerd naar %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d van %2$d bestanden onversleuteld geëxporteerd naar %3$s. De overige konden niet worden geschreven: %4$s</string>
+    <string name="vault_export_folder_fallback">de map</string>
     <string name="vault_exported_one">Onversleuteld geëxporteerd</string>
     <string name="vault_details">Details</string>
     <string name="vault_export_clear">Onversleuteld exporteren</string>

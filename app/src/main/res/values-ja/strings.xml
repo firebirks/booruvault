@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">フォルダにアクセスできません。</string>
     <string name="problem_not_through_tor">接続は Tor を経由していません。</string>
     <string name="problem_storage_write">端末のストレージに書き込めませんでした: %1$s</string>
+    <string name="problem_file_unreadable">ファイルを読み取れませんでした：%1$s</string>
     <string name="problem_unknown">エラー：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">センシティブ</string>
@@ -316,13 +317,16 @@
     <plurals name="vault_import_failed">
         <item quantity="other">%d 件失敗</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s：%2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="other">%d 件の元ファイルは削除されていません</item>
     </plurals>
     <string name="vault_export_failed">エクスポートに失敗しました：%1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="other">%d 件のファイルを暗号化せずにエクスポートしました</item>
+    <plurals name="vault_exported_to">
+        <item quantity="other">%1$d 件のファイルを暗号化せずにエクスポートしました（%2$s へ）</item>
     </plurals>
+    <string name="vault_export_partial">%2$d 件中 %1$d 件のファイルを暗号化せずに %3$s へエクスポートしました。残りは書き込めませんでした：%4$s</string>
+    <string name="vault_export_folder_fallback">選んだフォルダー</string>
     <string name="vault_exported_one">暗号化せずにエクスポートしました</string>
     <string name="vault_details">詳細</string>
     <string name="vault_export_clear">暗号化せずにエクスポート</string>

@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Não é possível acessar a pasta.</string>
     <string name="problem_not_through_tor">A conexão NÃO passa pelo Tor.</string>
     <string name="problem_storage_write">Não foi possível gravar no armazenamento do telefone: %1$s</string>
+    <string name="problem_file_unreadable">Não foi possível ler o arquivo: %1$s</string>
     <string name="problem_unknown">Erro: %1$s</string>
     <string name="rating_general">Geral</string>
     <string name="rating_sensitive">Sensível</string>
@@ -344,17 +345,20 @@
         <item quantity="many">%d com falha</item>
         <item quantity="other">%d com falha</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d original não excluído</item>
         <item quantity="many">%d originais não excluídos</item>
         <item quantity="other">%d originais não excluídos</item>
     </plurals>
     <string name="vault_export_failed">Falha na exportação: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d arquivo exportado sem criptografia</item>
-        <item quantity="many">%d arquivos exportados sem criptografia</item>
-        <item quantity="other">%d arquivos exportados sem criptografia</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d arquivo exportado sem criptografia em %2$s</item>
+        <item quantity="many">%1$d arquivos exportados sem criptografia em %2$s</item>
+        <item quantity="other">%1$d arquivos exportados sem criptografia em %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d de %2$d arquivos exportados sem criptografia em %3$s. Os demais não puderam ser gravados: %4$s</string>
+    <string name="vault_export_folder_fallback">a pasta</string>
     <string name="vault_exported_one">Exportado sem criptografia</string>
     <string name="vault_details">Detalhes</string>
     <string name="vault_export_clear">Exportar sem criptografia</string>

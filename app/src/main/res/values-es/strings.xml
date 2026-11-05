@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">No se puede acceder a la carpeta.</string>
     <string name="problem_not_through_tor">La conexión NO pasa por Tor.</string>
     <string name="problem_storage_write">No se pudo escribir en el almacenamiento del teléfono: %1$s</string>
+    <string name="problem_file_unreadable">No se pudo leer el archivo: %1$s</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensible</string>
@@ -344,17 +345,20 @@
         <item quantity="many">%d fallidos</item>
         <item quantity="other">%d fallidos</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d original no eliminado</item>
         <item quantity="many">%d originales no eliminados</item>
         <item quantity="other">%d originales no eliminados</item>
     </plurals>
     <string name="vault_export_failed">Error al exportar: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d archivo exportado sin cifrar</item>
-        <item quantity="many">%d archivos exportados sin cifrar</item>
-        <item quantity="other">%d archivos exportados sin cifrar</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d archivo exportado sin cifrar en %2$s</item>
+        <item quantity="many">%1$d archivos exportados sin cifrar en %2$s</item>
+        <item quantity="other">%1$d archivos exportados sin cifrar en %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d de %2$d archivos exportados sin cifrar en %3$s. Los demás no se pudieron escribir: %4$s</string>
+    <string name="vault_export_folder_fallback">la carpeta</string>
     <string name="vault_exported_one">Exportado sin cifrar</string>
     <string name="vault_details">Detalles</string>
     <string name="vault_export_clear">Exportar sin cifrar</string>

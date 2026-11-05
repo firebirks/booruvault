@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Klasöre erişilemiyor.</string>
     <string name="problem_not_through_tor">Bağlantı Tor üzerinden GEÇMİYOR.</string>
     <string name="problem_storage_write">Telefonun depolama alanına yazılamadı: %1$s</string>
+    <string name="problem_file_unreadable">Dosya okunamadı: %1$s</string>
     <string name="problem_unknown">Hata: %1$s</string>
     <string name="rating_general">Genel</string>
     <string name="rating_sensitive">Hassas</string>
@@ -330,15 +331,18 @@
         <item quantity="one">%d başarısız</item>
         <item quantity="other">%d başarısız</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d orijinal silinmedi</item>
         <item quantity="other">%d orijinal silinmedi</item>
     </plurals>
     <string name="vault_export_failed">Dışa aktarma başarısız: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d dosya şifresiz dışa aktarıldı</item>
-        <item quantity="other">%d dosya şifresiz dışa aktarıldı</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%2$s klasörüne %1$d dosya şifresiz dışa aktarıldı</item>
+        <item quantity="other">%2$s klasörüne %1$d dosya şifresiz dışa aktarıldı</item>
     </plurals>
+    <string name="vault_export_partial">%3$s klasörüne %2$d dosyadan %1$d tanesi şifresiz dışa aktarıldı. Diğerleri yazılamadı: %4$s</string>
+    <string name="vault_export_folder_fallback">seçilen klasör</string>
     <string name="vault_exported_one">Şifresiz dışa aktarıldı</string>
     <string name="vault_details">Ayrıntılar</string>
     <string name="vault_export_clear">Şifresiz dışa aktar</string>

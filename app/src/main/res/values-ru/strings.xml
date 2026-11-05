@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Нет доступа к папке.</string>
     <string name="problem_not_through_tor">Соединение НЕ идёт через Tor.</string>
     <string name="problem_storage_write">Не удалось записать в память телефона: %1$s</string>
+    <string name="problem_file_unreadable">Не удалось прочитать файл: %1$s</string>
     <string name="problem_unknown">Ошибка: %1$s</string>
     <string name="rating_general">Общий</string>
     <string name="rating_sensitive">Чувствительный</string>
@@ -358,6 +359,7 @@
         <item quantity="many">%d с ошибкой</item>
         <item quantity="other">%d с ошибкой</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d оригинал не удалён</item>
         <item quantity="few">%d оригинала не удалено</item>
@@ -365,12 +367,14 @@
         <item quantity="other">%d оригинала не удалено</item>
     </plurals>
     <string name="vault_export_failed">Ошибка экспорта: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d файл экспортирован без шифрования</item>
-        <item quantity="few">%d файла экспортировано без шифрования</item>
-        <item quantity="many">%d файлов экспортировано без шифрования</item>
-        <item quantity="other">%d файла экспортировано без шифрования</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d файл экспортирован без шифрования в %2$s</item>
+        <item quantity="few">%1$d файла экспортировано без шифрования в %2$s</item>
+        <item quantity="many">%1$d файлов экспортировано без шифрования в %2$s</item>
+        <item quantity="other">%1$d файла экспортировано без шифрования в %2$s</item>
     </plurals>
+    <string name="vault_export_partial">Экспортировано без шифрования %1$d из %2$d файлов в %3$s. Остальные не удалось записать: %4$s</string>
+    <string name="vault_export_folder_fallback">папку</string>
     <string name="vault_exported_one">Экспортировано без шифрования</string>
     <string name="vault_details">Подробности</string>
     <string name="vault_export_clear">Экспорт без шифрования</string>

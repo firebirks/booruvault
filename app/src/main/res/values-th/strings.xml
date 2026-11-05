@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">เข้าถึงโฟลเดอร์ไม่ได้</string>
     <string name="problem_not_through_tor">การเชื่อมต่อนี้ไม่ได้ผ่าน Tor</string>
     <string name="problem_storage_write">เขียนลงที่เก็บข้อมูลของโทรศัพท์ไม่ได้: %1$s</string>
+    <string name="problem_file_unreadable">อ่านไฟล์ไม่ได้: %1$s</string>
     <string name="problem_unknown">ข้อผิดพลาด: %1$s</string>
     <string name="rating_general">ทั่วไป</string>
     <string name="rating_sensitive">ละเอียดอ่อน</string>
@@ -316,13 +317,16 @@
     <plurals name="vault_import_failed">
         <item quantity="other">ล้มเหลว %d รายการ</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="other">ไม่ได้ลบต้นฉบับ %d รายการ</item>
     </plurals>
     <string name="vault_export_failed">ส่งออกไม่สำเร็จ: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="other">ส่งออก %d ไฟล์แบบไม่เข้ารหัสแล้ว</item>
+    <plurals name="vault_exported_to">
+        <item quantity="other">ส่งออก %1$d ไฟล์แบบไม่เข้ารหัสแล้วไปยัง %2$s</item>
     </plurals>
+    <string name="vault_export_partial">ส่งออก %1$d จาก %2$d ไฟล์แบบไม่เข้ารหัสไปยัง %3$s แล้ว ที่เหลือเขียนไม่ได้: %4$s</string>
+    <string name="vault_export_folder_fallback">โฟลเดอร์</string>
     <string name="vault_exported_one">ส่งออกแบบไม่เข้ารหัสแล้ว</string>
     <string name="vault_details">รายละเอียด</string>
     <string name="vault_export_clear">ส่งออกแบบไม่เข้ารหัส</string>

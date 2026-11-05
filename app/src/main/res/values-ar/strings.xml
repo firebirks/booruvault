@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">لا يمكن الوصول إلى المجلد.</string>
     <string name="problem_not_through_tor">الاتصال لا يمرّ عبر Tor.</string>
     <string name="problem_storage_write">تعذّرت الكتابة في ذاكرة الهاتف: %1$s</string>
+    <string name="problem_file_unreadable">تعذّرت قراءة الملف: %1$s</string>
     <string name="problem_unknown">خطأ: %1$s</string>
     <string name="rating_general">عام</string>
     <string name="rating_sensitive">حسّاس</string>
@@ -386,6 +387,7 @@
         <item quantity="many">تعذّر استيراد %d ملفًا</item>
         <item quantity="other">تعذّر استيراد %d ملف</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="zero">لم يُحذف %d ملف أصلي</item>
         <item quantity="one">لم يُحذف %d ملف أصلي</item>
@@ -395,14 +397,16 @@
         <item quantity="other">لم يُحذف %d ملف أصلي</item>
     </plurals>
     <string name="vault_export_failed">تعذّر التصدير: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="zero">تم تصدير %d ملف دون تشفير</item>
-        <item quantity="one">تم تصدير %d ملف دون تشفير</item>
-        <item quantity="two">تم تصدير %d ملفين دون تشفير</item>
-        <item quantity="few">تم تصدير %d ملفات دون تشفير</item>
-        <item quantity="many">تم تصدير %d ملفًا دون تشفير</item>
-        <item quantity="other">تم تصدير %d ملف دون تشفير</item>
+    <plurals name="vault_exported_to">
+        <item quantity="zero">تم تصدير %1$d ملف دون تشفير إلى %2$s</item>
+        <item quantity="one">تم تصدير %1$d ملف دون تشفير إلى %2$s</item>
+        <item quantity="two">تم تصدير %1$d ملفين دون تشفير إلى %2$s</item>
+        <item quantity="few">تم تصدير %1$d ملفات دون تشفير إلى %2$s</item>
+        <item quantity="many">تم تصدير %1$d ملفًا دون تشفير إلى %2$s</item>
+        <item quantity="other">تم تصدير %1$d ملف دون تشفير إلى %2$s</item>
     </plurals>
+    <string name="vault_export_partial">تم تصدير %1$d من %2$d ملفًا دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</string>
+    <string name="vault_export_folder_fallback">المجلد</string>
     <string name="vault_exported_one">تم التصدير دون تشفير</string>
     <string name="vault_details">التفاصيل</string>
     <string name="vault_export_clear">تصدير دون تشفير</string>

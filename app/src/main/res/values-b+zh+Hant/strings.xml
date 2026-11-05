@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">無法存取這個資料夾。</string>
     <string name="problem_not_through_tor">連線並未經過 Tor。</string>
     <string name="problem_storage_write">無法寫入手機儲存空間：%1$s</string>
+    <string name="problem_file_unreadable">無法讀取檔案：%1$s</string>
     <string name="problem_unknown">錯誤：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">敏感</string>
@@ -316,13 +317,16 @@
     <plurals name="vault_import_failed">
         <item quantity="other">%d 個失敗</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s：%2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="other">%d 個原始檔案未刪除</item>
     </plurals>
     <string name="vault_export_failed">匯出失敗：%1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="other">已以明文匯出 %d 個檔案</item>
+    <plurals name="vault_exported_to">
+        <item quantity="other">已以明文匯出 %1$d 個檔案到 %2$s</item>
     </plurals>
+    <string name="vault_export_partial">已以明文匯出 %2$d 個檔案中的 %1$d 個到 %3$s。其餘無法寫入：%4$s</string>
+    <string name="vault_export_folder_fallback">所選資料夾</string>
     <string name="vault_exported_one">已以明文匯出</string>
     <string name="vault_details">詳細資料</string>
     <string name="vault_export_clear">以明文匯出</string>

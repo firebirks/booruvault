@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.Dispatchers
 import io.github.firebirks.booruvault.vault.TagQuery
 import io.github.firebirks.booruvault.vault.TagCollection
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.ui.common.UiText
 import io.github.firebirks.booruvault.R
@@ -149,11 +150,15 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
             } finally {
                 _transfer.value = null
             }
+            // The counts, and for what failed the first file's name and reason: enough to know
+            // what to do about it, without a list that would not fit a message.
+            val first = result.failures.firstOrNull()
             _messages.tryEmit(
                 UiText.Join(
                     listOfNotNull(
                         UiText.Plural(R.plurals.vault_imported, result.imported),
                         if (result.failed > 0) UiText.Plural(R.plurals.vault_import_failed, result.failed) else null,
+                        first?.let { UiText.Res(R.string.vault_import_failure_detail, listOf(it.name, UiText.Of(it.problem))) },
                         if (result.originalsNotDeleted > 0) UiText.Plural(R.plurals.vault_originals_kept, result.originalsNotDeleted) else null,
                     ),
                 ),
@@ -165,7 +170,7 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
         val chosen = c.vaultStore.items.value.filter { it.id in ids }
         if (chosen.isEmpty()) return
         viewModelScope.launch {
-            val done = try {
+            val result = try {
                 c.transfer.exportToFolder(chosen, tree) { done, total -> _transfer.value = Transfer(false, done, total) }
             } catch (e: Exception) {
                 _messages.tryEmit(exportFailed(e))
@@ -174,7 +179,14 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
                 _transfer.value = null
             }
             clearSelection()
-            _messages.tryEmit(UiText.Plural(R.plurals.vault_exported, done))
+            val folder = result.folderName ?: UiText.Res(R.string.vault_export_folder_fallback)
+            _messages.tryEmit(
+                if (result.failed == 0) {
+                    UiText.Plural(R.plurals.vault_exported_to, result.done, listOf(result.done, folder))
+                } else {
+                    UiText.Res(R.string.vault_export_partial, listOf(result.done, result.total, folder, UiText.Of(result.firstProblem ?: Problem(Problem.Code.UNKNOWN))))
+                },
+            )
         }
     }
 

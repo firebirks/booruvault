@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
+import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Mime
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
@@ -19,24 +20,36 @@ import java.io.IOException
 class VaultTransfer(private val context: Context, private val store: VaultStore) {
     private val resolver: ContentResolver get() = context.contentResolver
 
-    data class ImportResult(val imported: Int, val failed: Int, val originalsNotDeleted: Int)
+    /** A file that could not be imported: which, and why. */
+    data class Failure(val name: String, val problem: Problem)
+
+    data class ImportResult(val imported: Int, val failures: List<Failure>, val originalsNotDeleted: Int) {
+        val failed: Int get() = failures.size
+    }
+
+    /** How many of the files were written, where, and what stopped the first that was not. */
+    data class ExportResult(val done: Int, val total: Int, val folderName: String?, val firstProblem: Problem?) {
+        val failed: Int get() = total - done
+    }
 
     suspend fun import(uris: List<Uri>, deleteOriginals: Boolean, onProgress: (Int, Int) -> Unit): ImportResult =
         withContext(Dispatchers.IO) {
             var imported = 0
-            var failed = 0
+            val failures = ArrayList<Failure>()
             var notDeleted = 0
             uris.forEachIndexed { index, uri ->
                 ensureActive()
                 onProgress(index, uris.size)
                 val id = store.newId()
+                var name = uri.lastPathSegment ?: "file"
                 try {
-                    val (name, declared) = describe(uri)
+                    val (described, declared) = describe(uri)
+                    name = described
                     if (declared != null && declared > VaultStore.MAX_MEDIA_BYTES) throw MediaTooLargeException()
                     val mime = resolver.getType(uri)?.takeIf { it != "application/octet-stream" }
                         ?: Mime.fromExtension(name.substringAfterLast('.', ""))
                     val size = store.writeMedia(id) { out ->
-                        resolver.openInputStream(uri)?.use { copyWiping(it, out) } ?: throw IOException("cannot open $uri")
+                        resolver.openInputStream(uri)?.use { copyWiping(it, out) } ?: throw ProblemException(Problem.Code.FILE_UNREADABLE, name)
                     }
                     val thumb = store.openMedia(id).use { Thumbnails.from(it, mime) }
                     thumb.jpeg?.let {
@@ -66,32 +79,42 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
                 } catch (e: Exception) {
                     store.discard(id)
                     if (e is kotlinx.coroutines.CancellationException) throw e
-                    failed++
+                    failures += Failure(name, e.readProblem(name))
                 }
             }
             onProgress(uris.size, uris.size)
-            ImportResult(imported, failed, notDeleted)
+            ImportResult(imported, failures, notDeleted)
         }
 
-    /** Writes decrypted copies into a folder the user picked. Returns how many succeeded. */
-    suspend fun exportToFolder(items: List<VaultItem>, tree: Uri, onProgress: (Int, Int) -> Unit): Int =
+    /**
+     * Writes decrypted copies into a folder the user picked. A file the folder refuses, or that
+     * cannot be written, is counted and the first reason kept, so the message can say what went
+     * where rather than just how many.
+     */
+    suspend fun exportToFolder(items: List<VaultItem>, tree: Uri, onProgress: (Int, Int) -> Unit): ExportResult =
         withContext(Dispatchers.IO) {
             val folder = DocumentFile.fromTreeUri(context, tree) ?: throw ProblemException(Problem.Code.FOLDER_UNAVAILABLE)
             var done = 0
+            var firstProblem: Problem? = null
             items.forEachIndexed { index, item ->
                 ensureActive()
                 onProgress(index, items.size)
-                val target = folder.createFile(item.mimeType, item.fileName) ?: return@forEachIndexed
+                val target = folder.createFile(item.mimeType, item.fileName)
+                if (target == null) {
+                    if (firstProblem == null) firstProblem = Problem(Problem.Code.STORAGE_WRITE, item.fileName)
+                    return@forEachIndexed
+                }
                 try {
                     write(item, target.uri)
                     done++
                 } catch (e: Exception) {
                     target.delete()
                     if (e is kotlinx.coroutines.CancellationException) throw e
+                    if (firstProblem == null) firstProblem = e.writeProblem(item.fileName)
                 }
             }
             onProgress(items.size, items.size)
-            done
+            ExportResult(done, items.size, folder.name, firstProblem)
         }
 
     suspend fun exportTo(item: VaultItem, target: Uri) = withContext(Dispatchers.IO) { write(item, target) }
@@ -114,6 +137,14 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
             buffer.fill(0)
         }
     }
+
+    /** What stopped a file from being read in: the storage's own word, or the problem met. */
+    private fun Throwable.readProblem(name: String): Problem =
+        if (this is HasProblem) problem else Problem(Problem.Code.FILE_UNREADABLE, message?.takeIf { it.isNotBlank() } ?: name)
+
+    /** What stopped a file from being written out: the storage's own word, or the problem met. */
+    private fun Throwable.writeProblem(name: String): Problem =
+        if (this is HasProblem) problem else Problem(Problem.Code.STORAGE_WRITE, message?.takeIf { it.isNotBlank() } ?: name)
 
     private fun describe(uri: Uri): Pair<String, Long?> {
         resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)?.use { c ->

@@ -29,6 +29,7 @@
     <string name="problem_folder_unavailable">The folder cannot be accessed.</string>
     <string name="problem_not_through_tor">The connection does NOT go through Tor.</string>
     <string name="problem_storage_write">Could not write to the phone\'s storage: %1$s</string>
+    <string name="problem_file_unreadable">The file could not be read: %1$s</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensitive</string>
@@ -336,15 +337,18 @@
         <item quantity="one">%d failed</item>
         <item quantity="other">%d failed</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">%d original not deleted</item>
         <item quantity="other">%d originals not deleted</item>
     </plurals>
     <string name="vault_export_failed">Export failed: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">%d file exported in clear</item>
-        <item quantity="other">%d files exported in clear</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">%1$d file exported in clear to %2$s</item>
+        <item quantity="other">%1$d files exported in clear to %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d of %2$d files exported in clear to %3$s. The others could not be written: %4$s</string>
+    <string name="vault_export_folder_fallback">the folder</string>
     <string name="vault_exported_one">Exported in clear</string>
     <string name="vault_details">Details</string>
     <string name="vault_export_clear">Export in clear</string>

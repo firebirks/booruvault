@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Brak dostępu do folderu.</string>
     <string name="problem_not_through_tor">Połączenie NIE przechodzi przez Tor.</string>
     <string name="problem_storage_write">Nie udało się zapisać w pamięci telefonu: %1$s</string>
+    <string name="problem_file_unreadable">Nie udało się odczytać pliku: %1$s</string>
     <string name="problem_unknown">Błąd: %1$s</string>
     <string name="rating_general">Ogólne</string>
     <string name="rating_sensitive">Wrażliwe</string>
@@ -358,6 +359,7 @@
         <item quantity="many">Nieudane: %d</item>
         <item quantity="other">Nieudane: %d</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="one">Nie usunięto %d oryginału</item>
         <item quantity="few">Nie usunięto %d oryginałów</item>
@@ -365,12 +367,14 @@
         <item quantity="other">Nie usunięto %d oryginału</item>
     </plurals>
     <string name="vault_export_failed">Eksport nie powiódł się: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="one">Wyeksportowano bez szyfrowania %d plik</item>
-        <item quantity="few">Wyeksportowano bez szyfrowania %d pliki</item>
-        <item quantity="many">Wyeksportowano bez szyfrowania %d plików</item>
-        <item quantity="other">Wyeksportowano bez szyfrowania %d pliku</item>
+    <plurals name="vault_exported_to">
+        <item quantity="one">Wyeksportowano bez szyfrowania %1$d plik do %2$s</item>
+        <item quantity="few">Wyeksportowano bez szyfrowania %1$d pliki do %2$s</item>
+        <item quantity="many">Wyeksportowano bez szyfrowania %1$d plików do %2$s</item>
+        <item quantity="other">Wyeksportowano bez szyfrowania %1$d pliku do %2$s</item>
     </plurals>
+    <string name="vault_export_partial">Wyeksportowano bez szyfrowania %1$d z %2$d plików do %3$s. Pozostałych nie udało się zapisać: %4$s</string>
+    <string name="vault_export_folder_fallback">folderu</string>
     <string name="vault_exported_one">Wyeksportowano bez szyfrowania</string>
     <string name="vault_details">Szczegóły</string>
     <string name="vault_export_clear">Eksportuj bez szyfrowania</string>

@@ -28,6 +28,7 @@
     <string name="problem_folder_unavailable">Folder tidak dapat diakses.</string>
     <string name="problem_not_through_tor">Koneksi TIDAK melewati Tor.</string>
     <string name="problem_storage_write">Tidak dapat menulis ke penyimpanan ponsel: %1$s</string>
+    <string name="problem_file_unreadable">File tidak dapat dibaca: %1$s</string>
     <string name="problem_unknown">Kesalahan: %1$s</string>
     <string name="rating_general">Umum</string>
     <string name="rating_sensitive">Sensitif</string>
@@ -316,13 +317,16 @@
     <plurals name="vault_import_failed">
         <item quantity="other">%d gagal</item>
     </plurals>
+    <string name="vault_import_failure_detail">%1$s: %2$s</string>
     <plurals name="vault_originals_kept">
         <item quantity="other">%d file asli tidak dihapus</item>
     </plurals>
     <string name="vault_export_failed">Ekspor gagal: %1$s</string>
-    <plurals name="vault_exported">
-        <item quantity="other">%d file diekspor tanpa enkripsi</item>
+    <plurals name="vault_exported_to">
+        <item quantity="other">%1$d file diekspor tanpa enkripsi ke %2$s</item>
     </plurals>
+    <string name="vault_export_partial">%1$d dari %2$d file diekspor tanpa enkripsi ke %3$s. Sisanya tidak dapat ditulis: %4$s</string>
+    <string name="vault_export_folder_fallback">folder</string>
     <string name="vault_exported_one">Diekspor tanpa enkripsi</string>
     <string name="vault_details">Detail</string>
     <string name="vault_export_clear">Ekspor tanpa enkripsi</string>
