@@ -148,7 +148,7 @@ private const val RATE_LIMIT_WAIT_SECONDS = 15
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenContentFilter: () -> Unit) {
+fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenContentFilter: () -> Unit, onOpenSources: () -> Unit) {
     val container = LocalContainer.current
     val vm = containerViewModel { BrowseViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -292,6 +292,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                 when {
                     state.source == null -> MessageState(
                         Icons.Outlined.CloudOff, stringResource(R.string.browse_no_sources_title), stringResource(R.string.browse_no_sources_text),
+                        actionLabel = stringResource(R.string.sources_add_title), onAction = onOpenSources,
                     )
                     state.posts.isEmpty() && state.challengeUrl != null -> MessageState(
                         Icons.Outlined.VerifiedUser, stringResource(R.string.browse_check_needed), state.error?.let { problemText(it) },

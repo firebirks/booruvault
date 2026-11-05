@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">그리드 %1$s · 페이지당 %2$d개</string>
     <string name="settings_tor_off_summary">꺼짐: 연결이 직접 나갑니다</string>
     <string name="settings_about_licence">GNU GPL v3에 따른 자유 소프트웨어</string>
+    <string name="settings_about_source">소스 코드와 릴리스</string>
+    <string name="settings_about_source_hint">GitHub에 이슈 트래커와 함께 있습니다.</string>
     <string name="settings_about_libraries">오픈소스 라이브러리</string>
     <string name="settings_about_libraries_hint">앱의 기반이 되는 프로젝트와 각 라이선스. 탭하면 사이트가 열립니다.</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">켤 수 없습니다: %1$s</string>
     <string name="biometric_use_password">비밀번호 사용</string>
     <string name="biometric_unlock_title">BooruVault 잠금 해제</string>
-    <string name="unlock_title_vault">보관함 잠김</string>
-    <string name="unlock_subtitle_vault">암호화된 콘텐츠에 접근하려면 비밀번호를 입력하세요.</string>
     <string name="unlock_title_app">BooruVault가 잠겨 있습니다</string>
     <string name="unlock_subtitle_app">계속하려면 보관함 비밀번호를 입력하세요.</string>
     <string name="password">비밀번호</string>

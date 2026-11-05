@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">网格 %1$s · 每页 %2$d 条</string>
     <string name="settings_tor_off_summary">关闭：连接直接发出</string>
     <string name="settings_about_licence">基于 GNU GPL v3 的自由软件</string>
+    <string name="settings_about_source">源代码与发布版本</string>
+    <string name="settings_about_source_hint">在 GitHub 上，附带问题跟踪。应用中没有任何内容会向任何人回报。</string>
     <string name="settings_about_libraries">开源库</string>
     <string name="settings_about_libraries_hint">应用所依赖的项目及其许可证。点按可打开其网站。</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">无法开启：%1$s</string>
     <string name="biometric_use_password">使用密码</string>
     <string name="biometric_unlock_title">解锁 BooruVault</string>
-    <string name="unlock_title_vault">保险库已锁定</string>
-    <string name="unlock_subtitle_vault">输入密码以访问加密内容。</string>
     <string name="unlock_title_app">BooruVault 已锁定</string>
     <string name="unlock_subtitle_app">输入保险库密码以继续。</string>
     <string name="password">密码</string>

@@ -132,6 +132,8 @@
     <string name="settings_browsing_summary">Grille %1$s · %2$d par page</string>
     <string name="settings_tor_off_summary">Désactivé : les connexions sortent directement</string>
     <string name="settings_about_licence">Logiciel libre sous licence GNU GPL v3</string>
+    <string name="settings_about_source">Code source et versions</string>
+    <string name="settings_about_source_hint">Sur GitHub, avec le suivi des problèmes.</string>
     <string name="settings_about_libraries">Bibliothèques open source</string>
     <string name="settings_about_libraries_hint">Ce sur quoi l\'app est construite, chacune avec sa licence. Touchez-en une pour ouvrir son site.</string>
     <plurals name="settings_blacklist_rules">
@@ -241,8 +243,6 @@
     <string name="biometric_enable_failed">Impossible de l\'activer : %1$s</string>
     <string name="biometric_use_password">Utiliser le mot de passe</string>
     <string name="biometric_unlock_title">Déverrouiller BooruVault</string>
-    <string name="unlock_title_vault">Coffre verrouillé</string>
-    <string name="unlock_subtitle_vault">Saisissez le mot de passe pour accéder au contenu chiffré.</string>
     <string name="unlock_title_app">BooruVault est verrouillé</string>
     <string name="unlock_subtitle_app">Saisissez le mot de passe du coffre pour continuer.</string>
     <string name="password">Mot de passe</string>

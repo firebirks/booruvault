@@ -138,6 +138,8 @@
     <string name="settings_browsing_summary">شبكة %1$s · %2$d في الصفحة</string>
     <string name="settings_tor_off_summary">متوقف: الاتصالات تخرج مباشرة</string>
     <string name="settings_about_licence">برنامج حر بموجب رخصة GNU GPL v3</string>
+    <string name="settings_about_source">الشفرة المصدرية والإصدارات</string>
+    <string name="settings_about_source_hint">على GitHub، مع متتبّع المشكلات.</string>
     <string name="settings_about_libraries">مكتبات مفتوحة المصدر</string>
     <string name="settings_about_libraries_hint">ما بُني عليه التطبيق، مع رخصة كل منها. انقر لفتح موقعه.</string>
     <plurals name="settings_blacklist_rules">
@@ -256,8 +258,6 @@
     <string name="biometric_enable_failed">تعذّر التفعيل: %1$s</string>
     <string name="biometric_use_password">استخدام كلمة المرور</string>
     <string name="biometric_unlock_title">فتح قفل BooruVault</string>
-    <string name="unlock_title_vault">الخزنة مقفلة</string>
-    <string name="unlock_subtitle_vault">أدخل كلمة المرور للوصول إلى المحتوى المشفّر.</string>
     <string name="unlock_title_app">BooruVault مقفل</string>
     <string name="unlock_subtitle_app">أدخل كلمة مرور الخزنة للمتابعة.</string>
     <string name="password">كلمة المرور</string>

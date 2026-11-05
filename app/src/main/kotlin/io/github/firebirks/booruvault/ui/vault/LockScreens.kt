@@ -111,10 +111,7 @@ private fun LockLayout(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun UnlockScreen(
-    title: String = stringResource(R.string.unlock_title_vault),
-    subtitle: String = stringResource(R.string.unlock_subtitle_vault),
-) {
+fun UnlockScreen(title: String, subtitle: String) {
     val container = LocalContainer.current
     val vault = container.vault
     val context = LocalContext.current

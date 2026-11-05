@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">グリッド %1$s · 1ページ %2$d 件</string>
     <string name="settings_tor_off_summary">オフ: 接続は直接行われます</string>
     <string name="settings_about_licence">GNU GPL v3 のもとで公開される自由ソフトウェア</string>
+    <string name="settings_about_source">ソースコードとリリース</string>
+    <string name="settings_about_source_hint">GitHub 上、課題トラッカーもあります。</string>
     <string name="settings_about_libraries">オープンソースライブラリ</string>
     <string name="settings_about_libraries_hint">アプリの基盤となるプロジェクトと、それぞれのライセンス。タップするとサイトを開きます。</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">オンにできませんでした：%1$s</string>
     <string name="biometric_use_password">パスワードを使用</string>
     <string name="biometric_unlock_title">BooruVault のロックを解除</string>
-    <string name="unlock_title_vault">保管庫はロックされています</string>
-    <string name="unlock_subtitle_vault">暗号化されたコンテンツにアクセスするには、パスワードを入力してください。</string>
     <string name="unlock_title_app">BooruVault はロックされています</string>
     <string name="unlock_subtitle_app">続行するには保管庫のパスワードを入力してください。</string>
     <string name="password">パスワード</string>

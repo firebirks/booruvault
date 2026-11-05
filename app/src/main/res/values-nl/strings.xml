@@ -130,6 +130,8 @@
     <string name="settings_browsing_summary">Raster %1$s · %2$d per pagina</string>
     <string name="settings_tor_off_summary">Uit: verbindingen gaan rechtstreeks naar buiten</string>
     <string name="settings_about_licence">Vrije software onder de GNU GPL v3</string>
+    <string name="settings_about_source">Broncode en releases</string>
+    <string name="settings_about_source_hint">Op GitHub, met de issue tracker.</string>
     <string name="settings_about_libraries">Opensourcebibliotheken</string>
     <string name="settings_about_libraries_hint">Waarop de app is gebouwd, elk met zijn licentie. Tik om de site te openen.</string>
     <plurals name="settings_blacklist_rules">
@@ -236,8 +238,6 @@
     <string name="biometric_enable_failed">Kan niet aanzetten: %1$s</string>
     <string name="biometric_use_password">Wachtwoord gebruiken</string>
     <string name="biometric_unlock_title">BooruVault ontgrendelen</string>
-    <string name="unlock_title_vault">Kluis vergrendeld</string>
-    <string name="unlock_subtitle_vault">Voer het wachtwoord in om bij de versleutelde inhoud te komen.</string>
     <string name="unlock_title_app">BooruVault is vergrendeld</string>
     <string name="unlock_subtitle_app">Voer het wachtwoord van de kluis in om door te gaan.</string>
     <string name="password">Wachtwoord</string>

@@ -136,6 +136,8 @@
     <string name="settings_browsing_summary">%1$s grid · %2$d per page</string>
     <string name="settings_tor_off_summary">Off: connections go out directly</string>
     <string name="settings_about_licence">Free software under the GNU General Public License v3</string>
+    <string name="settings_about_source">Source code and releases</string>
+    <string name="settings_about_source_hint">On GitHub, with the issue tracker.</string>
     <string name="settings_about_libraries">Open-source libraries</string>
     <string name="settings_about_libraries_hint">What the app is built on, each with its licence. Tap one to open its site.</string>
     <plurals name="settings_blacklist_rules">
@@ -242,8 +244,6 @@
     <string name="biometric_enable_failed">Could not turn it on: %1$s</string>
     <string name="biometric_use_password">Use the password</string>
     <string name="biometric_unlock_title">Unlock BooruVault</string>
-    <string name="unlock_title_vault">Vault locked</string>
-    <string name="unlock_subtitle_vault">Enter the password to reach the encrypted content.</string>
     <string name="unlock_title_app">BooruVault is locked</string>
     <string name="unlock_subtitle_app">Enter the vault\'s password to continue.</string>
     <string name="password">Password</string>

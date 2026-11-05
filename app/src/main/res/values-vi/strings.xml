@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">Lưới %1$s · %2$d mỗi trang</string>
     <string name="settings_tor_off_summary">Tắt: kết nối đi ra trực tiếp</string>
     <string name="settings_about_licence">Phần mềm tự do theo giấy phép GNU GPL v3</string>
+    <string name="settings_about_source">Mã nguồn và các bản phát hành</string>
+    <string name="settings_about_source_hint">Trên GitHub, kèm trình theo dõi vấn đề.</string>
     <string name="settings_about_libraries">Thư viện mã nguồn mở</string>
     <string name="settings_about_libraries_hint">Những gì ứng dụng được xây dựng trên đó, kèm giấy phép. Chạm để mở trang.</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">Không thể bật: %1$s</string>
     <string name="biometric_use_password">Dùng mật khẩu</string>
     <string name="biometric_unlock_title">Mở khóa BooruVault</string>
-    <string name="unlock_title_vault">Kho đã khóa</string>
-    <string name="unlock_subtitle_vault">Nhập mật khẩu để truy cập nội dung đã mã hóa.</string>
     <string name="unlock_title_app">BooruVault đã khóa</string>
     <string name="unlock_subtitle_app">Nhập mật khẩu của kho để tiếp tục.</string>
     <string name="password">Mật khẩu</string>

@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">ตาราง %1$s · %2$d ต่อหน้า</string>
     <string name="settings_tor_off_summary">ปิด: การเชื่อมต่อออกไปโดยตรง</string>
     <string name="settings_about_licence">ซอฟต์แวร์เสรีภายใต้ GNU GPL v3</string>
+    <string name="settings_about_source">ซอร์สโค้ดและรุ่นที่ออก</string>
+    <string name="settings_about_source_hint">บน GitHub พร้อมระบบติดตามปัญหา</string>
     <string name="settings_about_libraries">ไลบรารีโอเพนซอร์ส</string>
     <string name="settings_about_libraries_hint">สิ่งที่แอปสร้างขึ้นมา พร้อมสัญญาอนุญาตของแต่ละรายการ แตะเพื่อเปิดเว็บไซต์</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">เปิดไม่ได้: %1$s</string>
     <string name="biometric_use_password">ใช้รหัสผ่าน</string>
     <string name="biometric_unlock_title">ปลดล็อก BooruVault</string>
-    <string name="unlock_title_vault">คลังนิรภัยถูกล็อก</string>
-    <string name="unlock_subtitle_vault">ป้อนรหัสผ่านเพื่อเข้าถึงเนื้อหาที่เข้ารหัส</string>
     <string name="unlock_title_app">BooruVault ถูกล็อก</string>
     <string name="unlock_subtitle_app">ป้อนรหัสผ่านของคลังนิรภัยเพื่อดำเนินการต่อ</string>
     <string name="password">รหัสผ่าน</string>

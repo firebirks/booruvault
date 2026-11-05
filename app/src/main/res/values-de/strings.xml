@@ -130,6 +130,8 @@
     <string name="settings_browsing_summary">Raster %1$s · %2$d pro Seite</string>
     <string name="settings_tor_off_summary">Aus: Verbindungen gehen direkt hinaus</string>
     <string name="settings_about_licence">Freie Software unter der GNU GPL v3</string>
+    <string name="settings_about_source">Quellcode und Versionen</string>
+    <string name="settings_about_source_hint">Auf GitHub, mit der Fehlerverfolgung.</string>
     <string name="settings_about_libraries">Open-Source-Bibliotheken</string>
     <string name="settings_about_libraries_hint">Worauf die App aufbaut, jeweils mit Lizenz. Antippen öffnet die Website.</string>
     <plurals name="settings_blacklist_rules">
@@ -236,8 +238,6 @@
     <string name="biometric_enable_failed">Aktivierung fehlgeschlagen: %1$s</string>
     <string name="biometric_use_password">Passwort verwenden</string>
     <string name="biometric_unlock_title">BooruVault entsperren</string>
-    <string name="unlock_title_vault">Tresor gesperrt</string>
-    <string name="unlock_subtitle_vault">Gib das Passwort ein, um auf die verschlüsselten Inhalte zuzugreifen.</string>
     <string name="unlock_title_app">BooruVault ist gesperrt</string>
     <string name="unlock_subtitle_app">Gib das Passwort des Tresors ein, um fortzufahren.</string>
     <string name="password">Passwort</string>

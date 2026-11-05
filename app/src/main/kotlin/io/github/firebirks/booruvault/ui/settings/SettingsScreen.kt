@@ -423,6 +423,9 @@ private fun LanguageRow(name: String, selected: Boolean, onClick: () -> Unit) {
     )
 }
 
+/** Where the app's code, its releases and its issue tracker live. */
+private const val SOURCE_URL = "https://github.com/firebirks/booruvault"
+
 /** A project the app is built on, with the licence its code comes under. */
 private class Library(val name: String, val author: String, val licence: String, val url: String)
 
@@ -452,6 +455,12 @@ private fun AboutPage() {
         supportingContent = { Text("GNU GPL v3") },
         trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
         modifier = Modifier.clickable { links.open("https://www.gnu.org/licenses/gpl-3.0.html") },
+    )
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.settings_about_source)) },
+        supportingContent = { Text(stringResource(R.string.settings_about_source_hint)) },
+        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+        modifier = Modifier.clickable { links.open(SOURCE_URL) },
     )
     SectionHeader(stringResource(R.string.settings_about_libraries))
     Text(

@@ -130,6 +130,8 @@
     <string name="settings_browsing_summary">ग्रिड %1$s · प्रति पेज %2$d</string>
     <string name="settings_tor_off_summary">बंद: कनेक्शन सीधे बाहर जाते हैं</string>
     <string name="settings_about_licence">GNU GPL v3 के तहत मुक्त सॉफ़्टवेयर</string>
+    <string name="settings_about_source">सोर्स कोड और रिलीज़</string>
+    <string name="settings_about_source_hint">GitHub पर, इश्यू ट्रैकर के साथ। ऐप में कुछ भी किसी को रिपोर्ट नहीं करता।</string>
     <string name="settings_about_libraries">ओपन-सोर्स लाइब्रेरी</string>
     <string name="settings_about_libraries_hint">ऐप जिन पर बना है, हर एक अपने लाइसेंस के साथ। साइट खोलने के लिए टैप करें।</string>
     <plurals name="settings_blacklist_rules">
@@ -236,8 +238,6 @@
     <string name="biometric_enable_failed">चालू नहीं किया जा सका: %1$s</string>
     <string name="biometric_use_password">पासवर्ड इस्तेमाल करें</string>
     <string name="biometric_unlock_title">BooruVault अनलॉक करें</string>
-    <string name="unlock_title_vault">तिजोरी लॉक है</string>
-    <string name="unlock_subtitle_vault">एन्क्रिप्टेड सामग्री तक पहुंचने के लिए पासवर्ड डालें।</string>
     <string name="unlock_title_app">BooruVault लॉक है</string>
     <string name="unlock_subtitle_app">जारी रखने के लिए तिजोरी का पासवर्ड डालें।</string>
     <string name="password">पासवर्ड</string>

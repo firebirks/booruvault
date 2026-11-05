@@ -130,6 +130,8 @@
     <string name="settings_browsing_summary">%1$s ızgara · sayfa başına %2$d</string>
     <string name="settings_tor_off_summary">Kapalı: bağlantılar doğrudan çıkar</string>
     <string name="settings_about_licence">GNU GPL v3 altında özgür yazılım</string>
+    <string name="settings_about_source">Kaynak kodu ve sürümler</string>
+    <string name="settings_about_source_hint">GitHub\'da, sorun takipçisiyle birlikte.</string>
     <string name="settings_about_libraries">Açık kaynak kütüphaneler</string>
     <string name="settings_about_libraries_hint">Uygulamanın üzerine kurulduğu projeler, lisanslarıyla. Sitesini açmak için dokunun.</string>
     <plurals name="settings_blacklist_rules">
@@ -236,8 +238,6 @@
     <string name="biometric_enable_failed">Etkinleştirilemedi: %1$s</string>
     <string name="biometric_use_password">Parolayı kullan</string>
     <string name="biometric_unlock_title">BooruVault kilidini aç</string>
-    <string name="unlock_title_vault">Kasa kilitli</string>
-    <string name="unlock_subtitle_vault">Şifreli içeriğe erişmek için parolayı girin.</string>
     <string name="unlock_title_app">BooruVault kilitli</string>
     <string name="unlock_subtitle_app">Devam etmek için kasanın parolasını girin.</string>
     <string name="password">Parola</string>

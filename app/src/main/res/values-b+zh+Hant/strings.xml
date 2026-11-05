@@ -128,6 +128,8 @@
     <string name="settings_browsing_summary">網格 %1$s · 每頁 %2$d 則</string>
     <string name="settings_tor_off_summary">關閉：連線直接送出</string>
     <string name="settings_about_licence">基於 GNU GPL v3 的自由軟體</string>
+    <string name="settings_about_source">原始碼與發行版本</string>
+    <string name="settings_about_source_hint">在 GitHub 上，附帶問題追蹤。應用程式中沒有任何內容會向任何人回報。</string>
     <string name="settings_about_libraries">開源程式庫</string>
     <string name="settings_about_libraries_hint">應用程式所依賴的專案及其授權。點按可開啟其網站。</string>
     <plurals name="settings_blacklist_rules">
@@ -231,8 +233,6 @@
     <string name="biometric_enable_failed">無法開啟：%1$s</string>
     <string name="biometric_use_password">使用密碼</string>
     <string name="biometric_unlock_title">解鎖 BooruVault</string>
-    <string name="unlock_title_vault">保險庫已鎖定</string>
-    <string name="unlock_subtitle_vault">輸入密碼即可存取加密內容。</string>
     <string name="unlock_title_app">BooruVault 已鎖定</string>
     <string name="unlock_subtitle_app">輸入保險庫密碼以繼續。</string>
     <string name="password">密碼</string>

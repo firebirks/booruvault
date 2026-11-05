@@ -134,6 +134,8 @@
     <string name="settings_browsing_summary">Сетка %1$s · %2$d на страницу</string>
     <string name="settings_tor_off_summary">Выключено: соединения идут напрямую</string>
     <string name="settings_about_licence">Свободное ПО под лицензией GNU GPL v3</string>
+    <string name="settings_about_source">Исходный код и выпуски</string>
+    <string name="settings_about_source_hint">На GitHub, вместе с трекером ошибок.</string>
     <string name="settings_about_libraries">Библиотеки с открытым кодом</string>
     <string name="settings_about_libraries_hint">На чём построено приложение, с лицензией каждой. Нажмите, чтобы открыть сайт.</string>
     <plurals name="settings_blacklist_rules">
@@ -246,8 +248,6 @@
     <string name="biometric_enable_failed">Не удалось включить: %1$s</string>
     <string name="biometric_use_password">Использовать пароль</string>
     <string name="biometric_unlock_title">Разблокировать BooruVault</string>
-    <string name="unlock_title_vault">Хранилище заблокировано</string>
-    <string name="unlock_subtitle_vault">Введите пароль, чтобы получить доступ к зашифрованному контенту.</string>
     <string name="unlock_title_app">BooruVault заблокирован</string>
     <string name="unlock_subtitle_app">Введите пароль хранилища, чтобы продолжить.</string>
     <string name="password">Пароль</string>

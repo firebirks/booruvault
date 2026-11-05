@@ -134,6 +134,8 @@
     <string name="settings_browsing_summary">Siatka %1$s · %2$d na stronę</string>
     <string name="settings_tor_off_summary">Wyłączone: połączenia wychodzą bezpośrednio</string>
     <string name="settings_about_licence">Wolne oprogramowanie na licencji GNU GPL v3</string>
+    <string name="settings_about_source">Kod źródłowy i wydania</string>
+    <string name="settings_about_source_hint">Na GitHubie, z systemem zgłoszeń.</string>
     <string name="settings_about_libraries">Biblioteki open source</string>
     <string name="settings_about_libraries_hint">Na czym zbudowana jest aplikacja, każda ze swoją licencją. Dotknij, by otworzyć stronę.</string>
     <plurals name="settings_blacklist_rules">
@@ -246,8 +248,6 @@
     <string name="biometric_enable_failed">Nie udało się włączyć: %1$s</string>
     <string name="biometric_use_password">Użyj hasła</string>
     <string name="biometric_unlock_title">Odblokuj BooruVault</string>
-    <string name="unlock_title_vault">Sejf zablokowany</string>
-    <string name="unlock_subtitle_vault">Wpisz hasło, aby uzyskać dostęp do zaszyfrowanej zawartości.</string>
     <string name="unlock_title_app">Aplikacja BooruVault jest zablokowana</string>
     <string name="unlock_subtitle_app">Wpisz hasło sejfu, aby kontynuować.</string>
     <string name="password">Hasło</string>
