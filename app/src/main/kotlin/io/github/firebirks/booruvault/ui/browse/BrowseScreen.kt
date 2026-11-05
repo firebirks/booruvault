@@ -305,9 +305,10 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                         Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), errorText,
                         actionLabel = stringResource(R.string.action_retry), onAction = { vm.loadMore(force = true) },
                     )
-                    // Results all hidden by the filters: the filters are a tap away, and a source
+                    // Results all hidden by the filters, whether the pages are at an end or the
+                    // fetch gave up on pages they empty: the filters are a tap away, and a source
                     // without ratings, whose every post is unrated, is told as such.
-                    state.posts.isEmpty() && state.endReached && state.hidden > 0 -> MessageState(
+                    state.posts.isEmpty() && !state.loading && state.error == null && state.hidden > 0 -> MessageState(
                         Icons.Outlined.SearchOff, stringResource(R.string.browse_no_results),
                         pluralStringResource(R.plurals.browse_hidden, state.hidden, state.hidden) +
                             if (state.source?.engine?.unrated == true && Rating.UNKNOWN !in settings.allowedRatings) " " + stringResource(R.string.browse_hidden_unrated, stringResource(R.string.rating_unknown)) else "",

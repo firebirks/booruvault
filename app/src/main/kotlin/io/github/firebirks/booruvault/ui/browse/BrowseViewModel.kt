@@ -279,7 +279,22 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         return copy(posts = shown, hidden = fetched.size - shown.size)
     }
 
-    private fun refilter() = _state.update { it.refiltered() }
+    /**
+     * Applies the filters of now to what is loaded. A selection keeps only what is still shown.
+     * Filters that hide every post loaded, with more pages to read, read on: the fetch loop
+     * passes over pages they empty, as it does on a search, where otherwise nothing would.
+     */
+    private fun refilter() {
+        _state.update { it.refiltered() }
+        val shown = _state.value.posts.mapTo(HashSet()) { it.id }
+        _selection.update { selected -> selected.filterTo(HashSet()) { it in shown } }
+        loadIfEmptied()
+    }
+
+    private fun loadIfEmptied() {
+        val current = _state.value
+        if (current.posts.isEmpty() && !current.endReached && !current.loading && current.error == null) loadMore()
+    }
 
     private fun restart(refreshing: Boolean) {
         loadJob?.cancel()
@@ -292,7 +307,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         _state.update {
             it.copy(
                 posts = if (refreshing) it.posts else emptyList(), hidden = if (refreshing) it.hidden else 0,
-                loading = false, refreshing = refreshing, endReached = false,
+                // With no source there is nothing to fetch, and nothing to show as refreshing.
+                loading = false, refreshing = refreshing && it.source != null, endReached = false,
                 error = null, challengeUrl = null, generation = it.generation + 1,
                 startIndex = 0, startOffset = 0,
             )
@@ -300,12 +316,18 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         loadMore()
     }
 
-    /** Keeps the grid shown, for Back to return to. */
+    /**
+     * Keeps the grid shown, for Back to return to. A grid left in the middle of a refresh is kept
+     * with nothing: its posts were due to be replaced by the first fresh page, and were they
+     * kept, the return would add that page to them, since the refresh had forgotten them as seen.
+     * Such a grid is searched again on return.
+     */
     private fun leave(beforeWebPage: Boolean = false) {
         val current = _state.value
         if (current.source == null) return
         val (index, offset) = position
-        history.push(LeftGrid(current, page, seen.toSet(), fetched, index, offset, c.settings.settings.value.pageSize), beforeWebPage)
+        val kept = if (replaceOnNextPage) emptyList() else fetched
+        history.push(LeftGrid(current, page, seen.toSet(), kept, index, offset, c.settings.settings.value.pageSize), beforeWebPage)
     }
 
     /** Back to the grid the last search, or page opened on the spot, replaced. */
@@ -350,6 +372,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 startIndex = grid.index, startOffset = grid.offset,
             ).refiltered()
         }
+        loadIfEmptied()
     }
 
     /** Where the grid is scrolled to, kept with it when a search replaces it. */
@@ -368,9 +391,10 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         resolveJobs[post.id] = viewModelScope.launch {
             try {
                 val resolved = c.api(source).resolve(post)
+                // Read in full, the post may say a rating or tags the filters do not allow.
                 if (_state.value.generation == generation) {
                     fetched = fetched.map { if (it.id == post.id) resolved else it }
-                    _state.update { s -> s.copy(posts = s.posts.map { if (it.id == post.id) resolved else it }) }
+                    _state.update { it.refiltered() }
                 }
             } catch (e: CancellationException) {
                 throw e
