@@ -102,8 +102,10 @@ import io.github.firebirks.booruvault.util.hasGooglePlayServices
 import io.github.firebirks.booruvault.vault.BiometricKey
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.vault.VaultHeaderException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /**
@@ -339,7 +341,15 @@ private fun VaultSettings() {
                 }
             } else {
                 container.scope.launch {
-                    container.vault.disableBiometric()
+                    try {
+                        container.vault.disableBiometric()
+                    } catch (e: IOException) {
+                        // The header could not be written: the fingerprint stays on, and the switch with it.
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, context.problemText(Problem(Problem.Code.STORAGE_WRITE, e.message ?: e.javaClass.simpleName)), Toast.LENGTH_LONG).show()
+                        }
+                        return@launch
+                    }
                     BiometricKey.delete()
                 }
             }

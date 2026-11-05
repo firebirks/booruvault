@@ -151,7 +151,13 @@ fun UnlockScreen(title: String, subtitle: String) {
         val iv = vault.biometricIv ?: return
         val cipher = BiometricKey.decryptCipher(iv)
         if (cipher == null || activity == null) {
-            scope.launch { vault.disableBiometric() }
+            // A header that cannot be written keeps the stale wrap, which no longer decrypts anyway.
+            scope.launch {
+                try {
+                    vault.disableBiometric()
+                } catch (_: IOException) {
+                }
+            }
             error = biometricChanged
             return
         }

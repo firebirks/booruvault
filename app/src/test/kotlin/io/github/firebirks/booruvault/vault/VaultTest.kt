@@ -4,6 +4,7 @@ import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
+import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.toBase64
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -405,7 +406,7 @@ class VaultTest {
         // As an earlier version of the app left it: sealed to the same key, without padding.
         val unpadded = File(media.path + ".old")
         SealedOutputStream(unpadded.outputStream(), vault.recipient!!, version = 1).use { it.write(data) }
-        assertTrue(unpadded.renameTo(media))
+        assertTrue(unpadded.moveOver(media))
         assertEquals(1.toByte(), SealedFormat.versionOf(media))
 
         VaultRekeyer(root, vault, store, scope)
@@ -441,7 +442,7 @@ class VaultTest {
             val data = store.openMedia(file.name).use { it.readAll() }
             val old = File(file.path + ".old")
             SealedOutputStream(old.outputStream(), vault.recipient!!, version = 1).use { it.write(data) }
-            assertTrue(old.renameTo(file))
+            assertTrue(old.moveOver(file))
         }
         cut.writeBytes(cut.readBytes().let { it.copyOf(it.size - 20_000) })
 
@@ -454,6 +455,35 @@ class VaultTest {
         }
         assertEquals(1.toByte(), SealedFormat.versionOf(cut))
         assertTrue(File(root, "media").listFiles()!!.none { it.name.endsWith(".rekey") })
+    }
+
+    @Test
+    fun aFileOfTheOldFormatCutWithinItsHeaderDoesNotKeepTheFormatPassFromBeingDone() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        add(store, Random(15).nextBytes(3_000), "a")
+        add(store, Random(16).nextBytes(3_000), "b")
+        awaitItems(store, 2)
+        val (cut, whole) = store.items.value.sortedBy { it.fileName }.map { File(root, "media/${it.id}") }
+        for (file in listOf(cut, whole)) {
+            val data = store.openMedia(file.name).use { it.readAll() }
+            val old = File(file.path + ".old")
+            SealedOutputStream(old.outputStream(), vault.recipient!!, version = 1).use { it.write(data) }
+            assertTrue(old.moveOver(file))
+        }
+        // Cut within its header: its version still reads, and the file ends before the rest of it.
+        cut.writeBytes(cut.readBytes().copyOf(12))
+
+        VaultRekeyer(root, vault, store, scope)
+        withTimeout(20_000) {
+            // The whole one is brought to the current format; the cut one ends where it ends at
+            // every unlock, and must not stand in the way of the marker either.
+            while (SealedFormat.versionOf(whole) != SealedFormat.VERSION) kotlinx.coroutines.delay(50)
+            while (!File(root, "format-${SealedFormat.VERSION}").exists()) kotlinx.coroutines.delay(50)
+        }
+        assertEquals(1.toByte(), SealedFormat.versionOf(cut))
     }
 
     @Test

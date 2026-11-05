@@ -76,9 +76,18 @@ internal fun MutableStateFlow<VaultState>.close(): VaultState.Unlocked? =
  * Owns the vault's keys. The private key exists in memory only while unlocked; the public key is
  * always available, so new content can be sealed into a locked vault.
  */
-class VaultManager(private val root: File, private val json: Json) {
+class VaultManager(
+    private val root: File,
+    private val json: Json,
+    /** Turns a password into the key that wraps the private key: Argon2id, slow by design. */
+    private val derive: (CharArray, KdfParams) -> ByteArray = Kdf::derive,
+) {
     private val headerFile = File(root, "vault.json")
     private val mutex = Mutex()
+
+    /** Guards the step that opens the vault against a lock asked for meanwhile, which [locks] counts. */
+    private val gate = Any()
+    private var locks = 0
 
     /** The header as found at start: null when there is none, a failure when it cannot be read. */
     private val found: Result<VaultHeader?> = runCatching { readHeader() }
@@ -135,7 +144,7 @@ class VaultManager(private val root: File, private val json: Json) {
             val pair = EcKeys.generate()
             val pkcs8 = pair.private.encoded
             val kek = try {
-                Kdf.derive(password, kdf)
+                derive(password, kdf)
             } finally {
                 Secrets.wipe(password)
             }
@@ -162,8 +171,9 @@ class VaultManager(private val root: File, private val json: Json) {
     suspend fun unlock(password: CharArray): Boolean = mutex.withLock {
         withContext(Dispatchers.Default) {
             val current = header ?: return@withContext false.also { Secrets.wipe(password) }
+            val locksBefore = synchronized(gate) { locks }
             val pkcs8 = unwrapWithPassword(current, password) ?: return@withContext false
-            finishUnlock(current, pkcs8)
+            finishUnlock(current, pkcs8, locksBefore)
             true
         }
     }
@@ -171,10 +181,15 @@ class VaultManager(private val root: File, private val json: Json) {
     /**
      * Drops the private keys, the retired ones with the current. The JCA key objects cannot be
      * overwritten from Kotlin; once nothing references them the GC frees their native copies,
-     * which BoringSSL clears on release.
+     * which BoringSSL clears on release. Asked for while an unlock is still turning the password
+     * into the key, which takes a while by design, it holds: the vault does not open after it.
      */
     fun lock() {
-        _state.close()?.keys?.destroyPrivateKeys()
+        val closed = synchronized(gate) {
+            locks++
+            _state.close()
+        }
+        closed?.keys?.destroyPrivateKeys()
     }
 
     /**
@@ -306,12 +321,13 @@ class VaultManager(private val root: File, private val json: Json) {
         withContext(Dispatchers.Default) {
             val current = header ?: return@withContext false
             val wrapped = current.biometricWrapped?.fromBase64() ?: return@withContext false
+            val locksBefore = synchronized(gate) { locks }
             val pkcs8 = try {
                 cipher.doFinal(wrapped)
             } catch (_: GeneralSecurityException) {
                 return@withContext false
             }
-            finishUnlock(current, pkcs8)
+            finishUnlock(current, pkcs8, locksBefore)
             true
         }
     }
@@ -346,7 +362,7 @@ class VaultManager(private val root: File, private val json: Json) {
             throw VaultHeaderException()
         }
         val kek = try {
-            Kdf.derive(password, current.kdf)
+            derive(password, current.kdf)
         } finally {
             Secrets.wipe(password)
         }
@@ -359,8 +375,12 @@ class VaultManager(private val root: File, private val json: Json) {
         }
     }
 
-    /** Throws [VaultHeaderException] when the header's public key is not this private key's. */
-    private fun finishUnlock(current: VaultHeader, pkcs8: ByteArray) {
+    /**
+     * Opens the vault with the private key, unless a lock was asked for since [locksBefore] was
+     * taken: then the key is dropped and the vault stays locked, as it was to be. Throws
+     * [VaultHeaderException] when the header's public key is not this private key's.
+     */
+    private fun finishUnlock(current: VaultHeader, pkcs8: ByteArray, locksBefore: Int) {
         val privateKey = try {
             EcKeys.privateKey(pkcs8)
         } finally {
@@ -368,7 +388,11 @@ class VaultManager(private val root: File, private val json: Json) {
         }
         val recipient = Recipient.fromEncoded(current.publicKey.fromBase64())
         if (!EcKeys.isPair(privateKey, recipient.key)) throw VaultHeaderException()
-        _state.value = VaultState.Unlocked(withRetired(current, VaultKeys(recipient, privateKey)))
+        val keys = withRetired(current, VaultKeys(recipient, privateKey))
+        val opened = synchronized(gate) {
+            (locks == locksBefore).also { if (it) _state.value = VaultState.Unlocked(keys) }
+        }
+        if (!opened) keys.destroyPrivateKeys()
     }
 
     /**

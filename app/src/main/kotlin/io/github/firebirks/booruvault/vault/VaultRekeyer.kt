@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.EOFException
 import java.io.File
 import java.security.GeneralSecurityException
 
@@ -77,11 +78,14 @@ class VaultRekeyer(
         runCatching { formatMarker.createNewFile() }
     }
 
-    /** [CORRUPT]: the file fails its own authentication, which no later try will mend; [UNREADABLE]: a read failed, which may pass. */
+    /**
+     * [CORRUPT]: the file fails its own authentication, or ends before its own accounting says,
+     * which no later try will mend; [UNREADABLE]: a read failed, which may pass.
+     */
     private enum class Outcome { RESEALED, CURRENT, UNREADABLE, CORRUPT, NOT_WRITTEN }
 
     private class Unreadable(cause: Exception) : Exception(cause) {
-        val outcome: Outcome get() = if (cause is GeneralSecurityException) Outcome.CORRUPT else Outcome.UNREADABLE
+        val outcome: Outcome get() = if (cause.isCorruption()) Outcome.CORRUPT else Outcome.UNREADABLE
     }
 
     private suspend fun run(keys: VaultKeys, rekey: Boolean) {
@@ -176,10 +180,12 @@ class VaultRekeyer(
         val length = file.length()
         val sealed = try {
             SealedFile(file, keys)
-        } catch (e: GeneralSecurityException) {
-            return Outcome.CORRUPT
         } catch (e: Exception) {
-            return if (file.isFile) Outcome.UNREADABLE else Outcome.CURRENT
+            return when {
+                e.isCorruption() -> Outcome.CORRUPT
+                file.isFile -> Outcome.UNREADABLE
+                else -> Outcome.CURRENT
+            }
         }
         sealed.use { source ->
             if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded) && source.version == SealedFormat.VERSION) return Outcome.CURRENT
@@ -263,3 +269,6 @@ class VaultRekeyer(
         const val SMALL_SPACE_MARGIN = 1L shl 20
     }
 }
+
+/** A failure no later read will mend: the file fails its own check, or ends before its own accounting says. */
+private fun Throwable?.isCorruption(): Boolean = this is GeneralSecurityException || this is EOFException
