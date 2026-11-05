@@ -102,7 +102,7 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
         val context = LocalContext.current
         // A settings change that could not be sealed to storage is said once, wherever the user is.
         LaunchedEffect(Unit) {
-            container.settings.writeFailures.collect { Toast.makeText(context, context.problemText(it), Toast.LENGTH_LONG).show() }
+            container.settings.failures.collect { Toast.makeText(context, context.problemText(it), Toast.LENGTH_LONG).show() }
         }
         when (vaultState) {
             VaultState.Missing -> VaultSetupScreen(onCreated = { offerBiometric = true })

@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">La connessione NON passa da Tor.</string>
     <string name="problem_storage_write">Impossibile scrivere nella memoria del telefono: %1$s</string>
     <string name="problem_file_unreadable">Impossibile leggere il file: %1$s</string>
+    <string name="problem_settings_unreadable">Impossibile leggere le impostazioni, che ripartono da zero. Il file è stato conservato come %1$s</string>
     <string name="problem_unknown">Errore: %1$s</string>
     <string name="rating_general">Generale</string>
     <string name="rating_sensitive">Sensibile</string>

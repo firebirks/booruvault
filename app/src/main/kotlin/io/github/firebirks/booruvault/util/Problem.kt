@@ -41,6 +41,8 @@ data class Problem(val code: Code, val detail: String? = null) {
         STORAGE_WRITE,
         /** A file picked on the device could not be opened or read. */
         FILE_UNREADABLE,
+        /** The settings file could not be read: the settings start afresh, the file kept aside. */
+        SETTINGS_UNREADABLE,
         UNKNOWN,
     }
 }

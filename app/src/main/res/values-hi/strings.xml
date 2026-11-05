@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">कनेक्शन Tor से होकर नहीं जा रहा है।</string>
     <string name="problem_storage_write">फ़ोन के स्टोरेज में लिखा नहीं जा सका: %1$s</string>
     <string name="problem_file_unreadable">फ़ाइल पढ़ी नहीं जा सकी: %1$s</string>
+    <string name="problem_settings_unreadable">सेटिंग पढ़ी नहीं जा सकीं और नए सिरे से शुरू होती हैं। फ़ाइल %1$s के रूप में रखी गई है</string>
     <string name="problem_unknown">त्रुटि: %1$s</string>
     <string name="rating_general">सामान्य</string>
     <string name="rating_sensitive">संवेदनशील</string>

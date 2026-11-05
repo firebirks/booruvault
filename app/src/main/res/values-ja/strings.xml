@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">接続は Tor を経由していません。</string>
     <string name="problem_storage_write">端末のストレージに書き込めませんでした: %1$s</string>
     <string name="problem_file_unreadable">ファイルを読み取れませんでした：%1$s</string>
+    <string name="problem_settings_unreadable">設定を読み込めなかったため、初期状態に戻りました。ファイルは %1$s として保存されています</string>
     <string name="problem_unknown">エラー：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">センシティブ</string>

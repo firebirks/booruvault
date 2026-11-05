@@ -4,6 +4,7 @@ import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.net.SecureCookieJar
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.Secrets
@@ -178,5 +179,44 @@ class SealedStateTest {
         for (text in listOf("abc", "pässwörd", "密码", "emoji 🔐")) {
             assertArrayEquals(text.toByteArray(), Secrets.utf8(text.toCharArray()))
         }
+    }
+
+    @Test
+    fun aSettingsFileThatCannotBeReadIsSetAsideAndSaid() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        val settings = SettingsRepository(root, vault, json, scope)
+        vault.create("pw-123456".toCharArray(), fastKdf)
+        withTimeout(5000) { settings.ready.first { it } }
+        settings.setSources(listOf(BooruSource("s", "S", BooruEngine.DANBOORU, "https://s.test")))
+        vault.lock()
+        withTimeout(5000) { settings.ready.first { !it } }
+        // The storage mangled the file between two sessions.
+        File(root, "config.bin").writeBytes(ByteArray(100) { 7 })
+
+        assertTrue(vault.unlock("pw-123456".toCharArray()))
+        withTimeout(5000) { settings.ready.first { it } }
+        // Back to the defaults, which is said, with the file kept aside rather than written over.
+        assertTrue(settings.settings.value.sources.none { it.id == "s" })
+        assertEquals(Problem.Code.SETTINGS_UNREADABLE, withTimeout(5000) { settings.failures.first() }.code)
+        assertTrue(File(root, "config.bin.corrupt").isFile)
+        assertFalse(File(root, "config.bin").exists())
+    }
+
+    @Test
+    fun aSaveThatFailedIsSaidEvenIfNobodyWasListeningWhenItDid() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        val settings = SettingsRepository(root, vault, json, scope)
+        vault.create("pw-123456".toCharArray(), fastKdf)
+        withTimeout(5000) { settings.ready.first { it } }
+        // Nothing can be written where the file should be.
+        val file = File(root, "config.bin")
+        file.delete()
+        assertTrue(file.mkdir())
+        settings.setSources(listOf(BooruSource("s", "S", BooruEngine.DANBOORU, "https://s.test")))
+        // The change holds for the session as made; that it did not land is said to whoever listens next.
+        assertTrue(settings.settings.value.sources.any { it.id == "s" })
+        assertEquals(Problem.Code.STORAGE_WRITE, withTimeout(5000) { settings.failures.first() }.code)
     }
 }

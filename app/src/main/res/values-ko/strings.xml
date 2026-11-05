@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">연결이 Tor를 거치지 않습니다.</string>
     <string name="problem_storage_write">휴대전화 저장소에 쓸 수 없습니다: %1$s</string>
     <string name="problem_file_unreadable">파일을 읽을 수 없습니다: %1$s</string>
+    <string name="problem_settings_unreadable">설정을 읽을 수 없어 처음부터 다시 시작합니다. 파일은 %1$s(으)로 보관되었습니다</string>
     <string name="problem_unknown">오류: %1$s</string>
     <string name="rating_general">일반</string>
     <string name="rating_sensitive">민감</string>

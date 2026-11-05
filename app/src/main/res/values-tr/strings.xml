@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">Bağlantı Tor üzerinden GEÇMİYOR.</string>
     <string name="problem_storage_write">Telefonun depolama alanına yazılamadı: %1$s</string>
     <string name="problem_file_unreadable">Dosya okunamadı: %1$s</string>
+    <string name="problem_settings_unreadable">Ayarlar okunamadı ve baştan başlıyor. Dosya %1$s olarak saklandı</string>
     <string name="problem_unknown">Hata: %1$s</string>
     <string name="rating_general">Genel</string>
     <string name="rating_sensitive">Hassas</string>

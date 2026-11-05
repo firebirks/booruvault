@@ -78,6 +78,7 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.NOT_THROUGH_TOR -> getString(R.string.problem_not_through_tor)
         Problem.Code.STORAGE_WRITE -> getString(R.string.problem_storage_write, detail)
         Problem.Code.FILE_UNREADABLE -> getString(R.string.problem_file_unreadable, detail)
+        Problem.Code.SETTINGS_UNREADABLE -> getString(R.string.problem_settings_unreadable, detail)
         Problem.Code.UNKNOWN -> getString(R.string.problem_unknown, detail)
     }
 }

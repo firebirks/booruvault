@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">連線並未經過 Tor。</string>
     <string name="problem_storage_write">無法寫入手機儲存空間：%1$s</string>
     <string name="problem_file_unreadable">無法讀取檔案：%1$s</string>
+    <string name="problem_settings_unreadable">無法讀取設定，已恢復為初始狀態。檔案已保留為 %1$s</string>
     <string name="problem_unknown">錯誤：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">敏感</string>

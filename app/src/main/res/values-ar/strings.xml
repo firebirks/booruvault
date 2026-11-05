@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">الاتصال لا يمرّ عبر Tor.</string>
     <string name="problem_storage_write">تعذّرت الكتابة في ذاكرة الهاتف: %1$s</string>
     <string name="problem_file_unreadable">تعذّرت قراءة الملف: %1$s</string>
+    <string name="problem_settings_unreadable">تعذّرت قراءة الإعدادات، فعادت إلى حالتها الأولى. حُفظ الملف باسم %1$s</string>
     <string name="problem_unknown">خطأ: %1$s</string>
     <string name="rating_general">عام</string>
     <string name="rating_sensitive">حسّاس</string>

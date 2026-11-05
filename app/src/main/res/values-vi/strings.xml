@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">Kết nối KHÔNG đi qua Tor.</string>
     <string name="problem_storage_write">Không thể ghi vào bộ nhớ của điện thoại: %1$s</string>
     <string name="problem_file_unreadable">Không thể đọc tệp: %1$s</string>
+    <string name="problem_settings_unreadable">Không thể đọc cài đặt nên bắt đầu lại từ đầu. Tệp đã được giữ lại với tên %1$s</string>
     <string name="problem_unknown">Lỗi: %1$s</string>
     <string name="rating_general">Phổ thông</string>
     <string name="rating_sensitive">Nhạy cảm</string>

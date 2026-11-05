@@ -30,6 +30,7 @@
     <string name="problem_not_through_tor">The connection does NOT go through Tor.</string>
     <string name="problem_storage_write">Could not write to the phone\'s storage: %1$s</string>
     <string name="problem_file_unreadable">The file could not be read: %1$s</string>
+    <string name="problem_settings_unreadable">The settings could not be read and start afresh. The file was kept as %1$s</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensitive</string>

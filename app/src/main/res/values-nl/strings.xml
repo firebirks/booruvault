@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">De verbinding loopt NIET via Tor.</string>
     <string name="problem_storage_write">Kon niet naar de opslag van de telefoon schrijven: %1$s</string>
     <string name="problem_file_unreadable">Het bestand kon niet worden gelezen: %1$s</string>
+    <string name="problem_settings_unreadable">De instellingen konden niet worden gelezen en beginnen opnieuw. Het bestand is bewaard als %1$s</string>
     <string name="problem_unknown">Fout: %1$s</string>
     <string name="rating_general">Algemeen</string>
     <string name="rating_sensitive">Gevoelig</string>

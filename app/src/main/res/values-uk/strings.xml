@@ -29,6 +29,7 @@
     <string name="problem_not_through_tor">З\'єднання НЕ проходить через Tor.</string>
     <string name="problem_storage_write">Не вдалося записати в пам\'ять телефона: %1$s</string>
     <string name="problem_file_unreadable">Не вдалося прочитати файл: %1$s</string>
+    <string name="problem_settings_unreadable">Не вдалося прочитати налаштування, їх розпочато заново. Файл збережено як %1$s</string>
     <string name="problem_unknown">Помилка: %1$s</string>
     <string name="rating_general">Загальний</string>
     <string name="rating_sensitive">Чутливий</string>

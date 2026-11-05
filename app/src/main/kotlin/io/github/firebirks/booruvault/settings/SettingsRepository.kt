@@ -11,11 +11,12 @@ import io.github.firebirks.booruvault.vault.VaultState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -78,7 +79,8 @@ data class AppSettings(
  * memory only while the vault is unlocked; locking resets them to defaults and [ready] to false.
  */
 class SettingsRepository(root: File, private val vault: VaultManager, json: Json, scope: CoroutineScope) {
-    private val store = SealedJson(File(root, "config.bin"), AppSettings.serializer(), json)
+    private val file = File(root, "config.bin")
+    private val store = SealedJson(file, AppSettings.serializer(), json)
     private val mutex = Mutex()
 
     private val _settings = MutableStateFlow(AppSettings())
@@ -89,20 +91,22 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     /** True while the vault is unlocked and its settings have been read. */
     val ready: StateFlow<Boolean> = _ready.asStateFlow()
 
-    private val _writeFailures = MutableSharedFlow<Problem>(extraBufferCapacity = 4)
+    private val _failures = Channel<Problem>(Channel.BUFFERED)
 
     /**
-     * Each time the settings could not be sealed to storage. The change holds in memory for the
-     * session, as the user made it; the screen says that it did not land.
+     * Each time the settings could not be sealed to storage, or read back from it. A change that
+     * did not land holds in memory for the session, as the user made it; settings that could not
+     * be read start afresh, the file kept aside. Each is said once, to whoever collects, and
+     * kept until someone does: one met with no screen up is not lost.
      */
-    val writeFailures: SharedFlow<Problem> = _writeFailures
+    val failures: Flow<Problem> = _failures.receiveAsFlow()
 
     init {
         scope.launch(Dispatchers.IO) {
             vault.state.collect { state ->
                 mutex.withLock {
                     if (state is VaultState.Unlocked) {
-                        _settings.value = store.read(state.keys) ?: AppSettings()
+                        _settings.value = store.read(state.keys) { _failures.trySend(Problem(Problem.Code.SETTINGS_UNREADABLE, "${file.name}.corrupt")) } ?: AppSettings()
                         _ready.value = true
                     } else {
                         // Forgotten first: whoever sees ready drop must not find the old values.
@@ -127,7 +131,7 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
         } catch (e: Exception) {
             // Every screen edits the settings from a coroutine of its own with no handler: a full
             // disk must be told, not crash the app.
-            _writeFailures.tryEmit(Problem(Problem.Code.STORAGE_WRITE, e.message ?: e.javaClass.simpleName))
+            _failures.trySend(Problem(Problem.Code.STORAGE_WRITE, e.message ?: e.javaClass.simpleName))
         }
     }
 
