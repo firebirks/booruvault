@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -147,6 +148,11 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
 
     // Several paths lead out (the check passed, a tap, Back); only the first one counts.
     val closed = remember { AtomicBoolean(false) }
+    // The WebView's cookie store is this browser's alone while it is up: see Challenge.visibleOpen.
+    DisposableEffect(Unit) {
+        Challenge.visibleOpened()
+        onDispose { Challenge.visibleClosed() }
+    }
 
     fun finish(solved: Boolean, record: Boolean = solved) {
         if (!closed.compareAndSet(false, true)) return

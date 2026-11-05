@@ -48,6 +48,10 @@ class HiddenBrowser(
     private val mutex = Mutex()
 
     override suspend fun fetch(url: String): String = mutex.withLock {
+        // The WebView's cookie store is one for the process, and the built-in browser's alone
+        // while the user is at a check in it: this one waits for it to close, and gives way
+        // should it open meanwhile.
+        Challenge.visibleOpen.first { !it }
         withContext(Dispatchers.Main) {
             val httpUrl = url.toHttpUrlOrNull() ?: throw BooruChallengeException(url)
             // With Tor on, a WebView that cannot be routed through it must not load anything.
@@ -58,6 +62,7 @@ class HiddenBrowser(
             val manager = CookieManager.getInstance()
             cookies.browserCookies(route, httpUrl).forEach { manager.setCookie(origin, it) }
             val webView = PrivateWebView(context.applicationContext)
+            var yielded = false
             try {
                 withTimeout(TIMEOUT_MS) {
                     coroutineScope {
@@ -67,10 +72,17 @@ class HiddenBrowser(
                             tor.state.first { Route.of(it.enabled) != route }
                             throw BooruChallengeException(url)
                         }
+                        // The built-in browser opened: the store is its now, and the visit ends.
+                        val taken = launch {
+                            Challenge.visibleOpen.first { it }
+                            yielded = true
+                            throw BooruChallengeException(url)
+                        }
                         try {
                             load(webView, url, agent, site, httpUrl.scheme)
                         } finally {
                             switched.cancel()
+                            taken.cancel()
                         }
                     }
                 }
@@ -78,8 +90,12 @@ class HiddenBrowser(
                 // Still a check after the wait: it needs a person, in the visible browser.
                 throw BooruChallengeException(url)
             } finally {
-                if (tor.route == route) cookies.renewFromBrowser(route, httpUrl.host, Challenge.cookiesFor(site, origin, url))
-                Challenge.wipe(context, webView)
+                // Given way, the store holds the built-in browser's session: neither read nor
+                // wiped here. That browser wipes it as it closes, as always.
+                if (!yielded) {
+                    if (tor.route == route) cookies.renewFromBrowser(route, httpUrl.host, Challenge.cookiesFor(site, origin, url))
+                    Challenge.wipe(context, webView)
+                }
                 webView.destroy()
             }
         }

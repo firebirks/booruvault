@@ -10,6 +10,9 @@ import android.webkit.WebView
 import android.webkit.WebViewDatabase
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.UserAgents
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.ByteArrayInputStream
@@ -36,6 +39,23 @@ object Challenge {
 
     @Volatile
     private var learned = false
+
+    private val _visibleOpen = MutableStateFlow(false)
+
+    /**
+     * Whether the built-in browser is on screen. The WebView's cookie store is one for the whole
+     * process: while the user is at a check in that browser, nothing else fills or empties it.
+     * The [HiddenBrowser] waits for it to close, and gives way to it.
+     */
+    val visibleOpen: StateFlow<Boolean> = _visibleOpen.asStateFlow()
+
+    fun visibleOpened() {
+        _visibleOpen.value = true
+    }
+
+    fun visibleClosed() {
+        _visibleOpen.value = false
+    }
 
     /** Cloudflare's checks run in a frame from here; it is the one host outside a site a session may reach. */
     const val CHALLENGE_HOST = "challenges.cloudflare.com"
