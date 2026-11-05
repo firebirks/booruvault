@@ -152,12 +152,15 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
         if (!closed.compareAndSet(false, true)) return
         // What the page earned belongs to the route it loaded along, and only while that holds.
         val loadedAlong = route?.getOrNull()
-        if (record && loadedAlong != null && loadedAlong == container.tor.route) {
+        val recorded = record && loadedAlong != null && loadedAlong == container.tor.route
+        if (recorded) {
             cookies.recordClearance(loadedAlong, host, userAgent, Challenge.cookiesFor(site, origin, request.url, webView?.url ?: origin))
         }
         // The WebView's own stores are in clear; once the clearance is sealed, they are emptied.
         Challenge.wipe(context, webView)
-        onClose(solved)
+        // A visit counts as done when something of it was kept: a browser that never opened,
+        // or whose route changed meanwhile, has nothing for the caller to reload with.
+        onClose(if (browse) recorded else solved)
     }
 
     // A visit for a login or the site's preferences is kept however it ends: a login thrown away

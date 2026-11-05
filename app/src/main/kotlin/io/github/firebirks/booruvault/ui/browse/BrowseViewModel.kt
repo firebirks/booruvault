@@ -201,11 +201,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                     }
                     launch {
                         // A load that failed for want of Tor is tried again by itself once the
-                        // exit check passes, or Tor is switched off: no Retry to find.
-                        var previous: Any? = null
-                        c.tor.state.map { it.enabled to (it.verifiedExit != null) }.distinctUntilChanged().collect { key ->
-                            if (previous != null && previous != key && _state.value.error?.blockedByTor() == true) loadMore(force = true)
+                        // exit check passes, or once the route changed and the old connections
+                        // are gone, which is when Tor was switched off: no Retry to find.
+                        var previous: Pair<Boolean, Int>? = null
+                        c.tor.state.map { (it.enabled && it.verifiedExit != null) to it.routeChanges }.distinctUntilChanged().collect { key ->
+                            val before = previous
                             previous = key
+                            if (before == null) return@collect
+                            val verified = key.first && !before.first
+                            val settled = key.second != before.second
+                            if ((verified || settled) && _state.value.error?.blockedByTor() == true) loadMore(force = true)
                         }
                     }
                 }

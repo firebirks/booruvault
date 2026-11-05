@@ -268,6 +268,9 @@ class TorRoutingTest {
         assertTrue(!socksListenerLost(SocketException("SOCKS: Connection refused")))
         assertTrue(!socksListenerLost(SocketException("SOCKS server general failure")))
         assertTrue(!socksListenerLost(SocketTimeoutException("connect timed out")))
+        // A handshake that fails through the tunnel blames the site or the exit, not the listener.
+        assertTrue(!socksListenerLost(javax.net.ssl.SSLHandshakeException("certificate not trusted")))
+        assertTrue(!socksListenerLost(javax.net.ssl.SSLException("connection closed by peer")))
         // Nothing accepting, a reset, or an answer that is not SOCKS5 at all: the listener itself.
         assertTrue(socksListenerLost(ConnectException("Connection refused")))
         assertTrue(socksListenerLost(SocketException("Connection reset")))

@@ -78,7 +78,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import io.github.firebirks.booruvault.BuildConfig
 import io.github.firebirks.booruvault.R
 import io.github.firebirks.booruvault.booru.Rating
@@ -745,11 +748,15 @@ private fun TorSettings() {
         if (on && !tor.isOrbotInstalled()) askInstall = true else tor.setEnabled(on)
     }
     if (state.enabled) {
-        // Orbot tells nothing by itself; while this is on screen the port is greeted every few seconds.
-        LaunchedEffect(Unit) {
-            while (true) {
-                tor.refreshStatus()
-                delay(3000)
+        // Orbot tells nothing by itself; while this is on screen, and the app in front, the
+        // port is greeted every few seconds.
+        val lifecycle = LocalLifecycleOwner.current.lifecycle
+        LaunchedEffect(lifecycle) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    tor.refreshStatus()
+                    delay(3000)
+                }
             }
         }
         // One line says where Tor stands: Orbot, the port and the exit check together.

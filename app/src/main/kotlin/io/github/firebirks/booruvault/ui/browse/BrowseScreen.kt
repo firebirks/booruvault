@@ -143,8 +143,11 @@ import coil3.compose.AsyncImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** How long a site that asked for a pause is given before the load is tried again by itself. */
+/** How long a site that asked for a pause is given before the load is tried again by itself, the first time. */
 private const val RATE_LIMIT_WAIT_SECONDS = 15
+
+/** How many times in a row a load is tried again by itself after a pause the site asked for. */
+private const val RATE_LIMIT_RETRIES = 3
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -211,18 +214,21 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
     val challenge = LocalChallenge.current
     fun verify(url: String) = challenge.open(state.source, url) { vm.loadMore(force = true) }
 
-    // A site that asks for a pause gets one, counted down on screen, then the load repeats by itself.
+    // A site that asks for a pause gets one, counted down on screen, then the load repeats by
+    // itself: a few times, each pause twice the last, then it is left to a tap on Retry.
     var retryIn by remember { mutableIntStateOf(0) }
+    var autoRetries by remember(state.generation) { mutableIntStateOf(0) }
     LaunchedEffect(state.error, state.generation) {
-        if (state.error?.code != Problem.Code.RATE_LIMITED) {
+        if (state.error?.code != Problem.Code.RATE_LIMITED || autoRetries >= RATE_LIMIT_RETRIES) {
             retryIn = 0
             return@LaunchedEffect
         }
-        retryIn = RATE_LIMIT_WAIT_SECONDS
+        retryIn = RATE_LIMIT_WAIT_SECONDS shl autoRetries
         while (retryIn > 0) {
             delay(1000)
             retryIn--
         }
+        autoRetries++
         vm.loadMore(force = true)
     }
     val errorText = state.error?.let { problemText(it) + if (retryIn > 0) " " + stringResource(R.string.browse_retry_in, retryIn) else "" }
@@ -299,8 +305,9 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                         actionLabel = stringResource(R.string.action_verify_in_browser), onAction = { verify(state.challengeUrl!!) },
                     )
                     // Nothing to retry by hand: what is missing is Orbot, or its exit check, and the
-                    // load repeats by itself once that is there.
-                    state.posts.isEmpty() && state.error?.blockedByTor() == true && torState.enabled -> TorBlockedState()
+                    // load repeats by itself once that is there. With the exit verified, a failure
+                    // worded as Tor's is the site's or the circuit's, and gets the usual Retry.
+                    state.posts.isEmpty() && state.error?.blockedByTor() == true && torState.blocking -> TorBlockedState()
                     state.posts.isEmpty() && state.error != null -> MessageState(
                         Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), errorText,
                         actionLabel = stringResource(R.string.action_retry), onAction = { vm.loadMore(force = true) },

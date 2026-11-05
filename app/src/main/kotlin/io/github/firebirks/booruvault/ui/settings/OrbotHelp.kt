@@ -19,7 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import io.github.firebirks.booruvault.R
 import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorStatus
@@ -70,10 +73,15 @@ fun TorBlockedState(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var askInstall by remember { mutableStateOf(false) }
     var askDirect by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            tor.refreshStatus()
-            delay(3000)
+    // Only while the app is in front: in the background the probe, and the exit check it can
+    // set off, would go on for nothing.
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while (true) {
+                tor.refreshStatus()
+                delay(3000)
+            }
         }
     }
     val direct = stringResource(R.string.tor_connect_directly)
@@ -95,7 +103,7 @@ fun TorBlockedState(modifier: Modifier = Modifier) {
         )
         else -> CenteredProgress(stringResource(R.string.problem_tor_unverified), modifier)
     }
-    if (askInstall) OrbotInstallDialog(stringResource(R.string.tor_need_orbot_text), onDismiss = { askInstall = false })
+    if (askInstall) OrbotInstallDialog(stringResource(R.string.route_orbot_missing), onDismiss = { askInstall = false })
     if (askDirect) {
         AlertDialog(
             onDismissRequest = { askDirect = false },

@@ -38,6 +38,7 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.net.ssl.SSLException
 
 enum class TorStatus { DISABLED, NOT_INSTALLED, CHECKING, ON, OFF }
 
@@ -49,7 +50,12 @@ data class TorState(
     /** Result of the last check against check.torproject.org: exit address, or null if unchecked. */
     val verifiedExit: String? = null,
     val verifyError: Problem? = null,
-)
+    /** Counts the route changes whose old connections have been dropped; see [TorManager.routeSettled]. */
+    val routeChanges: Int = 0,
+) {
+    /** Whether nothing can go out right now: Tor is on and its exit is not verified, whatever the reason. */
+    val blocking: Boolean get() = enabled && verifiedExit == null
+}
 
 const val DEFAULT_SOCKS_PORT = 9050
 
@@ -123,6 +129,13 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
     /** Called when the route changes, so pooled connections opened the other way are dropped. */
     var onRouteChanged: () -> Unit = {}
+
+    /**
+     * Said by [onRouteChanged]'s work once the connections of the old route are cancelled and
+     * dropped: a request made before that could be cancelled along with them, so what waits to
+     * try the new route again waits for this.
+     */
+    fun routeSettled() = _state.update { it.copy(routeChanges = it.routeChanges + 1) }
 
     /** Called when Orbot answers and the exit has not been verified: runs [verify] with the app's client. */
     var onVerifyNeeded: () -> Unit = {}
@@ -388,10 +401,13 @@ class TorListenerWatch(private val onListenerLost: () -> Unit) : EventListener()
  * network behind it. The Java SOCKS client reports a destination the proxy could not reach, or a
  * refusal of the proxy's own, as a [SocketException] whose message starts with "SOCKS"; a
  * connection nobody accepted, a reset, or a reply that is not SOCKS5 at all is anything else. A
- * timeout is neither: a slow circuit looks the same as a listener that never answers.
+ * timeout is neither: a slow circuit looks the same as a listener that never answers. Nor is a
+ * TLS failure: the handshake runs through a tunnel the listener had already opened, and what
+ * fails there is the site's certificate or an exit that cut the connection.
  */
 internal fun socksListenerLost(e: IOException): Boolean = when {
     e is SocketTimeoutException -> false
+    e is SSLException -> false
     e is SocketException && e.message.orEmpty().startsWith("SOCKS") -> false
     else -> true
 }

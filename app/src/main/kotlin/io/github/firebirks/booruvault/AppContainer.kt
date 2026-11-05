@@ -153,6 +153,8 @@ class AppContainer(private val context: Context) {
                 http.dispatcher.cancelAll()
                 apiHttp.dispatcher.cancelAll()
                 http.connectionPool.evictAll()
+                // Only now can a request be made that the cancellation will not take with it.
+                tor.routeSettled()
             }
         }
         // Downloads allowed to outlive the lock keep the site cookies they need, and only them.
