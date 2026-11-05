@@ -69,8 +69,9 @@ fun VideoPlayer(
     val player = remember(uri) {
         ExoPlayer.Builder(context)
             .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
-            // With the sound on, other audio pauses for it, and unplugged headphones pause it.
-            .setAudioAttributes(AudioAttributes.DEFAULT, true)
+            // Audio focus is taken only with the sound on: a muted video must not stop what plays
+            // elsewhere. Unplugged headphones pause it either way.
+            .setAudioAttributes(AudioAttributes.DEFAULT, !videosMuted)
             .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
@@ -110,6 +111,7 @@ fun VideoPlayer(
             onClick = {
                 videosMuted = !videosMuted
                 player.volume = if (videosMuted) 0f else 1f
+                player.setAudioAttributes(AudioAttributes.DEFAULT, !videosMuted)
             },
             colors = IconButtonDefaults.iconButtonColors(containerColor = ComposeColor.Black.copy(alpha = 0.45f), contentColor = ComposeColor.White),
             // Under the viewer's own bar and clear of the player's, whose seek bar and settings sit
