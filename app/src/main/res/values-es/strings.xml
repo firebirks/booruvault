@@ -153,6 +153,7 @@
     <string name="password_changed">Contraseña actualizada</string>
     <string name="password_change_rekey_note">También se sustituye la clave de la bóveda. Después, cada archivo se vuelve a sellar con la nueva clave en segundo plano; hasta que termine, una copia antigua de la bóveda abierta con la contraseña anterior aún puede leer los archivos que falten. El desbloqueo biométrico se desactiva y puede activarse de nuevo.</string>
     <string name="rekey_title">Resellando la bóveda con su nueva clave</string>
+    <string name="repad_title">Volviendo a sellar los archivos para ocultar su tamaño</string>
     <string name="rekey_progress">%1$d de %2$d archivos. Bloquear lo pausa; el siguiente desbloqueo lo reanuda.</string>
     <string name="password_current_wrong">La contraseña actual es incorrecta</string>
     <string name="delete_vault_title">¿Eliminar la bóveda?</string>

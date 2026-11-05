@@ -314,7 +314,7 @@ private fun VaultSettings() {
     val rekey by container.rekeyer.progress.collectAsStateWithLifecycle()
     rekey?.let { progress ->
         ListItem(
-            headlineContent = { Text(stringResource(R.string.rekey_title)) },
+            headlineContent = { Text(stringResource(if (progress.rekeying) R.string.rekey_title else R.string.repad_title)) },
             supportingContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.rekey_progress, progress.done, progress.total))

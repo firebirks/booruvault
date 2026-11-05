@@ -145,6 +145,7 @@
     <string name="password_changed">密碼已更新</string>
     <string name="password_change_rekey_note">保險庫的金鑰也會被更換。之後每個檔案都會在背景以新金鑰重新密封；在完成之前，以舊密碼開啟的舊保險庫副本仍能讀取尚未重新密封的檔案。生物辨識解鎖會被關閉，可以再次開啟。</string>
     <string name="rekey_title">正在以新金鑰重新密封保險庫</string>
+    <string name="repad_title">正在重新封存檔案以隱藏其大小</string>
     <string name="rekey_progress">%2$d 個檔案中的 %1$d 個。鎖定會暫停，下次解鎖時繼續。</string>
     <string name="password_current_wrong">目前的密碼錯誤</string>
     <string name="delete_vault_title">要刪除保險庫嗎？</string>

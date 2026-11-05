@@ -153,6 +153,7 @@
     <string name="password_changed">Password aggiornata</string>
     <string name="password_change_rekey_note">Viene sostituita anche la chiave del vault. Ogni file viene poi risigillato con la nuova chiave in background; finché non è finito, una vecchia copia del vault aperta con la vecchia password può ancora leggere i file non ancora risigillati. Lo sblocco biometrico viene disattivato e può essere riattivato.</string>
     <string name="rekey_title">Risigillatura del vault con la nuova chiave</string>
+    <string name="repad_title">Risigillatura dei file per nasconderne le dimensioni</string>
     <string name="rekey_progress">%1$d file su %2$d. Il blocco la sospende; lo sblocco successivo la riprende.</string>
     <string name="password_current_wrong">Password attuale errata</string>
     <string name="delete_vault_title">Eliminare il vault?</string>

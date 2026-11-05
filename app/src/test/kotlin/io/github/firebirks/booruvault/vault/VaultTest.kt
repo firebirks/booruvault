@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.toBase64
 import kotlinx.coroutines.CompletableDeferred
@@ -389,6 +390,38 @@ class VaultTest {
         } catch (_: VaultHeaderException) {
         }
         assertTrue(reopened.state.value is VaultState.Locked)
+    }
+
+    @Test
+    fun filesOfTheUnpaddedFormatAreResealedAtUnlock() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        val data = Random(12).nextBytes(10_000)
+        add(store, data, "a")
+        awaitItems(store, 1)
+        val media = File(root, "media/${store.items.value.single().id}")
+        // As an earlier version of the app left it: sealed to the same key, without padding.
+        val unpadded = File(media.path + ".old")
+        SealedOutputStream(unpadded.outputStream(), vault.recipient!!, version = 1).use { it.write(data) }
+        assertTrue(unpadded.renameTo(media))
+        assertEquals(1.toByte(), SealedFormat.versionOf(media))
+
+        VaultRekeyer(root, vault, store, scope)
+        withTimeout(20_000) {
+            while (SealedFormat.versionOf(media) != SealedFormat.VERSION) kotlinx.coroutines.delay(50)
+        }
+        assertEquals(0L, media.length() % SealedFormat.MEDIA_QUANTUM)
+        assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })
+        // Nothing else of the vault is left in the old format, each padded to the small
+        // quantum, and no re-keying was begun.
+        assertTrue(vault.keys!!.retired.isEmpty())
+        listOf("meta", "thumbs").flatMap { File(root, it).listFiles()?.toList().orEmpty() }.plus(File(root, "index.bin"))
+            .filter { it.isFile }.forEach {
+                assertEquals(it.name, SealedFormat.VERSION, SealedFormat.versionOf(it))
+                assertEquals(it.name, 0L, it.length() % SealedFormat.SMALL_QUANTUM)
+            }
     }
 
     private suspend fun add(store: VaultStore, data: ByteArray, name: String, postId: Long? = null) {

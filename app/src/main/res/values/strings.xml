@@ -155,6 +155,7 @@
     <string name="password_changed">Password updated</string>
     <string name="password_change_rekey_note">The vault\'s key is replaced as well. Every file is then re-sealed to the new key in the background; until that is done, an old copy of the vault opened with the old password can still read the files not yet re-sealed. Biometric unlock is turned off and can be turned on again.</string>
     <string name="rekey_title">Re-sealing the vault to its new key</string>
+    <string name="repad_title">Re-sealing the files to hide their sizes</string>
     <string name="rekey_progress">%1$d of %2$d files. Locking pauses it; the next unlock resumes it.</string>
     <string name="password_current_wrong">The current password is wrong</string>
     <string name="delete_vault_title">Delete the vault?</string>

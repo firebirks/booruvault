@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
 
-/** How far the re-sealing has come, in files. */
-data class RekeyProgress(val done: Int, val total: Int)
+/** How far the re-sealing has come, in files; [rekeying] after a password change, otherwise to the current format. */
+data class RekeyProgress(val done: Int, val total: Int, val rekeying: Boolean = true)
 
 /**
  * After a password change, re-seals every file to the new key pair. Runs whenever the vault is
@@ -29,6 +30,10 @@ data class RekeyProgress(val done: Int, val total: Int)
  * [GIVE_UP_AFTER] failures in a row is it counted as unreadable under any key. A file that
  * opens but cannot be written anew, on a full disk for one, is never given up: dropping the
  * retired pairs would leave it sealed to a key the vault no longer has.
+ *
+ * It also brings files of an older sealed format up to the current one, the padded one that
+ * hides their sizes: at each unlock, the files still in an older format are re-sealed in one
+ * pass; what cannot be written now waits for the next unlock.
  */
 class VaultRekeyer(
     private val root: File,
@@ -45,7 +50,9 @@ class VaultRekeyer(
         scope.launch(Dispatchers.IO) {
             vault.state.collectLatest { state ->
                 try {
-                    if (state is VaultState.Unlocked && state.keys.retired.isNotEmpty()) run(state.keys)
+                    if (state is VaultState.Unlocked) {
+                        if (state.keys.retired.isNotEmpty()) run(state.keys, rekey = true) else if (olderFormat().isNotEmpty()) run(state.keys, rekey = false)
+                    }
                 } finally {
                     _progress.value = null
                 }
@@ -57,7 +64,7 @@ class VaultRekeyer(
 
     private class Unreadable(cause: Exception) : Exception(cause)
 
-    private suspend fun run(keys: VaultKeys) {
+    private suspend fun run(keys: VaultKeys, rekey: Boolean) {
         val started = System.currentTimeMillis()
         root.walkTopDown().filter { it.isFile && it.name.endsWith(SUFFIX) }.forEach { it.delete() }
         val failures = HashMap<String, Int>()
@@ -65,11 +72,11 @@ class VaultRekeyer(
         while (true) {
             // A write begun under the old pair can land after the listing, unseen by this pass.
             val writesBefore = store.writesInFlight
-            val files = candidates()
+            val files = if (rekey) candidates() else olderFormat()
             var done = 0
             var resealed = 0
             var failed = 0
-            _progress.value = RekeyProgress(0, files.size)
+            _progress.value = RekeyProgress(0, files.size, rekey)
             for (file in files) {
                 currentCoroutineContext().ensureActive()
                 when (reseal(file, keys)) {
@@ -89,8 +96,10 @@ class VaultRekeyer(
                     }
                 }
                 done++
-                _progress.value = RekeyProgress(done, files.size)
+                _progress.value = RekeyProgress(done, files.size, rekey)
             }
+            // Nothing hangs on an older format but its sizes: one pass, the rest at the next unlock.
+            if (!rekey) return
             cleanPasses = if (resealed == 0 && failed == 0 && writesBefore == 0) cleanPasses + 1 else 0
             // A write that read the old recipient just before the header changed may still land.
             val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
@@ -102,6 +111,9 @@ class VaultRekeyer(
         }
     }
 
+    /** The sealed files still in a format older than the one written now. */
+    private fun olderFormat(): List<File> = candidates().filter { file -> SealedFormat.versionOf(file)?.let { it < SealedFormat.VERSION } == true }
+
     /** Every sealed file of the vault, finished writes only. */
     private fun candidates(): List<File> {
         val items = listOf("media", "thumbs", "meta").flatMap { dir ->
@@ -112,7 +124,10 @@ class VaultRekeyer(
         return items + blobs
     }
 
-    /** Re-seals [file] if a retired pair sealed it; tells a current file from one that would not open. */
+    /**
+     * Re-seals [file] if a retired pair sealed it, or an older format did; tells a current file
+     * from one that would not open.
+     */
     private fun reseal(file: File, keys: VaultKeys): Outcome {
         val sealed = try {
             SealedFile(file, keys)
@@ -120,12 +135,14 @@ class VaultRekeyer(
             return if (file.isFile) Outcome.UNREADABLE else Outcome.CURRENT
         }
         sealed.use { source ->
-            if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded)) return Outcome.CURRENT
+            if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded) && source.version == SealedFormat.VERSION) return Outcome.CURRENT
             val modified = file.lastModified()
             val length = file.length()
             val tmp = File(file.path + SUFFIX)
+            // Padded as the store would pad it: to the media quantum under media/, the small one elsewhere.
+            val quantum = if (file.parentFile?.name == "media") SealedFormat.MEDIA_QUANTUM else SealedFormat.SMALL_QUANTUM
             try {
-                SealedOutputStream(tmp.outputStream().buffered(256 * 1024), keys.recipient).use { out ->
+                SealedOutputStream(tmp.outputStream().buffered(256 * 1024), keys.recipient, quantum = quantum).use { out ->
                     val buffer = ByteArray(256 * 1024)
                     try {
                         val input = source.inputStream()
