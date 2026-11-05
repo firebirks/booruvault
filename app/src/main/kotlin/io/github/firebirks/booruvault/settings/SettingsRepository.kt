@@ -186,4 +186,9 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
         if (current.blacklist.lines().any { it.trim() == tag }) current
         else current.copy(blacklist = (current.blacklist.trimEnd() + "\n" + tag).trim())
     }
+
+    /** Drops the rule that is [tag] alone, as [addToBlacklist] wrote it; a rule of several tags stays. */
+    suspend fun removeFromBlacklist(tag: String) = edit { current ->
+        current.copy(blacklist = current.blacklist.lines().filterNot { it.trim() == tag }.joinToString("\n").trim())
+    }
 }

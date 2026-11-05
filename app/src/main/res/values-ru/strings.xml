@@ -57,6 +57,7 @@
     <string name="action_back">Назад</string>
     <string name="action_clear">Очистить</string>
     <string name="action_more">Ещё</string>
+    <string name="action_undo">Отменить</string>
     <string name="action_select_all">Выбрать все</string>
     <string name="action_cancel_selection">Отменить выбор</string>
     <string name="action_verify_in_browser">Пройти проверку в браузере</string>

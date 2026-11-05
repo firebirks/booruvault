@@ -57,6 +57,7 @@
     <string name="action_back">वापस जाएं</string>
     <string name="action_clear">साफ़ करें</string>
     <string name="action_more">और विकल्प</string>
+    <string name="action_undo">पूर्ववत करें</string>
     <string name="action_select_all">सभी चुनें</string>
     <string name="action_cancel_selection">चुनना रद्द करें</string>
     <string name="action_verify_in_browser">ब्राउज़र में जांचें</string>

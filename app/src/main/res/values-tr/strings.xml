@@ -57,6 +57,7 @@
     <string name="action_back">Geri</string>
     <string name="action_clear">Temizle</string>
     <string name="action_more">Diğer</string>
+    <string name="action_undo">Geri al</string>
     <string name="action_select_all">Tümünü seç</string>
     <string name="action_cancel_selection">Seçimi iptal et</string>
     <string name="action_verify_in_browser">Tarayıcıda doğrula</string>

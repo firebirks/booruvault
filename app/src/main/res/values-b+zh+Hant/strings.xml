@@ -57,6 +57,7 @@
     <string name="action_back">返回</string>
     <string name="action_clear">清除</string>
     <string name="action_more">更多</string>
+    <string name="action_undo">復原</string>
     <string name="action_select_all">全選</string>
     <string name="action_cancel_selection">取消選取</string>
     <string name="action_verify_in_browser">在瀏覽器中驗證</string>

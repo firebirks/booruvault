@@ -57,6 +57,7 @@
     <string name="action_back">Terug</string>
     <string name="action_clear">Wissen</string>
     <string name="action_more">Meer</string>
+    <string name="action_undo">Ongedaan maken</string>
     <string name="action_select_all">Alles selecteren</string>
     <string name="action_cancel_selection">Selectie annuleren</string>
     <string name="action_verify_in_browser">Controleren in browser</string>

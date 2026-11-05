@@ -57,6 +57,7 @@
     <string name="action_back">Kembali</string>
     <string name="action_clear">Bersihkan</string>
     <string name="action_more">Lainnya</string>
+    <string name="action_undo">Urungkan</string>
     <string name="action_select_all">Pilih semua</string>
     <string name="action_cancel_selection">Batalkan pilihan</string>
     <string name="action_verify_in_browser">Verifikasi di browser</string>

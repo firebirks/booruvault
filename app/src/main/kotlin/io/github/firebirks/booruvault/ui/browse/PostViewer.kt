@@ -65,6 +65,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -259,9 +260,15 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 info = null
                 collectionFromTag = tag
             },
+            // The posts the rule hides leave the grid and the viewer on the spot; the viewer stays
+            // open on the next one, and the rule can be taken back from the message.
             onBlacklist = { tag ->
+                info = null
                 vm.blacklist(tag)
-                Toast.makeText(context, resources.getString(R.string.viewer_blacklisted, tag), Toast.LENGTH_SHORT).show()
+                scope.launch {
+                    val result = snackbar.showSnackbar(resources.getString(R.string.viewer_blacklisted, tag), actionLabel = resources.getString(R.string.action_undo))
+                    if (result == SnackbarResult.ActionPerformed) vm.unblacklist(tag)
+                }
             },
         )
     }

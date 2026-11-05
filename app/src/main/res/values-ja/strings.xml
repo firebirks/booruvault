@@ -57,6 +57,7 @@
     <string name="action_back">戻る</string>
     <string name="action_clear">クリア</string>
     <string name="action_more">その他</string>
+    <string name="action_undo">元に戻す</string>
     <string name="action_select_all">すべて選択</string>
     <string name="action_cancel_selection">選択を解除</string>
     <string name="action_verify_in_browser">ブラウザで確認</string>

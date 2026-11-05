@@ -57,6 +57,7 @@
     <string name="action_back">뒤로</string>
     <string name="action_clear">지우기</string>
     <string name="action_more">더보기</string>
+    <string name="action_undo">실행 취소</string>
     <string name="action_select_all">모두 선택</string>
     <string name="action_cancel_selection">선택 취소</string>
     <string name="action_verify_in_browser">브라우저에서 확인</string>

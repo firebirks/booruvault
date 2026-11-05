@@ -57,6 +57,7 @@
     <string name="action_back">Quay lại</string>
     <string name="action_clear">Xóa</string>
     <string name="action_more">Thêm</string>
+    <string name="action_undo">Hoàn tác</string>
     <string name="action_select_all">Chọn tất cả</string>
     <string name="action_cancel_selection">Bỏ chọn</string>
     <string name="action_verify_in_browser">Xác minh trong trình duyệt</string>

@@ -15,6 +15,7 @@ import io.github.firebirks.booruvault.booru.BooruChallengeException
 import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
+import io.github.firebirks.booruvault.booru.Rating
 import io.github.firebirks.booruvault.booru.TagSuggestion
 import io.github.firebirks.booruvault.booru.autocompleteToken
 import io.github.firebirks.booruvault.download.DownloadStatus
@@ -62,7 +63,7 @@ private fun BooruSource?.sameAs(other: BooruSource?): Boolean =
     if (this?.id == BrowseViewModel.WEB_PAGE_SOURCE) this == other else this?.id == other?.id
 
 /** A grid as it was left: its results, how far they were read, and where it was scrolled to. */
-private class LeftGrid(val state: BrowseState, val page: Int, val seen: Set<Long>, val index: Int, val offset: Int, val filters: Any)
+private class LeftGrid(val state: BrowseState, val page: Int, val seen: Set<Long>, val fetched: List<Post>, val index: Int, val offset: Int, val pageSize: Int)
 
 /** Where a post stands with respect to the vault. */
 enum class SaveState { NONE, QUEUED, SAVED }
@@ -131,6 +132,14 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
 
     private var page = 0
     private val seen = HashSet<Long>()
+
+    /**
+     * Every post the search returned so far, in the order it came, whatever the filters make of
+     * it: what they hide is kept, so a filter changed is applied here and now, with nothing
+     * asked of the site again and nothing on screen lost, and a filter loosened brings back
+     * what it hid.
+     */
+    private var fetched: List<Post> = emptyList()
     private var loadJob: Job? = null
     private var suggestJob: Job? = null
 
@@ -174,12 +183,14 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                             }
                     }
                     launch {
-                        // Changing what is allowed re-runs the search rather than filtering what is
-                        // loaded, so loosening the filter brings back posts that were dropped.
-                        var previous: Any? = null
+                        // The page size changes what is asked of the site; the filters only what
+                        // is shown of what it sent, which is settled here without a reload.
+                        var previous: Triple<Set<Rating>, String, Int>? = null
                         c.settings.settings.map { Triple(it.allowedRatings, it.blacklist, it.pageSize) }.distinctUntilChanged().collect { key ->
-                            if (previous != null && previous != key) restart(refreshing = false)
+                            val before = previous
                             previous = key
+                            if (before == null || before == key) return@collect
+                            if (before.third != key.third) restart(refreshing = false) else refilter()
                         }
                     }
                     launch {
@@ -202,6 +213,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         suggestJob?.cancel()
         page = 0
         seen.clear()
+        fetched = emptyList()
         input = TextFieldValue("")
         _suggestions.value = emptyList()
         _selection.value = emptySet()
@@ -238,12 +250,10 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 if (_state.value.generation != generation) return
                 page = next
                 val fresh = raw.filter { seen.add(it.id) }
-                val visible = fresh.filter { settings.allows(it) }
-                update {
-                    it.copy(posts = it.posts + visible, hidden = it.hidden + fresh.size - visible.size, endReached = raw.isEmpty())
-                }
+                fetched = fetched + fresh
+                update { it.refiltered().copy(endReached = raw.isEmpty()) }
                 // A page the filters emptied entirely would leave nothing to scroll to; fetch on.
-                if (raw.isEmpty() || visible.isNotEmpty() || ++emptyPages >= 5) break
+                if (raw.isEmpty() || fresh.any { settings.allows(it) } || ++emptyPages >= 5) break
             }
         } catch (e: CancellationException) {
             throw e
@@ -254,11 +264,21 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         }
     }
 
+    /** This state showing, of [fetched], what the filters allow now. */
+    private fun BrowseState.refiltered(): BrowseState {
+        val settings = c.settings.settings.value
+        val shown = fetched.filter { settings.allows(it) }
+        return copy(posts = shown, hidden = fetched.size - shown.size)
+    }
+
+    private fun refilter() = _state.update { it.refiltered() }
+
     private fun restart(refreshing: Boolean) {
         loadJob?.cancel()
         cancelResolves()
         page = 0
         seen.clear()
+        fetched = emptyList()
         _selection.value = emptySet()
         _state.update {
             it.copy(
@@ -270,14 +290,12 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         loadMore()
     }
 
-    private fun filters(): Any = c.settings.settings.value.let { Triple(it.allowedRatings, it.blacklist, it.pageSize) }
-
     /** Keeps the grid shown, for Back to return to. */
     private fun leave(beforeWebPage: Boolean = false) {
         val current = _state.value
         if (current.source == null) return
         val (index, offset) = position
-        history.push(LeftGrid(current, page, seen.toSet(), index, offset, filters()), beforeWebPage)
+        history.push(LeftGrid(current, page, seen.toSet(), fetched, index, offset, c.settings.settings.value.pageSize), beforeWebPage)
     }
 
     /** Back to the grid the last search, or page opened on the spot, replaced. */
@@ -294,12 +312,15 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         webPage.value = target?.takeIf { it.id == WEB_PAGE_SOURCE }
     }
 
-    /** Shows a grid as it was left; one found under other filters, or with nothing yet, is searched again. */
+    /**
+     * Shows a grid as it was left, under the filters of now; one read with another page size,
+     * or with nothing yet, is searched again.
+     */
     private fun show(grid: LeftGrid, source: BooruSource?) {
         val query = grid.state.query
         input = TextFieldValue(query, TextRange(query.length))
         _suggestions.value = emptyList()
-        if (grid.state.posts.isEmpty() || grid.filters != filters()) {
+        if (grid.fetched.isEmpty() || grid.pageSize != c.settings.settings.value.pageSize) {
             _state.update { it.copy(source = source, query = query) }
             restart(refreshing = false)
             return
@@ -309,13 +330,14 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         page = grid.page
         seen.clear()
         seen.addAll(grid.seen)
+        fetched = grid.fetched
         _selection.value = emptySet()
         position = grid.index to grid.offset
         _state.update {
             grid.state.copy(
                 source = source, loading = false, refreshing = false, generation = it.generation + 1,
                 startIndex = grid.index, startOffset = grid.offset,
-            )
+            ).refiltered()
         }
     }
 
@@ -335,8 +357,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         resolveJobs[post.id] = viewModelScope.launch {
             try {
                 val resolved = c.api(source).resolve(post)
-                _state.update { s ->
-                    if (s.generation != generation) s else s.copy(posts = s.posts.map { if (it.id == post.id) resolved else it })
+                if (_state.value.generation == generation) {
+                    fetched = fetched.map { if (it.id == post.id) resolved else it }
+                    _state.update { s -> s.copy(posts = s.posts.map { if (it.id == post.id) resolved else it }) }
                 }
             } catch (e: CancellationException) {
                 throw e
@@ -471,6 +494,11 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     fun excludeFromSearch(tag: String) = search("${_state.value.query} -$tag")
     fun blacklist(tag: String) {
         viewModelScope.launch { c.settings.addToBlacklist(tag) }
+    }
+
+    /** Undoes [blacklist]: the rule goes, and what it hid is back where it was. */
+    fun unblacklist(tag: String) {
+        viewModelScope.launch { c.settings.removeFromBlacklist(tag) }
     }
 
     fun toggleSelection(id: Long) = _selection.update { if (id in it) it - id else it + id }

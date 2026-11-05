@@ -57,6 +57,7 @@
     <string name="action_back">رجوع</string>
     <string name="action_clear">مسح</string>
     <string name="action_more">المزيد</string>
+    <string name="action_undo">تراجع</string>
     <string name="action_select_all">تحديد الكل</string>
     <string name="action_cancel_selection">إلغاء التحديد</string>
     <string name="action_verify_in_browser">التحقق في المتصفح</string>

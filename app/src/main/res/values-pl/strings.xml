@@ -57,6 +57,7 @@
     <string name="action_back">Wstecz</string>
     <string name="action_clear">Wyczyść</string>
     <string name="action_more">Więcej</string>
+    <string name="action_undo">Cofnij</string>
     <string name="action_select_all">Zaznacz wszystko</string>
     <string name="action_cancel_selection">Anuluj zaznaczenie</string>
     <string name="action_verify_in_browser">Zweryfikuj w przeglądarce</string>

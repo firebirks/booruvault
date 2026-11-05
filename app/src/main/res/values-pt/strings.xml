@@ -57,6 +57,7 @@
     <string name="action_back">Voltar</string>
     <string name="action_clear">Limpar</string>
     <string name="action_more">Mais</string>
+    <string name="action_undo">Desfazer</string>
     <string name="action_select_all">Selecionar tudo</string>
     <string name="action_cancel_selection">Cancelar seleção</string>
     <string name="action_verify_in_browser">Verificar no navegador</string>
