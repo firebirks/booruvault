@@ -55,6 +55,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -331,7 +334,7 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                     }
                 }) { Text(stringResource(R.string.action_save)) }
             }
-            testResult?.let { Text(it.text(), style = MaterialTheme.typography.bodyMedium) }
+            testResult?.let { Text(it.text(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
             testChallenge?.let { url ->
                 OutlinedButton(onClick = {
                     challenge.open(draft(), url) {

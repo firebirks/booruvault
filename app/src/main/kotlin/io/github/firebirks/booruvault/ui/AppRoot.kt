@@ -8,7 +8,11 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.BasicText
 import io.github.firebirks.booruvault.R
 import androidx.annotation.StringRes
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -122,15 +126,19 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
     }
 }
 
-/** One line that shrinks to fit: tab names run long in some languages ("Téléchargements"). */
+/**
+ * One line that shrinks to fit: tab names run long in some languages ("Téléchargements"). It
+ * shrinks no further than can still be read; past that the end is cut rather than the size.
+ */
 @Composable
 private fun TabLabel(text: String) {
     val style = LocalTextStyle.current
     BasicText(
         text,
         maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         style = style.copy(color = LocalContentColor.current),
-        autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+        autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
     )
 }
 
@@ -206,7 +214,9 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
                             icon = {
                                 val icon = if (item == Tab.VAULT && vaultState is VaultState.Unlocked) Icons.Outlined.LockOpen else item.icon
                                 if (item == Tab.DOWNLOADS && active > 0) {
-                                    BadgedBox(badge = { Badge { Text("$active") } }) { Icon(icon, null) }
+                                    // The number alone would be read bare: it is said as what it counts.
+                                    val inProgress = pluralStringResource(R.plurals.downloads_active, active, active)
+                                    BadgedBox(badge = { Badge(Modifier.semantics { contentDescription = inProgress }) { Text("$active") } }) { Icon(icon, null) }
                                 } else {
                                     Icon(icon, null)
                                 }

@@ -35,6 +35,8 @@
     <string name="rating_questionable">Cuestionable</string>
     <string name="rating_explicit">Explícito</string>
     <string name="rating_unknown">Sin clasificar</string>
+    <string name="media_video">Vídeo</string>
+    <string name="media_animation">Animación</string>
     <string name="engine_gelbooru_html">Gelbooru (páginas web)</string>
     <string name="engine_shimmie">Shimmie2 (páginas web)</string>
     <string name="engine_html_generic">Cualquier página web</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Deshacer</string>
     <string name="action_keep_going">Continuar</string>
     <string name="action_select_all">Seleccionar todo</string>
+    <string name="action_select">Seleccionar</string>
     <string name="action_cancel_selection">Cancelar selección</string>
     <string name="action_verify_in_browser">Verificar en el navegador</string>
     <string name="action_show">Mostrar</string>

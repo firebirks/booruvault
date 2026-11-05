@@ -36,6 +36,8 @@
     <string name="rating_questionable">Questionable</string>
     <string name="rating_explicit">Explicit</string>
     <string name="rating_unknown">Unrated</string>
+    <string name="media_video">Video</string>
+    <string name="media_animation">Animation</string>
     <string name="engine_danbooru" translatable="false">Danbooru</string>
     <string name="engine_moebooru" translatable="false">Moebooru</string>
     <string name="engine_gelbooru" translatable="false">Gelbooru 0.2</string>
@@ -66,6 +68,7 @@
     <string name="action_undo">Undo</string>
     <string name="action_keep_going">Keep going</string>
     <string name="action_select_all">Select all</string>
+    <string name="action_select">Select</string>
     <string name="action_cancel_selection">Cancel selection</string>
     <string name="action_verify_in_browser">Verify in the browser</string>
     <string name="action_show">Show</string>

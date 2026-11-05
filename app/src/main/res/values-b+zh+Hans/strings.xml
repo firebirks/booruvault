@@ -35,6 +35,8 @@
     <string name="rating_questionable">存疑</string>
     <string name="rating_explicit">露骨</string>
     <string name="rating_unknown">未分级</string>
+    <string name="media_video">视频</string>
+    <string name="media_animation">动画</string>
     <string name="engine_gelbooru_html">Gelbooru（网页）</string>
     <string name="engine_shimmie">Shimmie2（网页）</string>
     <string name="engine_html_generic">任意网页</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">撤销</string>
     <string name="action_keep_going">继续</string>
     <string name="action_select_all">全选</string>
+    <string name="action_select">选择</string>
     <string name="action_cancel_selection">取消选择</string>
     <string name="action_verify_in_browser">在浏览器中验证</string>
     <string name="action_show">显示</string>

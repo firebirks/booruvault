@@ -35,6 +35,8 @@
     <string name="rating_questionable">Şüpheli</string>
     <string name="rating_explicit">Müstehcen</string>
     <string name="rating_unknown">Derecelendirmesiz</string>
+    <string name="media_video">Video</string>
+    <string name="media_animation">Animasyon</string>
     <string name="engine_gelbooru_html">Gelbooru (web sayfaları)</string>
     <string name="engine_shimmie">Shimmie2 (web sayfaları)</string>
     <string name="engine_html_generic">Herhangi bir web sayfası</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Geri al</string>
     <string name="action_keep_going">Devam et</string>
     <string name="action_select_all">Tümünü seç</string>
+    <string name="action_select">Seç</string>
     <string name="action_cancel_selection">Seçimi iptal et</string>
     <string name="action_verify_in_browser">Tarayıcıda doğrula</string>
     <string name="action_show">Göster</string>

@@ -35,6 +35,8 @@
     <string name="rating_questionable">Wątpliwe</string>
     <string name="rating_explicit">Dosadne</string>
     <string name="rating_unknown">Bez klasyfikacji</string>
+    <string name="media_video">Wideo</string>
+    <string name="media_animation">Animacja</string>
     <string name="engine_gelbooru_html">Gelbooru (strony WWW)</string>
     <string name="engine_shimmie">Shimmie2 (strony WWW)</string>
     <string name="engine_html_generic">Dowolna strona WWW</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Cofnij</string>
     <string name="action_keep_going">Kontynuuj</string>
     <string name="action_select_all">Zaznacz wszystko</string>
+    <string name="action_select">Zaznacz</string>
     <string name="action_cancel_selection">Anuluj zaznaczenie</string>
     <string name="action_verify_in_browser">Zweryfikuj w przeglądarce</string>
     <string name="action_show">Pokaż</string>

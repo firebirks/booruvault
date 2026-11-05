@@ -35,6 +35,8 @@
     <string name="rating_questionable">مشكوك فيه</string>
     <string name="rating_explicit">صريح</string>
     <string name="rating_unknown">بدون تصنيف</string>
+    <string name="media_video">فيديو</string>
+    <string name="media_animation">رسوم متحركة</string>
     <string name="engine_gelbooru_html">Gelbooru (صفحات الويب)</string>
     <string name="engine_shimmie">Shimmie2 (صفحات الويب)</string>
     <string name="engine_html_generic">أي صفحة ويب</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">تراجع</string>
     <string name="action_keep_going">متابعة</string>
     <string name="action_select_all">تحديد الكل</string>
+    <string name="action_select">تحديد</string>
     <string name="action_cancel_selection">إلغاء التحديد</string>
     <string name="action_verify_in_browser">التحقق في المتصفح</string>
     <string name="action_show">إظهار</string>

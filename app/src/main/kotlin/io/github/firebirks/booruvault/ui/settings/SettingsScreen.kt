@@ -6,6 +6,8 @@ import androidx.compose.material.icons.outlined.WarningAmber
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -409,8 +411,8 @@ private fun LanguageSettings() {
 private fun LanguageRow(name: String, selected: Boolean, onClick: () -> Unit) {
     ListItem(
         headlineContent = { Text(name) },
-        leadingContent = { RadioButton(selected = selected, onClick = onClick) },
-        modifier = Modifier.clickable(onClick = onClick),
+        leadingContent = { RadioButton(selected = selected, onClick = null) },
+        modifier = Modifier.selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
     )
 }
 

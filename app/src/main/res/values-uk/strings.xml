@@ -35,6 +35,8 @@
     <string name="rating_questionable">Сумнівний</string>
     <string name="rating_explicit">Відвертий</string>
     <string name="rating_unknown">Без рейтингу</string>
+    <string name="media_video">Відео</string>
+    <string name="media_animation">Анімація</string>
     <string name="engine_gelbooru_html">Gelbooru (вебсторінки)</string>
     <string name="engine_shimmie">Shimmie2 (вебсторінки)</string>
     <string name="engine_html_generic">Будь-яка вебсторінка</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Скасувати</string>
     <string name="action_keep_going">Продовжити</string>
     <string name="action_select_all">Вибрати все</string>
+    <string name="action_select">Вибрати</string>
     <string name="action_cancel_selection">Скасувати вибір</string>
     <string name="action_verify_in_browser">Пройти перевірку в браузері</string>
     <string name="action_show">Показати</string>

@@ -35,6 +35,8 @@
     <string name="rating_questionable">선정적</string>
     <string name="rating_explicit">노골적</string>
     <string name="rating_unknown">등급 없음</string>
+    <string name="media_video">동영상</string>
+    <string name="media_animation">애니메이션</string>
     <string name="engine_gelbooru_html">Gelbooru(웹 페이지)</string>
     <string name="engine_shimmie">Shimmie2(웹 페이지)</string>
     <string name="engine_html_generic">임의의 웹 페이지</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">실행 취소</string>
     <string name="action_keep_going">계속</string>
     <string name="action_select_all">모두 선택</string>
+    <string name="action_select">선택</string>
     <string name="action_cancel_selection">선택 취소</string>
     <string name="action_verify_in_browser">브라우저에서 확인</string>
     <string name="action_show">표시</string>

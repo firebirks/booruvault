@@ -20,6 +20,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,6 +84,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -254,6 +261,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     Text(
                         stringResource(if (t.importing) R.string.transfer_importing else R.string.transfer_exporting, t.done, t.total),
                         style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     )
                     LinearProgressIndicator(
                         progress = { if (t.total == 0) 0f else t.done.toFloat() / t.total },
@@ -333,8 +341,12 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.vault_import_text))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = deleteOriginals, onCheckedChange = { deleteOriginals = it })
+                    // The whole row toggles, and reads as one checkbox with its label.
+                    Row(
+                        Modifier.fillMaxWidth().toggleable(value = deleteOriginals, role = Role.Checkbox, onValueChange = { deleteOriginals = it }),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = deleteOriginals, onCheckedChange = null)
                         Text(stringResource(R.string.vault_import_delete_originals))
                     }
                 }
@@ -371,13 +383,29 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
 @Composable
 private fun VaultCell(item: VaultItem, selected: Boolean, selecting: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
     val shape = RoundedCornerShape(8.dp)
+    // One node for a screen reader: the file, what kind it is, whether it is selected, and that
+    // a long press selects it; the thumbnail and badges say nothing of their own.
+    val description = listOfNotNull(
+        item.fileName,
+        when {
+            item.isVideo -> stringResource(R.string.media_video)
+            item.isAnimated -> stringResource(R.string.media_animation)
+            else -> null
+        },
+    ).joinToString(", ")
+    val open = stringResource(R.string.action_open)
+    val select = stringResource(R.string.action_select)
     Box(
         Modifier
             .aspectRatio(1f)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .then(if (selected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, shape) else Modifier)
-            .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+            .semantics(mergeDescendants = true) {
+                contentDescription = description
+                if (selecting) this.selected = selected
+            }
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick, onClickLabel = if (selecting) null else open, onLongClickLabel = select),
     ) {
         if (item.hasThumbnail || !item.isVideo) {
             AsyncImage(

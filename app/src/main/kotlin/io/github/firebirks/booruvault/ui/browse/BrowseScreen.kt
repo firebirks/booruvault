@@ -110,6 +110,10 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -127,6 +131,7 @@ import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.MessageState
 import io.github.firebirks.booruvault.ui.common.categoryColor
 import io.github.firebirks.booruvault.ui.common.containerViewModel
+import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
 import io.github.firebirks.booruvault.ui.settings.TorBlockedState
 import io.github.firebirks.booruvault.util.blockedByTor
@@ -320,8 +325,9 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                 }
             }
             if (searchFocused && (suggestions.isNotEmpty() || shelf.isNotEmpty())) {
-                // A tap beside the tags puts the search away instead of opening the post beneath.
-                Box(Modifier.fillMaxSize().clickable(interactionSource = null, indication = null) { focus.clearFocus() })
+                // A tap beside the tags puts the search away instead of opening the post beneath;
+                // to a screen reader the scrim is nothing, so the grid behind stays reachable.
+                Box(Modifier.fillMaxSize().clearAndSetSemantics {}.clickable(interactionSource = null, indication = null) { focus.clearFocus() })
                 Box(Modifier.imePadding()) {
                     if (suggestions.isNotEmpty()) {
                         val favourites = settings.favouriteTags[state.source?.id].orEmpty()
@@ -595,7 +601,9 @@ private fun TagRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (category != null) {
-            Box(Modifier.size(8.dp).clip(CircleShape).background(categoryColor(category)))
+            // The colour says the category to the eye; the name says it to a screen reader.
+            val label = stringResource(category.labelRes())
+            Box(Modifier.size(8.dp).clip(CircleShape).background(categoryColor(category)).semantics { contentDescription = label })
             Spacer(Modifier.size(12.dp))
         }
         Text(
@@ -626,6 +634,23 @@ private fun PostCell(
     onLongClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(10.dp)
+    // One node for a screen reader: what the post is, whether it is in the vault, whether it is
+    // selected, and that a long press selects it; the image and badges say nothing of their own.
+    val description = listOfNotNull(
+        "#${post.id}",
+        when (post.kind) {
+            MediaKind.VIDEO -> stringResource(R.string.media_video)
+            MediaKind.ANIMATED -> stringResource(R.string.media_animation)
+            MediaKind.IMAGE -> null
+        },
+        when (saveState) {
+            SaveState.SAVED -> stringResource(R.string.viewer_in_vault)
+            SaveState.QUEUED -> stringResource(R.string.viewer_downloading)
+            SaveState.NONE -> null
+        },
+    ).joinToString(", ")
+    val open = stringResource(R.string.action_open)
+    val select = stringResource(R.string.action_select)
     Box(
         Modifier
             .fillMaxWidth()
@@ -633,7 +658,11 @@ private fun PostCell(
             .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .then(if (selected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, shape) else Modifier)
-            .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+            .semantics(mergeDescendants = true) {
+                contentDescription = description
+                if (selecting) this.selected = selected
+            }
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick, onClickLabel = if (selecting) null else open, onLongClickLabel = select),
     ) {
         AsyncImage(
             model = post.previewUrl,

@@ -35,6 +35,8 @@
     <string name="rating_questionable">Meragukan</string>
     <string name="rating_explicit">Eksplisit</string>
     <string name="rating_unknown">Tanpa rating</string>
+    <string name="media_video">Video</string>
+    <string name="media_animation">Animasi</string>
     <string name="engine_gelbooru_html">Gelbooru (halaman web)</string>
     <string name="engine_shimmie">Shimmie2 (halaman web)</string>
     <string name="engine_html_generic">Halaman web apa pun</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Urungkan</string>
     <string name="action_keep_going">Lanjutkan</string>
     <string name="action_select_all">Pilih semua</string>
+    <string name="action_select">Pilih</string>
     <string name="action_cancel_selection">Batalkan pilihan</string>
     <string name="action_verify_in_browser">Verifikasi di browser</string>
     <string name="action_show">Tampilkan</string>

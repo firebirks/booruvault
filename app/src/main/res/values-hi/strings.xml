@@ -35,6 +35,8 @@
     <string name="rating_questionable">संदिग्ध</string>
     <string name="rating_explicit">अश्लील</string>
     <string name="rating_unknown">बिना रेटिंग</string>
+    <string name="media_video">वीडियो</string>
+    <string name="media_animation">एनिमेशन</string>
     <string name="engine_gelbooru_html">Gelbooru (वेब पेज)</string>
     <string name="engine_shimmie">Shimmie2 (वेब पेज)</string>
     <string name="engine_html_generic">कोई भी वेब पेज</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">पूर्ववत करें</string>
     <string name="action_keep_going">जारी रखें</string>
     <string name="action_select_all">सभी चुनें</string>
+    <string name="action_select">चुनें</string>
     <string name="action_cancel_selection">चुनना रद्द करें</string>
     <string name="action_verify_in_browser">ब्राउज़र में जांचें</string>
     <string name="action_show">दिखाएं</string>

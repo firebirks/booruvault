@@ -35,6 +35,8 @@
     <string name="rating_questionable">Twijfelachtig</string>
     <string name="rating_explicit">Expliciet</string>
     <string name="rating_unknown">Niet geclassificeerd</string>
+    <string name="media_video">Video</string>
+    <string name="media_animation">Animatie</string>
     <string name="engine_gelbooru_html">Gelbooru (webpagina\'s)</string>
     <string name="engine_shimmie">Shimmie2 (webpagina\'s)</string>
     <string name="engine_html_generic">Willekeurige webpagina</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">Ongedaan maken</string>
     <string name="action_keep_going">Doorgaan</string>
     <string name="action_select_all">Alles selecteren</string>
+    <string name="action_select">Selecteren</string>
     <string name="action_cancel_selection">Selectie annuleren</string>
     <string name="action_verify_in_browser">Controleren in browser</string>
     <string name="action_show">Tonen</string>

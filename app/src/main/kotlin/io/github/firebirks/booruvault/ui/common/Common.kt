@@ -46,6 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -172,7 +175,8 @@ fun PasswordField(
         singleLine = true,
         enabled = enabled,
         isError = isError,
-        supportingText = supportingText?.let { { Text(it) } },
+        // A wrong password, or a rule not met, is said aloud as it appears.
+        supportingText = supportingText?.let { { Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }) } },
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = imeAction, autoCorrectEnabled = false),
         keyboardActions = KeyboardActions(onDone = { onDone() }, onGo = { onDone() }, onNext = { onDone() }),

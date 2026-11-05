@@ -1,6 +1,6 @@
 package io.github.firebirks.booruvault.ui.settings
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,6 +13,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -25,13 +26,14 @@ fun SectionHeader(text: String) {
     )
 }
 
+/** A setting with a switch: the whole row toggles it, and reads as one switch with its text. */
 @Composable
 fun SwitchRow(title: String, subtitle: String? = null, checked: Boolean, enabled: Boolean = true, onChange: (Boolean) -> Unit) {
     ListItem(
         headlineContent = { Text(title) },
         supportingContent = subtitle?.let { { Text(it) } },
-        trailingContent = { Switch(checked = checked, onCheckedChange = onChange, enabled = enabled) },
-        modifier = Modifier.clickable(enabled = enabled) { onChange(!checked) },
+        trailingContent = { Switch(checked = checked, onCheckedChange = null, enabled = enabled) },
+        modifier = Modifier.toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onChange),
     )
 }
 

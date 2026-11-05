@@ -35,6 +35,8 @@
     <string name="rating_questionable">ล่อแหลม</string>
     <string name="rating_explicit">โจ่งแจ้ง</string>
     <string name="rating_unknown">ไม่มีเรต</string>
+    <string name="media_video">วิดีโอ</string>
+    <string name="media_animation">ภาพเคลื่อนไหว</string>
     <string name="engine_gelbooru_html">Gelbooru (หน้าเว็บ)</string>
     <string name="engine_shimmie">Shimmie2 (หน้าเว็บ)</string>
     <string name="engine_html_generic">หน้าเว็บใดก็ได้</string>
@@ -61,6 +63,7 @@
     <string name="action_undo">เลิกทำ</string>
     <string name="action_keep_going">ดำเนินการต่อ</string>
     <string name="action_select_all">เลือกทั้งหมด</string>
+    <string name="action_select">เลือก</string>
     <string name="action_cancel_selection">ยกเลิกการเลือก</string>
     <string name="action_verify_in_browser">ตรวจสอบในเบราว์เซอร์</string>
     <string name="action_show">แสดง</string>

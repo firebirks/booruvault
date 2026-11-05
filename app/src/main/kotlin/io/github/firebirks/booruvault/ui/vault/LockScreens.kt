@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Fingerprint
@@ -43,6 +44,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -196,7 +201,8 @@ fun UnlockScreen(
             if (working) {
                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
                 Spacer(Modifier.size(10.dp))
-                Text(stringResource(R.string.unlock_deriving))
+                // Said aloud too: the seconds the key takes are otherwise silent to a screen reader.
+                Text(stringResource(R.string.unlock_deriving), Modifier.semantics { liveRegion = LiveRegionMode.Polite })
             } else {
                 Text(stringResource(R.string.unlock_action))
             }
@@ -268,8 +274,12 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
             supportingText = if (mismatch) stringResource(R.string.password_mismatch) else null,
             enabled = !working, modifier = Modifier.fillMaxWidth(),
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = understood, onCheckedChange = { understood = it }, enabled = !working)
+        // The whole row toggles, and reads as one checkbox with its text.
+        Row(
+            Modifier.fillMaxWidth().toggleable(value = understood, enabled = !working, role = Role.Checkbox, onValueChange = { understood = it }),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(checked = understood, onCheckedChange = null, enabled = !working)
             Text(
                 stringResource(R.string.setup_understood),
                 style = MaterialTheme.typography.bodySmall,
@@ -284,7 +294,12 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
                 Text(stringResource(R.string.setup_create))
             }
         }
-        error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center) }
+        error?.let {
+            Text(
+                it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
+            )
+        }
     }
 }
 
