@@ -100,7 +100,7 @@
     <string name="settings_biometric">Mit Fingerabdruck entsperren</string>
     <string name="settings_biometric_hint">Das Passwort funktioniert weiterhin immer.</string>
     <string name="settings_auto_lock">Automatische Sperre</string>
-    <string name="settings_auto_lock_hint">Wie lange die App im Hintergrund bleiben darf, bevor sie sperrt. Das Sperren vergisst auch die Suche, die offenen Bildschirme und alles Geladene.</string>
+    <string name="settings_auto_lock_hint">Wie lange die App im Hintergrund bleiben darf, bevor sie sperrt. Das Sperren vergisst auch die Suche, die offenen Bildschirme und alles Geladene. Beim Sperren verschwindet die App auch aus der Liste der letzten Apps.</string>
     <string name="auto_lock_immediately">Sofort</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d Min.</string>
@@ -251,7 +251,7 @@
     <string name="unlock_action">Entsperren</string>
     <string name="unlock_fingerprint">Fingerabdruck verwenden</string>
     <string name="setup_title">Erstelle deinen Tresor</string>
-    <string name="setup_text">Heruntergeladene Bilder werden mit AES-256 verschlüsselt, bevor sie den Speicher des Telefons erreichen. Das Passwort schützt den Schlüssel des Tresors mittels Argon2id.</string>
+    <string name="setup_text">Alles, was du speicherst, wird auf diesem Telefon verschlüsselt. Das Passwort ist der einzige Schlüssel: Wähle eines, das du dir merken wirst.</string>
     <string name="password_confirm">Passwort bestätigen</string>
     <string name="password_mismatch">Die Passwörter stimmen nicht überein</string>
     <string name="setup_understood">Ich verstehe, dass das Passwort nicht wiederhergestellt werden kann: Wenn ich es vergesse, ist der Inhalt des Tresors verloren.</string>

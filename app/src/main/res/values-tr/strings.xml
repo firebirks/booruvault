@@ -100,7 +100,7 @@
     <string name="settings_biometric">Parmak iziyle kilit açma</string>
     <string name="settings_biometric_hint">Parola da her zaman çalışır.</string>
     <string name="settings_auto_lock">Otomatik kilit</string>
-    <string name="settings_auto_lock_hint">Uygulamanın kilitlenmeden önce arka planda ne kadar kalabileceği. Kilitlemek aramayı, açık ekranları ve yüklenen her şeyi de unutur.</string>
+    <string name="settings_auto_lock_hint">Uygulamanın kilitlenmeden önce arka planda ne kadar kalabileceği. Kilitlemek aramayı, açık ekranları ve yüklenen her şeyi de unutur. Kilitlenince uygulama son uygulamalar listesinden de çıkar.</string>
     <string name="auto_lock_immediately">Hemen</string>
     <string name="auto_lock_seconds">%d sn</string>
     <string name="auto_lock_minutes">%d dk</string>
@@ -251,7 +251,7 @@
     <string name="unlock_action">Kilidi aç</string>
     <string name="unlock_fingerprint">Parmak izi kullan</string>
     <string name="setup_title">Kasanızı oluşturun</string>
-    <string name="setup_text">İndirilen görseller, telefonun depolama alanına ulaşmadan önce AES-256 ile şifrelenir. Parola, kasanın anahtarını Argon2id ile korur.</string>
+    <string name="setup_text">Kaydettiğiniz her şey bu telefonda şifrelenir. Parola tek anahtardır: hatırlayacağınız bir parola seçin.</string>
     <string name="password_confirm">Parolayı onaylayın</string>
     <string name="password_mismatch">Parolalar eşleşmiyor</string>
     <string name="setup_understood">Parolanın kurtarılamayacağını anlıyorum: unutursam kasanın içeriği kaybolur.</string>

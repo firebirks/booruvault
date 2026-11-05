@@ -104,7 +104,7 @@
     <string name="settings_biometric">Разблокировка отпечатком</string>
     <string name="settings_biometric_hint">Пароль тоже всегда работает.</string>
     <string name="settings_auto_lock">Автоблокировка</string>
-    <string name="settings_auto_lock_hint">Сколько приложение может оставаться в фоне до блокировки. Блокировка также забывает поиск, открытые экраны и всё загруженное.</string>
+    <string name="settings_auto_lock_hint">Сколько приложение может оставаться в фоне до блокировки. Блокировка также забывает поиск, открытые экраны и всё загруженное. При блокировке приложение также исчезает из списка недавних.</string>
     <string name="auto_lock_immediately">Сразу</string>
     <string name="auto_lock_seconds">%d с</string>
     <string name="auto_lock_minutes">%d мин</string>
@@ -261,7 +261,7 @@
     <string name="unlock_action">Разблокировать</string>
     <string name="unlock_fingerprint">Использовать отпечаток</string>
     <string name="setup_title">Создайте хранилище</string>
-    <string name="setup_text">Скачанные изображения шифруются AES-256 до того, как попадут на накопитель телефона. Пароль защищает ключ хранилища с помощью Argon2id.</string>
+    <string name="setup_text">Всё, что вы сохраняете, шифруется на этом телефоне. Пароль является единственным ключом: выберите такой, который запомните.</string>
     <string name="password_confirm">Подтвердите пароль</string>
     <string name="password_mismatch">Пароли не совпадают</string>
     <string name="setup_understood">Я понимаю, что пароль невозможно восстановить: если я его забуду, содержимое хранилища будет утеряно.</string>

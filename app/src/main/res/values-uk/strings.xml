@@ -104,7 +104,7 @@
     <string name="settings_biometric">Розблокування відбитком</string>
     <string name="settings_biometric_hint">Пароль теж завжди працює.</string>
     <string name="settings_auto_lock">Автоблокування</string>
-    <string name="settings_auto_lock_hint">Скільки застосунок може лишатися у фоні до блокування. Блокування також забуває пошук, відкриті екрани й усе завантажене.</string>
+    <string name="settings_auto_lock_hint">Скільки застосунок може лишатися у фоні до блокування. Блокування також забуває пошук, відкриті екрани й усе завантажене. Під час блокування застосунок також зникає зі списку нещодавніх.</string>
     <string name="auto_lock_immediately">Одразу</string>
     <string name="auto_lock_seconds">%d с</string>
     <string name="auto_lock_minutes">%d хв</string>
@@ -261,7 +261,7 @@
     <string name="unlock_action">Розблокувати</string>
     <string name="unlock_fingerprint">Використати відбиток</string>
     <string name="setup_title">Створіть своє сховище</string>
-    <string name="setup_text">Завантажені зображення шифруються за допомогою AES-256, перш ніж потрапити на накопичувач телефона. Пароль захищає ключ сховища за допомогою Argon2id.</string>
+    <string name="setup_text">Усе, що ви зберігаєте, шифрується на цьому телефоні. Пароль є єдиним ключем: виберіть такий, який запам\'ятаєте.</string>
     <string name="password_confirm">Підтвердьте пароль</string>
     <string name="password_mismatch">Паролі не збігаються</string>
     <string name="setup_understood">Я розумію, що пароль неможливо відновити: якщо я його забуду, вміст сховища буде втрачено.</string>

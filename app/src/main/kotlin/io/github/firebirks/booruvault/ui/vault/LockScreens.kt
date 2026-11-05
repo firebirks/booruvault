@@ -43,7 +43,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
@@ -222,6 +224,7 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
     val vault = LocalContainer.current.vault
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val focus = LocalFocusManager.current
     var password by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
     var understood by rememberSaveable { mutableStateOf(false) }
@@ -262,10 +265,11 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
+        // The rule is under the field from the start, not sprung after the fact; Next moves on.
         PasswordField(
             value = password, onValueChange = { password = it }, label = stringResource(R.string.password),
-            imeAction = ImeAction.Next, isError = tooShort,
-            supportingText = if (tooShort) stringResource(R.string.password_too_short, MIN_PASSWORD) else null,
+            imeAction = ImeAction.Next, onDone = { focus.moveFocus(FocusDirection.Down) }, isError = tooShort,
+            supportingText = stringResource(R.string.password_too_short, MIN_PASSWORD),
             enabled = !working, modifier = Modifier.fillMaxWidth(),
         )
         PasswordField(

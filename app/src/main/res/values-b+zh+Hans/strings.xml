@@ -98,7 +98,7 @@
     <string name="settings_biometric">指纹解锁</string>
     <string name="settings_biometric_hint">密码也始终可用。</string>
     <string name="settings_auto_lock">自动锁定</string>
-    <string name="settings_auto_lock_hint">应用在后台停留多久后锁定。锁定时也会忘记搜索、打开的界面和已加载的一切。</string>
+    <string name="settings_auto_lock_hint">应用在后台停留多久后锁定。锁定时也会忘记搜索、打开的界面和已加载的一切。 锁定时，应用也会从最近任务列表中消失。</string>
     <string name="auto_lock_immediately">立即</string>
     <string name="auto_lock_seconds">%d 秒</string>
     <string name="auto_lock_minutes">%d 分钟</string>
@@ -246,7 +246,7 @@
     <string name="unlock_action">解锁</string>
     <string name="unlock_fingerprint">使用指纹</string>
     <string name="setup_title">创建你的保险库</string>
-    <string name="setup_text">下载的图片在写入手机存储之前会先用 AES-256 加密。密码通过 Argon2id 保护保险库的密钥。</string>
+    <string name="setup_text">你保存的一切都会在这部手机上加密。密码是唯一的钥匙：请选一个你记得住的。</string>
     <string name="password_confirm">确认密码</string>
     <string name="password_mismatch">两次输入的密码不一致</string>
     <string name="setup_understood">我了解密码无法找回：如果忘记密码，保险库中的内容将会丢失。</string>

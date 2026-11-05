@@ -231,20 +231,23 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     item(key = "all") {
                         FilterChip(selected = vm.collectionId == null, onClick = { vm.collectionId = null }, label = { Text(stringResource(R.string.collections_all)) })
                     }
-                    items(collections, key = { it.id }) { collection ->
-                        FilterChip(
-                            selected = vm.collectionId == collection.id,
-                            onClick = { vm.collectionId = if (vm.collectionId == collection.id) null else collection.id },
-                            label = { Text("${collection.name} · ${counts[collection.id] ?: 0}") },
-                        )
-                    }
-                    selectedCollection?.let { collection ->
-                        item(key = "edit") {
-                            AssistChip(
-                                onClick = { editing = collection },
-                                label = { Text(stringResource(R.string.action_edit)) },
-                                leadingIcon = { Icon(Icons.Outlined.Edit, null) },
+                    collections.forEach { collection ->
+                        item(key = collection.id) {
+                            FilterChip(
+                                selected = vm.collectionId == collection.id,
+                                onClick = { vm.collectionId = if (vm.collectionId == collection.id) null else collection.id },
+                                label = { Text("${collection.name} · ${counts[collection.id] ?: 0}") },
                             )
+                        }
+                        // Right after the chip it edits, not past every other collection.
+                        if (collection.id == selectedCollection?.id) {
+                            item(key = "edit") {
+                                AssistChip(
+                                    onClick = { editing = collection },
+                                    label = { Text(stringResource(R.string.action_edit)) },
+                                    leadingIcon = { Icon(Icons.Outlined.Edit, null) },
+                                )
+                            }
                         }
                     }
                     item(key = "new") {

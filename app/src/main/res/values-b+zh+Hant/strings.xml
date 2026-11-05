@@ -98,7 +98,7 @@
     <string name="settings_biometric">指紋解鎖</string>
     <string name="settings_biometric_hint">仍可隨時使用密碼。</string>
     <string name="settings_auto_lock">自動鎖定</string>
-    <string name="settings_auto_lock_hint">應用程式在背景停留多久後鎖定。鎖定時也會忘記搜尋、開啟的畫面和已載入的一切。</string>
+    <string name="settings_auto_lock_hint">應用程式在背景停留多久後鎖定。鎖定時也會忘記搜尋、開啟的畫面和已載入的一切。 鎖定時，應用程式也會從最近使用的應用程式清單中消失。</string>
     <string name="auto_lock_immediately">立即</string>
     <string name="auto_lock_seconds">%d 秒</string>
     <string name="auto_lock_minutes">%d 分鐘</string>
@@ -246,7 +246,7 @@
     <string name="unlock_action">解鎖</string>
     <string name="unlock_fingerprint">使用指紋</string>
     <string name="setup_title">建立你的保險庫</string>
-    <string name="setup_text">下載的圖片在寫入手機的儲存空間之前，會先以 AES-256 加密。密碼會透過 Argon2id 保護保險庫的金鑰。</string>
+    <string name="setup_text">你儲存的一切都會在這支手機上加密。密碼是唯一的鑰匙：請選一個你記得住的。</string>
     <string name="password_confirm">確認密碼</string>
     <string name="password_mismatch">兩次輸入的密碼不一致</string>
     <string name="setup_understood">我瞭解密碼無法找回：如果忘記密碼，保險庫中的內容將會遺失。</string>

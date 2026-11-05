@@ -100,7 +100,7 @@
     <string name="settings_biometric">Ontgrendelen met vingerafdruk</string>
     <string name="settings_biometric_hint">Het wachtwoord werkt ook altijd.</string>
     <string name="settings_auto_lock">Automatisch vergrendelen</string>
-    <string name="settings_auto_lock_hint">Hoe lang de app op de achtergrond mag blijven voordat hij vergrendelt. Vergrendelen vergeet ook de zoekopdracht, de open schermen en alles wat geladen was.</string>
+    <string name="settings_auto_lock_hint">Hoe lang de app op de achtergrond mag blijven voordat hij vergrendelt. Vergrendelen vergeet ook de zoekopdracht, de open schermen en alles wat geladen was. Bij het vergrendelen verdwijnt de app ook uit de lijst met recente apps.</string>
     <string name="auto_lock_immediately">Meteen</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -251,7 +251,7 @@
     <string name="unlock_action">Ontgrendelen</string>
     <string name="unlock_fingerprint">Vingerafdruk gebruiken</string>
     <string name="setup_title">Maak je kluis aan</string>
-    <string name="setup_text">Gedownloade afbeeldingen worden met AES-256 versleuteld voordat ze de opslag van de telefoon raken. Het wachtwoord beschermt de sleutel van de kluis via Argon2id.</string>
+    <string name="setup_text">Alles wat je opslaat wordt op deze telefoon versleuteld. Het wachtwoord is de enige sleutel: kies er een dat je onthoudt.</string>
     <string name="password_confirm">Wachtwoord bevestigen</string>
     <string name="password_mismatch">De wachtwoorden komen niet overeen</string>
     <string name="setup_understood">Ik begrijp dat het wachtwoord niet kan worden hersteld: als ik het vergeet, gaat de inhoud van de kluis verloren.</string>

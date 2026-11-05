@@ -108,7 +108,7 @@
     <string name="settings_biometric">فتح القفل ببصمة الإصبع</string>
     <string name="settings_biometric_hint">تعمل كلمة المرور دائمًا أيضًا.</string>
     <string name="settings_auto_lock">القفل التلقائي</string>
-    <string name="settings_auto_lock_hint">كم يمكن أن يبقى التطبيق في الخلفية قبل أن يُقفل. القفل ينسى أيضًا البحث والشاشات المفتوحة وكل ما تم تحميله.</string>
+    <string name="settings_auto_lock_hint">كم يمكن أن يبقى التطبيق في الخلفية قبل أن يُقفل. القفل ينسى أيضًا البحث والشاشات المفتوحة وكل ما تم تحميله. عند القفل، يختفي التطبيق أيضًا من قائمة التطبيقات الأخيرة.</string>
     <string name="auto_lock_immediately">فورًا</string>
     <string name="auto_lock_seconds">%d ث</string>
     <string name="auto_lock_minutes">%d د</string>
@@ -271,7 +271,7 @@
     <string name="unlock_action">فتح القفل</string>
     <string name="unlock_fingerprint">استخدام بصمة الإصبع</string>
     <string name="setup_title">أنشئ خزنتك</string>
-    <string name="setup_text">تُشفَّر الصور التي تنزّلها باستخدام AES-256 قبل أن تصل إلى وحدة تخزين الهاتف. وتحمي كلمة المرور مفتاح الخزنة بواسطة Argon2id.</string>
+    <string name="setup_text">كل ما تحفظه يُشفَّر على هذا الهاتف. كلمة المرور هي المفتاح الوحيد: اختر واحدة ستتذكرها.</string>
     <string name="password_confirm">تأكيد كلمة المرور</string>
     <string name="password_mismatch">كلمتا المرور غير متطابقتين</string>
     <string name="setup_understood">أفهم أنه لا يمكن استعادة كلمة المرور: إذا نسيتها، فسيضيع محتوى الخزنة.</string>

@@ -102,7 +102,7 @@
     <string name="settings_biometric">Sblocco con impronta</string>
     <string name="settings_biometric_hint">La password resta sempre valida.</string>
     <string name="settings_auto_lock">Blocco automatico</string>
-    <string name="settings_auto_lock_hint">Per quanto tempo l\'app può restare in background prima di bloccarsi. Il blocco dimentica anche la ricerca, le schermate aperte e tutto ciò che era caricato.</string>
+    <string name="settings_auto_lock_hint">Per quanto tempo l\'app può restare in background prima di bloccarsi. Il blocco dimentica anche la ricerca, le schermate aperte e tutto ciò che era caricato. Quando si blocca, l\'app esce anche dall\'elenco delle app recenti.</string>
     <string name="auto_lock_immediately">Subito</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -256,7 +256,7 @@
     <string name="unlock_action">Sblocca</string>
     <string name="unlock_fingerprint">Usa l\'impronta</string>
     <string name="setup_title">Crea il tuo vault</string>
-    <string name="setup_text">Le immagini scaricate vengono cifrate con AES-256 prima di toccare la memoria del telefono. La password protegge la chiave del vault tramite Argon2id.</string>
+    <string name="setup_text">Tutto ciò che salvi è cifrato su questo telefono. La password è l\'unica chiave: scegline una che ricorderai.</string>
     <string name="password_confirm">Conferma password</string>
     <string name="password_mismatch">Le password non coincidono</string>
     <string name="setup_understood">Ho capito che la password non è recuperabile: se la dimentico, il contenuto del vault è perso.</string>

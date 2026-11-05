@@ -102,7 +102,7 @@
     <string name="settings_biometric">Desbloqueo con huella</string>
     <string name="settings_biometric_hint">La contraseña también funciona siempre.</string>
     <string name="settings_auto_lock">Bloqueo automático</string>
-    <string name="settings_auto_lock_hint">Cuánto tiempo puede estar la app en segundo plano antes de bloquearse. Al bloquearse también se olvidan la búsqueda, las pantallas abiertas y todo lo cargado.</string>
+    <string name="settings_auto_lock_hint">Cuánto tiempo puede estar la app en segundo plano antes de bloquearse. Al bloquearse también se olvidan la búsqueda, las pantallas abiertas y todo lo cargado. Al bloquearse, la app también desaparece de la lista de aplicaciones recientes.</string>
     <string name="auto_lock_immediately">Inmediatamente</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -256,7 +256,7 @@
     <string name="unlock_action">Desbloquear</string>
     <string name="unlock_fingerprint">Usar huella</string>
     <string name="setup_title">Crea tu bóveda</string>
-    <string name="setup_text">Las imágenes descargadas se cifran con AES-256 antes de llegar al almacenamiento del teléfono. La contraseña protege la clave de la bóveda mediante Argon2id.</string>
+    <string name="setup_text">Todo lo que guardes se cifra en este teléfono. La contraseña es la única llave: elige una que vayas a recordar.</string>
     <string name="password_confirm">Confirmar contraseña</string>
     <string name="password_mismatch">Las contraseñas no coinciden</string>
     <string name="setup_understood">Entiendo que la contraseña no se puede recuperar: si la olvido, el contenido de la bóveda se pierde.</string>

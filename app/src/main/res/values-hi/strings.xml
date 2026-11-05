@@ -100,7 +100,7 @@
     <string name="settings_biometric">फ़िंगरप्रिंट से अनलॉक</string>
     <string name="settings_biometric_hint">पासवर्ड भी हमेशा काम करता है।</string>
     <string name="settings_auto_lock">ऑटो-लॉक</string>
-    <string name="settings_auto_lock_hint">लॉक होने से पहले ऐप कितनी देर पृष्ठभूमि में रह सकता है। लॉक होने पर खोज, खुली स्क्रीनें और लोड हुआ सब कुछ भी भुला दिया जाता है।</string>
+    <string name="settings_auto_lock_hint">लॉक होने से पहले ऐप कितनी देर पृष्ठभूमि में रह सकता है। लॉक होने पर खोज, खुली स्क्रीनें और लोड हुआ सब कुछ भी भुला दिया जाता है। लॉक होने पर ऐप हाल के ऐप्स की सूची से भी हट जाता है।</string>
     <string name="auto_lock_immediately">तुरंत</string>
     <string name="auto_lock_seconds">%d सेकंड</string>
     <string name="auto_lock_minutes">%d मिनट</string>
@@ -251,7 +251,7 @@
     <string name="unlock_action">अनलॉक करें</string>
     <string name="unlock_fingerprint">फ़िंगरप्रिंट इस्तेमाल करें</string>
     <string name="setup_title">अपनी तिजोरी बनाएं</string>
-    <string name="setup_text">डाउनलोड की गई इमेज फ़ोन के स्टोरेज तक पहुंचने से पहले AES-256 से एन्क्रिप्ट की जाती हैं। पासवर्ड, Argon2id के ज़रिए तिजोरी की कुंजी को सुरक्षित रखता है।</string>
+    <string name="setup_text">आप जो भी सहेजते हैं वह इस फ़ोन पर एन्क्रिप्ट होता है। पासवर्ड ही एकमात्र कुंजी है: ऐसा चुनें जो आपको याद रहे।</string>
     <string name="password_confirm">पासवर्ड की पुष्टि करें</string>
     <string name="password_mismatch">पासवर्ड मेल नहीं खाते</string>
     <string name="setup_understood">मुझे पता है कि पासवर्ड वापस नहीं पाया जा सकता: अगर मैं इसे भूल जाऊं, तो तिजोरी की सामग्री खो जाएगी।</string>

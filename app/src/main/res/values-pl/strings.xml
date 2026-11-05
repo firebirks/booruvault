@@ -104,7 +104,7 @@
     <string name="settings_biometric">Odblokowywanie odciskiem palca</string>
     <string name="settings_biometric_hint">Hasło też zawsze działa.</string>
     <string name="settings_auto_lock">Automatyczna blokada</string>
-    <string name="settings_auto_lock_hint">Jak długo aplikacja może pozostawać w tle, zanim się zablokuje. Zablokowanie zapomina też wyszukiwanie, otwarte ekrany i wszystko, co było załadowane.</string>
+    <string name="settings_auto_lock_hint">Jak długo aplikacja może pozostawać w tle, zanim się zablokuje. Zablokowanie zapomina też wyszukiwanie, otwarte ekrany i wszystko, co było załadowane. Przy blokadzie aplikacja znika też z listy ostatnich aplikacji.</string>
     <string name="auto_lock_immediately">Natychmiast</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -261,7 +261,7 @@
     <string name="unlock_action">Odblokuj</string>
     <string name="unlock_fingerprint">Użyj odcisku palca</string>
     <string name="setup_title">Utwórz swój sejf</string>
-    <string name="setup_text">Pobrane obrazy są szyfrowane za pomocą AES-256, zanim trafią do pamięci telefonu. Hasło chroni klucz sejfu za pomocą Argon2id.</string>
+    <string name="setup_text">Wszystko, co zapiszesz, jest szyfrowane na tym telefonie. Hasło jest jedynym kluczem: wybierz takie, które zapamiętasz.</string>
     <string name="password_confirm">Potwierdź hasło</string>
     <string name="password_mismatch">Hasła nie są zgodne</string>
     <string name="setup_understood">Rozumiem, że hasła nie można odzyskać: jeśli je zapomnę, zawartość sejfu przepadnie.</string>

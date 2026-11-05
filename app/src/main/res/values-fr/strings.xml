@@ -102,7 +102,7 @@
     <string name="settings_biometric">Déverrouillage par empreinte</string>
     <string name="settings_biometric_hint">Le mot de passe fonctionne toujours aussi.</string>
     <string name="settings_auto_lock">Verrouillage automatique</string>
-    <string name="settings_auto_lock_hint">Combien de temps l\'application peut rester en arrière-plan avant de se verrouiller. Le verrouillage oublie aussi la recherche, les écrans ouverts et tout ce qui était chargé.</string>
+    <string name="settings_auto_lock_hint">Combien de temps l\'application peut rester en arrière-plan avant de se verrouiller. Le verrouillage oublie aussi la recherche, les écrans ouverts et tout ce qui était chargé. En se verrouillant, l\'app quitte aussi la liste des applications récentes.</string>
     <string name="auto_lock_immediately">Immédiatement</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -256,7 +256,7 @@
     <string name="unlock_action">Déverrouiller</string>
     <string name="unlock_fingerprint">Utiliser l\'empreinte</string>
     <string name="setup_title">Créez votre coffre</string>
-    <string name="setup_text">Les images téléchargées sont chiffrées avec AES-256 avant d\'atteindre le stockage du téléphone. Le mot de passe protège la clé du coffre grâce à Argon2id.</string>
+    <string name="setup_text">Tout ce que vous enregistrez est chiffré sur ce téléphone. Le mot de passe est la seule clé : choisissez-en un dont vous vous souviendrez.</string>
     <string name="password_confirm">Confirmer le mot de passe</string>
     <string name="password_mismatch">Les mots de passe ne correspondent pas</string>
     <string name="setup_understood">Je comprends que le mot de passe est irrécupérable : si je l\'oublie, le contenu du coffre est perdu.</string>

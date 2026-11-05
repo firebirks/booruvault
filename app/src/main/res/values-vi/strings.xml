@@ -98,7 +98,7 @@
     <string name="settings_biometric">Mở khóa bằng vân tay</string>
     <string name="settings_biometric_hint">Mật khẩu vẫn luôn dùng được.</string>
     <string name="settings_auto_lock">Tự động khóa</string>
-    <string name="settings_auto_lock_hint">Ứng dụng có thể ở nền bao lâu trước khi khóa. Khóa cũng xóa tìm kiếm, các màn hình đang mở và mọi thứ đã tải.</string>
+    <string name="settings_auto_lock_hint">Ứng dụng có thể ở nền bao lâu trước khi khóa. Khóa cũng xóa tìm kiếm, các màn hình đang mở và mọi thứ đã tải. Khi khóa, ứng dụng cũng rời khỏi danh sách ứng dụng gần đây.</string>
     <string name="auto_lock_immediately">Ngay lập tức</string>
     <string name="auto_lock_seconds">%d giây</string>
     <string name="auto_lock_minutes">%d phút</string>
@@ -246,7 +246,7 @@
     <string name="unlock_action">Mở khóa</string>
     <string name="unlock_fingerprint">Dùng vân tay</string>
     <string name="setup_title">Tạo kho của bạn</string>
-    <string name="setup_text">Hình ảnh tải xuống được mã hóa bằng AES-256 trước khi ghi vào bộ nhớ của điện thoại. Mật khẩu bảo vệ khóa mã hóa của kho thông qua Argon2id.</string>
+    <string name="setup_text">Mọi thứ bạn lưu đều được mã hóa trên điện thoại này. Mật khẩu là chìa khóa duy nhất: hãy chọn một mật khẩu bạn sẽ nhớ.</string>
     <string name="password_confirm">Xác nhận mật khẩu</string>
     <string name="password_mismatch">Mật khẩu không khớp</string>
     <string name="setup_understood">Tôi hiểu rằng mật khẩu không thể khôi phục: nếu quên, nội dung trong kho sẽ bị mất.</string>

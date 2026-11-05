@@ -98,7 +98,7 @@
     <string name="settings_biometric">Buka kunci dengan sidik jari</string>
     <string name="settings_biometric_hint">Sandi juga selalu berfungsi.</string>
     <string name="settings_auto_lock">Kunci otomatis</string>
-    <string name="settings_auto_lock_hint">Berapa lama aplikasi boleh berada di latar belakang sebelum terkunci. Mengunci juga melupakan pencarian, layar yang terbuka, dan semua yang sudah dimuat.</string>
+    <string name="settings_auto_lock_hint">Berapa lama aplikasi boleh berada di latar belakang sebelum terkunci. Mengunci juga melupakan pencarian, layar yang terbuka, dan semua yang sudah dimuat. Saat terkunci, aplikasi juga hilang dari daftar aplikasi terbaru.</string>
     <string name="auto_lock_immediately">Segera</string>
     <string name="auto_lock_seconds">%d dtk</string>
     <string name="auto_lock_minutes">%d mnt</string>
@@ -246,7 +246,7 @@
     <string name="unlock_action">Buka kunci</string>
     <string name="unlock_fingerprint">Gunakan sidik jari</string>
     <string name="setup_title">Buat brankas Anda</string>
-    <string name="setup_text">Gambar yang diunduh dienkripsi dengan AES-256 sebelum menyentuh penyimpanan ponsel. Sandi melindungi kunci brankas melalui Argon2id.</string>
+    <string name="setup_text">Semua yang Anda simpan dienkripsi di ponsel ini. Kata sandi adalah satu-satunya kunci: pilih yang akan Anda ingat.</string>
     <string name="password_confirm">Konfirmasi sandi</string>
     <string name="password_mismatch">Sandi tidak cocok</string>
     <string name="setup_understood">Saya paham bahwa sandi tidak dapat dipulihkan: jika saya lupa, isi brankas akan hilang.</string>

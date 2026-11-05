@@ -105,7 +105,7 @@
     <string name="settings_biometric">Fingerprint unlock</string>
     <string name="settings_biometric_hint">The password always works too.</string>
     <string name="settings_auto_lock">Auto-lock</string>
-    <string name="settings_auto_lock_hint">How long the app can stay in the background before it locks. Locking also forgets the search, the open screens and everything loaded.</string>
+    <string name="settings_auto_lock_hint">How long the app can stay in the background before it locks. Locking also forgets the search, the open screens and everything loaded. When it locks, the app also leaves the recent apps list.</string>
     <string name="auto_lock_immediately">Immediately</string>
     <string name="auto_lock_seconds">%d s</string>
     <string name="auto_lock_minutes">%d min</string>
@@ -257,7 +257,7 @@
     <string name="unlock_action">Unlock</string>
     <string name="unlock_fingerprint">Use fingerprint</string>
     <string name="setup_title">Create your vault</string>
-    <string name="setup_text">Downloaded images are encrypted with AES-256 before they touch the phone\'s storage. The password protects the vault\'s key through Argon2id.</string>
+    <string name="setup_text">Everything you save is encrypted on this phone. The password is the only key: choose one you will remember.</string>
     <string name="password_confirm">Confirm password</string>
     <string name="password_mismatch">The passwords don\'t match</string>
     <string name="setup_understood">I understand the password cannot be recovered: if I forget it, the vault\'s content is lost.</string>

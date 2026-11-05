@@ -584,8 +584,8 @@ private fun RiskySwitch(title: String, onText: String, offText: String, checked:
     }
 }
 
-/** Seconds the explanation stays up before a risky option can be turned on. */
-private const val RISKY_WAIT_SECONDS = 8
+/** Seconds the explanation stays up before a risky option can be turned on: enough to read it, not to resent it. */
+private const val RISKY_WAIT_SECONDS = 5
 
 @Composable
 private fun BlacklistEditor(stored: String, onSave: (String) -> Unit) {
@@ -638,7 +638,7 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
                 PasswordField(
                     new, { new = it }, stringResource(R.string.password_new), imeAction = ImeAction.Next, enabled = !working,
                     isError = tooShort,
-                    supportingText = if (tooShort) stringResource(R.string.password_too_short, MIN_PASSWORD) else null,
+                    supportingText = stringResource(R.string.password_too_short, MIN_PASSWORD),
                 )
                 PasswordField(
                     confirm, { confirm = it }, stringResource(R.string.password_new_confirm), enabled = !working,
