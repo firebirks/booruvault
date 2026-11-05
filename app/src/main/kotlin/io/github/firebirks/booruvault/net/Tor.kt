@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import io.github.firebirks.booruvault.booru.UserAgents
 import io.github.firebirks.booruvault.booru.await
+import io.github.firebirks.booruvault.booru.utf8UpTo
 import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.toProblem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +22,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.boolean
+import okhttp3.Call
+import okhttp3.EventListener
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
@@ -29,7 +34,10 @@ import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.ProxySelector
 import java.net.SocketAddress
+import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.net.URI
+import java.util.concurrent.atomic.AtomicBoolean
 
 enum class TorStatus { DISABLED, NOT_INSTALLED, CHECKING, ON, OFF }
 
@@ -62,7 +70,10 @@ const val DEFAULT_SOCKS_PORT = 9050
  * who answers, though: any local process that took the port first would do, see the host names
  * in every CONNECT and go out in clear. So whether traffic really leaves through Tor is checked
  * against the Tor Project's exit test as soon as the port answers, and again whenever it stops
- * and comes back; until the check passes, [TorExitGate] lets nothing but the check itself out.
+ * and comes back: a probe that finds it silent, or a connection the listener itself refuses
+ * ([listenerLost]), forgets the verdict, and whatever answers next has to pass the check anew.
+ * Until the check passes, [TorExitGate] lets nothing but the check itself out, and
+ * [TorRouteGuard] refuses each attempt that reached the port meanwhile.
  */
 class TorManager(private val context: Context, private val scope: CoroutineScope, hasVault: Boolean) {
     private val prefs = context.getSharedPreferences("network", Context.MODE_PRIVATE)
@@ -119,8 +130,8 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     /** True once the exit check passed on the current port and Orbot has answered ever since. */
     val verified: Boolean get() = _state.value.verifiedExit != null
 
-    @Volatile
-    private var verifying = false
+    private val verifying = AtomicBoolean(false)
+    private val probing = AtomicBoolean(false)
 
     @Volatile
     private var lastVerifyAt = 0L
@@ -153,50 +164,79 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     /**
      * Finds out whether Orbot is installed and a SOCKS5 server answers on the port. A port that
      * stops answering forgets its verification: whatever answers next has to pass the check.
+     * One probe at a time: a burst of refused requests asks once, not once each.
      */
     fun refreshStatus() {
         if (!enabled) return
+        if (!probing.compareAndSet(false, true)) return
         scope.launch(Dispatchers.IO) {
-            val status = when {
-                !isOrbotInstalled() -> TorStatus.NOT_INSTALLED
-                socks5Listening(_state.value.socksPort) -> TorStatus.ON
-                else -> TorStatus.OFF
-            }
-            _state.update {
-                when {
-                    !it.enabled -> it
-                    status == TorStatus.ON -> it.copy(status = status)
-                    else -> it.copy(status = status, verifiedExit = null, verifyError = null)
+            try {
+                val status = when {
+                    !isOrbotInstalled() -> TorStatus.NOT_INSTALLED
+                    socks5Listening(_state.value.socksPort) -> TorStatus.ON
+                    else -> TorStatus.OFF
                 }
-            }
-            val now = System.currentTimeMillis()
-            if (status == TorStatus.ON && !verified && !verifying && now - lastVerifyAt >= VERIFY_INTERVAL_MS) {
-                lastVerifyAt = now
-                onVerifyNeeded()
+                _state.update {
+                    when {
+                        !it.enabled -> it
+                        status == TorStatus.ON -> it.copy(status = status)
+                        else -> it.copy(status = status, verifiedExit = null, verifyError = null)
+                    }
+                }
+                val now = System.currentTimeMillis()
+                if (status == TorStatus.ON && !verified && !verifying.get() && now - lastVerifyAt >= VERIFY_INTERVAL_MS) {
+                    lastVerifyAt = now
+                    onVerifyNeeded()
+                }
+            } finally {
+                probing.set(false)
             }
         }
     }
 
+    /**
+     * A connection to the port failed in a way that blames the listener, not Tor: nothing
+     * accepted, or something that does not speak SOCKS5 did. Orbot is gone, or replaced, so its
+     * verdict is forgotten and the port is probed again: what answers next is unproven until the
+     * exit check passes through it. A failure Tor itself reports, such as a host it cannot reach,
+     * says nothing about the listener and keeps the verdict; see [socksListenerLost].
+     */
+    fun listenerLost() {
+        if (!enabled) return
+        _state.update { if (it.verifiedExit == null) it else it.copy(verifiedExit = null) }
+        refreshStatus()
+    }
+
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
 
-    /** Asks the Tor Project whether requests reach it through Tor. One check at a time. */
+    /**
+     * Asks the Tor Project whether requests reach it through Tor. One check at a time, and its
+     * verdict belongs to the port it went through: a port changed meanwhile, or Tor switched off,
+     * drops it, since the new port's listener has not been checked.
+     */
     suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
-        if (verifying) return@withContext
-        verifying = true
+        if (!verifying.compareAndSet(false, true)) return@withContext
+        val port = _state.value.socksPort
         _state.update { it.copy(verifiedExit = null, verifyError = null) }
         try {
             val request = Request.Builder().url("https://$VERIFY_HOST/api/ip").header("User-Agent", UserAgents.browser).build()
-            val body = client.newCall(request).await().use { it.body.string() }
+            val body = client.newCall(request).await().use { it.body.utf8UpTo(MAX_VERIFY_BODY) ?: "" }
             val result = json.parseToJsonElement(body).jsonObject
             val isTor = result["IsTor"]?.jsonPrimitive?.boolean == true
             val ip = result["IP"]?.jsonPrimitive?.content
             _state.update {
-                if (isTor) it.copy(verifiedExit = ip ?: "?") else it.copy(verifyError = Problem(Problem.Code.NOT_THROUGH_TOR))
+                when {
+                    !it.enabled || it.socksPort != port -> it
+                    isTor -> it.copy(verifiedExit = ip ?: "?")
+                    else -> it.copy(verifyError = Problem(Problem.Code.NOT_THROUGH_TOR))
+                }
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            _state.update { it.copy(verifyError = e.toProblem()) }
+            _state.update { if (!it.enabled || it.socksPort != port) it else it.copy(verifyError = e.toProblem()) }
         } finally {
-            verifying = false
+            verifying.set(false)
         }
     }
 
@@ -214,6 +254,9 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
         /** The least time between two automatic checks, so a check that keeps failing does not loop. */
         private const val VERIFY_INTERVAL_MS = 10_000L
+
+        /** The exit check answers with a few bytes of JSON; anything bigger is not it. */
+        private const val MAX_VERIFY_BODY = 64L * 1024
         private const val KEY_ENABLED = "tor"
         private const val KEY_PORT = "socks_port"
         private const val KEY_ROUTE_CHOSEN = "route_chosen"
@@ -305,16 +348,45 @@ class TorUnverifiedException : IOException("Tor exit not verified yet"), HasProb
  * the same host whatever proxy the selector now names, so a direct connection opened just
  * before the switch could still carry a request made just after it. This closes that window:
  * the connection is refused and its socket closed, so it is never offered again.
+ *
+ * It also refuses an exchange with a listener that is not [verified] any more. [TorExitGate]
+ * asks once per call, before anything connects; this runs once per attempt, so a redirect or a
+ * retry of a call that was let through finds the verdict withdrawn meanwhile. By then the
+ * listener has seen the host name in the CONNECT; it does not get the request, nor its cookies.
  */
-class TorRouteGuard(private val enabled: () -> Boolean) : Interceptor {
+class TorRouteGuard(private val enabled: () -> Boolean, private val verified: () -> Boolean = { true }) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val connection = chain.connection()
         if (enabled() && connection != null && connection.route().proxy.type() != Proxy.Type.SOCKS) {
             runCatching { connection.socket().close() }
             throw TorUnreachableException(IOException("connection does not go through Orbot"))
         }
+        if (enabled() && !verified() && chain.request().url.host != TorManager.VERIFY_HOST) throw TorUnverifiedException()
         return chain.proceed(chain.request())
     }
+}
+
+/**
+ * Tells the manager when a connection through Orbot's port could not be made because of the
+ * listener itself: see [TorManager.listenerLost]. Set on the app's client as its event listener.
+ */
+class TorListenerWatch(private val onListenerLost: () -> Unit) : EventListener() {
+    override fun connectFailed(call: Call, inetSocketAddress: InetSocketAddress, proxy: Proxy, protocol: Protocol?, ioe: IOException) {
+        if (proxy.type() == Proxy.Type.SOCKS && socksListenerLost(ioe)) onListenerLost()
+    }
+}
+
+/**
+ * Whether a failure to connect through a SOCKS proxy blames the listener rather than the
+ * network behind it. The Java SOCKS client reports a destination the proxy could not reach, or a
+ * refusal of the proxy's own, as a [SocketException] whose message starts with "SOCKS"; a
+ * connection nobody accepted, a reset, or a reply that is not SOCKS5 at all is anything else. A
+ * timeout is neither: a slow circuit looks the same as a listener that never answers.
+ */
+internal fun socksListenerLost(e: IOException): Boolean = when {
+    e is SocketTimeoutException -> false
+    e is SocketException && e.message.orEmpty().startsWith("SOCKS") -> false
+    else -> true
 }
 
 /** A local name lookup refused because Tor is on. */

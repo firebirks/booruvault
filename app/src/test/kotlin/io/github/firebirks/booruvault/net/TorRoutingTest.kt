@@ -7,12 +7,17 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import java.io.DataInputStream
+import java.io.EOFException
 import java.io.IOException
+import java.net.ConnectException
 import java.net.InetAddress
 import java.net.Proxy
 import java.net.ServerSocket
+import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.net.URI
 import java.net.UnknownHostException
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -165,7 +170,7 @@ class TorRoutingTest {
         val client = OkHttpClient.Builder()
             .proxySelector(TorProxySelector({ enabled }, { closed }))
             .dns(TorAwareDns { enabled })
-            .addNetworkInterceptor(TorRouteGuard { enabled })
+            .addNetworkInterceptor(TorRouteGuard({ enabled }))
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
             .build()
@@ -208,5 +213,66 @@ class TorRoutingTest {
             client.newCall(other).execute().use { assertEquals("ok", it.body.string()) }
             assertEquals(1, blocked)
         }
+    }
+
+    @Test
+    fun aWithdrawnVerdictIsEnforcedOnTheAttemptItself() {
+        // Past the call-level gate already: the route guard runs for each attempt, on the connection.
+        var verified = true
+        val client = OkHttpClient.Builder()
+            .proxySelector(TorProxySelector({ true }, { 0 }))
+            .addNetworkInterceptor(TorRouteGuard({ true }, { verified }))
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build()
+        fakeSocks { }.use { socks ->
+            val through = client.newBuilder().proxySelector(TorProxySelector({ true }, { socks.localPort })).build()
+            verified = false
+            try {
+                through.newCall(Request.Builder().url("http://booru.example.invalid/posts.json").build()).execute().close()
+                fail("an attempt on an unverified listener must be refused")
+            } catch (e: TorUnverifiedException) {
+                // expected
+            }
+        }
+        fakeSocks { }.use { socks ->
+            val through = client.newBuilder().proxySelector(TorProxySelector({ true }, { socks.localPort })).build()
+            // The check itself is the one request allowed through an unverified listener.
+            through.newCall(Request.Builder().url("http://${TorManager.VERIFY_HOST}/api/ip").build()).execute().use { assertEquals("ok", it.body.string()) }
+        }
+    }
+
+    @Test
+    fun aRefusedConnectionToThePortReportsTheListenerLost() {
+        val lost = AtomicInteger()
+        val closed = ServerSocket(0).use { it.localPort }
+        val client = OkHttpClient.Builder()
+            .proxySelector(TorProxySelector({ true }, { closed }))
+            .dns(TorAwareDns { true })
+            .eventListener(TorListenerWatch { lost.incrementAndGet() })
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .build()
+        try {
+            client.newCall(Request.Builder().url("http://booru.example.invalid/").build()).execute().close()
+            fail("nothing listens on the port")
+        } catch (e: IOException) {
+            // expected
+        }
+        assertEquals("a port nobody accepts on has lost its listener", 1, lost.get())
+    }
+
+    @Test
+    fun aFailureTorReportsKeepsTheListener() {
+        // The Java SOCKS client words the proxy's replies about the destination with "SOCKS".
+        assertTrue(!socksListenerLost(SocketException("SOCKS: Host unreachable")))
+        assertTrue(!socksListenerLost(SocketException("SOCKS: Connection refused")))
+        assertTrue(!socksListenerLost(SocketException("SOCKS server general failure")))
+        assertTrue(!socksListenerLost(SocketTimeoutException("connect timed out")))
+        // Nothing accepting, a reset, or an answer that is not SOCKS5 at all: the listener itself.
+        assertTrue(socksListenerLost(ConnectException("Connection refused")))
+        assertTrue(socksListenerLost(SocketException("Connection reset")))
+        assertTrue(socksListenerLost(SocketException("Reply from SOCKS server has bad version")))
+        assertTrue(socksListenerLost(SocketException("Malformed reply from SOCKS server")))
+        assertTrue(socksListenerLost(EOFException()))
     }
 }

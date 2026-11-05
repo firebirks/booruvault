@@ -700,7 +700,6 @@ private fun TorSettings() {
     val tor = container.tor
     val state by tor.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var askInstall by remember { mutableStateOf(false) }
     var verifying by remember { mutableStateOf(false) }
 
@@ -725,9 +724,13 @@ private fun TorSettings() {
             OutlinedButton(onClick = { tor.orbotLaunchIntent()?.let { context.startActivity(it) } }) { Text(stringResource(R.string.tor_open_orbot)) }
             OutlinedButton(enabled = !verifying, onClick = {
                 verifying = true
-                scope.launch {
-                    tor.verify(container.http, container.json)
-                    verifying = false
+                // In the app's scope: leaving the screen must not cut the check short.
+                container.scope.launch {
+                    try {
+                        tor.verify(container.http, container.json)
+                    } finally {
+                        verifying = false
+                    }
                 }
             }) { Text(stringResource(if (verifying) R.string.tor_verifying else R.string.tor_verify)) }
         }

@@ -19,6 +19,7 @@ import io.github.firebirks.booruvault.net.RouteChoiceGate
 import io.github.firebirks.booruvault.net.RouteTls
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorExitGate
+import io.github.firebirks.booruvault.net.TorListenerWatch
 import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.net.TorUnreachableException
@@ -109,8 +110,11 @@ class AppContainer(private val context: Context) {
             }
         }
         .addInterceptor(DefaultUserAgent)
-        .addNetworkInterceptor(TorRouteGuard { tor.enabled })
+        // Per attempt: a redirect or a retry of a call let through finds a withdrawn verdict here.
+        .addNetworkInterceptor(TorRouteGuard({ tor.enabled }, { tor.verified }))
         .addNetworkInterceptor(SiteHeaders(cookies))
+        // A port that refuses the connection has lost Orbot: its verdict goes, the port is probed again.
+        .eventListener(TorListenerWatch(tor::listenerLost))
         .build()
 
     /**
