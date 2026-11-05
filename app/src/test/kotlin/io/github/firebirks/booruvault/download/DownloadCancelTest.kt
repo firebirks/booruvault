@@ -107,6 +107,27 @@ class DownloadCancelTest {
     private fun DownloadManager.status(id: Long) = tasks.value.single { it.post.id == id }.status
 
     @Test
+    fun `a retry made while the cancelled job unwinds keeps its own status and can be cancelled again`() = runBlocking {
+        StallingServer().use { server ->
+            val downloads = manager()
+            downloads.enqueue(listOf(post(1, server.port)), source)
+            withTimeout(10_000) { downloads.tasks.first { list -> list.single().bytes > 0 } }
+            val key = downloads.tasks.value.single().key
+
+            downloads.cancel(key)
+            downloads.retry(key)
+            // The old job is still unwinding, or has just finished: once it is done for sure, the
+            // retry must not read as cancelled, and must still be the job the key names.
+            delay(1500)
+            val status = downloads.status(1)
+            assertTrue("was $status", status == DownloadStatus.RUNNING || status == DownloadStatus.QUEUED)
+            downloads.cancel(key)
+            withTimeout(5000) { downloads.tasks.first { list -> list.single().status == DownloadStatus.CANCELLED } }
+        }
+        Unit
+    }
+
+    @Test
     fun `cancelling a download the server went quiet on ends it at once and frees its place`() = runBlocking {
         StallingServer().use { server ->
             val downloads = manager()

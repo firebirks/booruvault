@@ -75,6 +75,7 @@ fun DownloadsScreen() {
     val active = tasks.count { it.active }
     val done = tasks.count { it.status == DownloadStatus.DONE }
     val failed = tasks.count { it.status == DownloadStatus.FAILED }
+    val retriable = failed + tasks.count { it.status == DownloadStatus.CANCELLED }
     val context = LocalContext.current
     val challenge = LocalChallenge.current
 
@@ -98,7 +99,7 @@ fun DownloadsScreen() {
                     }
                 },
                 actions = {
-                    if (failed > 0) IconButton(onClick = downloads::retryFailed) { Icon(Icons.Outlined.Refresh, stringResource(R.string.downloads_retry_failed)) }
+                    if (retriable > 0) IconButton(onClick = downloads::retryFailed) { Icon(Icons.Outlined.Refresh, stringResource(R.string.downloads_retry_failed)) }
                     IconButton(onClick = downloads::clearFinished) { Icon(Icons.Outlined.ClearAll, stringResource(R.string.downloads_clear_finished)) }
                     Box {
                         IconButton(onClick = { menu = true }) { Icon(Icons.Outlined.MoreVert, stringResource(R.string.action_more)) }

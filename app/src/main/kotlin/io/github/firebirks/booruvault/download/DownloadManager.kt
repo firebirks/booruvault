@@ -158,8 +158,9 @@ class DownloadManager(
     /** Downloads waiting in the vault for the next unlock. */
     val paused: StateFlow<Int> = _paused.asStateFlow()
 
+    /** What is saved: the work to do, and what failed or was cancelled, which can be retried; what is done is not. */
     private fun snapshot(): SavedQueue = SavedQueue(
-        tasks = _tasks.value.filter { it.active || it.status == DownloadStatus.FAILED }.map {
+        tasks = _tasks.value.filter { it.active || it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }.map {
             SavedTask(it.post, it.source, if (it.active) DownloadStatus.QUEUED else it.status, it.problem)
         },
         batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) },
@@ -222,9 +223,9 @@ class DownloadManager(
         val queue = saved.read(state.keys) ?: SavedQueue()
         live = true
         _paused.value = 0
-        val failed = queue.tasks.filter { it.status == DownloadStatus.FAILED }
-            .map { DownloadTask(keys.incrementAndGet(), it.post, it.source, DownloadStatus.FAILED, problem = it.problem) }
-        _tasks.update { it + failed }
+        val stoppedTasks = queue.tasks.filter { it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }
+            .map { DownloadTask(keys.incrementAndGet(), it.post, it.source, it.status, problem = it.problem) }
+        _tasks.update { it + stoppedTasks }
         queue.tasks.filter { it.status == DownloadStatus.QUEUED }.groupBy { it.source }.forEach { (source, list) ->
             enqueue(list.map { it.post }, source)
         }
@@ -403,8 +404,9 @@ class DownloadManager(
         startService()
     }
 
+    /** Queues again everything that failed or was cancelled. */
     fun retryFailed() {
-        _tasks.value.filter { it.status == DownloadStatus.FAILED }.forEach { retry(it.key) }
+        _tasks.value.filter { it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }.forEach { retry(it.key) }
     }
 
     /**
@@ -439,13 +441,9 @@ class DownloadManager(
     private fun launch(task: DownloadTask) {
         // Listed before it starts, and taken off the list only if still the one listed: a retry
         // after a cancellation puts a newer job under the same key while the old one unwinds.
-        val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
-            try {
-                parallel.withPermit { run(task.key) }
-            } finally {
-                jobs.remove(task.key, coroutineContext.job)
-            }
-        }
+        // On completion rather than in a finally, so a job cancelled before it ran is taken off too.
+        val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) { parallel.withPermit { run(task.key) } }
+        job.invokeOnCompletion { jobs.remove(task.key, job) }
         jobs[task.key] = job
         job.start()
     }

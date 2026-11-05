@@ -209,9 +209,10 @@ class DownloadSearchTest {
 
     @Test
     fun `a batch cancelled the moment it starts is listed as stopped, not as under way`() = runBlocking {
-        val downloads = manager(FakeApi(sized(42, 100, 37)))
+        // The first page takes a moment, so the cancellation is sure to come before it: before
+        // the coroutine was dispatched at all, or at its first suspension.
+        val downloads = manager(FakeApi(before = { kotlinx.coroutines.delay(100) }, pages = sized(42, 100, 37)))
         downloads.downloadSearch(source, "pikachu", 500)
-        // Before its coroutine was dispatched, most of the time: a finally would never run.
         downloads.cancelAll()
         val batch = downloads.settled().single()
         assertTrue(batch.stopped)
