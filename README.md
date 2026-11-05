@@ -98,6 +98,7 @@ Every file (media, thumbnails, metadata, the index, settings, cookies, the queue
 - **ECIES:** an ephemeral P-256 key pair, ECDH with the vault key, and HKDF-SHA256 over a random salt, the header and both public keys. This yields an AES-256 key and a nonce prefix for this file only.
 - **Chunks:** the payload is split into 64 KiB chunks, each sealed with AES-256-GCM. The nonce is `prefix ‖ chunk index ‖ last-chunk flag`, and the whole header is the associated data. Reordering, truncation and tampering are all detected.
 - **Random access:** every chunk but the last is full, so any offset can be decrypted on its own. Videos stream to ExoPlayer and thumbnails are decoded straight from the decrypting reader.
+- **Padding:** the payload ends with padding, sealed with the rest, chosen so that a media file's length on disk is a multiple of 64 KiB. The exact size of a file is a fingerprint, since a site's API states it for every post; the length on disk now says only which 64 KiB range it falls in, at a cost of up to 64 KiB per media file. Thumbnails, metadata and the other sealed files, whose sizes no one outside the app knows, are padded to 4 KiB, the storage's own block, which costs nothing. Files sealed by earlier versions, without padding, are still read and are re-sealed in the background at the next unlock.
 
 Sealing needs only the public key, which is how downloads can land in a locked vault. Reading needs the private key.
 
@@ -115,7 +116,7 @@ All files live in the app's private storage, under `files/vault/`:
 | `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with, one set for Tor and one for the direct connection. Sealed. |
 | `downloads.bin` | Pending and failed downloads, and search collections in progress. Sealed. |
 
-File names are random UUIDs. The number of files and their approximate sizes remain visible.
+File names are random UUIDs. The number of files remains visible, and each file's size to within 64 KiB for media and 4 KiB for the rest.
 
 The other clear-text settings are the Tor on/off switch, Orbot's port and whether the route was chosen at first start (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only whether the app is set to use Tor, and on which local port. Before Android 13 the app's language is kept in clear too (`shared_prefs/ui.xml`), as it must show on the lock screen; from Android 13 the system keeps it.
 

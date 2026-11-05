@@ -57,26 +57,65 @@ class VaultKeys(val recipient: Recipient, val privateKey: PrivateKey, val retire
  * file truncated on a chunk boundary fails authentication instead of reading short. The whole
  * header is the associated data of every chunk. Every chunk except the last is full, which
  * makes any plaintext offset addressable without reading what comes before it.
+ *
+ * Since version 2 the plaintext ends with padding: zero bytes, then its own length as a
+ * big-endian int in the last [TRAILER] bytes, from [TRAILER] to [MAX_PADDING] bytes in all,
+ * chosen so that the file's length on disk is a multiple of a quantum the writer picks:
+ * [MEDIA_QUANTUM] for media, [SMALL_QUANTUM] for the rest. The padding is sealed with the rest,
+ * so the file's length says nothing of the payload's beyond the quantum it falls in, and a
+ * reader strips what the trailer names without needing to know the quantum. Version 1 files,
+ * with no padding, are still read; they are written anew by the background re-sealing.
  */
 object SealedFormat {
     val MAGIC = byteArrayOf('B'.code.toByte(), 'V'.code.toByte(), 'S'.code.toByte(), '1'.code.toByte())
-    const val VERSION: Byte = 1
+
+    /** The version written: 2, padded. */
+    const val VERSION: Byte = 2
+
+    /** The oldest version still read: 1, unpadded. */
+    const val OLDEST_VERSION: Byte = 1
     const val DEFAULT_CHUNK = 64 * 1024
     const val TAG = 16
+
+    /**
+     * A media file's length on disk is a multiple of this: one chunk. A site's API states the
+     * size of every post, so the exact size would name the post; this hides it among every
+     * size within the same 64 KiB, at a cost of up to that much storage per file.
+     */
+    const val MEDIA_QUANTUM = 64 * 1024
+
+    /**
+     * Every other sealed file's length on disk is a multiple of this: the storage's own block,
+     * so it costs nothing. Metadata is a few hundred bytes and a thumbnail tens of KiB, and
+     * no one outside the app knows their sizes; what is hidden is the exact length alone.
+     */
+    const val SMALL_QUANTUM = 4 * 1024
+
+    /** The bytes at the very end of the padding that say how long it is, itself included. */
+    const val TRAILER = 4
+
+    /**
+     * The most padding bytes a file carries: two of the largest quantum, since every chunk the
+     * padding runs into brings a tag of its own, which skips some lengths.
+     */
+    const val MAX_PADDING = 2 * MEDIA_QUANTUM
     private const val SALT = 16
     private const val PREFIX = 7
     private val INFO = "BooruVault sealed stream v1".toByteArray()
 
-    internal class Header(val bytes: ByteArray, val chunkSize: Int, val salt: ByteArray, val ephemeralKey: ByteArray)
+    internal class Header(val bytes: ByteArray, val version: Byte, val chunkSize: Int, val salt: ByteArray, val ephemeralKey: ByteArray) {
+        val padded: Boolean get() = version >= 2
+    }
 
     internal class StreamKey(val key: SecretKeySpec, val prefix: ByteArray)
 
-    internal fun newHeader(chunkSize: Int, ephemeralKey: ByteArray): Header {
+    internal fun newHeader(chunkSize: Int, ephemeralKey: ByteArray, version: Byte = VERSION): Header {
+        require(version in OLDEST_VERSION..VERSION) { "unknown sealed version $version" }
         val salt = randomBytes(SALT)
         val buffer = ByteBuffer.allocate(MAGIC.size + 1 + 4 + SALT + 2 + ephemeralKey.size)
-        buffer.put(MAGIC).put(VERSION).putInt(chunkSize).put(salt)
+        buffer.put(MAGIC).put(version).putInt(chunkSize).put(salt)
             .putShort(ephemeralKey.size.toShort()).put(ephemeralKey)
-        return Header(buffer.array(), chunkSize, salt, ephemeralKey)
+        return Header(buffer.array(), version, chunkSize, salt, ephemeralKey)
     }
 
     internal fun readHeader(input: RandomAccessFile): Header {
@@ -87,7 +126,7 @@ object SealedFormat {
         val magic = ByteArray(MAGIC.size).also { buffer.get(it) }
         if (!magic.contentEquals(MAGIC)) throw GeneralSecurityException("not a sealed vault file")
         val version = buffer.get()
-        if (version != VERSION) throw GeneralSecurityException("unsupported sealed version $version")
+        if (version !in OLDEST_VERSION..VERSION) throw GeneralSecurityException("unsupported sealed version $version")
         val chunkSize = buffer.getInt()
         if (chunkSize !in 1024..(16 shl 20)) throw GeneralSecurityException("bad chunk size")
         val salt = ByteArray(SALT).also { buffer.get(it) }
@@ -95,7 +134,47 @@ object SealedFormat {
         if (keyLength !in 1..512) throw GeneralSecurityException("bad key length")
         val ephemeralKey = ByteArray(keyLength)
         input.readFully(ephemeralKey)
-        return Header(fixed + ephemeralKey, chunkSize, salt, ephemeralKey)
+        return Header(fixed + ephemeralKey, version, chunkSize, salt, ephemeralKey)
+    }
+
+    /**
+     * The version a sealed [file] was written with, read from its first bytes alone, or null for
+     * a file that is not one. Cheap enough to ask of every file of the vault at each unlock.
+     */
+    fun versionOf(file: File): Byte? = runCatching {
+        RandomAccessFile(file, "r").use { raf ->
+            val head = ByteArray(MAGIC.size + 1)
+            raf.readFully(head)
+            if (head.copyOf(MAGIC.size).contentEquals(MAGIC)) head[MAGIC.size] else null
+        }
+    }.getOrNull()
+
+    /**
+     * How many padding bytes bring a file of [headerLength] header bytes and [plain] payload
+     * bytes, in chunks of [chunkSize], to a length on disk that is a multiple of [quantum]: the
+     * fewest that do, from [TRAILER] up. The padding may run into chunks of its own, whose tags
+     * count too, so the search goes chunk by chunk: within one, the length on disk grows with
+     * the payload one for one, and the first payload length that lands on the quantum is taken
+     * if it fits the chunk.
+     */
+    internal fun paddingFor(headerLength: Int, plain: Long, chunkSize: Int, quantum: Int): Int {
+        require(quantum in 1..MEDIA_QUANTUM) { "quantum out of range" }
+        val least = plain + TRAILER
+        var chunks = maxOf(1, (least + chunkSize - 1) / chunkSize)
+        while (true) {
+            val lowest = maxOf((chunks - 1) * chunkSize + 1, least)
+            val highest = chunks * chunkSize
+            if (lowest <= highest) {
+                val wanted = Math.floorMod(-(headerLength + TAG * chunks), quantum.toLong())
+                val total = lowest + Math.floorMod(wanted - lowest, quantum.toLong())
+                if (total <= highest) {
+                    val padding = total - plain
+                    if (padding > MAX_PADDING) throw IllegalStateException("no padding brings the file to a multiple of $quantum")
+                    return padding.toInt()
+                }
+            }
+            chunks++
+        }
     }
 
     internal fun streamKey(shared: ByteArray, header: Header, recipient: Recipient): StreamKey {
@@ -114,11 +193,17 @@ object SealedFormat {
     }
 }
 
-/** Writes a sealed stream. Closing it writes the final chunk; a stream abandoned midway stays unreadable. */
+/**
+ * Writes a sealed stream. Closing it pads the file to a multiple of [quantum] and writes the
+ * final chunk; a stream abandoned midway stays unreadable. [version] is the format written:
+ * tests write version 1 to check it still reads.
+ */
 class SealedOutputStream(
     private val out: OutputStream,
     private val recipient: Recipient,
     chunkSize: Int = SealedFormat.DEFAULT_CHUNK,
+    private val quantum: Int = SealedFormat.MEDIA_QUANTUM,
+    version: Byte = SealedFormat.VERSION,
 ) : OutputStream() {
     private val header: SealedFormat.Header
     private val streamKey: SealedFormat.StreamKey
@@ -135,7 +220,7 @@ class SealedOutputStream(
 
     init {
         val ephemeral = EcKeys.generate()
-        header = SealedFormat.newHeader(chunkSize, ephemeral.public.encoded)
+        header = SealedFormat.newHeader(chunkSize, ephemeral.public.encoded, version)
         streamKey = SealedFormat.streamKey(EcKeys.agree(ephemeral.private, recipient.key), header, recipient)
         out.write(header.bytes)
     }
@@ -146,6 +231,11 @@ class SealedOutputStream(
 
     override fun write(b: ByteArray, off: Int, len: Int) {
         if (closed) throw IOException("stream closed")
+        append(b, off, len)
+        bytesWritten += len
+    }
+
+    private fun append(b: ByteArray, off: Int, len: Int) {
         var offset = off
         var remaining = len
         while (remaining > 0) {
@@ -156,8 +246,20 @@ class SealedOutputStream(
             buffered += n
             offset += n
             remaining -= n
-            bytesWritten += n
         }
+    }
+
+    /** Appends the padding that brings the file to a multiple of the size quantum; see [SealedFormat]. */
+    private fun pad() {
+        val padding = SealedFormat.paddingFor(header.bytes.size, index * buffer.size + buffered, buffer.size, quantum)
+        val zeros = ByteArray(minOf(padding - SealedFormat.TRAILER, 8 * 1024))
+        var remaining = padding - SealedFormat.TRAILER
+        while (remaining > 0) {
+            val n = minOf(remaining, zeros.size)
+            append(zeros, 0, n)
+            remaining -= n
+        }
+        append(ByteBuffer.allocate(SealedFormat.TRAILER).putInt(padding).array(), 0, SealedFormat.TRAILER)
     }
 
     private fun emit(last: Boolean) {
@@ -175,6 +277,7 @@ class SealedOutputStream(
         if (closed) return
         closed = true
         try {
+            if (header.padded) pad()
             emit(last = true)
             out.flush()
         } finally {
@@ -198,15 +301,19 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
     private var plainIndex = -1L
     private var plainLength = 0
 
-    /** Plaintext length in bytes. */
+    /** Plaintext length in bytes, the padding left out. */
     val size: Long
 
     /** The key pair this file is sealed to: the vault's current one, or a retired one. */
     val sealedTo: Recipient
 
+    /** The format version the file was written with; see [SealedFormat.VERSION]. */
+    val version: Byte
+
     init {
         try {
             header = SealedFormat.readHeader(raf)
+            version = header.version
             val ephemeral = EcKeys.publicKey(header.ephemeralKey)
             cipherChunk = header.chunkSize + SealedFormat.TAG
             fileLength = raf.length()
@@ -215,7 +322,7 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
             chunkCount = (body + cipherChunk - 1) / cipherChunk
             val lastLength = body - (chunkCount - 1) * cipherChunk
             if (lastLength < SealedFormat.TAG) throw GeneralSecurityException("truncated sealed file")
-            size = body - chunkCount * SealedFormat.TAG
+            val sealedLength = body - chunkCount * SealedFormat.TAG
             ciphertext = ByteArray(cipherChunk)
             plain = ByteArray(header.chunkSize)
             streamKey = streamKeyFor(keys, ephemeral)
@@ -228,10 +335,34 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
                     runCatching { load(0) }.isSuccess
                 }?.recipient ?: throw GeneralSecurityException("sealed to a key the vault no longer has")
             }
+            size = if (header.padded) sealedLength - paddingLength(sealedLength) else sealedLength
         } catch (e: Exception) {
             raf.close()
             throw e
         }
+    }
+
+    /**
+     * How many padding bytes end the [sealedLength] bytes of plaintext: what the trailer says,
+     * once every byte before it that it counts is found to be zero. Anything else is a file
+     * that was not written by this format.
+     */
+    private fun paddingLength(sealedLength: Long): Int {
+        if (sealedLength < SealedFormat.TRAILER) throw GeneralSecurityException("missing padding")
+        val trailer = ByteArray(SealedFormat.TRAILER)
+        readWithin(sealedLength, sealedLength - SealedFormat.TRAILER, trailer, 0, trailer.size)
+        val padding = ByteBuffer.wrap(trailer).getInt()
+        if (padding < SealedFormat.TRAILER || padding > SealedFormat.MAX_PADDING || padding > sealedLength) throw GeneralSecurityException("bad padding")
+        val zeros = ByteArray(minOf(padding - SealedFormat.TRAILER, 8 * 1024))
+        var position = sealedLength - padding
+        val end = sealedLength - SealedFormat.TRAILER
+        while (position < end) {
+            val n = readWithin(sealedLength, position, zeros, 0, minOf(zeros.size.toLong(), end - position).toInt())
+            if (n <= 0) throw EOFException()
+            for (i in 0 until n) if (zeros[i] != 0.toByte()) throw GeneralSecurityException("bad padding")
+            position += n
+        }
+        return padding
     }
 
     private fun streamKeyFor(candidate: VaultKeys, ephemeral: PublicKey): SealedFormat.StreamKey =
@@ -239,12 +370,15 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
 
     /** Reads up to [length] bytes at [position]; returns -1 at the end. */
     @Synchronized
-    fun read(position: Long, dst: ByteArray, offset: Int, length: Int): Int {
+    fun read(position: Long, dst: ByteArray, offset: Int, length: Int): Int = readWithin(size, position, dst, offset, length)
+
+    /** [read], over the first [limit] bytes of the plaintext: the whole of it, padding included, while the padding is being measured. */
+    private fun readWithin(limit: Long, position: Long, dst: ByteArray, offset: Int, length: Int): Int {
         if (length == 0) return 0
-        if (position >= size) return -1
+        if (position >= limit) return -1
         var pos = position
         var out = offset
-        var remaining = minOf(length.toLong(), size - position).toInt()
+        var remaining = minOf(length.toLong(), limit - position).toInt()
         var total = 0
         while (remaining > 0) {
             val index = pos / header.chunkSize
@@ -285,7 +419,8 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
             if (n < 0) throw EOFException()
             pos += n
         }
-        // An empty file still has its final chunk, and only decrypting it proves it is genuine.
+        // An empty unpadded file still has its final chunk, and only decrypting it proves it is
+        // genuine; a padded one had its last chunk decrypted for the padding when opened.
         if (out.isEmpty()) synchronized(this) { load(0) }
         return out
     }
@@ -332,7 +467,7 @@ object SealedBlob {
         try {
             // Synced before the rename, as the vault header is, so a power cut right after it
             // leaves the previous file in place rather than an empty new one.
-            SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient).use { it.write(bytes) }
+            SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
             if (!tmp.moveOver(file)) throw IOException("cannot write ${file.name}")
         } catch (e: Exception) {
             tmp.delete()

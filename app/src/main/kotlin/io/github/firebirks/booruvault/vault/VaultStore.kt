@@ -5,6 +5,7 @@ import io.github.firebirks.booruvault.util.ProblemException
 import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
 import kotlinx.coroutines.CompletableDeferred
@@ -159,7 +160,7 @@ class VaultStore(
         try {
             thumbDir.mkdirs()
             val part = File(thumbDir, "$id.part")
-            SealedOutputStream(part.outputStream().buffered(), recipient()).use { it.write(jpeg) }
+            SealedOutputStream(part.outputStream().buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(jpeg) }
             if (!part.moveOver(File(thumbDir, id))) throw IOException("cannot store thumbnail")
         } finally {
             inFlight.decrementAndGet()
@@ -176,7 +177,7 @@ class VaultStore(
             val tmp = File(metaDir, "${item.id}.tmp")
             val bytes = json.encodeToString(VaultItem.serializer(), item).toByteArray()
             try {
-                SealedOutputStream(tmp.outputStream().buffered(), recipient()).use { it.write(bytes) }
+                SealedOutputStream(tmp.outputStream().buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
             } finally {
                 bytes.fill(0)
             }
@@ -267,7 +268,7 @@ class VaultStore(
         val tmp = File(root, "index.bin.tmp")
         val bytes = json.encodeToString(listSerializer, items).toByteArray()
         try {
-            SealedOutputStream(tmp.outputStream().buffered(), recipient).use { it.write(bytes) }
+            SealedOutputStream(tmp.outputStream().buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
         } finally {
             bytes.fill(0)
         }
