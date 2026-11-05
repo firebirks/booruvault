@@ -160,7 +160,15 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
         onClose(solved)
     }
 
-    BackHandler { finish(Challenge.hasClearance(target)) }
+    // A visit for a login or the site's preferences is kept however it ends: a login thrown away
+    // by Back is the surprise to avoid. Back first steps back through the pages, as in a browser.
+    BackHandler {
+        when {
+            !browse -> finish(Challenge.hasClearance(target))
+            webView?.canGoBack() == true -> webView?.goBack()
+            else -> finish(true)
+        }
+    }
 
     // The page title stays "Just a moment..." until the check is through.
     if (!browse && route?.isSuccess == true) LaunchedEffect(target) {
@@ -183,7 +191,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                             Text(currentHost, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     },
-                    navigationIcon = { IconButton(onClick = { finish(false) }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_close)) } },
+                    navigationIcon = { IconButton(onClick = { finish(browse) }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_close)) } },
                     actions = { TextButton(onClick = { finish(true) }) { Text(stringResource(R.string.action_done)) } },
                 )
             },
