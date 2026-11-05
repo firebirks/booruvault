@@ -9,8 +9,9 @@ data class TagCollection(val id: String, val name: String, val query: String, va
 
 /**
  * Booru-style queries over vault items. Terms are space-separated and all must hold:
- * `tag` (exact, `*` as wildcard), `-term` excludes, `~tag` terms are alternatives of which at
- * least one must hold, and `type:video|gif|image`, `source:name`, `rating:<rating>` narrow.
+ * `tag` (exact), `-term` excludes, `~tag` terms are alternatives of which at least one must
+ * hold, and `type:video|gif|image`, `source:name`, `rating:<rating>` narrow. A term with `*` as
+ * a wildcard matches a whole tag, the file name or the source.
  *
  * The vault's filter box speaks the same language, [loose]ly: there a plain word is found inside
  * any tag, the file name or the source, so "land" finds "landscape" as one types. A filter
@@ -35,8 +36,8 @@ object TagQuery {
     }
 
     /**
-     * The exact query that shows what the [loose] one does, as far as tags go: each plain word
-     * becomes `*word*`. Terms that already narrow, or carry a wildcard, are left as they are.
+     * The exact query that shows what the [loose] one does: each plain word becomes `*word*`.
+     * Terms that already narrow, or carry a wildcard, are left as they are.
      */
     fun widened(query: String): String = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString(" ") { term ->
         val prefix = term.takeWhile { it == '-' || it == '~' }.take(1)
@@ -61,7 +62,11 @@ object TagQuery {
         }
         '*' in term -> {
             val pattern = Regex(term.split('*').joinToString(".*") { Regex.escape(it) })
-            ({ item -> item.tags.any { pattern.matches(it.lowercase()) } })
+            ({ item ->
+                item.tags.any { pattern.matches(it.lowercase()) } ||
+                    pattern.matches(item.fileName.lowercase()) ||
+                    item.sourceName?.lowercase()?.let(pattern::matches) == true
+            })
         }
         loose -> { item ->
             item.tags.any { it.contains(term, ignoreCase = true) } ||

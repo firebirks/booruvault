@@ -78,7 +78,15 @@ class LooseTagQueryTest {
     @Test
     fun aWidenedFilterIsAnExactQueryForWhatItShowed() {
         assertEquals("*land* -*rain* ~*cat* type:video cat*", TagQuery.widened("land  -rain ~cat type:video cat*"))
-        assertEquals(listOf("a"), exact(TagQuery.widened("land")))
+        assertEquals(loose("land"), exact(TagQuery.widened("land")))
+        assertEquals(loose("cat -ears"), exact(TagQuery.widened("cat -ears")))
         assertEquals("", TagQuery.widened("  "))
+    }
+
+    @Test
+    fun aWildcardLooksIntoFileNamesAndSourcesAsAPlainWordDoesLoosely() {
+        assertEquals(listOf("b"), exact("*holiday*"))
+        assertEquals(listOf("c"), exact("lands*end"))
+        assertEquals(listOf("d"), exact("-*land*"))
     }
 }

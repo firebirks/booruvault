@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 /** Moving files between the device and the vault. Plaintext only ever streams through memory. */
 class VaultTransfer(private val context: Context, private val store: VaultStore) {
@@ -49,7 +51,7 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
                     val mime = resolver.getType(uri)?.takeIf { it != "application/octet-stream" }
                         ?: Mime.fromExtension(name.substringAfterLast('.', ""))
                     val size = store.writeMedia(id) { out ->
-                        resolver.openInputStream(uri)?.use { copyWiping(it, out) } ?: throw ProblemException(Problem.Code.FILE_UNREADABLE, name)
+                        resolver.openInputStream(uri)?.use { copyWiping(SourceStream(it), out) } ?: throw ProblemException(Problem.Code.FILE_UNREADABLE, name)
                     }
                     val thumb = store.openMedia(id).use { Thumbnails.from(it, mime) }
                     thumb.jpeg?.let {
@@ -79,7 +81,7 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
                 } catch (e: Exception) {
                     store.discard(id)
                     if (e is kotlinx.coroutines.CancellationException) throw e
-                    failures += Failure(name, e.readProblem(name))
+                    failures += Failure(name, e.importProblem(name))
                 }
             }
             onProgress(uris.size, uris.size)
@@ -124,24 +126,6 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
         out.use { stream -> store.openMedia(item.id).use { copyWiping(it.inputStream(), stream) } }
     }
 
-    /** Like copyTo, but the plaintext passing through the buffer does not outlive the copy. */
-    private fun copyWiping(input: java.io.InputStream, output: java.io.OutputStream) {
-        val buffer = ByteArray(256 * 1024)
-        try {
-            while (true) {
-                val n = input.read(buffer)
-                if (n < 0) break
-                output.write(buffer, 0, n)
-            }
-        } finally {
-            buffer.fill(0)
-        }
-    }
-
-    /** What stopped a file from being read in: the storage's own word, or the problem met. */
-    private fun Throwable.readProblem(name: String): Problem =
-        if (this is HasProblem) problem else Problem(Problem.Code.FILE_UNREADABLE, message?.takeIf { it.isNotBlank() } ?: name)
-
     /** What stopped a file from being written out: the storage's own word, or the problem met. */
     private fun Throwable.writeProblem(name: String): Problem =
         if (this is HasProblem) problem else Problem(Problem.Code.STORAGE_WRITE, message?.takeIf { it.isNotBlank() } ?: name)
@@ -155,5 +139,52 @@ class VaultTransfer(private val context: Context, private val store: VaultStore)
             }
         }
         return (uri.lastPathSegment ?: "file") to null
+    }
+}
+
+/** Like copyTo, but the plaintext passing through the buffer does not outlive the copy. */
+internal fun copyWiping(input: InputStream, output: OutputStream) {
+    val buffer = ByteArray(256 * 1024)
+    try {
+        while (true) {
+            val n = input.read(buffer)
+            if (n < 0) break
+            output.write(buffer, 0, n)
+        }
+    } finally {
+        buffer.fill(0)
+    }
+}
+
+/**
+ * The file picked for an import, as it is read: a failure of its own is told, as [SourceUnreadable],
+ * from one of the vault's storage, which the same copy writes to.
+ */
+internal class SourceStream(private val input: InputStream) : InputStream() {
+    override fun read(): Int = reading { input.read() }
+    override fun read(b: ByteArray, off: Int, len: Int): Int = reading { input.read(b, off, len) }
+    override fun close() = input.close()
+
+    private inline fun <T> reading(read: () -> T): T = try {
+        read()
+    } catch (e: IOException) {
+        throw SourceUnreadable(e)
+    }
+}
+
+/** The file picked could not be read. */
+internal class SourceUnreadable(cause: IOException) : IOException(cause.message, cause)
+
+/**
+ * What stopped a file from being imported: the problem met, the file's own failure to be read,
+ * or else the vault's storage refusing the write, in its own words.
+ */
+internal fun Throwable.importProblem(name: String): Problem {
+    val detail = message?.takeIf { it.isNotBlank() } ?: name
+    return when (this) {
+        is HasProblem -> problem
+        is SourceUnreadable -> Problem(Problem.Code.FILE_UNREADABLE, detail)
+        is IOException -> Problem(Problem.Code.STORAGE_WRITE, detail)
+        else -> Problem(Problem.Code.FILE_UNREADABLE, detail)
     }
 }
