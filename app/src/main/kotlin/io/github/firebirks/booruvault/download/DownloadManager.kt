@@ -165,11 +165,16 @@ class DownloadManager(
         batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) },
     )
 
-    /** Seals the queue as it stands, and returns it as sealed. */
-    private fun persist(): SavedQueue {
+    /**
+     * Seals the queue as it stands, and returns it as sealed. A save made [onlyWhileLive] takes
+     * its copy under the write lock and only if the queue is still the vault's: a lock that
+     * came meanwhile has sealed the full queue and emptied it, and a copy taken after that
+     * would seal the emptiness over it.
+     */
+    private fun persist(onlyWhileLive: Boolean = false): SavedQueue {
         var queue: SavedQueue? = null
         val recipient = vault.recipient
-        if (recipient != null) runCatching { saved.write(recipient) { snapshot().also { queue = it } } }
+        if (recipient != null) runCatching { saved.write(recipient) { if (onlyWhileLive && !live) null else snapshot().also { queue = it } } }
         return queue ?: snapshot()
     }
 
@@ -267,13 +272,13 @@ class DownloadManager(
         }
         scope.launch(Dispatchers.IO) {
             // Only status changes matter for what is saved, not byte counts.
-            combine(_tasks, _batches) { tasks, batches -> tasks.map { it.key to it.status } to batches.map { Triple(it.key, it.nextPage, it.problem) } }
+            combine(_tasks, _batches) { tasks, batches -> tasks.map { it.key to it.status } to batches.map { listOf(it.key, it.nextPage, it.problem, it.stopped) } }
                 .distinctUntilChanged()
                 .collect { if (live) saveRequests.trySend(Unit) }
         }
         scope.launch(Dispatchers.IO) {
             for (request in saveRequests) {
-                if (live) persist()
+                if (live) persist(onlyWhileLive = true)
                 delay(1000)
             }
         }
@@ -314,9 +319,8 @@ class DownloadManager(
      */
     private fun collect(batch: BatchJob) {
         startService()
+        var problem: Problem? = null
         val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
-            var problem: Problem? = null
-            var cancelled = false
             try {
                 val api = api(batch.source)
                 val limit = 100
@@ -332,25 +336,29 @@ class DownloadManager(
                     val allowed = posts.filter { seen.add(it.id) && policy.allows(it) }.take(batch.target - found)
                     barren = if (allowed.isEmpty()) barren + 1 else 0
                     found += allowed.size
+                    // A cancellation that came while the page was being read must not queue it.
+                    ensureActive()
                     enqueue(allowed, batch.source)
                     page++
                     _batches.update { list -> list.map { if (it.key == batch.key) it.copy(found = found, nextPage = page) else it } }
                 }
             } catch (e: CancellationException) {
-                cancelled = true
                 throw e
             } catch (e: Exception) {
                 // Whatever was queued before the failure still downloads.
                 problem = e.toProblem()
-            } finally {
-                jobs.remove(batch.key, coroutineContext.job)
-                val stopped = problem
-                _batches.update { list ->
-                    when {
-                        stopped != null -> list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
-                        cancelled -> list.map { if (it.key == batch.key) it.copy(stopped = true) else it }
-                        else -> list.filterNot { it.key == batch.key }
-                    }
+            }
+        }
+        // On completion rather than in a finally: a job cancelled before it was ever dispatched
+        // runs no finally, and the batch would stay listed as under way with nothing under it.
+        job.invokeOnCompletion { cause ->
+            jobs.remove(batch.key, job)
+            val stopped = problem
+            _batches.update { list ->
+                when {
+                    stopped != null -> list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
+                    cause != null -> list.map { if (it.key == batch.key) it.copy(stopped = true) else it }
+                    else -> list.filterNot { it.key == batch.key }
                 }
             }
         }
@@ -387,6 +395,8 @@ class DownloadManager(
     fun retry(key: Long) {
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.FAILED && task.status != DownloadStatus.CANCELLED) return
+        // A job still listed is a retry already under way, whatever status an older one left.
+        if (jobs[key]?.isActive == true) return
         if (!live) return
         set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1, problem = null) }
         launch(task)
@@ -550,7 +560,9 @@ class DownloadManager(
             if (e is CancellationException || !currentCoroutineContext().isActive) {
                 // Cancelled: the call was closed under the transfer, which then failed as a read
                 // would. That is no failure to report, and the job ends as a cancelled one does.
-                set(key) { it.copy(status = DownloadStatus.CANCELLED) }
+                // The status is written only by the job still listed for the key: an older one,
+                // unwinding after a retry replaced it, must not mark the retry cancelled.
+                if (jobs[key] === currentCoroutineContext().job) set(key) { it.copy(status = DownloadStatus.CANCELLED) }
                 throw e as? CancellationException ?: CancellationException("download cancelled", e)
             }
             val met = e.toProblem()

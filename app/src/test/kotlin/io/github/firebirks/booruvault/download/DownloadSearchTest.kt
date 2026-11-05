@@ -208,6 +208,17 @@ class DownloadSearchTest {
     }
 
     @Test
+    fun `a batch cancelled the moment it starts is listed as stopped, not as under way`() = runBlocking {
+        val downloads = manager(FakeApi(sized(42, 100, 37)))
+        downloads.downloadSearch(source, "pikachu", 500)
+        // Before its coroutine was dispatched, most of the time: a finally would never run.
+        downloads.cancelAll()
+        val batch = downloads.settled().single()
+        assertTrue(batch.stopped)
+        assertEquals(null, batch.problem)
+    }
+
+    @Test
     fun `removing what is finished keeps what failed, with its reason`() = runBlocking {
         val pages = sized(42, 100, 37)
         val downloads = manager(FakeApi { page -> if (page == 2) throw ProblemException(Problem.Code.RATE_LIMITED) else pages(page) })
