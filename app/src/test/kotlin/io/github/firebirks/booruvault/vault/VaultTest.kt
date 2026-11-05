@@ -426,6 +426,54 @@ class VaultTest {
             }
     }
 
+    @Test
+    fun aFileOfTheOldFormatCutShortDoesNotKeepTheFormatPassFromBeingDone() = runBlocking {
+        val root = tmp.newFolder()
+        val vault = VaultManager(root, json)
+        vault.create("first".toCharArray(), fastKdf)
+        val store = VaultStore(root, vault, json, scope)
+        add(store, Random(13).nextBytes(200_000), "a")
+        add(store, Random(14).nextBytes(3_000), "b")
+        awaitItems(store, 2)
+        val (cut, whole) = store.items.value.sortedBy { it.fileName }.map { File(root, "media/${it.id}") }
+        // As a power cut left them under the old app: one whole, one short of its last chunk.
+        for (file in listOf(cut, whole)) {
+            val data = store.openMedia(file.name).use { it.readAll() }
+            val old = File(file.path + ".old")
+            SealedOutputStream(old.outputStream(), vault.recipient!!, version = 1).use { it.write(data) }
+            assertTrue(old.renameTo(file))
+        }
+        cut.writeBytes(cut.readBytes().let { it.copyOf(it.size - 20_000) })
+
+        VaultRekeyer(root, vault, store, scope)
+        withTimeout(20_000) {
+            // The whole one is brought to the current format; the cut one cannot be, and does
+            // not stand in the way of the marker that spares the scan from then on.
+            while (SealedFormat.versionOf(whole) != SealedFormat.VERSION) kotlinx.coroutines.delay(50)
+            while (!File(root, "format-${SealedFormat.VERSION}").exists()) kotlinx.coroutines.delay(50)
+        }
+        assertEquals(1.toByte(), SealedFormat.versionOf(cut))
+        assertTrue(File(root, "media").listFiles()!!.none { it.name.endsWith(".rekey") })
+    }
+
+    @Test
+    fun aHeaderThatReadsAgainTakesTheVaultFromDamagedToLocked() = runBlocking {
+        val root = tmp.newFolder()
+        VaultManager(root, json).create("first".toCharArray(), fastKdf)
+        val headerFile = File(root, "vault.json")
+        val good = headerFile.readBytes()
+        headerFile.writeText("{ not a header")
+        val vault = VaultManager(root, json)
+        assertEquals(VaultState.Damaged, vault.state.value)
+        // Read again while still unreadable: nothing changes, and nothing offers to start over.
+        vault.reread()
+        assertEquals(VaultState.Damaged, vault.state.value)
+        headerFile.writeBytes(good)
+        vault.reread()
+        assertEquals(VaultState.Locked, vault.state.value)
+        assertTrue(vault.unlock("first".toCharArray()))
+    }
+
     private suspend fun add(store: VaultStore, data: ByteArray, name: String, postId: Long? = null) {
         val id = store.newId()
         val size = store.writeMedia(id) { it.write(data) }

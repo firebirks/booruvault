@@ -285,6 +285,17 @@ class SealedOutputStream(
             out.close()
         }
     }
+
+    /**
+     * Drops the stream with no final chunk, for a file that is to be deleted: nothing more is
+     * written or synced, and the plaintext held for the next chunk is wiped.
+     */
+    fun abandon() {
+        if (closed) return
+        closed = true
+        buffer.fill(0)
+        runCatching { out.close() }
+    }
 }
 
 /** Random-access reader for a sealed file. Thread-safe; decrypted chunks never leave memory. */
@@ -496,5 +507,12 @@ internal class SyncedFileOutputStream(file: File) : FileOutputStream(file) {
         } finally {
             super.close()
         }
+    }
+
+    /** Closes without a sync, for a file that is to be deleted. */
+    fun abandon() {
+        if (closed) return
+        closed = true
+        super.close()
     }
 }

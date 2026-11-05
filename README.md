@@ -41,7 +41,7 @@ All three are signed with the same key, so updates install over each other. A bu
 
 ### Vault
 
-- **Unlocking:** password of at least eight characters, plus optional biometric unlock. The key-derivation parameters in the header are checked against what the app would write, so an altered header cannot make the unlock eat the memory. A header that cannot be read at all, or that a later version of the app wrote, is reported as damaged at start, and the vault can only be deleted.
+- **Unlocking:** password of at least eight characters, plus optional biometric unlock. The key-derivation parameters in the header are checked against what the app would write, so an altered header cannot make the unlock eat the memory. A header that cannot be read at all, or that a later version of the app wrote, is reported as damaged at start; the header can be read again, for a storage that failed for a moment, otherwise the vault can only be deleted.
 - **Auto-lock:** after a configurable time in the background, five minutes by default. Android may run it a few minutes late, but coming back after the time has passed always finds the vault locked. Locking also forgets the search and the open screens.
 - **Contents:** grid with filtering (tags, `-tag`, `type:video|gif|image`, `source:name`), viewer, info sheet, delete.
 - **Collections:** bookmarked tag sets shown as chips at the top of the vault. A collection holds every item whose tags match its query (e.g. “Landscapes” = `landscape -rain`), including items saved later. The query uses booru syntax: exact tags, `-tag`, `~tag` alternatives, `*` wildcards, plus `type:`, `source:` and `rating:`. The vault's filter box speaks the same language, except that a plain word is found inside any tag, file name or source as you type; a filter saved as a collection is rewritten with wildcards (`land` becomes `*land*`) so the collection holds what the filter showed. Collections can also be created from a search in Browse, or from a tag in a post's details. Their names and queries are sealed in the vault.
@@ -98,7 +98,7 @@ Every file (media, thumbnails, metadata, the index, settings, cookies, the queue
 - **ECIES:** an ephemeral P-256 key pair, ECDH with the vault key, and HKDF-SHA256 over a random salt, the header and both public keys. This yields an AES-256 key and a nonce prefix for this file only.
 - **Chunks:** the payload is split into 64 KiB chunks, each sealed with AES-256-GCM. The nonce is `prefix ‖ chunk index ‖ last-chunk flag`, and the whole header is the associated data. Reordering, truncation and tampering are all detected.
 - **Random access:** every chunk but the last is full, so any offset can be decrypted on its own. Videos stream to ExoPlayer and thumbnails are decoded straight from the decrypting reader.
-- **Padding:** the payload ends with padding, sealed with the rest, chosen so that a media file's length on disk is a multiple of 64 KiB. The exact size of a file is a fingerprint, since a site's API states it for every post; the length on disk now says only which 64 KiB range it falls in, at a cost that is usually under 64 KiB per media file and at most 128 KiB. Thumbnails, metadata and the other sealed files, whose sizes no one outside the app knows, are padded to 4 KiB, the storage's own block, which costs at most one more block. Files sealed by earlier versions, without padding, are still read and are re-sealed in the background at the next unlock, each copy synced before it replaces the file; a marker then says the vault is in the current format, so the files are not looked over at every unlock.
+- **Padding:** the payload ends with padding, sealed with the rest, chosen so that a media file's length on disk is a multiple of 64 KiB. The exact size of a file is a fingerprint, since a site's API states it for every post; the length on disk now says only which 64 KiB range it falls in, at a cost that is usually under 64 KiB per media file and never more than a few bytes over 128 KiB. Thumbnails, metadata and the other sealed files, whose sizes no one outside the app knows, are padded to 4 KiB, the storage's own block, which costs one more block, two in rare cases. Files sealed by earlier versions, without padding, are still read and are re-sealed in the background at the next unlock, each copy synced before it replaces the file; a marker then says the vault is in the current format, so the files are not looked over at every unlock.
 
 Sealing needs only the public key, which is how downloads can land in a locked vault. Reading needs the private key.
 
@@ -114,7 +114,9 @@ All files live in the app's private storage, under `files/vault/`:
 | `index.bin` | Cache of all metadata, rebuilt from `meta/` if lost. Sealed. |
 | `config.bin` | Settings, sources, API keys. Sealed. |
 | `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with, one set for Tor and one for the direct connection. Sealed. |
-| `downloads.bin` | Pending and failed downloads, and search collections in progress. Sealed. |
+| `downloads.bin` | Pending, failed and cancelled downloads, and search collections in progress. Sealed. |
+| `format-2` | Empty marker: every sealed file was found in the current, padded format, so they are not looked over at each unlock. **Clear**. |
+| `*.corrupt` | A sealed settings, cookies or queue file that could not be read, set aside rather than written over. Sealed. |
 
 File names are random UUIDs. The number of files remains visible, and, once the background re-sealing is done, each file's size to within 64 KiB for media and 4 KiB for the rest.
 

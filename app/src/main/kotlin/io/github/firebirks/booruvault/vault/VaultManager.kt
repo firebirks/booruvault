@@ -93,15 +93,18 @@ class VaultManager(private val root: File, private val json: Json) {
 
     /**
      * Reads the header again, from a [VaultState.Damaged] state: a failure to read it may have
-     * been the storage's for a moment, and a header that reads now is the vault, locked.
+     * been the storage's for a moment, and a header that reads now is the vault, locked. The
+     * one way out is to a locked vault: a header that was there at start and is not found now
+     * is the storage failing again, not a vault that is missing, which the setup screen would
+     * write over.
      */
     suspend fun reread() = mutex.withLock {
         if (_state.value != VaultState.Damaged) return@withLock
-        val read = runCatching { readHeader() }
-        header = read.getOrNull()
-        _biometric.value = header?.biometricWrapped != null
-        _rekeyPending.value = header?.retired?.isNotEmpty() == true
-        _state.value = stateOf(read)
+        val read = withContext(Dispatchers.IO) { runCatching { readHeader() } }.getOrNull() ?: return@withLock
+        header = read
+        _biometric.value = read.biometricWrapped != null
+        _rekeyPending.value = read.retired.isNotEmpty()
+        _state.value = VaultState.Locked
     }
     val state: StateFlow<VaultState> = _state.asStateFlow()
 
@@ -128,7 +131,7 @@ class VaultManager(private val root: File, private val json: Json) {
     /** [password] is wiped by every method that takes one. */
     suspend fun create(password: CharArray, kdf: KdfParams = Kdf.newParams()) = mutex.withLock {
         withContext(Dispatchers.Default) {
-            check(header == null) { "vault already exists" }
+            check(header == null && !headerFile.exists()) { "vault already exists" }
             val pair = EcKeys.generate()
             val pkcs8 = pair.private.encoded
             val kek = try {

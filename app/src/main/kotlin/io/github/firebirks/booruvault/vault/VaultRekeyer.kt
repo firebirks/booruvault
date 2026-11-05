@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
+import java.security.GeneralSecurityException
 
 /** How far the re-sealing has come, in files; [rekeying] after a password change, otherwise to the current format. */
 data class RekeyProgress(val done: Int, val total: Int, val rekeying: Boolean = true)
@@ -57,10 +58,11 @@ class VaultRekeyer(
             vault.state.collectLatest { state ->
                 try {
                     if (state is VaultState.Unlocked) {
+                        val older = if (state.keys.retired.isEmpty() && !formatMarker.exists()) olderFormat() else null
                         when {
                             state.keys.retired.isNotEmpty() -> run(state.keys, rekey = true)
-                            formatMarker.exists() -> Unit
-                            olderFormat().isNotEmpty() -> run(state.keys, rekey = false)
+                            formatMarker.exists() || older == null -> Unit
+                            older.isNotEmpty() -> run(state.keys, rekey = false)
                             else -> markFormatCurrent()
                         }
                     }
@@ -75,9 +77,12 @@ class VaultRekeyer(
         runCatching { formatMarker.createNewFile() }
     }
 
-    private enum class Outcome { RESEALED, CURRENT, UNREADABLE, NOT_WRITTEN }
+    /** [CORRUPT]: the file fails its own authentication, which no later try will mend; [UNREADABLE]: a read failed, which may pass. */
+    private enum class Outcome { RESEALED, CURRENT, UNREADABLE, CORRUPT, NOT_WRITTEN }
 
-    private class Unreadable(cause: Exception) : Exception(cause)
+    private class Unreadable(cause: Exception) : Exception(cause) {
+        val outcome: Outcome get() = if (cause is GeneralSecurityException) Outcome.CORRUPT else Outcome.UNREADABLE
+    }
 
     private suspend fun run(keys: VaultKeys, rekey: Boolean) {
         val started = System.currentTimeMillis()
@@ -87,7 +92,7 @@ class VaultRekeyer(
         while (true) {
             // A write begun under the old pair can land after the listing, unseen by this pass.
             val writesBefore = store.writesInFlight
-            val files = if (rekey) candidates() else olderFormat()
+            val files = if (rekey) candidates() else olderFormat() ?: return
             var done = 0
             var resealed = 0
             var failed = 0
@@ -101,6 +106,14 @@ class VaultRekeyer(
                     }
                     Outcome.CURRENT -> failures.remove(file.path)
                     Outcome.UNREADABLE -> {
+                        val count = (failures[file.path] ?: 0) + 1
+                        failures[file.path] = count
+                        if (count < GIVE_UP_AFTER) failed++
+                    }
+                    // Under one key, a file that fails its own check will fail it at every unlock:
+                    // it must not keep the format pass from being counted as done. Under retired
+                    // keys it may be one more try away from the right key, as above.
+                    Outcome.CORRUPT -> if (rekey) {
                         val count = (failures[file.path] ?: 0) + 1
                         failures[file.path] = count
                         if (count < GIVE_UP_AFTER) failed++
@@ -131,8 +144,15 @@ class VaultRekeyer(
         }
     }
 
-    /** The sealed files still in a format older than the one written now. */
-    private fun olderFormat(): List<File> = candidates().filter { file -> SealedFormat.versionOf(file)?.let { it < SealedFormat.VERSION } == true }
+    /**
+     * The sealed files still in a format older than the one written now, or null when a folder
+     * could not be listed: then nothing is known, and no marker must say the vault is current.
+     */
+    private fun olderFormat(): List<File>? {
+        val dirs = listOf("media", "thumbs", "meta").map { File(root, it) }
+        if (dirs.any { it.isDirectory && it.list() == null }) return null
+        return candidates().filter { file -> SealedFormat.versionOf(file)?.let { it < SealedFormat.VERSION } == true }
+    }
 
     /** Every sealed file of the vault, finished writes only. */
     private fun candidates(): List<File> {
@@ -151,48 +171,64 @@ class VaultRekeyer(
      * than an empty new one; and it stops where it is when the vault locks, the copy deleted.
      */
     private suspend fun reseal(file: File, keys: VaultKeys): Outcome {
+        // Taken before the file is opened: a file replaced between the two would pass as unchanged.
+        val modified = file.lastModified()
+        val length = file.length()
         val sealed = try {
             SealedFile(file, keys)
+        } catch (e: GeneralSecurityException) {
+            return Outcome.CORRUPT
         } catch (e: Exception) {
             return if (file.isFile) Outcome.UNREADABLE else Outcome.CURRENT
         }
         sealed.use { source ->
             if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded) && source.version == SealedFormat.VERSION) return Outcome.CURRENT
-            // Without room for the copy, the write would fill the storage to the last byte, at every unlock.
+            // Without room for the copy, the write would fill the storage to the last byte, at every
+            // unlock. A small file asks little room: a re-keying must get through them on a full phone.
+            val media = file.parentFile?.name == "media"
             val room = file.parentFile?.usableSpace ?: 0L
-            if (room < file.length() + SealedFormat.MAX_PADDING + SPACE_MARGIN) return Outcome.NOT_WRITTEN
-            val modified = file.lastModified()
-            val length = file.length()
+            if (room < length + SealedFormat.MAX_PADDING + (if (media) SPACE_MARGIN else SMALL_SPACE_MARGIN)) return Outcome.NOT_WRITTEN
+            // Proven before the copy: the last chunk, which a file cut short at a power cut lacks,
+            // and which the copy of a large one would otherwise reach only after decrypting and
+            // writing all the rest, at every unlock; for an empty payload, its one chunk.
+            try {
+                if (source.size == 0L) source.readAll() else source.read(source.size - 1, ByteArray(1), 0, 1)
+            } catch (e: Exception) {
+                return Unreadable(e).outcome
+            }
             val tmp = File(file.path + SUFFIX)
             // Padded as the store would pad it: to the media quantum under media/, the small one elsewhere.
-            val quantum = if (file.parentFile?.name == "media") SealedFormat.MEDIA_QUANTUM else SealedFormat.SMALL_QUANTUM
+            val quantum = if (media) SealedFormat.MEDIA_QUANTUM else SealedFormat.SMALL_QUANTUM
+            val raw = try {
+                SyncedFileOutputStream(tmp)
+            } catch (e: Exception) {
+                return Outcome.NOT_WRITTEN
+            }
+            val out = SealedOutputStream(raw.buffered(256 * 1024), keys.recipient, quantum = quantum)
+            // A copy given up is dropped as it stands, with no final chunk and no sync, then deleted.
+            fun drop() {
+                raw.abandon()
+                out.abandon()
+                tmp.delete()
+            }
             try {
-                // An empty payload is proven by its one chunk, which the copy below never reads.
-                if (source.size == 0L) {
-                    try {
-                        source.readAll()
-                    } catch (e: Exception) {
-                        throw Unreadable(e)
-                    }
-                }
-                SealedOutputStream(SyncedFileOutputStream(tmp).buffered(256 * 1024), keys.recipient, quantum = quantum).use { out ->
-                    val buffer = ByteArray(256 * 1024)
-                    try {
-                        val input = source.inputStream()
-                        while (true) {
-                            currentCoroutineContext().ensureActive()
-                            val n = try {
-                                input.read(buffer)
-                            } catch (e: Exception) {
-                                throw Unreadable(e)
-                            }
-                            if (n < 0) break
-                            out.write(buffer, 0, n)
+                val buffer = ByteArray(256 * 1024)
+                try {
+                    val input = source.inputStream()
+                    while (true) {
+                        currentCoroutineContext().ensureActive()
+                        val n = try {
+                            input.read(buffer)
+                        } catch (e: Exception) {
+                            throw Unreadable(e)
                         }
-                    } finally {
-                        buffer.fill(0)
+                        if (n < 0) break
+                        out.write(buffer, 0, n)
                     }
+                } finally {
+                    buffer.fill(0)
                 }
+                out.close()
                 // Closed before the move, as Windows will not replace a file that is open.
                 source.close()
                 // Rewritten meanwhile, under the current pair, or deleted: the copy is stale.
@@ -203,13 +239,13 @@ class VaultRekeyer(
                 }
                 return Outcome.RESEALED
             } catch (e: CancellationException) {
-                tmp.delete()
+                drop()
                 throw e
             } catch (e: Unreadable) {
-                tmp.delete()
-                return Outcome.UNREADABLE
+                drop()
+                return e.outcome
             } catch (e: Exception) {
-                tmp.delete()
+                drop()
                 return Outcome.NOT_WRITTEN
             }
         }
@@ -220,7 +256,10 @@ class VaultRekeyer(
         const val GRACE_MS = 2000L
         const val GIVE_UP_AFTER = 5
 
-        /** Storage left alone when a copy is made: the vault's other writes, and the phone's, need some. */
+        /** Storage left alone when a media copy is made: the vault's other writes, and the phone's, need some. */
         const val SPACE_MARGIN = 64L shl 20
+
+        /** Storage left alone when a small file is copied: metadata, thumbnails and the blobs are a few KiB each. */
+        const val SMALL_SPACE_MARGIN = 1L shl 20
     }
 }

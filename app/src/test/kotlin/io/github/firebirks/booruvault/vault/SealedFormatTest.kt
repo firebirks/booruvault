@@ -184,7 +184,7 @@ class SealedFormatTest {
     }
 
     @Test
-    fun theMostPaddingIsTwoQuantaLessTheTrailerAndTheTagsItBrings() {
+    fun theMostPaddingIsJustUnderTwoQuanta() {
         // The worst case: the payload ends just where a chunk's tag skips the lengths that fit.
         assertEquals(131_059, SealedFormat.paddingFor(118, 267_845_639L, 65536, SealedFormat.MEDIA_QUANTUM))
         assertEquals(8_179, SealedFormat.paddingFor(118, 16_248_839L, 65536, SealedFormat.SMALL_QUANTUM))

@@ -7,6 +7,7 @@ import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
+import io.github.firebirks.booruvault.vault.crypto.SyncedFileOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -142,7 +143,9 @@ class VaultStore(
             mediaDir.mkdirs()
             val part = File(mediaDir, "$id.part")
             try {
-                val sealed = SealedOutputStream(part.outputStream().buffered(256 * 1024), recipient)
+                // Synced before the rename, as every write that becomes a file of the vault is: a
+                // power cut right after must not leave an item that is there in name only.
+                val sealed = SealedOutputStream(SyncedFileOutputStream(part).buffered(256 * 1024), recipient)
                 sealed.use { block(CappedOutputStream(it, MAX_MEDIA_BYTES)) }
                 if (!part.moveOver(File(mediaDir, id))) throw IOException("cannot store media")
                 sealed.bytesWritten
@@ -162,7 +165,7 @@ class VaultStore(
         try {
             thumbDir.mkdirs()
             val part = File(thumbDir, "$id.part")
-            SealedOutputStream(part.outputStream().buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(jpeg) }
+            SealedOutputStream(SyncedFileOutputStream(part).buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(jpeg) }
             if (!part.moveOver(File(thumbDir, id))) throw IOException("cannot store thumbnail")
         } finally {
             inFlight.decrementAndGet()
@@ -179,7 +182,7 @@ class VaultStore(
             val tmp = File(metaDir, "${item.id}.tmp")
             val bytes = json.encodeToString(VaultItem.serializer(), item).toByteArray()
             try {
-                SealedOutputStream(tmp.outputStream().buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
+                SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
             } finally {
                 bytes.fill(0)
             }
@@ -270,7 +273,7 @@ class VaultStore(
         val tmp = File(root, "index.bin.tmp")
         val bytes = json.encodeToString(listSerializer, items).toByteArray()
         try {
-            SealedOutputStream(tmp.outputStream().buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
+            SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
         } finally {
             bytes.fill(0)
         }

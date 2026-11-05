@@ -64,6 +64,7 @@ import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.vault.BiometricKey
 import io.github.firebirks.booruvault.vault.VaultHeaderException
 import io.github.firebirks.booruvault.vault.VaultManager
+import io.github.firebirks.booruvault.vault.VaultState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -304,15 +305,17 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
 }
 
 /**
- * Shown when a vault header is there but cannot be read: nothing behind it can be reached, and
- * the one way on is to delete the vault and start over. The deletion asks to be confirmed in
- * writing, as it does from the settings.
+ * Shown when a vault header is there but cannot be read: nothing behind it can be reached. The
+ * header can be read again, for a storage that failed for a moment; otherwise the way on is to
+ * delete the vault and start over, which asks to be confirmed in writing, as it does from the
+ * settings.
  */
 @Composable
 fun VaultDamagedScreen() {
     val vault = LocalContainer.current.vault
     val scope = rememberCoroutineScope()
     var confirm by remember { mutableStateOf(false) }
+    var stillUnread by remember { mutableStateOf(false) }
     LockLayout {
         Icon(Icons.Outlined.Warning, null, Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
         Text(stringResource(R.string.vault_damaged_title), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
@@ -324,7 +327,20 @@ fun VaultDamagedScreen() {
         )
         // A header that could not be read may read next time: a passing failure of the storage
         // is not a damaged vault, and deletion is not the only way on.
-        Button(onClick = { scope.launch { vault.reread() } }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_retry)) }
+        Button(
+            onClick = {
+                scope.launch {
+                    stillUnread = false
+                    vault.reread()
+                    stillUnread = vault.state.value == VaultState.Damaged
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.action_retry)) }
+        // Said again when the retry found the header as it was, aloud too.
+        Box(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }, contentAlignment = Alignment.Center) {
+            if (stillUnread) Text(stringResource(R.string.vault_damaged_title), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+        }
         OutlinedButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error)
         }
