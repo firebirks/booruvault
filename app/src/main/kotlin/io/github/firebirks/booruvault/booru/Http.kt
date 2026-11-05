@@ -4,7 +4,11 @@ import io.github.firebirks.booruvault.BuildConfig
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.util.Problem
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -155,6 +159,31 @@ suspend fun Call.await(): Response = suspendCancellableCoroutine { cont ->
         override fun onResponse(call: Call, response: Response) = cont.resume(response) { _, _, _ -> response.close() }
         override fun onFailure(call: Call, e: IOException) = cont.resumeWithException(e)
     })
+}
+
+/**
+ * Runs [block] on the response, with the call tied to the coroutine for as long as it runs.
+ * [await] alone binds them only until the headers arrive: a body read blocked on a socket gone
+ * quiet would then sit out the read timeout after a cancellation, holding whatever place the
+ * transfer has. Cancelling the coroutine cancels the call, which closes the socket and ends the
+ * read at once; [block] then fails with the [IOException] OkHttp gives a cancelled call, in a
+ * coroutine that is no longer active, and the response is closed.
+ */
+suspend fun <T> Call.withResponse(block: suspend (Response) -> T): T = coroutineScope {
+    var done = false
+    val watch = launch(start = CoroutineStart.UNDISPATCHED) {
+        try {
+            awaitCancellation()
+        } finally {
+            if (!done) this@withResponse.cancel()
+        }
+    }
+    try {
+        await().use { block(it) }
+    } finally {
+        done = true
+        watch.cancel()
+    }
 }
 
 /** GETs a page as text, turning the usual booru failure modes into readable messages. */

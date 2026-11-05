@@ -4,9 +4,9 @@ import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.UserAgents
-import io.github.firebirks.booruvault.booru.await
 import io.github.firebirks.booruvault.booru.bytesUpTo
 import io.github.firebirks.booruvault.booru.extensionFromUrl
+import io.github.firebirks.booruvault.booru.withResponse
 import io.github.firebirks.booruvault.settings.AppSettings
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.settings.allows
@@ -24,14 +24,17 @@ import io.github.firebirks.booruvault.vault.VaultState
 import io.github.firebirks.booruvault.vault.VaultStore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -308,7 +311,7 @@ class DownloadManager(
      */
     private fun collect(batch: BatchJob) {
         startService()
-        jobs[batch.key] = scope.launch(Dispatchers.IO) {
+        val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
             var problem: Problem? = null
             try {
                 val api = api(batch.source)
@@ -335,13 +338,15 @@ class DownloadManager(
                 // Whatever was queued before the failure still downloads.
                 problem = e.toProblem()
             } finally {
-                jobs.remove(batch.key)
+                jobs.remove(batch.key, coroutineContext.job)
                 val stopped = problem
                 _batches.update { list ->
                     if (stopped == null) list.filterNot { it.key == batch.key } else list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
                 }
             }
         }
+        jobs[batch.key] = job
+        job.start()
     }
 
     fun cancelBatch(key: Long) {
@@ -405,13 +410,17 @@ class DownloadManager(
     }
 
     private fun launch(task: DownloadTask) {
-        jobs[task.key] = scope.launch(Dispatchers.IO) {
+        // Listed before it starts, and taken off the list only if still the one listed: a retry
+        // after a cancellation puts a newer job under the same key while the old one unwinds.
+        val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
             try {
                 parallel.withPermit { run(task.key) }
             } finally {
-                jobs.remove(task.key)
+                jobs.remove(task.key, coroutineContext.job)
             }
         }
+        jobs[task.key] = job
+        job.start()
     }
 
     private suspend fun run(key: Long) {
@@ -434,7 +443,9 @@ class DownloadManager(
             val url = (if (original) post.bestUrl else post.viewUrl(false)) ?: throw ProblemException(Problem.Code.NO_FILE)
             val urlExt = url.extensionFromUrl()?.takeIf { Mime.fromExtension(it) != "application/octet-stream" }
             var contentType: String? = null
-            val size = client.newCall(downloadRequest(url, task.source)).await().use { response ->
+            // Tied to this job for the whole transfer: a cancellation closes the socket, so a read
+            // on a server gone quiet does not sit out the timeout with one of the three places.
+            val size = client.newCall(downloadRequest(url, task.source)).withResponse { response ->
                 // The file host may guard the file itself rather than the site: the check is passed at this address.
                 if (response.header("cf-mitigated").equals("challenge", ignoreCase = true)) {
                     throw ProblemException(Problem.Code.CHALLENGE, url)
@@ -469,11 +480,18 @@ class DownloadManager(
                 }
             }
             val hasThumb = post.previewUrl?.let { preview ->
-                runCatching {
-                    client.newCall(downloadRequest(preview, task.source)).await().use { r ->
+                val fetched = try {
+                    client.newCall(downloadRequest(preview, task.source)).withResponse { r ->
                         if (r.isSuccessful) r.body.bytesUpTo(MAX_THUMBNAIL)?.takeIf { it.isNotEmpty() } else null
                     }
-                }.getOrNull()?.let { bytes ->
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    // A preview that cannot be had is no reason to drop the file; a cancellation is.
+                    currentCoroutineContext().ensureActive()
+                    null
+                }
+                fetched?.let { bytes ->
                     try {
                         store.writeThumbnail(id, bytes)
                     } finally {
@@ -510,12 +528,14 @@ class DownloadManager(
                 ),
             )
             set(key) { it.copy(status = DownloadStatus.DONE, bytes = size, total = size) }
-        } catch (e: CancellationException) {
-            store.discard(id)
-            set(key) { it.copy(status = DownloadStatus.CANCELLED) }
-            throw e
         } catch (e: Exception) {
             store.discard(id)
+            if (e is CancellationException || !currentCoroutineContext().isActive) {
+                // Cancelled: the call was closed under the transfer, which then failed as a read
+                // would. That is no failure to report, and the job ends as a cancelled one does.
+                set(key) { it.copy(status = DownloadStatus.CANCELLED) }
+                throw e as? CancellationException ?: CancellationException("download cancelled", e)
+            }
             val met = e.toProblem()
             val checked = checkedAt[task.source.id]
             // A file host's check names the file; one met on the site's own pages names nothing.
