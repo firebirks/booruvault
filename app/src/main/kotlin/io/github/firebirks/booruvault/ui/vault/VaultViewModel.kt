@@ -44,7 +44,12 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     val collections: StateFlow<List<TagCollection>> = c.settings.settings.map { it.collections }.distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val items: StateFlow<List<VaultItem>> = combine(
+    /**
+     * What the grid shows: the collection looked at, filtered and in order. Null until the first
+     * list is worked out, so a vault opening on many items does not say for a moment that
+     * nothing matches.
+     */
+    val items: StateFlow<List<VaultItem>?> = combine(
         c.vaultStore.items,
         snapshotFlow { query },
         snapshotFlow { newestFirst },
@@ -53,9 +58,9 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     ) { items, query, newest, id, collections ->
         val collection = collections.firstOrNull { it.id == id }
         val inCollection = collection?.let { items.filter(TagQuery.matcher(it.query)) } ?: items
-        val filtered = filter(inCollection, query)
+        val filtered = inCollection.filter(TagQuery.matcher(query, loose = true))
         if (newest) filtered else filtered.reversed()
-    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     /** How many items each collection holds right now. */
     val counts: StateFlow<Map<String, Int>> = combine(c.vaultStore.items, collections) { items, collections ->
@@ -123,7 +128,7 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
 
     fun toggle(id: String) = _selection.update { if (id in it) it - id else it + id }
     fun startSelection(id: String) = _selection.update { it + id }
-    fun selectAll() = _selection.update { items.value.mapTo(HashSet()) { it.id } }
+    fun selectAll() = _selection.update { items.value.orEmpty().mapTo(HashSet()) { it.id } }
     fun clearSelection() {
         _selection.value = emptySet()
     }
@@ -198,34 +203,4 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
     }
 
     private fun exportFailed(e: Throwable): UiText = UiText.Res(R.string.vault_export_failed, listOf(UiText.Of(e.toProblem())))
-
-    companion object {
-        /**
-         * Space-separated terms, all of which must match: plain words match tags, file names and
-         * sources; `-word` excludes; `type:video|gif|image` and `source:name` narrow further.
-         */
-        fun filter(items: List<VaultItem>, query: String): List<VaultItem> {
-            val terms = query.lowercase().split(' ').filter { it.isNotBlank() }
-            if (terms.isEmpty()) return items
-            return items.filter { item ->
-                terms.all { term ->
-                    val negate = term.startsWith('-') && term.length > 1
-                    val t = if (negate) term.drop(1) else term
-                    val hit = when {
-                        t.startsWith("type:") -> when (t.removePrefix("type:")) {
-                            "video" -> item.isVideo
-                            "gif" -> item.isAnimated
-                            "image" -> !item.isVideo && !item.isAnimated
-                            else -> false
-                        }
-                        t.startsWith("source:") -> item.sourceName?.lowercase()?.contains(t.removePrefix("source:")) == true
-                        else -> item.tags.any { it.lowercase().contains(t) } ||
-                            item.fileName.lowercase().contains(t) ||
-                            item.sourceName?.lowercase()?.contains(t) == true
-                    }
-                    hit != negate
-                }
-            }
-        }
-    }
 }

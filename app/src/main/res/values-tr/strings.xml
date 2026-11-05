@@ -295,7 +295,7 @@
     <string name="vault_oldest_first">Önce en eski</string>
     <string name="vault_newest_first">Önce en yeni</string>
     <string name="vault_lock_now">Şimdi kilitle</string>
-    <string name="vault_filter_hint">Filtre: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Filtre: sözcük, -sözcük, ~sözcük, type:video, source:…</string>
     <string name="transfer_importing">İçe aktarılıyor: %1$d / %2$d</string>
     <string name="transfer_exporting">Dışa aktarılıyor: %1$d / %2$d</string>
     <string name="vault_decrypting_index">Dizinin şifresi çözülüyor…</string>

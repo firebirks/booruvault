@@ -304,7 +304,7 @@
     <string name="vault_oldest_first">Plus anciens d\'abord</string>
     <string name="vault_newest_first">Plus récents d\'abord</string>
     <string name="vault_lock_now">Verrouiller maintenant</string>
-    <string name="vault_filter_hint">Filtrer : tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Filtrer : mot, -mot, ~mot, type:video, source:…</string>
     <string name="transfer_importing">Importation : %1$d sur %2$d</string>
     <string name="transfer_exporting">Exportation : %1$d sur %2$d</string>
     <string name="vault_decrypting_index">Déchiffrement de l\'index…</string>

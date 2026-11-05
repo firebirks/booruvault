@@ -46,3 +46,39 @@ class TagQueryTest {
         assertEquals(items.map { it.id }, ids("  "))
     }
 }
+
+class LooseTagQueryTest {
+    private fun item(id: String, tags: List<String>, name: String = id, source: String? = "Danbooru") =
+        VaultItem(id = id, addedAt = 0, fileName = name, mimeType = "image/jpeg", size = 1, tags = tags, sourceName = source)
+
+    private val items = listOf(
+        item("a", listOf("landscape", "sky")),
+        item("b", listOf("cat"), name = "holiday_land.jpg"),
+        item("c", listOf("dog"), source = "Lands End"),
+        item("d", listOf("cat_ears")),
+    )
+
+    private fun loose(query: String) = items.filter(TagQuery.matcher(query, loose = true)).map { it.id }
+    private fun exact(query: String) = items.filter(TagQuery.matcher(query)).map { it.id }
+
+    @Test
+    fun aPlainWordIsFoundInsideTagsFileNamesAndSources() {
+        assertEquals(listOf("a", "b", "c"), loose("land"))
+        assertEquals(listOf("b", "d"), loose("cat"))
+        assertEquals(listOf("b"), loose("cat -ears"))
+    }
+
+    @Test
+    fun narrowingTermsAndWildcardsMeanTheSameLooseOrExact() {
+        assertEquals(exact("type:image"), loose("type:image"))
+        assertEquals(exact("cat*"), loose("cat*"))
+        assertEquals(listOf("b", "d"), loose("~cat ~nothing"))
+    }
+
+    @Test
+    fun aWidenedFilterIsAnExactQueryForWhatItShowed() {
+        assertEquals("*land* -*rain* ~*cat* type:video cat*", TagQuery.widened("land  -rain ~cat type:video cat*"))
+        assertEquals(listOf("a"), exact(TagQuery.widened("land")))
+        assertEquals("", TagQuery.widened("  "))
+    }
+}

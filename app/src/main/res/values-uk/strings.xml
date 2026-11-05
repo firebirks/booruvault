@@ -313,7 +313,7 @@
     <string name="vault_oldest_first">Спочатку старіші</string>
     <string name="vault_newest_first">Спочатку новіші</string>
     <string name="vault_lock_now">Заблокувати зараз</string>
-    <string name="vault_filter_hint">Фільтр: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Фільтр: слово, -слово, ~слово, type:video, source:…</string>
     <string name="transfer_importing">Імпорт: %1$d з %2$d</string>
     <string name="transfer_exporting">Експорт: %1$d з %2$d</string>
     <string name="vault_decrypting_index">Розшифрування індексу…</string>

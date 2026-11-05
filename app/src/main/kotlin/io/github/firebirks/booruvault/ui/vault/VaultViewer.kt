@@ -85,7 +85,7 @@ import me.saket.telephoto.zoomable.rememberZoomableImageState
 fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> Unit) {
     val container = LocalContainer.current
     val vm = containerViewModel { VaultViewModel(it) }
-    val items by vm.items.collectAsStateWithLifecycle()
+    val items = vm.items.collectAsStateWithLifecycle().value.orEmpty()
     val vaultState by container.vault.state.collectAsStateWithLifecycle()
     if (vaultState !is VaultState.Unlocked || items.isEmpty()) {
         LaunchedEffect(Unit) { onClose() }

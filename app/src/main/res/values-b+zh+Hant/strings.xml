@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">最舊的優先</string>
     <string name="vault_newest_first">最新的優先</string>
     <string name="vault_lock_now">立即鎖定</string>
-    <string name="vault_filter_hint">篩選：tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">篩選：詞、-詞、~詞、type:video、source:…</string>
     <string name="transfer_importing">正在匯入：%1$d / %2$d</string>
     <string name="transfer_exporting">正在匯出：%1$d / %2$d</string>
     <string name="vault_decrypting_index">正在解密索引…</string>

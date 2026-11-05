@@ -11,26 +11,40 @@ data class TagCollection(val id: String, val name: String, val query: String, va
  * Booru-style queries over vault items. Terms are space-separated and all must hold:
  * `tag` (exact, `*` as wildcard), `-term` excludes, `~tag` terms are alternatives of which at
  * least one must hold, and `type:video|gif|image`, `source:name`, `rating:<rating>` narrow.
+ *
+ * The vault's filter box speaks the same language, [loose]ly: there a plain word is found inside
+ * any tag, the file name or the source, so "land" finds "landscape" as one types. A filter
+ * saved as a collection is [widened] first, so the collection holds what the filter showed.
  */
 object TagQuery {
-    fun matcher(query: String): (VaultItem) -> Boolean {
+    fun matcher(query: String, loose: Boolean = false): (VaultItem) -> Boolean {
         val terms = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.map { it.lowercase() }
         val required = ArrayList<(VaultItem) -> Boolean>()
         val alternatives = ArrayList<(VaultItem) -> Boolean>()
         for (term in terms) {
             when {
                 term.startsWith('-') && term.length > 1 -> {
-                    val inner = term(term.drop(1))
+                    val inner = term(term.drop(1), loose)
                     required += { !inner(it) }
                 }
-                term.startsWith('~') && term.length > 1 -> alternatives += term(term.drop(1))
-                else -> required += term(term)
+                term.startsWith('~') && term.length > 1 -> alternatives += term(term.drop(1), loose)
+                else -> required += term(term, loose)
             }
         }
         return { item -> required.all { it(item) } && (alternatives.isEmpty() || alternatives.any { it(item) }) }
     }
 
-    private fun term(term: String): (VaultItem) -> Boolean = when {
+    /**
+     * The exact query that shows what the [loose] one does, as far as tags go: each plain word
+     * becomes `*word*`. Terms that already narrow, or carry a wildcard, are left as they are.
+     */
+    fun widened(query: String): String = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString(" ") { term ->
+        val prefix = term.takeWhile { it == '-' || it == '~' }.take(1)
+        val word = term.drop(prefix.length)
+        if (word.isEmpty() || ':' in word || '*' in word) term else "$prefix*$word*"
+    }
+
+    private fun term(term: String, loose: Boolean): (VaultItem) -> Boolean = when {
         term.startsWith("type:") -> when (term.removePrefix("type:")) {
             "video" -> { item -> item.isVideo }
             "gif" -> { item -> item.isAnimated }
@@ -48,6 +62,11 @@ object TagQuery {
         '*' in term -> {
             val pattern = Regex(term.split('*').joinToString(".*") { Regex.escape(it) })
             ({ item -> item.tags.any { pattern.matches(it.lowercase()) } })
+        }
+        loose -> { item ->
+            item.tags.any { it.contains(term, ignoreCase = true) } ||
+                item.fileName.contains(term, ignoreCase = true) ||
+                item.sourceName?.contains(term, ignoreCase = true) == true
         }
         else -> { item -> item.tags.any { it.equals(term, ignoreCase = true) } }
     }

@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">Cũ nhất trước</string>
     <string name="vault_newest_first">Mới nhất trước</string>
     <string name="vault_lock_now">Khóa ngay</string>
-    <string name="vault_filter_hint">Lọc: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Lọc: từ, -từ, ~từ, type:video, source:…</string>
     <string name="transfer_importing">Đang nhập: %1$d / %2$d</string>
     <string name="transfer_exporting">Đang xuất: %1$d / %2$d</string>
     <string name="vault_decrypting_index">Đang giải mã chỉ mục…</string>

@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">เก่าสุดก่อน</string>
     <string name="vault_newest_first">ใหม่สุดก่อน</string>
     <string name="vault_lock_now">ล็อกทันที</string>
-    <string name="vault_filter_hint">กรอง: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">กรอง: คำ, -คำ, ~คำ, type:video, source:…</string>
     <string name="transfer_importing">กำลังนำเข้า: %1$d จาก %2$d</string>
     <string name="transfer_exporting">กำลังส่งออก: %1$d จาก %2$d</string>
     <string name="vault_decrypting_index">กำลังถอดรหัสดัชนี…</string>

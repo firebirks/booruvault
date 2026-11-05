@@ -8,6 +8,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyRow
 import io.github.firebirks.booruvault.vault.TagCollection
+import io.github.firebirks.booruvault.vault.TagQuery
 import io.github.firebirks.booruvault.ui.common.resolve
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.pluralStringResource
@@ -107,7 +108,8 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val vm = containerViewModel { VaultViewModel(it) }
-    val items by vm.items.collectAsStateWithLifecycle()
+    val shown by vm.items.collectAsStateWithLifecycle()
+    val items = shown.orEmpty()
     val total by container.vaultStore.items.collectAsStateWithLifecycle()
     val loading by container.vaultStore.loading.collectAsStateWithLifecycle()
     val selection by vm.selection.collectAsStateWithLifecycle()
@@ -125,7 +127,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it.resolve(context)) } }
     LaunchedEffect(vm) {
         vm.scrollTo.collect { id ->
-            val index = vm.items.value.indexOfFirst { it.id == id }
+            val index = vm.items.value.orEmpty().indexOfFirst { it.id == id }
             val visible = gridState.layoutInfo.visibleItemsInfo.map { it.index }
             if (index >= 0 && index !in visible) gridState.scrollToItem(index)
         }
@@ -205,7 +207,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     trailingIcon = {
                         if (vm.query.isNotEmpty()) {
                             Row {
-                                IconButton(onClick = { creating = vm.query }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
+                                IconButton(onClick = { creating = TagQuery.widened(vm.query) }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
                                 IconButton(onClick = { vm.query = "" }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear)) }
                             }
                         }
@@ -240,7 +242,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     }
                     item(key = "new") {
                         AssistChip(
-                            onClick = { creating = vm.query },
+                            onClick = { creating = TagQuery.widened(vm.query) },
                             label = { Text(stringResource(R.string.collection_new)) },
                             leadingIcon = { Icon(Icons.Outlined.Add, null) },
                         )
@@ -261,6 +263,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
             }
             when {
                 loading && total.isEmpty() -> CenteredProgress(stringResource(R.string.vault_decrypting_index))
+                shown == null -> CenteredProgress()
                 total.isEmpty() -> MessageState(
                     Icons.Outlined.Inventory2, stringResource(R.string.vault_empty_title),
                     stringResource(R.string.vault_empty_text),

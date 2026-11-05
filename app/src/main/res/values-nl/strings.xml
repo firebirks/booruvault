@@ -295,7 +295,7 @@
     <string name="vault_oldest_first">Oudste eerst</string>
     <string name="vault_newest_first">Nieuwste eerst</string>
     <string name="vault_lock_now">Nu vergrendelen</string>
-    <string name="vault_filter_hint">Filter: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Filter: woord, -woord, ~woord, type:video, source:…</string>
     <string name="transfer_importing">Importeren: %1$d van %2$d</string>
     <string name="transfer_exporting">Exporteren: %1$d van %2$d</string>
     <string name="vault_decrypting_index">Index ontsleutelen…</string>

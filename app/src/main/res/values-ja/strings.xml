@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">古い順</string>
     <string name="vault_newest_first">新しい順</string>
     <string name="vault_lock_now">今すぐロック</string>
-    <string name="vault_filter_hint">フィルタ：tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">絞り込み: 語、-語、~語、type:video、source:…</string>
     <string name="transfer_importing">インポート中：%1$d / %2$d</string>
     <string name="transfer_exporting">エクスポート中：%1$d / %2$d</string>
     <string name="vault_decrypting_index">インデックスを復号中…</string>

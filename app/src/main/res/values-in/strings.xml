@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">Terlama dulu</string>
     <string name="vault_newest_first">Terbaru dulu</string>
     <string name="vault_lock_now">Kunci sekarang</string>
-    <string name="vault_filter_hint">Filter: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">Saring: kata, -kata, ~kata, type:video, source:…</string>
     <string name="transfer_importing">Mengimpor: %1$d dari %2$d</string>
     <string name="transfer_exporting">Mengekspor: %1$d dari %2$d</string>
     <string name="vault_decrypting_index">Mendekripsi indeks…</string>

@@ -295,7 +295,7 @@
     <string name="vault_oldest_first">सबसे पुराने पहले</string>
     <string name="vault_newest_first">सबसे नए पहले</string>
     <string name="vault_lock_now">अभी लॉक करें</string>
-    <string name="vault_filter_hint">फ़िल्टर: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">फ़िल्टर: शब्द, -शब्द, ~शब्द, type:video, source:…</string>
     <string name="transfer_importing">इंपोर्ट हो रहा है: %2$d में से %1$d</string>
     <string name="transfer_exporting">एक्सपोर्ट हो रहा है: %2$d में से %1$d</string>
     <string name="vault_decrypting_index">इंडेक्स डिक्रिप्ट किया जा रहा है…</string>

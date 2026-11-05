@@ -286,7 +286,7 @@
     <string name="vault_oldest_first">오래된 순</string>
     <string name="vault_newest_first">최신순</string>
     <string name="vault_lock_now">지금 잠금</string>
-    <string name="vault_filter_hint">필터: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">필터: 단어, -단어, ~단어, type:video, source:…</string>
     <string name="transfer_importing">가져오는 중: %1$d/%2$d</string>
     <string name="transfer_exporting">내보내는 중: %1$d/%2$d</string>
     <string name="vault_decrypting_index">색인 복호화 중…</string>

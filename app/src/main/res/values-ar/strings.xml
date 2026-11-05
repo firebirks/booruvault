@@ -331,7 +331,7 @@
     <string name="vault_oldest_first">الأقدم أولًا</string>
     <string name="vault_newest_first">الأحدث أولًا</string>
     <string name="vault_lock_now">القفل الآن</string>
-    <string name="vault_filter_hint">تصفية: tag, -tag, type:video, source:…</string>
+    <string name="vault_filter_hint">تصفية: كلمة، -كلمة، ~كلمة، type:video، source:…</string>
     <string name="transfer_importing">جارٍ الاستيراد: %1$d من %2$d</string>
     <string name="transfer_exporting">جارٍ التصدير: %1$d من %2$d</string>
     <string name="vault_decrypting_index">جارٍ فك تشفير الفهرس…</string>
