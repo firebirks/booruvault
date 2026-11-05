@@ -76,7 +76,6 @@
     <string name="no_app_for_link">इस लिंक को खोलने के लिए कोई ऐप नहीं है</string>
     <string name="settings_title">सेटिंग</string>
     <string name="settings_section_sources">स्रोत</string>
-    <string name="settings_manage_sources">स्रोत मैनेज करें</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d कॉन्फ़िगर किया गया</item>
         <item quantity="other">%d कॉन्फ़िगर किए गए</item>

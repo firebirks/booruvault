@@ -77,7 +77,6 @@
     <string name="no_app_for_link">Aucune appli ne peut ouvrir ce lien</string>
     <string name="settings_title">Paramètres</string>
     <string name="settings_section_sources">Sources</string>
-    <string name="settings_manage_sources">Gérer les sources</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d configurée</item>
         <item quantity="many">%d configurées</item>

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import io.github.firebirks.booruvault.R
 import io.github.firebirks.booruvault.vault.TagCollection
 
-/** Creates a collection from [prefillQuery], or edits [initial] and offers to delete it. */
+/** Creates a collection from [prefillQuery], named [prefillName], or edits [initial] and offers to delete it. */
 @Composable
 fun CollectionDialog(
     initial: TagCollection?,
@@ -27,8 +27,9 @@ fun CollectionDialog(
     onDismiss: () -> Unit,
     onSave: (name: String, query: String) -> Unit,
     onDelete: (() -> Unit)? = null,
+    prefillName: String = prefillQuery,
 ) {
-    var name by remember { mutableStateOf(initial?.name ?: prefillQuery.trim().replace('_', ' ')) }
+    var name by remember { mutableStateOf(initial?.name ?: prefillName.trim().replace('_', ' ')) }
     var query by remember { mutableStateOf(initial?.query ?: prefillQuery.trim()) }
     var confirmDelete by remember { mutableStateOf(false) }
 

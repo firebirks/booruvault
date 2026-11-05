@@ -210,20 +210,23 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
             bottomBar = {
                 NavigationBar {
                     Tab.entries.forEach { item ->
+                        // The badge's number would be read bare, or not at all, since the item
+                        // sets its own semantics over the icon: the item says what it counts.
+                        val label = stringResource(item.label)
+                        val counted = if (item == Tab.DOWNLOADS && active > 0) "$label, " + pluralStringResource(R.plurals.downloads_active, active, active) else null
                         NavigationBarItem(
                             selected = tab == item,
                             onClick = { open(item) },
+                            modifier = if (counted != null) Modifier.semantics { contentDescription = counted } else Modifier,
                             icon = {
                                 val icon = if (item == Tab.VAULT && vaultState is VaultState.Unlocked) Icons.Outlined.LockOpen else item.icon
                                 if (item == Tab.DOWNLOADS && active > 0) {
-                                    // The number alone would be read bare: it is said as what it counts.
-                                    val inProgress = pluralStringResource(R.plurals.downloads_active, active, active)
-                                    BadgedBox(badge = { Badge(Modifier.semantics { contentDescription = inProgress }) { Text("$active") } }) { Icon(icon, null) }
+                                    BadgedBox(badge = { Badge { Text("$active") } }) { Icon(icon, null) }
                                 } else {
                                     Icon(icon, null)
                                 }
                             },
-                            label = { TabLabel(stringResource(item.label)) },
+                            label = { TabLabel(label) },
                         )
                     }
                 }

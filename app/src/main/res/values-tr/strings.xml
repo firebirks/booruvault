@@ -76,7 +76,6 @@
     <string name="no_app_for_link">Bu bağlantıyı açabilecek uygulama yok</string>
     <string name="settings_title">Ayarlar</string>
     <string name="settings_section_sources">Kaynaklar</string>
-    <string name="settings_manage_sources">Kaynakları yönet</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d kaynak</item>
         <item quantity="other">%d kaynak</item>

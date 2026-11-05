@@ -295,11 +295,10 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
                 Text(stringResource(R.string.setup_create))
             }
         }
-        error?.let {
-            Text(
-                it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center,
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
-            )
+        // The live region sits on a box that is always there: a text that appears inside it is
+        // announced, one that appears as a new node is not.
+        Box(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }, contentAlignment = Alignment.Center) {
+            error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center) }
         }
     }
 }
@@ -311,6 +310,8 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
  */
 @Composable
 fun VaultDamagedScreen() {
+    val vault = LocalContainer.current.vault
+    val scope = rememberCoroutineScope()
     var confirm by remember { mutableStateOf(false) }
     LockLayout {
         Icon(Icons.Outlined.Warning, null, Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
@@ -321,6 +322,9 @@ fun VaultDamagedScreen() {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
+        // A header that could not be read may read next time: a passing failure of the storage
+        // is not a damaged vault, and deletion is not the only way on.
+        Button(onClick = { scope.launch { vault.reread() } }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_retry)) }
         OutlinedButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error)
         }

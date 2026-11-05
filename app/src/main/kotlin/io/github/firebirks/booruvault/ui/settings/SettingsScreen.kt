@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -410,10 +411,12 @@ private fun LanguageSettings() {
         if (tag == current) return
         if (AppLanguage.set(context, tag)) context.findActivity()?.recreate()
     }
-    LanguageRow(stringResource(R.string.language_system), selected = current == null) { choose(null) }
-    HorizontalDivider()
-    AppLanguage.choices.forEach { choice ->
-        LanguageRow(choice.name, selected = choice.tag == current) { choose(choice.tag) }
+    Column(Modifier.selectableGroup()) {
+        LanguageRow(stringResource(R.string.language_system), selected = current == null) { choose(null) }
+        HorizontalDivider()
+        AppLanguage.choices.forEach { choice ->
+            LanguageRow(choice.name, selected = choice.tag == current) { choose(choice.tag) }
+        }
     }
 }
 

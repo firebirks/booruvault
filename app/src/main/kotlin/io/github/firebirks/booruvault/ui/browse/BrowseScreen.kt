@@ -162,7 +162,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
     val saveStates by vm.saveStates.collectAsStateWithLifecycle()
     val vaultState by container.vault.state.collectAsStateWithLifecycle()
     val torState by container.tor.state.collectAsStateWithLifecycle()
-    val snackbar = remember { SnackbarHostState() }
+    val snackbar = vm.snackbar
     val scope = rememberCoroutineScope()
     val focus = LocalFocusManager.current
     val askNotifications = rememberNotificationPermission()

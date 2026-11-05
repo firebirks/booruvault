@@ -84,10 +84,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -214,7 +212,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     trailingIcon = {
                         if (vm.query.isNotEmpty()) {
                             Row {
-                                IconButton(onClick = { creating = TagQuery.widened(vm.query) }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
+                                IconButton(onClick = { creating = vm.query }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
                                 IconButton(onClick = { vm.query = "" }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear)) }
                             }
                         }
@@ -252,7 +250,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     }
                     item(key = "new") {
                         AssistChip(
-                            onClick = { creating = TagQuery.widened(vm.query) },
+                            onClick = { creating = vm.query },
                             label = { Text(stringResource(R.string.collection_new)) },
                             leadingIcon = { Icon(Icons.Outlined.Add, null) },
                         )
@@ -261,10 +259,11 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
             }
             transfer?.let { t ->
                 Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    // Not a live region: a count that changes for every file would be read out
+                    // for every file. The message at the end is announced, as snackbars are.
                     Text(
                         stringResource(if (t.importing) R.string.transfer_importing else R.string.transfer_exporting, t.done, t.total),
                         style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     )
                     LinearProgressIndicator(
                         progress = { if (t.total == 0) 0f else t.done.toFloat() / t.total },
@@ -308,9 +307,12 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     }
 
     creating?.let { prefill ->
+        // The query is the filter widened so that the collection holds what the filter showed;
+        // the name is the filter as typed, not its wildcards.
         CollectionDialog(
             initial = null,
-            prefillQuery = prefill,
+            prefillQuery = TagQuery.widened(prefill),
+            prefillName = prefill,
             onDismiss = { creating = null },
             onSave = { name, query ->
                 creating = null

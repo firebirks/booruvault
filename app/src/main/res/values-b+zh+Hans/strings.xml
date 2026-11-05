@@ -75,7 +75,6 @@
     <string name="no_app_for_link">没有可以打开此链接的应用</string>
     <string name="settings_title">设置</string>
     <string name="settings_section_sources">来源</string>
-    <string name="settings_manage_sources">管理来源</string>
     <plurals name="settings_sources_count">
         <item quantity="other">已配置 %d 个</item>
     </plurals>

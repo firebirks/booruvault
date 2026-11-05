@@ -78,7 +78,6 @@
     <string name="no_app_for_link">Нет приложения, чтобы открыть эту ссылку</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_section_sources">Источники</string>
-    <string name="settings_manage_sources">Управление источниками</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d источник</item>
         <item quantity="few">%d источника</item>

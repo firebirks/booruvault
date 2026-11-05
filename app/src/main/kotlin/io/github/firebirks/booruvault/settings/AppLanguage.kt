@@ -75,7 +75,13 @@ object AppLanguage {
         val tag = current(base) ?: return base
         val locale = Locale.forLanguageTag(tag)
         Locale.setDefault(locale)
-        val config = Configuration(base.resources.configuration).apply { setLocale(locale) }
+        // Only the locale is overridden. A copy of the whole configuration would pin dark mode,
+        // the font scale and the density to their values of now, since the activity lives
+        // through their changes and keeps this override.
+        val config = Configuration().apply {
+            fontScale = 0f
+            setLocale(locale)
+        }
         return base.createConfigurationContext(config)
     }
 

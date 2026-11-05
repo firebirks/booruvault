@@ -75,7 +75,6 @@
     <string name="no_app_for_link">Tidak ada aplikasi yang dapat membuka tautan ini</string>
     <string name="settings_title">Setelan</string>
     <string name="settings_section_sources">Sumber</string>
-    <string name="settings_manage_sources">Kelola sumber</string>
     <plurals name="settings_sources_count">
         <item quantity="other">%d dikonfigurasi</item>
     </plurals>

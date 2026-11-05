@@ -83,13 +83,26 @@ class VaultManager(private val root: File, private val json: Json) {
     /** The header as found at start: null when there is none, a failure when it cannot be read. */
     private val found: Result<VaultHeader?> = runCatching { readHeader() }
     private var header: VaultHeader? = found.getOrNull()
-    private val _state = MutableStateFlow<VaultState>(
-        when {
-            found.isFailure -> VaultState.Damaged
-            header == null -> VaultState.Missing
-            else -> VaultState.Locked
-        },
-    )
+    private val _state = MutableStateFlow<VaultState>(stateOf(found))
+
+    private fun stateOf(read: Result<VaultHeader?>): VaultState = when {
+        read.isFailure -> VaultState.Damaged
+        read.getOrNull() == null -> VaultState.Missing
+        else -> VaultState.Locked
+    }
+
+    /**
+     * Reads the header again, from a [VaultState.Damaged] state: a failure to read it may have
+     * been the storage's for a moment, and a header that reads now is the vault, locked.
+     */
+    suspend fun reread() = mutex.withLock {
+        if (_state.value != VaultState.Damaged) return@withLock
+        val read = runCatching { readHeader() }
+        header = read.getOrNull()
+        _biometric.value = header?.biometricWrapped != null
+        _rekeyPending.value = header?.retired?.isNotEmpty() == true
+        _state.value = stateOf(read)
+    }
     val state: StateFlow<VaultState> = _state.asStateFlow()
 
     /** The sealing key, or null before a vault exists. */

@@ -75,7 +75,6 @@
     <string name="no_app_for_link">このリンクを開けるアプリがありません</string>
     <string name="settings_title">設定</string>
     <string name="settings_section_sources">ソース</string>
-    <string name="settings_manage_sources">ソースを管理</string>
     <plurals name="settings_sources_count">
         <item quantity="other">%d 件設定済み</item>
     </plurals>

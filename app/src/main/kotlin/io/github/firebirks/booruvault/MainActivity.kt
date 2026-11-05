@@ -27,12 +27,16 @@ class MainActivity : FragmentActivity() {
     /** A tab a notification asked to open, consumed by the UI. */
     val requestedTab = MutableStateFlow<String?>(null)
 
+    /** The dark-mode bits the system bars were last set up for. */
+    private var nightMode = -1
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(AppLanguage.wrap(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         super.onCreate(savedInstanceState)
         val container = (application as BooruVaultApp).container
         requestedTab.value = intent?.getStringExtra(EXTRA_TAB)
@@ -78,8 +82,13 @@ class MainActivity : FragmentActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         // The activity survives a change of dark mode (see the manifest); the system bars' icons
-        // are coloured for the mode current when edge-to-edge was set up, so set it up again.
-        enableEdgeToEdge()
+        // are coloured for the mode current when edge-to-edge was set up, so set it up again
+        // then, and only then: a rotation must not undo what a viewer set for its black screen.
+        val night = newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        if (night != nightMode) {
+            nightMode = night
+            enableEdgeToEdge()
+        }
     }
 
     companion object {

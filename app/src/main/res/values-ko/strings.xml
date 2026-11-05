@@ -75,7 +75,6 @@
     <string name="no_app_for_link">이 링크를 열 수 있는 앱이 없습니다</string>
     <string name="settings_title">설정</string>
     <string name="settings_section_sources">소스</string>
-    <string name="settings_manage_sources">소스 관리</string>
     <plurals name="settings_sources_count">
         <item quantity="other">%d개 설정됨</item>
     </plurals>

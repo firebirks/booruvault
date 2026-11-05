@@ -80,7 +80,6 @@
     <string name="no_app_for_link">لا يوجد تطبيق يمكنه فتح هذا الرابط</string>
     <string name="settings_title">الإعدادات</string>
     <string name="settings_section_sources">المصادر</string>
-    <string name="settings_manage_sources">إدارة المصادر</string>
     <plurals name="settings_sources_count">
         <item quantity="zero">%d مصدر مُعَدّ</item>
         <item quantity="one">%d مصدر مُعَدّ</item>

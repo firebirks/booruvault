@@ -8,6 +8,7 @@ import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -169,10 +170,13 @@ private fun credentialLabels(engine: BooruEngine): Triple<Int, Int, Int>? = when
     BooruEngine.GELBOORU_HTML, BooruEngine.SHIMMIE, BooruEngine.HTML_GENERIC -> null
 }
 
-/** [url] as typed, with https in front when no scheme was. */
+/** [url] as typed, with https in front when no scheme was, and the scheme in lower case. */
 private fun withScheme(url: String): String {
     val trimmed = url.trim()
-    return if (trimmed.isEmpty() || trimmed.contains("://")) trimmed else "https://$trimmed"
+    if (trimmed.isEmpty()) return trimmed
+    if (!trimmed.contains("://")) return "https://$trimmed"
+    val scheme = trimmed.substringBefore("://")
+    return scheme.lowercase() + trimmed.substring(scheme.length)
 }
 
 private fun addressHint(engine: BooruEngine): Int = when (engine) {
@@ -206,9 +210,10 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     val challenge = LocalChallenge.current
     var confirmDelete by remember { mutableStateOf(false) }
     val credentials = credentialLabels(engine)
-    // An address typed without its scheme is taken as https; one without a domain is not an address.
+    // An address typed without its scheme is taken as https; one without a host is not an
+    // address. A host needs no dot: a Shimmie on the LAN answers to a name alone, or to localhost.
     val address = withScheme(url)
-    val addressValid = address.matches(Regex("https?://[^\\s/]+\\.[^\\s/]+.*"))
+    val addressValid = address.matches(Regex("https?://[^\\s/]+.*", RegexOption.IGNORE_CASE))
     val addressWrong = url.isNotBlank() && url.trim() != "https://" && !addressValid
     val valid = name.isNotBlank() && addressValid
 
@@ -349,7 +354,11 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
                     }
                 }) { Text(stringResource(R.string.action_save)) }
             }
-            testResult?.let { Text(it.text(), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
+            // The live region sits on a box that is always there: a text that appears inside it
+            // is announced, one that appears as a new node is not.
+            Box(Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }) {
+                testResult?.let { Text(it.text(), style = MaterialTheme.typography.bodyMedium) }
+            }
             testChallenge?.let { url ->
                 OutlinedButton(onClick = {
                     challenge.open(draft(), url) {

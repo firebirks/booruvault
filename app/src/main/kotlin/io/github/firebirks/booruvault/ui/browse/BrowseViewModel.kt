@@ -3,6 +3,8 @@ package io.github.firebirks.booruvault.ui.browse
 import io.github.firebirks.booruvault.util.blockedByTor
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.util.Problem
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -82,6 +84,13 @@ internal fun whileShown(stopTimeoutMillis: Long = 5000): SharingStarted =
 class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private val _state = MutableStateFlow(BrowseState())
     val state: StateFlow<BrowseState> = _state.asStateFlow()
+
+    /**
+     * The messages of the results and of the viewer over them, one state shown by a host in
+     * each: a message with something to undo outlives the viewer, which closes when what it
+     * showed is gone, and is seen on the results instead.
+     */
+    val snackbar = SnackbarHostState()
 
     var input by mutableStateOf(TextFieldValue(""))
         private set
@@ -532,13 +541,13 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     // Tag actions offered by the viewer's info sheet.
     fun addToSearch(tag: String) = search("${_state.value.query} $tag")
     fun excludeFromSearch(tag: String) = search("${_state.value.query} -$tag")
-    fun blacklist(tag: String) {
-        viewModelScope.launch { c.settings.addToBlacklist(tag) }
-    }
-
-    /** Undoes [blacklist]: the rule goes, and what it hid is back where it was. */
-    fun unblacklist(tag: String) {
-        viewModelScope.launch { c.settings.removeFromBlacklist(tag) }
+    /** Blacklists [tag] and says so with [message], offering to undo it under [undoLabel]. */
+    fun blacklist(tag: String, message: String, undoLabel: String) {
+        viewModelScope.launch {
+            c.settings.addToBlacklist(tag)
+            // Undone: the rule goes, and what it hid is back where it was.
+            if (snackbar.showSnackbar(message, actionLabel = undoLabel) == SnackbarResult.ActionPerformed) c.settings.removeFromBlacklist(tag)
+        }
     }
 
     fun toggleSelection(id: Long) = _selection.update { if (id in it) it - id else it + id }

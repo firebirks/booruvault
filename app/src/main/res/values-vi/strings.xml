@@ -75,7 +75,6 @@
     <string name="no_app_for_link">Không có ứng dụng nào mở được liên kết này</string>
     <string name="settings_title">Cài đặt</string>
     <string name="settings_section_sources">Nguồn</string>
-    <string name="settings_manage_sources">Quản lý nguồn</string>
     <plurals name="settings_sources_count">
         <item quantity="other">Đã cấu hình %d</item>
     </plurals>

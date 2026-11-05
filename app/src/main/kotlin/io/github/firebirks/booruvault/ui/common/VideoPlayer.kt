@@ -6,8 +6,10 @@ import android.view.View
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.VolumeOff
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
@@ -102,7 +104,8 @@ fun VideoPlayer(
                 player.volume = if (videosMuted) 0f else 1f
             },
             colors = IconButtonDefaults.iconButtonColors(containerColor = ComposeColor.Black.copy(alpha = 0.45f), contentColor = ComposeColor.White),
-            modifier = Modifier.align(Alignment.BottomEnd).navigationBarsPadding().padding(12.dp),
+            // Under the viewer's own bar and clear of the player's, whose seek bar and settings sit at the bottom.
+            modifier = Modifier.align(Alignment.TopEnd).windowInsetsPadding(WindowInsets.statusBars).padding(top = 64.dp, end = 12.dp),
         ) {
             Icon(
                 if (videosMuted) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,

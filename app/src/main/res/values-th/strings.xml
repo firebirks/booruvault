@@ -75,7 +75,6 @@
     <string name="no_app_for_link">ไม่มีแอปที่เปิดลิงก์นี้ได้</string>
     <string name="settings_title">การตั้งค่า</string>
     <string name="settings_section_sources">แหล่งที่มา</string>
-    <string name="settings_manage_sources">จัดการแหล่งที่มา</string>
     <plurals name="settings_sources_count">
         <item quantity="other">กำหนดค่าแล้ว %d รายการ</item>
     </plurals>

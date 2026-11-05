@@ -81,7 +81,6 @@
     <string name="no_app_for_link">No app can open this link</string>
     <string name="settings_title">Settings</string>
     <string name="settings_section_sources">Sources</string>
-    <string name="settings_manage_sources">Manage sources</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d configured</item>
         <item quantity="other">%d configured</item>

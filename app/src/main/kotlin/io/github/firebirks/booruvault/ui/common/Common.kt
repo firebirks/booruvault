@@ -162,7 +162,8 @@ fun PasswordField(
     label: String,
     modifier: Modifier = Modifier,
     imeAction: ImeAction = ImeAction.Done,
-    onDone: () -> Unit = {},
+    /** What the keyboard's action key does; left out, it does what it does in any field: Next moves on, Done hides the keyboard. */
+    onDone: (() -> Unit)? = null,
     isError: Boolean = false,
     supportingText: String? = null,
     enabled: Boolean = true,
@@ -179,7 +180,11 @@ fun PasswordField(
         supportingText = supportingText?.let { { Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }) } },
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = imeAction, autoCorrectEnabled = false),
-        keyboardActions = KeyboardActions(onDone = { onDone() }, onGo = { onDone() }, onNext = { onDone() }),
+        keyboardActions = KeyboardActions(
+            onDone = { onDone?.invoke() ?: defaultKeyboardAction(ImeAction.Done) },
+            onGo = { onDone?.invoke() ?: defaultKeyboardAction(ImeAction.Go) },
+            onNext = { onDone?.invoke() ?: defaultKeyboardAction(ImeAction.Next) },
+        ),
         trailingIcon = {
             IconButton(onClick = { visible = !visible }) {
                 Icon(if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility, contentDescription = stringResource(if (visible) R.string.action_hide else R.string.action_show))

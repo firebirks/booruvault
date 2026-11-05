@@ -77,7 +77,6 @@
     <string name="no_app_for_link">Ninguna app puede abrir este enlace</string>
     <string name="settings_title">Ajustes</string>
     <string name="settings_section_sources">Fuentes</string>
-    <string name="settings_manage_sources">Administrar fuentes</string>
     <plurals name="settings_sources_count">
         <item quantity="one">%d configurada</item>
         <item quantity="many">%d configuradas</item>
