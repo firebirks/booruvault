@@ -157,4 +157,21 @@ class DownloadCancelTest {
             assertEquals(DownloadStatus.CANCELLED, downloads.status(cancelled.post.id))
         }
     }
+
+    @Test
+    fun `removing what is finished keeps what was cancelled, which can be retried, and removing what failed takes it`() = runBlocking {
+        StallingServer().use { server ->
+            val downloads = manager()
+            downloads.enqueue(listOf(post(1, server.port)), source)
+            withTimeout(10_000) { downloads.tasks.first { list -> list.single().bytes > 0 } }
+            downloads.cancel(downloads.tasks.value.single().key)
+            withTimeout(5000) { downloads.tasks.first { list -> list.single().status == DownloadStatus.CANCELLED } }
+
+            downloads.clearFinished()
+            assertEquals(DownloadStatus.CANCELLED, downloads.status(1))
+            downloads.clearFailed()
+            assertTrue(downloads.tasks.value.isEmpty())
+        }
+        Unit
+    }
 }

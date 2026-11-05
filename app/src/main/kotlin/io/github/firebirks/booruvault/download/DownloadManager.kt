@@ -65,6 +65,9 @@ data class DownloadTask(
     val problem: Problem? = null,
 ) {
     val active: Boolean get() = status == DownloadStatus.QUEUED || status == DownloadStatus.RUNNING
+
+    /** Failed or cancelled: listed with what it was, to be retried, or removed with the failed. */
+    val retriable: Boolean get() = status == DownloadStatus.FAILED || status == DownloadStatus.CANCELLED
     val progress: Float? get() = if (total > 0) (bytes.toFloat() / total).coerceIn(0f, 1f) else null
 }
 
@@ -83,6 +86,9 @@ data class BatchJob(
     val stopped: Boolean = false,
 ) {
     val active: Boolean get() = problem == null && !stopped
+
+    /** Stopped by a problem or the user: listed with what it found, to be retried, or removed with the failed. */
+    val retriable: Boolean get() = !active
 }
 
 /** What survives a lock or a restart: sealed in the vault as `downloads.bin`. */
@@ -422,16 +428,16 @@ class DownloadManager(
     /** A check passed along the other route says nothing about this one: it may be offered again. */
     fun routeChanged() = checkedAt.clear()
 
-    /** Takes off the list what is done, skipped or was cancelled; what failed stays, with its reason. */
+    /** Takes off the list what is done or skipped; what failed or was cancelled stays, to be retried. */
     fun clearFinished() {
-        _tasks.update { list -> list.filter { it.active || it.status == DownloadStatus.FAILED } }
-        _batches.update { list -> list.filter { it.active || it.problem != null } }
+        _tasks.update { list -> list.filter { it.active || it.retriable } }
+        _batches.update { list -> list.filter { it.active || it.retriable } }
     }
 
-    /** Takes off the list what failed, batches a problem stopped included. */
+    /** Takes off the list what failed or was cancelled, batches a problem or the user stopped included. */
     fun clearFailed() {
-        _tasks.update { list -> list.filter { it.status != DownloadStatus.FAILED } }
-        _batches.update { list -> list.filter { it.problem == null } }
+        _tasks.update { list -> list.filter { !it.retriable } }
+        _batches.update { list -> list.filter { !it.retriable } }
     }
 
     private fun set(key: Long, transform: (DownloadTask) -> DownloadTask) {

@@ -116,7 +116,7 @@ fun DownloadsScreen() {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.downloads_clear_failed)) },
                                 leadingIcon = { Icon(Icons.Outlined.DeleteSweep, null) },
-                                enabled = failed > 0 || batches.any { it.problem != null },
+                                enabled = retriable > 0 || batches.any { it.retriable },
                                 onClick = {
                                     menu = false
                                     downloads.clearFailed()

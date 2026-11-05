@@ -200,7 +200,7 @@ class DownloadSearchTest {
         assertEquals(null, stopped.problem)
         assertEquals(2, stopped.nextPage)
 
-        // Taking it off the list is what "remove finished" does; retrying takes it up again.
+        // Retrying takes it up again, off the list of stopped ones.
         downloads.retryBatch(stopped.key)
         downloads.settled()
         assertEquals((1L..179L).toSet(), downloads.queuedIds())
@@ -234,6 +234,20 @@ class DownloadSearchTest {
 
         downloads.clearFailed()
         assertTrue(downloads.tasks.value.isEmpty())
+        assertTrue(downloads.batches.value.isEmpty())
+    }
+
+    @Test
+    fun `removing what is finished keeps a collection that was stopped, which can be retried`() = runBlocking {
+        val downloads = manager(FakeApi(sized(42, 100, 37)))
+        downloads.downloadSearch(source, "pikachu", 500)
+        downloads.cancelAll()
+        assertTrue(downloads.settled().single().stopped)
+        withTimeout(10_000) { downloads.tasks.first { list -> list.none { it.active } } }
+
+        downloads.clearFinished()
+        assertTrue(downloads.batches.value.single().stopped)
+        downloads.clearFailed()
         assertTrue(downloads.batches.value.isEmpty())
     }
 
