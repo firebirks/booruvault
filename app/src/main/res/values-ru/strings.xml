@@ -58,6 +58,7 @@
     <string name="action_clear">Очистить</string>
     <string name="action_more">Ещё</string>
     <string name="action_undo">Отменить</string>
+    <string name="action_keep_going">Продолжить</string>
     <string name="action_select_all">Выбрать все</string>
     <string name="action_cancel_selection">Отменить выбор</string>
     <string name="action_verify_in_browser">Пройти проверку в браузере</string>
@@ -116,6 +117,8 @@
     <string name="settings_cookies">Cookie сайтов</string>
     <string name="settings_cookies_hint">Пройденные антибот-проверки и сессии, зашифрованы в хранилище</string>
     <string name="settings_cookies_cleared">Cookie удалены</string>
+    <string name="settings_cookies_clear_title">Удалить cookie сайтов?</string>
+    <string name="settings_cookies_clear_text">Все сайты забудут вас на обоих маршрутах: входы будут потеряны, а проверки на бота придётся пройти снова.</string>
     <string name="settings_delete_vault">Удалить хранилище</string>
     <string name="settings_delete_vault_hint">Безвозвратно стирает контент, настройки, источники и ключ.</string>
     <string name="settings_section_about">О приложении</string>
@@ -397,7 +400,10 @@
     </plurals>
     <string name="downloads_retry_failed">Повторить неудачные</string>
     <string name="downloads_clear_finished">Убрать завершённые</string>
+    <string name="downloads_clear_failed">Убрать неудавшиеся</string>
     <string name="downloads_cancel_all">Отменить все</string>
+    <string name="downloads_cancel_all_title">Отменить все загрузки?</string>
+    <string name="downloads_cancel_all_text">Всё, что ждёт или идёт, остановится, включая собираемые поиски. Записи останутся в списке, их можно повторить.</string>
     <string name="downloads_empty_title">Нет загрузок</string>
     <string name="downloads_empty_text">Нажмите кнопку загрузки на посте или удерживайте, чтобы выбрать несколько.</string>
     <string name="batch_title">Сбор «%1$s»</string>

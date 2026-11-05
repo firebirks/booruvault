@@ -58,6 +58,7 @@
     <string name="action_clear">지우기</string>
     <string name="action_more">더보기</string>
     <string name="action_undo">실행 취소</string>
+    <string name="action_keep_going">계속</string>
     <string name="action_select_all">모두 선택</string>
     <string name="action_cancel_selection">선택 취소</string>
     <string name="action_verify_in_browser">브라우저에서 확인</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">사이트 쿠키</string>
     <string name="settings_cookies_hint">통과한 봇 방지 확인과 세션, 보관함에 암호화되어 저장됨</string>
     <string name="settings_cookies_cleared">쿠키를 삭제했습니다</string>
+    <string name="settings_cookies_clear_title">사이트 쿠키를 삭제할까요?</string>
+    <string name="settings_cookies_clear_text">모든 사이트가 두 경로 모두에서 나를 잊습니다. 로그인이 사라지고 봇 방지 확인을 다시 통과해야 합니다.</string>
     <string name="settings_delete_vault">보관함 삭제</string>
     <string name="settings_delete_vault_hint">콘텐츠, 설정, 소스, 키를 지웁니다. 되돌릴 수 없습니다.</string>
     <string name="settings_section_about">정보</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">실패한 항목 다시 시도</string>
     <string name="downloads_clear_finished">완료된 항목 지우기</string>
+    <string name="downloads_clear_failed">실패한 항목 제거</string>
     <string name="downloads_cancel_all">모두 취소</string>
+    <string name="downloads_cancel_all_title">모든 다운로드를 취소할까요?</string>
+    <string name="downloads_cancel_all_text">대기 중이거나 진행 중인 모든 항목이 멈춥니다. 수집 중인 검색도 포함됩니다. 항목은 목록에 남아 다시 시도할 수 있습니다.</string>
     <string name="downloads_empty_title">다운로드 없음</string>
     <string name="downloads_empty_text">게시물의 다운로드 버튼을 누르거나, 길게 눌러 여러 개를 선택하세요.</string>
     <string name="batch_title">‘%1$s’ 수집 중</string>

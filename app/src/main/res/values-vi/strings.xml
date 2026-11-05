@@ -58,6 +58,7 @@
     <string name="action_clear">Xóa</string>
     <string name="action_more">Thêm</string>
     <string name="action_undo">Hoàn tác</string>
+    <string name="action_keep_going">Tiếp tục</string>
     <string name="action_select_all">Chọn tất cả</string>
     <string name="action_cancel_selection">Bỏ chọn</string>
     <string name="action_verify_in_browser">Xác minh trong trình duyệt</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">Cookie của trang web</string>
     <string name="settings_cookies_hint">Các lần kiểm tra chống bot đã vượt qua và phiên đăng nhập, được mã hóa trong kho</string>
     <string name="settings_cookies_cleared">Đã xóa cookie</string>
+    <string name="settings_cookies_clear_title">Xóa cookie của các trang web?</string>
+    <string name="settings_cookies_clear_text">Mọi trang web sẽ quên bạn trên cả hai tuyến: đăng nhập bị mất và phải vượt qua kiểm tra chống bot lần nữa.</string>
     <string name="settings_delete_vault">Xóa kho</string>
     <string name="settings_delete_vault_hint">Xóa nội dung, cài đặt, nguồn và khóa mã hóa. Không thể hoàn tác.</string>
     <string name="settings_section_about">Giới thiệu</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">Thử lại mục lỗi</string>
     <string name="downloads_clear_finished">Gỡ mục đã xong</string>
+    <string name="downloads_clear_failed">Xóa các mục thất bại</string>
     <string name="downloads_cancel_all">Hủy tất cả</string>
+    <string name="downloads_cancel_all_title">Hủy tất cả tải xuống?</string>
+    <string name="downloads_cancel_all_text">Mọi thứ đang chờ hoặc đang chạy sẽ dừng, kể cả các tìm kiếm đang thu thập. Các mục vẫn nằm trong danh sách và có thể thử lại.</string>
     <string name="downloads_empty_title">Không có lượt tải nào</string>
     <string name="downloads_empty_text">Nhấn nút tải xuống trên một bài đăng, hoặc nhấn giữ để chọn nhiều bài.</string>
     <string name="batch_title">Đang thu thập “%1$s”</string>

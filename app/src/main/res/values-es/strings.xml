@@ -58,6 +58,7 @@
     <string name="action_clear">Borrar</string>
     <string name="action_more">Más</string>
     <string name="action_undo">Deshacer</string>
+    <string name="action_keep_going">Continuar</string>
     <string name="action_select_all">Seleccionar todo</string>
     <string name="action_cancel_selection">Cancelar selección</string>
     <string name="action_verify_in_browser">Verificar en el navegador</string>
@@ -114,6 +115,8 @@
     <string name="settings_cookies">Cookies de los sitios</string>
     <string name="settings_cookies_hint">Verificaciones antibots superadas y sesiones, cifradas en la bóveda</string>
     <string name="settings_cookies_cleared">Cookies eliminadas</string>
+    <string name="settings_cookies_clear_title">¿Eliminar las cookies de los sitios?</string>
+    <string name="settings_cookies_clear_text">Todos los sitios te olvidan, por ambas rutas: se pierden los inicios de sesión y hay que volver a pasar las comprobaciones anti-bot.</string>
     <string name="settings_delete_vault">Eliminar la bóveda</string>
     <string name="settings_delete_vault_hint">Borra de forma irreversible el contenido, los ajustes, las fuentes y la clave.</string>
     <string name="settings_section_about">Acerca de</string>
@@ -378,7 +381,10 @@
     </plurals>
     <string name="downloads_retry_failed">Reintentar fallidos</string>
     <string name="downloads_clear_finished">Quitar finalizados</string>
+    <string name="downloads_clear_failed">Quitar los fallidos</string>
     <string name="downloads_cancel_all">Cancelar todo</string>
+    <string name="downloads_cancel_all_title">¿Cancelar todas las descargas?</string>
+    <string name="downloads_cancel_all_text">Todo lo que está en cola o en curso se detiene, incluidas las búsquedas que se están recopilando. Las entradas siguen en la lista y se pueden reintentar.</string>
     <string name="downloads_empty_title">No hay descargas</string>
     <string name="downloads_empty_text">Toca el botón de descarga en un post o mantén pulsado para seleccionar varios.</string>
     <string name="batch_title">Recopilando “%1$s”</string>

@@ -58,6 +58,7 @@
     <string name="action_clear">مسح</string>
     <string name="action_more">المزيد</string>
     <string name="action_undo">تراجع</string>
+    <string name="action_keep_going">متابعة</string>
     <string name="action_select_all">تحديد الكل</string>
     <string name="action_cancel_selection">إلغاء التحديد</string>
     <string name="action_verify_in_browser">التحقق في المتصفح</string>
@@ -120,6 +121,8 @@
     <string name="settings_cookies">ملفات تعريف الارتباط للمواقع</string>
     <string name="settings_cookies_hint">عمليات التحقق المضادة للروبوتات التي اجتزتها والجلسات، مشفّرة في الخزنة</string>
     <string name="settings_cookies_cleared">تم حذف ملفات تعريف الارتباط</string>
+    <string name="settings_cookies_clear_title">حذف ملفات تعريف الارتباط للمواقع؟</string>
+    <string name="settings_cookies_clear_text">تنساك كل المواقع على المسارين: تُفقد تسجيلات الدخول، ويجب اجتياز فحوصات مكافحة الروبوتات من جديد.</string>
     <string name="settings_delete_vault">حذف الخزنة</string>
     <string name="settings_delete_vault_hint">يمحو المحتوى والإعدادات والمصادر والمفتاح نهائيًا دون إمكانية التراجع.</string>
     <string name="settings_section_about">حول التطبيق</string>
@@ -435,7 +438,10 @@
     </plurals>
     <string name="downloads_retry_failed">إعادة محاولة الفاشلة</string>
     <string name="downloads_clear_finished">إزالة المكتملة</string>
+    <string name="downloads_clear_failed">إزالة ما فشل</string>
     <string name="downloads_cancel_all">إلغاء الكل</string>
+    <string name="downloads_cancel_all_title">إلغاء كل التنزيلات؟</string>
+    <string name="downloads_cancel_all_text">يتوقف كل ما ينتظر أو يجري، بما في ذلك عمليات البحث قيد الجمع. تبقى الإدخالات في القائمة ويمكن إعادة المحاولة.</string>
     <string name="downloads_empty_title">لا توجد تنزيلات</string>
     <string name="downloads_empty_text">انقر على زر التنزيل في أي منشور، أو اضغط مطولًا لتحديد أكثر من منشور.</string>
     <string name="batch_title">جارٍ جمع «%1$s»</string>

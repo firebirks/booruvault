@@ -58,6 +58,7 @@
     <string name="action_clear">清除</string>
     <string name="action_more">更多</string>
     <string name="action_undo">撤销</string>
+    <string name="action_keep_going">继续</string>
     <string name="action_select_all">全选</string>
     <string name="action_cancel_selection">取消选择</string>
     <string name="action_verify_in_browser">在浏览器中验证</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">网站 Cookie</string>
     <string name="settings_cookies_hint">已通过的反机器人验证和登录会话，加密保存在保险库中</string>
     <string name="settings_cookies_cleared">Cookie 已删除</string>
+    <string name="settings_cookies_clear_title">删除网站 Cookie？</string>
+    <string name="settings_cookies_clear_text">所有网站在两条路线上都会忘记你：登录状态丢失，反机器人验证需要重新通过。</string>
     <string name="settings_delete_vault">删除保险库</string>
     <string name="settings_delete_vault_hint">不可逆地清除内容、设置、来源和密钥。</string>
     <string name="settings_section_about">关于</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">重试失败项</string>
     <string name="downloads_clear_finished">移除已完成项</string>
+    <string name="downloads_clear_failed">移除失败项</string>
     <string name="downloads_cancel_all">全部取消</string>
+    <string name="downloads_cancel_all_title">取消所有下载？</string>
+    <string name="downloads_cancel_all_text">排队和进行中的全部停止，包括正在收集的搜索。条目仍保留在列表中，可以重试。</string>
     <string name="downloads_empty_title">没有下载</string>
     <string name="downloads_empty_text">点按帖子上的下载按钮，或长按以选择多个。</string>
     <string name="batch_title">正在收集“%1$s”</string>

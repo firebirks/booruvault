@@ -58,6 +58,7 @@
     <string name="action_clear">Wyczyść</string>
     <string name="action_more">Więcej</string>
     <string name="action_undo">Cofnij</string>
+    <string name="action_keep_going">Kontynuuj</string>
     <string name="action_select_all">Zaznacz wszystko</string>
     <string name="action_cancel_selection">Anuluj zaznaczenie</string>
     <string name="action_verify_in_browser">Zweryfikuj w przeglądarce</string>
@@ -116,6 +117,8 @@
     <string name="settings_cookies">Pliki cookie witryn</string>
     <string name="settings_cookies_hint">Zaliczone weryfikacje antybotowe i sesje, zaszyfrowane w sejfie</string>
     <string name="settings_cookies_cleared">Usunięto pliki cookie</string>
+    <string name="settings_cookies_clear_title">Usunąć pliki cookie stron?</string>
+    <string name="settings_cookies_clear_text">Każda strona cię zapomina, na obu trasach: logowania przepadają, a kontrole anty-bot trzeba przejść ponownie.</string>
     <string name="settings_delete_vault">Usuń sejf</string>
     <string name="settings_delete_vault_hint">Nieodwracalnie usuwa zawartość, ustawienia, źródła i klucz.</string>
     <string name="settings_section_about">Informacje</string>
@@ -397,7 +400,10 @@
     </plurals>
     <string name="downloads_retry_failed">Ponów nieudane</string>
     <string name="downloads_clear_finished">Usuń zakończone</string>
+    <string name="downloads_clear_failed">Usuń nieudane</string>
     <string name="downloads_cancel_all">Anuluj wszystko</string>
+    <string name="downloads_cancel_all_title">Anulować wszystkie pobierania?</string>
+    <string name="downloads_cancel_all_text">Wszystko, co czeka lub trwa, zostanie zatrzymane, także zbierane wyszukiwania. Wpisy pozostają na liście i można je ponowić.</string>
     <string name="downloads_empty_title">Brak pobrań</string>
     <string name="downloads_empty_text">Dotknij przycisku pobierania przy poście lub przytrzymaj go, aby zaznaczyć więcej niż jeden.</string>
     <string name="batch_title">Zbieranie: „%1$s”</string>

@@ -66,11 +66,14 @@ class DownloadSearchTest {
         if (page > sizes.size) emptyList() else (1..sizes[page - 1]).map { post((start + it).toLong()) }
     }
 
-    private class FakeApi(private val pages: (Int) -> List<Post>) : BooruApi {
+    private class FakeApi(private val before: suspend (Int) -> Unit, private val pages: (Int) -> List<Post>) : BooruApi {
+        constructor(pages: (Int) -> List<Post>) : this({}, pages)
+
         val asked = CopyOnWriteArrayList<Int>()
 
         override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
             asked += page
+            before(page)
             return pages(page)
         }
 
@@ -178,6 +181,48 @@ class DownloadSearchTest {
         assertEquals(42, batch?.found)
         assertEquals(2, batch?.nextPage)
         assertEquals("not started again by the unlock", listOf(1, 2), api.asked)
+    }
+
+    @Test
+    fun `a batch the user stops stays listed, stopped, and picks up from the same page`() = runBlocking {
+        val pages = sized(42, 100, 37)
+        val gate = kotlinx.coroutines.CompletableDeferred<Unit>()
+        // The second page waits, as a page does on the network, where a cancellation is met.
+        val api = FakeApi(before = { page -> if (page == 2) gate.await() }, pages = pages)
+        val downloads = manager(api)
+        downloads.downloadSearch(source, "pikachu", 500)
+        withTimeout(10_000) { downloads.batches.first { list -> list.any { it.found == 42 } } }
+
+        downloads.cancelAll()
+        gate.complete(Unit)
+        val stopped = downloads.settled().single()
+        assertTrue(stopped.stopped)
+        assertEquals(null, stopped.problem)
+        assertEquals(2, stopped.nextPage)
+
+        // Taking it off the list is what "remove finished" does; retrying takes it up again.
+        downloads.retryBatch(stopped.key)
+        downloads.settled()
+        assertEquals((1L..179L).toSet(), downloads.queuedIds())
+        assertTrue(downloads.batches.value.isEmpty())
+    }
+
+    @Test
+    fun `removing what is finished keeps what failed, with its reason`() = runBlocking {
+        val pages = sized(42, 100, 37)
+        val downloads = manager(FakeApi { page -> if (page == 2) throw ProblemException(Problem.Code.RATE_LIMITED) else pages(page) })
+        downloads.downloadSearch(source, "pikachu", 500)
+        downloads.settled()
+        // Posts without a file fail at once: every task is a failed one.
+        withTimeout(10_000) { downloads.tasks.first { list -> list.isNotEmpty() && list.none { it.active } } }
+
+        downloads.clearFinished()
+        assertEquals(42, downloads.tasks.value.count { it.status == DownloadStatus.FAILED })
+        assertEquals(1, downloads.batches.value.count { it.problem != null })
+
+        downloads.clearFailed()
+        assertTrue(downloads.tasks.value.isEmpty())
+        assertTrue(downloads.batches.value.isEmpty())
     }
 
     @Test

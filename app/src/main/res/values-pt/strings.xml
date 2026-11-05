@@ -58,6 +58,7 @@
     <string name="action_clear">Limpar</string>
     <string name="action_more">Mais</string>
     <string name="action_undo">Desfazer</string>
+    <string name="action_keep_going">Continuar</string>
     <string name="action_select_all">Selecionar tudo</string>
     <string name="action_cancel_selection">Cancelar seleção</string>
     <string name="action_verify_in_browser">Verificar no navegador</string>
@@ -114,6 +115,8 @@
     <string name="settings_cookies">Cookies dos sites</string>
     <string name="settings_cookies_hint">Verificações antibot concluídas e sessões, criptografadas no cofre</string>
     <string name="settings_cookies_cleared">Cookies excluídos</string>
+    <string name="settings_cookies_clear_title">Excluir os cookies dos sites?</string>
+    <string name="settings_cookies_clear_text">Todos os sites esquecem você, pelas duas rotas: os logins se perdem e as verificações anti-bot precisam ser passadas de novo.</string>
     <string name="settings_delete_vault">Excluir o cofre</string>
     <string name="settings_delete_vault_hint">Apaga de forma irreversível o conteúdo, os ajustes, as fontes e a chave.</string>
     <string name="settings_section_about">Sobre</string>
@@ -378,7 +381,10 @@
     </plurals>
     <string name="downloads_retry_failed">Repetir os com falha</string>
     <string name="downloads_clear_finished">Remover concluídos</string>
+    <string name="downloads_clear_failed">Remover os que falharam</string>
     <string name="downloads_cancel_all">Cancelar todos</string>
+    <string name="downloads_cancel_all_title">Cancelar todos os downloads?</string>
+    <string name="downloads_cancel_all_text">Tudo o que está na fila ou em andamento para, inclusive as buscas sendo coletadas. As entradas continuam na lista e podem ser tentadas de novo.</string>
     <string name="downloads_empty_title">Nenhum download</string>
     <string name="downloads_empty_text">Toque no botão de download em um post ou toque e segure para selecionar mais de um.</string>
     <string name="batch_title">Coletando “%1$s”</string>

@@ -365,16 +365,28 @@ private fun NetworkSettings() {
     TorSettings()
     HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
     val cleared = stringResource(R.string.settings_cookies_cleared)
+    var confirmClear by remember { mutableStateOf(false) }
     ListItem(
         headlineContent = { Text(stringResource(R.string.settings_cookies)) },
         supportingContent = { Text(stringResource(R.string.settings_cookies_hint)) },
-        trailingContent = {
-            TextButton(onClick = {
-                container.cookies.clear()
-                Toast.makeText(context, cleared, Toast.LENGTH_SHORT).show()
-            }) { Text(stringResource(R.string.action_clear)) }
-        },
+        trailingContent = { TextButton(onClick = { confirmClear = true }) { Text(stringResource(R.string.action_clear)) } },
     )
+    // One tap would log out of every site at once: it is asked first.
+    if (confirmClear) {
+        AlertDialog(
+            onDismissRequest = { confirmClear = false },
+            title = { Text(stringResource(R.string.settings_cookies_clear_title)) },
+            text = { Text(stringResource(R.string.settings_cookies_clear_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmClear = false
+                    container.cookies.clear()
+                    Toast.makeText(context, cleared, Toast.LENGTH_SHORT).show()
+                }) { Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { TextButton(onClick = { confirmClear = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
 }
 
 /** The phone's language, or one of the app's own; each named in itself. */

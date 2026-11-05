@@ -58,6 +58,7 @@
     <string name="action_clear">Cancella</string>
     <string name="action_more">Altro</string>
     <string name="action_undo">Annulla</string>
+    <string name="action_keep_going">Continua</string>
     <string name="action_select_all">Seleziona tutto</string>
     <string name="action_cancel_selection">Annulla selezione</string>
     <string name="action_verify_in_browser">Verifica nel browser</string>
@@ -114,6 +115,8 @@
     <string name="settings_cookies">Cookie dei siti</string>
     <string name="settings_cookies_hint">Verifiche anti-bot superate e sessioni, cifrate nel vault</string>
     <string name="settings_cookies_cleared">Cookie cancellati</string>
+    <string name="settings_cookies_clear_title">Eliminare i cookie dei siti?</string>
+    <string name="settings_cookies_clear_text">Ogni sito ti dimentica, su entrambe le vie: gli accessi vanno persi e i controlli anti-bot vanno superati di nuovo.</string>
     <string name="settings_delete_vault">Elimina il vault</string>
     <string name="settings_delete_vault_hint">Cancella in modo irreversibile contenuti, impostazioni, fonti e chiave.</string>
     <string name="settings_section_about">Informazioni</string>
@@ -378,7 +381,10 @@
     </plurals>
     <string name="downloads_retry_failed">Riprova errori</string>
     <string name="downloads_clear_finished">Rimuovi completati</string>
+    <string name="downloads_clear_failed">Rimuovi i falliti</string>
     <string name="downloads_cancel_all">Annulla tutti</string>
+    <string name="downloads_cancel_all_title">Annullare tutti i download?</string>
+    <string name="downloads_cancel_all_text">Tutto ciò che è in coda o in corso si ferma, comprese le ricerche in raccolta. Le voci restano in elenco e si possono riprovare.</string>
     <string name="downloads_empty_title">Nessun download</string>
     <string name="downloads_empty_text">Tocca il tasto download su un post, oppure tieni premuto per selezionarne più di uno.</string>
     <string name="batch_title">Raccolta «%1$s»</string>

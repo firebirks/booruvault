@@ -58,6 +58,7 @@
     <string name="action_clear">Temizle</string>
     <string name="action_more">Diğer</string>
     <string name="action_undo">Geri al</string>
+    <string name="action_keep_going">Devam et</string>
     <string name="action_select_all">Tümünü seç</string>
     <string name="action_cancel_selection">Seçimi iptal et</string>
     <string name="action_verify_in_browser">Tarayıcıda doğrula</string>
@@ -112,6 +113,8 @@
     <string name="settings_cookies">Site çerezleri</string>
     <string name="settings_cookies_hint">Geçilen anti-bot doğrulamaları ve oturumlar, kasada şifreli</string>
     <string name="settings_cookies_cleared">Çerezler silindi</string>
+    <string name="settings_cookies_clear_title">Site çerezleri silinsin mi?</string>
+    <string name="settings_cookies_clear_text">Her site sizi unutur, her iki yolda da: oturumlar kaybolur ve bot karşıtı denetimler yeniden geçilmelidir.</string>
     <string name="settings_delete_vault">Kasayı sil</string>
     <string name="settings_delete_vault_hint">İçeriği, ayarları, kaynakları ve anahtarı geri döndürülemez şekilde siler.</string>
     <string name="settings_section_about">Hakkında</string>
@@ -359,7 +362,10 @@
     </plurals>
     <string name="downloads_retry_failed">Başarısızları yeniden dene</string>
     <string name="downloads_clear_finished">Bitenleri kaldır</string>
+    <string name="downloads_clear_failed">Başarısız olanları kaldır</string>
     <string name="downloads_cancel_all">Tümünü iptal et</string>
+    <string name="downloads_cancel_all_title">Tüm indirmeler iptal edilsin mi?</string>
+    <string name="downloads_cancel_all_text">Sırada bekleyen veya süren her şey durur, toplanmakta olan aramalar dahil. Girdiler listede kalır ve yeniden denenebilir.</string>
     <string name="downloads_empty_title">İndirme yok</string>
     <string name="downloads_empty_text">Bir gönderideki indirme düğmesine dokunun veya birden fazlasını seçmek için uzun basın.</string>
     <string name="batch_title">“%1$s” toplanıyor</string>

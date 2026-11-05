@@ -58,6 +58,7 @@
     <string name="action_clear">Wissen</string>
     <string name="action_more">Meer</string>
     <string name="action_undo">Ongedaan maken</string>
+    <string name="action_keep_going">Doorgaan</string>
     <string name="action_select_all">Alles selecteren</string>
     <string name="action_cancel_selection">Selectie annuleren</string>
     <string name="action_verify_in_browser">Controleren in browser</string>
@@ -112,6 +113,8 @@
     <string name="settings_cookies">Cookies van sites</string>
     <string name="settings_cookies_hint">Geslaagde anti-botcontroles en sessies, versleuteld in de kluis</string>
     <string name="settings_cookies_cleared">Cookies verwijderd</string>
+    <string name="settings_cookies_clear_title">Sitecookies verwijderen?</string>
+    <string name="settings_cookies_clear_text">Elke site vergeet je, via beide routes: aanmeldingen gaan verloren en anti-botcontroles moeten opnieuw worden doorlopen.</string>
     <string name="settings_delete_vault">Kluis verwijderen</string>
     <string name="settings_delete_vault_hint">Wist onherroepelijk inhoud, instellingen, bronnen en de sleutel.</string>
     <string name="settings_section_about">Over</string>
@@ -359,7 +362,10 @@
     </plurals>
     <string name="downloads_retry_failed">Mislukte opnieuw proberen</string>
     <string name="downloads_clear_finished">Voltooide verwijderen</string>
+    <string name="downloads_clear_failed">Mislukte verwijderen</string>
     <string name="downloads_cancel_all">Alles annuleren</string>
+    <string name="downloads_cancel_all_title">Alle downloads annuleren?</string>
+    <string name="downloads_cancel_all_text">Alles wat wacht of bezig is stopt, ook zoekopdrachten die worden verzameld. De items blijven in de lijst en kunnen opnieuw worden geprobeerd.</string>
     <string name="downloads_empty_title">Geen downloads</string>
     <string name="downloads_empty_text">Tik op de downloadknop bij een post, of houd lang ingedrukt om er meer dan één te selecteren.</string>
     <string name="batch_title">Verzamelen: ‘%1$s’</string>

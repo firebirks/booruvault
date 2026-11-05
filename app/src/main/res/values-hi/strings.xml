@@ -58,6 +58,7 @@
     <string name="action_clear">साफ़ करें</string>
     <string name="action_more">और विकल्प</string>
     <string name="action_undo">पूर्ववत करें</string>
+    <string name="action_keep_going">जारी रखें</string>
     <string name="action_select_all">सभी चुनें</string>
     <string name="action_cancel_selection">चुनना रद्द करें</string>
     <string name="action_verify_in_browser">ब्राउज़र में जांचें</string>
@@ -112,6 +113,8 @@
     <string name="settings_cookies">साइट कुकी</string>
     <string name="settings_cookies_hint">पास की गई एंटी-बॉट जांचें और सेशन, तिजोरी में एन्क्रिप्टेड</string>
     <string name="settings_cookies_cleared">कुकी मिटा दी गईं</string>
+    <string name="settings_cookies_clear_title">साइट कुकीज़ हटाएँ?</string>
+    <string name="settings_cookies_clear_text">हर साइट आपको दोनों मार्गों पर भूल जाएगी: लॉगिन खो जाएँगे और एंटी-बॉट जाँच फिर से पास करनी होगी।</string>
     <string name="settings_delete_vault">तिजोरी मिटाएं</string>
     <string name="settings_delete_vault_hint">सामग्री, सेटिंग, स्रोत और कुंजी को हमेशा के लिए मिटा देता है। इसे वापस नहीं लाया जा सकता।</string>
     <string name="settings_section_about">जानकारी</string>
@@ -359,7 +362,10 @@
     </plurals>
     <string name="downloads_retry_failed">विफल डाउनलोड फिर से आज़माएं</string>
     <string name="downloads_clear_finished">पूरे हुए हटाएं</string>
+    <string name="downloads_clear_failed">विफल हटाएँ</string>
     <string name="downloads_cancel_all">सभी रद्द करें</string>
+    <string name="downloads_cancel_all_title">सभी डाउनलोड रद्द करें?</string>
+    <string name="downloads_cancel_all_text">कतार में या चल रहा सब कुछ रुक जाएगा, एकत्र की जा रही खोजें भी। प्रविष्टियाँ सूची में रहेंगी और फिर से कोशिश की जा सकती है।</string>
     <string name="downloads_empty_title">कोई डाउनलोड नहीं</string>
     <string name="downloads_empty_text">किसी पोस्ट पर डाउनलोड बटन टैप करें, या एक से ज़्यादा चुनने के लिए देर तक दबाएं।</string>
     <string name="batch_title">“%1$s” इकट्ठा किया जा रहा है</string>

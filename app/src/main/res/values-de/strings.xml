@@ -58,6 +58,7 @@
     <string name="action_clear">Leeren</string>
     <string name="action_more">Mehr</string>
     <string name="action_undo">Rückgängig</string>
+    <string name="action_keep_going">Weitermachen</string>
     <string name="action_select_all">Alle auswählen</string>
     <string name="action_cancel_selection">Auswahl aufheben</string>
     <string name="action_verify_in_browser">Im Browser prüfen</string>
@@ -112,6 +113,8 @@
     <string name="settings_cookies">Website-Cookies</string>
     <string name="settings_cookies_hint">Bestandene Anti-Bot-Prüfungen und Sitzungen, verschlüsselt im Tresor</string>
     <string name="settings_cookies_cleared">Cookies gelöscht</string>
+    <string name="settings_cookies_clear_title">Website-Cookies löschen?</string>
+    <string name="settings_cookies_clear_text">Jede Seite vergisst dich, auf beiden Wegen: Anmeldungen gehen verloren, und Anti-Bot-Prüfungen müssen erneut bestanden werden.</string>
     <string name="settings_delete_vault">Tresor löschen</string>
     <string name="settings_delete_vault_hint">Löscht unwiderruflich Inhalte, Einstellungen, Quellen und den Schlüssel.</string>
     <string name="settings_section_about">Über</string>
@@ -359,7 +362,10 @@
     </plurals>
     <string name="downloads_retry_failed">Fehlgeschlagene wiederholen</string>
     <string name="downloads_clear_finished">Abgeschlossene entfernen</string>
+    <string name="downloads_clear_failed">Fehlgeschlagene entfernen</string>
     <string name="downloads_cancel_all">Alle abbrechen</string>
+    <string name="downloads_cancel_all_title">Alle Downloads abbrechen?</string>
+    <string name="downloads_cancel_all_text">Alles, was wartet oder läuft, wird gestoppt, auch Suchen, die gerade gesammelt werden. Die Einträge bleiben in der Liste und können erneut versucht werden.</string>
     <string name="downloads_empty_title">Keine Downloads</string>
     <string name="downloads_empty_text">Tippe bei einem Post auf den Download-Button oder halte ihn gedrückt, um mehrere auszuwählen.</string>
     <string name="batch_title">Sammeln: „%1$s“</string>

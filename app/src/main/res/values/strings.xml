@@ -63,6 +63,7 @@
     <string name="action_clear">Clear</string>
     <string name="action_more">More</string>
     <string name="action_undo">Undo</string>
+    <string name="action_keep_going">Keep going</string>
     <string name="action_select_all">Select all</string>
     <string name="action_cancel_selection">Cancel selection</string>
     <string name="action_verify_in_browser">Verify in the browser</string>
@@ -117,6 +118,8 @@
     <string name="settings_cookies">Site cookies</string>
     <string name="settings_cookies_hint">Passed anti-bot checks and sessions, encrypted in the vault</string>
     <string name="settings_cookies_cleared">Cookies deleted</string>
+    <string name="settings_cookies_clear_title">Delete the site cookies?</string>
+    <string name="settings_cookies_clear_text">Every site forgets you, on both routes: logins are lost, and anti-bot checks must be passed again.</string>
     <string name="settings_delete_vault">Delete the vault</string>
     <string name="settings_delete_vault_hint">Irreversibly erases content, settings, sources and the key.</string>
     <string name="settings_section_about">About</string>
@@ -365,7 +368,10 @@
     </plurals>
     <string name="downloads_retry_failed">Retry failed</string>
     <string name="downloads_clear_finished">Remove finished</string>
+    <string name="downloads_clear_failed">Remove failed</string>
     <string name="downloads_cancel_all">Cancel all</string>
+    <string name="downloads_cancel_all_title">Cancel all downloads?</string>
+    <string name="downloads_cancel_all_text">Everything queued or running stops, searches being collected included. The entries stay listed and can be retried.</string>
     <string name="downloads_empty_title">No downloads</string>
     <string name="downloads_empty_text">Tap the download button on a post, or long-press to select more than one.</string>
     <string name="batch_title">Collecting “%1$s”</string>

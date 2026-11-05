@@ -58,6 +58,7 @@
     <string name="action_clear">ล้าง</string>
     <string name="action_more">เพิ่มเติม</string>
     <string name="action_undo">เลิกทำ</string>
+    <string name="action_keep_going">ดำเนินการต่อ</string>
     <string name="action_select_all">เลือกทั้งหมด</string>
     <string name="action_cancel_selection">ยกเลิกการเลือก</string>
     <string name="action_verify_in_browser">ตรวจสอบในเบราว์เซอร์</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">คุกกี้ของเว็บไซต์</string>
     <string name="settings_cookies_hint">การตรวจสอบป้องกันบอทที่ผ่านแล้วและเซสชัน เข้ารหัสไว้ในคลังนิรภัย</string>
     <string name="settings_cookies_cleared">ลบคุกกี้แล้ว</string>
+    <string name="settings_cookies_clear_title">ลบคุกกี้ของเว็บไซต์หรือไม่</string>
+    <string name="settings_cookies_clear_text">ทุกเว็บไซต์จะลืมคุณในทั้งสองเส้นทาง: การเข้าสู่ระบบหายไป และต้องผ่านการตรวจสอบป้องกันบอตอีกครั้ง</string>
     <string name="settings_delete_vault">ลบคลังนิรภัย</string>
     <string name="settings_delete_vault_hint">ลบเนื้อหา การตั้งค่า แหล่งที่มา และคีย์อย่างถาวรโดยกู้คืนไม่ได้</string>
     <string name="settings_section_about">เกี่ยวกับ</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">ลองรายการที่ล้มเหลวอีกครั้ง</string>
     <string name="downloads_clear_finished">นำรายการที่เสร็จแล้วออก</string>
+    <string name="downloads_clear_failed">ลบรายการที่ล้มเหลว</string>
     <string name="downloads_cancel_all">ยกเลิกทั้งหมด</string>
+    <string name="downloads_cancel_all_title">ยกเลิกการดาวน์โหลดทั้งหมดหรือไม่</string>
+    <string name="downloads_cancel_all_text">ทุกอย่างที่รอคิวหรือกำลังทำงานจะหยุด รวมถึงการค้นหาที่กำลังรวบรวม รายการยังคงอยู่ในรายการและลองใหม่ได้</string>
     <string name="downloads_empty_title">ไม่มีการดาวน์โหลด</string>
     <string name="downloads_empty_text">แตะปุ่มดาวน์โหลดบนโพสต์ หรือกดค้างเพื่อเลือกหลายรายการ</string>
     <string name="batch_title">กำลังรวบรวม “%1$s”</string>

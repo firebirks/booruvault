@@ -58,6 +58,7 @@
     <string name="action_clear">Bersihkan</string>
     <string name="action_more">Lainnya</string>
     <string name="action_undo">Urungkan</string>
+    <string name="action_keep_going">Lanjutkan</string>
     <string name="action_select_all">Pilih semua</string>
     <string name="action_cancel_selection">Batalkan pilihan</string>
     <string name="action_verify_in_browser">Verifikasi di browser</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">Cookie situs</string>
     <string name="settings_cookies_hint">Pemeriksaan anti-bot yang lolos dan sesi, terenkripsi di brankas</string>
     <string name="settings_cookies_cleared">Cookie dihapus</string>
+    <string name="settings_cookies_clear_title">Hapus cookie situs?</string>
+    <string name="settings_cookies_clear_text">Setiap situs melupakan Anda, di kedua rute: login hilang dan pemeriksaan anti-bot harus dilewati lagi.</string>
     <string name="settings_delete_vault">Hapus brankas</string>
     <string name="settings_delete_vault_hint">Menghapus konten, setelan, sumber, dan kunci secara permanen, tanpa bisa dipulihkan.</string>
     <string name="settings_section_about">Tentang</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">Coba lagi yang gagal</string>
     <string name="downloads_clear_finished">Hapus yang selesai</string>
+    <string name="downloads_clear_failed">Hapus yang gagal</string>
     <string name="downloads_cancel_all">Batalkan semua</string>
+    <string name="downloads_cancel_all_title">Batalkan semua unduhan?</string>
+    <string name="downloads_cancel_all_text">Semua yang antre atau berjalan berhenti, termasuk pencarian yang sedang dikumpulkan. Entri tetap ada di daftar dan bisa dicoba lagi.</string>
     <string name="downloads_empty_title">Tidak ada unduhan</string>
     <string name="downloads_empty_text">Ketuk tombol unduh pada postingan, atau tekan lama untuk memilih lebih dari satu.</string>
     <string name="batch_title">Mengumpulkan “%1$s”</string>

@@ -58,6 +58,7 @@
     <string name="action_clear">清除</string>
     <string name="action_more">更多</string>
     <string name="action_undo">復原</string>
+    <string name="action_keep_going">繼續</string>
     <string name="action_select_all">全選</string>
     <string name="action_cancel_selection">取消選取</string>
     <string name="action_verify_in_browser">在瀏覽器中驗證</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">網站 Cookie</string>
     <string name="settings_cookies_hint">已通過的防機器人驗證和登入工作階段，加密儲存在保險庫中</string>
     <string name="settings_cookies_cleared">Cookie 已刪除</string>
+    <string name="settings_cookies_clear_title">刪除網站 Cookie？</string>
+    <string name="settings_cookies_clear_text">所有網站在兩條路線上都會忘記你：登入狀態遺失，反機器人驗證需要重新通過。</string>
     <string name="settings_delete_vault">刪除保險庫</string>
     <string name="settings_delete_vault_hint">永久清除內容、設定、來源和金鑰，且無法復原。</string>
     <string name="settings_section_about">關於</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">重試失敗項目</string>
     <string name="downloads_clear_finished">移除已完成項目</string>
+    <string name="downloads_clear_failed">移除失敗項目</string>
     <string name="downloads_cancel_all">全部取消</string>
+    <string name="downloads_cancel_all_title">取消所有下載？</string>
+    <string name="downloads_cancel_all_text">排隊和進行中的全部停止，包括正在收集的搜尋。項目仍保留在清單中，可以重試。</string>
     <string name="downloads_empty_title">沒有下載項目</string>
     <string name="downloads_empty_text">輕觸貼文上的下載按鈕，或長按以選取多則貼文。</string>
     <string name="batch_title">正在收集「%1$s」</string>

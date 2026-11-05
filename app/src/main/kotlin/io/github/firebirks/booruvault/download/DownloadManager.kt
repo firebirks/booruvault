@@ -69,8 +69,8 @@ data class DownloadTask(
 }
 
 /**
- * A search whose results are being gathered page by page to be downloaded. A [problem] stopped it:
- * it stays listed, with what it found, until retried or cleared.
+ * A search whose results are being gathered page by page to be downloaded. A [problem] stopped
+ * it, or the user did ([stopped]): it stays listed, with what it found, until retried or cleared.
  */
 data class BatchJob(
     val key: Long,
@@ -80,8 +80,9 @@ data class BatchJob(
     val found: Int = 0,
     val nextPage: Int = 1,
     val problem: Problem? = null,
+    val stopped: Boolean = false,
 ) {
-    val active: Boolean get() = problem == null
+    val active: Boolean get() = problem == null && !stopped
 }
 
 /** What survives a lock or a restart: sealed in the vault as `downloads.bin`. */
@@ -99,6 +100,7 @@ private data class SavedBatch(
     val found: Int,
     val nextPage: Int,
     val problem: Problem? = null,
+    val stopped: Boolean = false,
 )
 
 /**
@@ -160,7 +162,7 @@ class DownloadManager(
         tasks = _tasks.value.filter { it.active || it.status == DownloadStatus.FAILED }.map {
             SavedTask(it.post, it.source, if (it.active) DownloadStatus.QUEUED else it.status, it.problem)
         },
-        batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem) },
+        batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) },
     )
 
     /** Seals the queue as it stands, and returns it as sealed. */
@@ -184,7 +186,7 @@ class DownloadManager(
         stopAll()
         // Keep only the switch: everything else from the settings goes with the lock.
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
-        _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null }
+        _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null && !it.stopped }
         onLockedWorkDone()
     }
 
@@ -221,9 +223,9 @@ class DownloadManager(
         queue.tasks.filter { it.status == DownloadStatus.QUEUED }.groupBy { it.source }.forEach { (source, list) ->
             enqueue(list.map { it.post }, source)
         }
-        val (stopped, pending) = queue.batches.partition { it.problem != null }
+        val (stopped, pending) = queue.batches.partition { it.problem != null || it.stopped }
         _batches.update { list ->
-            list + stopped.map { BatchJob(keys.incrementAndGet(), it.source, it.tags, it.target, it.found, it.nextPage, it.problem) }
+            list + stopped.map { BatchJob(keys.incrementAndGet(), it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) }
         }
         pending.forEach { downloadSearch(it.source, it.tags, it.target, it.found, it.nextPage) }
     }
@@ -307,12 +309,14 @@ class DownloadManager(
     /**
      * Reads the search's pages from [BatchJob.nextPage] on. Danbooru drops the posts it does not
      * show after paging, so a page shorter than asked for is not the last: only an empty one is.
-     * A page that fails stops the batch, which stays listed with the reason.
+     * A page that fails stops the batch, which stays listed with the reason; so does the user,
+     * and the batch stays listed as stopped, to be taken up again from the same page.
      */
     private fun collect(batch: BatchJob) {
         startService()
         val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
             var problem: Problem? = null
+            var cancelled = false
             try {
                 val api = api(batch.source)
                 val limit = 100
@@ -333,6 +337,7 @@ class DownloadManager(
                     _batches.update { list -> list.map { if (it.key == batch.key) it.copy(found = found, nextPage = page) else it } }
                 }
             } catch (e: CancellationException) {
+                cancelled = true
                 throw e
             } catch (e: Exception) {
                 // Whatever was queued before the failure still downloads.
@@ -341,7 +346,11 @@ class DownloadManager(
                 jobs.remove(batch.key, coroutineContext.job)
                 val stopped = problem
                 _batches.update { list ->
-                    if (stopped == null) list.filterNot { it.key == batch.key } else list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
+                    when {
+                        stopped != null -> list.map { if (it.key == batch.key) it.copy(problem = stopped) else it }
+                        cancelled -> list.map { if (it.key == batch.key) it.copy(stopped = true) else it }
+                        else -> list.filterNot { it.key == batch.key }
+                    }
                 }
             }
         }
@@ -359,7 +368,7 @@ class DownloadManager(
         var resumed: BatchJob? = null
         _batches.update { list ->
             resumed = null
-            list.map { if (it.key == key && !it.active) it.copy(problem = null).also { again -> resumed = again } else it }
+            list.map { if (it.key == key && !it.active) it.copy(problem = null, stopped = false).also { again -> resumed = again } else it }
         }
         resumed?.let(::collect)
     }
@@ -369,6 +378,7 @@ class DownloadManager(
         set(key) { if (it.active) it.copy(status = DownloadStatus.CANCELLED, problem = null) else it }
     }
 
+    /** Stops everything under way; the entries stay listed, as cancelled or stopped, to be retried. */
     fun cancelAll() {
         _batches.value.forEach { cancelBatch(it.key) }
         _tasks.value.filter { it.active }.forEach { cancel(it.key) }
@@ -400,9 +410,16 @@ class DownloadManager(
     /** A check passed along the other route says nothing about this one: it may be offered again. */
     fun routeChanged() = checkedAt.clear()
 
+    /** Takes off the list what is done, skipped or was cancelled; what failed stays, with its reason. */
     fun clearFinished() {
-        _tasks.update { list -> list.filter { it.active } }
-        _batches.update { list -> list.filter { it.active } }
+        _tasks.update { list -> list.filter { it.active || it.status == DownloadStatus.FAILED } }
+        _batches.update { list -> list.filter { it.active || it.problem != null } }
+    }
+
+    /** Takes off the list what failed, batches a problem stopped included. */
+    fun clearFailed() {
+        _tasks.update { list -> list.filter { it.status != DownloadStatus.FAILED } }
+        _batches.update { list -> list.filter { it.problem == null } }
     }
 
     private fun set(key: Long, transform: (DownloadTask) -> DownloadTask) {

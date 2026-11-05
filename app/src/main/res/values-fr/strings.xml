@@ -58,6 +58,7 @@
     <string name="action_clear">Effacer</string>
     <string name="action_more">Plus</string>
     <string name="action_undo">Annuler</string>
+    <string name="action_keep_going">Continuer</string>
     <string name="action_select_all">Tout sélectionner</string>
     <string name="action_cancel_selection">Annuler la sélection</string>
     <string name="action_verify_in_browser">Vérifier dans le navigateur</string>
@@ -114,6 +115,8 @@
     <string name="settings_cookies">Cookies des sites</string>
     <string name="settings_cookies_hint">Vérifications anti-bot réussies et sessions, chiffrées dans le coffre</string>
     <string name="settings_cookies_cleared">Cookies supprimés</string>
+    <string name="settings_cookies_clear_title">Supprimer les cookies des sites ?</string>
+    <string name="settings_cookies_clear_text">Tous les sites vous oublient, sur les deux routes : les connexions sont perdues et les contrôles anti-bot sont à repasser.</string>
     <string name="settings_delete_vault">Supprimer le coffre</string>
     <string name="settings_delete_vault_hint">Efface de façon irréversible le contenu, les paramètres, les sources et la clé.</string>
     <string name="settings_section_about">À propos</string>
@@ -378,7 +381,10 @@
     </plurals>
     <string name="downloads_retry_failed">Réessayer les échecs</string>
     <string name="downloads_clear_finished">Retirer les terminés</string>
+    <string name="downloads_clear_failed">Retirer les échecs</string>
     <string name="downloads_cancel_all">Tout annuler</string>
+    <string name="downloads_cancel_all_title">Annuler tous les téléchargements ?</string>
+    <string name="downloads_cancel_all_text">Tout ce qui est en attente ou en cours s\'arrête, y compris les recherches en cours de collecte. Les entrées restent listées et peuvent être relancées.</string>
     <string name="downloads_empty_title">Aucun téléchargement</string>
     <string name="downloads_empty_text">Appuyez sur le bouton de téléchargement d\'un post, ou appuyez de manière prolongée pour en sélectionner plusieurs.</string>
     <string name="batch_title">Collecte de « %1$s »</string>

@@ -25,10 +25,10 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,6 +70,7 @@ fun DownloadsScreen() {
     val tasks by downloads.tasks.collectAsStateWithLifecycle()
     val batches by downloads.batches.collectAsStateWithLifecycle()
     var menu by remember { mutableStateOf(false) }
+    var confirmCancelAll by remember { mutableStateOf(false) }
     val ordered = remember(tasks) { tasks.sortedWith(compareBy<DownloadTask> { !it.active }.thenByDescending { it.key }) }
     val active = tasks.count { it.active }
     val done = tasks.count { it.status == DownloadStatus.DONE }
@@ -105,9 +106,19 @@ fun DownloadsScreen() {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.downloads_cancel_all)) },
                                 leadingIcon = { Icon(Icons.Outlined.Cancel, null) },
+                                enabled = active > 0 || batches.any { it.active },
                                 onClick = {
                                     menu = false
-                                    downloads.cancelAll()
+                                    confirmCancelAll = true
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.downloads_clear_failed)) },
+                                leadingIcon = { Icon(Icons.Outlined.DeleteSweep, null) },
+                                enabled = failed > 0 || batches.any { it.problem != null },
+                                onClick = {
+                                    menu = false
+                                    downloads.clearFailed()
                                 },
                             )
                         }
@@ -117,6 +128,20 @@ fun DownloadsScreen() {
         },
         contentWindowInsets = WindowInsets(0),
     ) { padding ->
+        if (confirmCancelAll) {
+            AlertDialog(
+                onDismissRequest = { confirmCancelAll = false },
+                title = { Text(stringResource(R.string.downloads_cancel_all_title)) },
+                text = { Text(stringResource(R.string.downloads_cancel_all_text)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmCancelAll = false
+                        downloads.cancelAll()
+                    }) { Text(stringResource(R.string.downloads_cancel_all), color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { confirmCancelAll = false }) { Text(stringResource(R.string.action_keep_going)) } },
+            )
+        }
         if (tasks.isEmpty() && batches.isEmpty()) {
             MessageState(
                 Icons.Outlined.CloudDownload, stringResource(R.string.downloads_empty_title),
@@ -167,10 +192,10 @@ private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit,
             Column {
                 Text(stringResource(R.string.batch_progress, batch.source.name, batch.found, batch.target))
                 val problem = batch.problem
-                if (problem == null) {
-                    LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
-                } else {
-                    Text(problemText(problem), color = MaterialTheme.colorScheme.error)
+                when {
+                    problem != null -> Text(problemText(problem), color = MaterialTheme.colorScheme.error)
+                    batch.stopped -> Text(stringResource(R.string.task_cancelled), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    else -> LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 6.dp))
                 }
                 if (onVerify != null) {
                     TextButton(onClick = onVerify, contentPadding = PaddingValues(0.dp)) { Text(stringResource(R.string.action_verify_in_browser)) }

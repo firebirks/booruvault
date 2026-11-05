@@ -58,6 +58,7 @@
     <string name="action_clear">クリア</string>
     <string name="action_more">その他</string>
     <string name="action_undo">元に戻す</string>
+    <string name="action_keep_going">続ける</string>
     <string name="action_select_all">すべて選択</string>
     <string name="action_cancel_selection">選択を解除</string>
     <string name="action_verify_in_browser">ブラウザで確認</string>
@@ -110,6 +111,8 @@
     <string name="settings_cookies">サイトの Cookie</string>
     <string name="settings_cookies_hint">通過したボット対策の確認とセッション。保管庫内で暗号化されています</string>
     <string name="settings_cookies_cleared">Cookie を削除しました</string>
+    <string name="settings_cookies_clear_title">サイトの Cookie を削除しますか？</string>
+    <string name="settings_cookies_clear_text">すべてのサイトが、どちらの経路でもあなたを忘れます。ログインは失われ、ボット対策チェックをもう一度通過する必要があります。</string>
     <string name="settings_delete_vault">保管庫を削除</string>
     <string name="settings_delete_vault_hint">コンテンツ、設定、ソース、鍵を消去します。元に戻すことはできません。</string>
     <string name="settings_section_about">このアプリについて</string>
@@ -340,7 +343,10 @@
     </plurals>
     <string name="downloads_retry_failed">失敗したものを再試行</string>
     <string name="downloads_clear_finished">完了したものを削除</string>
+    <string name="downloads_clear_failed">失敗したものを削除</string>
     <string name="downloads_cancel_all">すべてキャンセル</string>
+    <string name="downloads_cancel_all_title">すべてのダウンロードをキャンセルしますか？</string>
+    <string name="downloads_cancel_all_text">待機中と実行中のものがすべて止まります。収集中の検索も含みます。項目は一覧に残り、やり直せます。</string>
     <string name="downloads_empty_title">ダウンロードはありません</string>
     <string name="downloads_empty_text">投稿のダウンロードボタンをタップするか、長押しして複数選択してください。</string>
     <string name="batch_title">「%1$s」を収集中</string>
