@@ -128,6 +128,8 @@ import io.github.firebirks.booruvault.ui.common.MessageState
 import io.github.firebirks.booruvault.ui.common.categoryColor
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
+import io.github.firebirks.booruvault.ui.settings.TorBlockedState
+import io.github.firebirks.booruvault.util.blockedByTor
 import io.github.firebirks.booruvault.util.formatCount
 import io.github.firebirks.booruvault.vault.VaultState
 import coil3.compose.AsyncImage
@@ -145,6 +147,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
     val shelf by vm.tagShelf.collectAsStateWithLifecycle()
     val saveStates by vm.saveStates.collectAsStateWithLifecycle()
     val vaultState by container.vault.state.collectAsStateWithLifecycle()
+    val torState by container.tor.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val focus = LocalFocusManager.current
@@ -267,6 +270,9 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit) {
                         Icons.Outlined.VerifiedUser, stringResource(R.string.browse_check_needed), state.error?.let { problemText(it) },
                         actionLabel = stringResource(R.string.action_verify_in_browser), onAction = { verify(state.challengeUrl!!) },
                     )
+                    // Nothing to retry by hand: what is missing is Orbot, or its exit check, and the
+                    // load repeats by itself once that is there.
+                    state.posts.isEmpty() && state.error?.blockedByTor() == true && torState.enabled -> TorBlockedState()
                     state.posts.isEmpty() && state.error != null -> MessageState(
                         Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), state.error?.let { problemText(it) },
                         actionLabel = stringResource(R.string.action_retry), onAction = { vm.loadMore(force = true) },

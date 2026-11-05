@@ -167,6 +167,13 @@
     <string name="tor_search_stores">Tìm trong cửa hàng</string>
     <string name="tor_orbot_site">Trang web Orbot</string>
     <string name="tor_install_with">Cài đặt Orbot bằng…</string>
+    <string name="tor_install_orbot">Cài đặt Orbot</string>
+    <string name="tor_orbot_off_title">Orbot chưa chạy</string>
+    <string name="tor_orbot_off_text">Mở Orbot và khởi động Tor. Kết quả sẽ tự tải khi kết nối được xác minh.</string>
+    <string name="tor_verify_failed_title">Không thể xác minh Tor</string>
+    <string name="tor_connect_directly">Kết nối trực tiếp thay thế</string>
+    <string name="tor_direct_confirm_title">Kết nối trực tiếp?</string>
+    <string name="tor_direct_confirm_text">Tor sẽ bị tắt: từ giờ các trang web thấy địa chỉ mạng của bạn. Bạn có thể bật lại Tor trong Cài đặt, ở mục “%1$s”.</string>
     <string name="sources_title">Nguồn</string>
     <string name="sources_add">Thêm</string>
     <string name="sources_with_account">có tài khoản</string>

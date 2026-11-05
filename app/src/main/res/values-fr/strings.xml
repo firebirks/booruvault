@@ -175,6 +175,13 @@
     <string name="tor_search_stores">Chercher dans les boutiques</string>
     <string name="tor_orbot_site">Site d\'Orbot</string>
     <string name="tor_install_with">Installer Orbot avec…</string>
+    <string name="tor_install_orbot">Installer Orbot</string>
+    <string name="tor_orbot_off_title">Orbot n\'est pas lancé</string>
+    <string name="tor_orbot_off_text">Ouvrez Orbot et lancez Tor. Les résultats se chargent d\'eux-mêmes une fois la connexion vérifiée.</string>
+    <string name="tor_verify_failed_title">Tor n\'a pas pu être vérifié</string>
+    <string name="tor_connect_directly">Se connecter directement</string>
+    <string name="tor_direct_confirm_title">Se connecter directement ?</string>
+    <string name="tor_direct_confirm_text">Tor est désactivé : désormais les sites voient l\'adresse de votre réseau. Vous pouvez réactiver Tor dans Paramètres, sous « %1$s ».</string>
     <string name="sources_title">Sources</string>
     <string name="sources_add">Ajouter</string>
     <string name="sources_with_account">avec compte</string>

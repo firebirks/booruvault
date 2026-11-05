@@ -167,6 +167,13 @@
     <string name="tor_search_stores">스토어에서 검색</string>
     <string name="tor_orbot_site">Orbot 웹사이트</string>
     <string name="tor_install_with">Orbot 설치에 사용할 앱</string>
+    <string name="tor_install_orbot">Orbot 설치</string>
+    <string name="tor_orbot_off_title">Orbot이 실행되고 있지 않습니다</string>
+    <string name="tor_orbot_off_text">Orbot을 열고 Tor를 시작하세요. 연결이 확인되면 결과가 자동으로 불러와집니다.</string>
+    <string name="tor_verify_failed_title">Tor를 확인할 수 없습니다</string>
+    <string name="tor_connect_directly">대신 직접 연결</string>
+    <string name="tor_direct_confirm_title">직접 연결할까요?</string>
+    <string name="tor_direct_confirm_text">Tor가 꺼집니다. 이제부터 사이트에는 내 네트워크 주소가 보입니다. 설정의 ‘%1$s’에서 Tor를 다시 켤 수 있습니다.</string>
     <string name="sources_title">소스</string>
     <string name="sources_add">추가</string>
     <string name="sources_with_account">계정 있음</string>

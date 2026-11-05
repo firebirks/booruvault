@@ -209,6 +209,13 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
 
+    /** Runs the exit check now, at the user's request, whatever the last one said and whenever it was. */
+    fun verifyNow() {
+        if (!enabled) return
+        lastVerifyAt = System.currentTimeMillis()
+        onVerifyNeeded()
+    }
+
     /**
      * Asks the Tor Project whether requests reach it through Tor. One check at a time, and its
      * verdict belongs to the port it went through: a port changed meanwhile, or Tor switched off,

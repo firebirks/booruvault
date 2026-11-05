@@ -171,6 +171,13 @@
     <string name="tor_search_stores">Zoeken in stores</string>
     <string name="tor_orbot_site">Website van Orbot</string>
     <string name="tor_install_with">Orbot installeren met…</string>
+    <string name="tor_install_orbot">Orbot installeren</string>
+    <string name="tor_orbot_off_title">Orbot draait niet</string>
+    <string name="tor_orbot_off_text">Open Orbot en start Tor. De resultaten laden vanzelf zodra de verbinding is geverifieerd.</string>
+    <string name="tor_verify_failed_title">Tor kon niet worden geverifieerd</string>
+    <string name="tor_connect_directly">In plaats daarvan direct verbinden</string>
+    <string name="tor_direct_confirm_title">Direct verbinden?</string>
+    <string name="tor_direct_confirm_text">Tor wordt uitgeschakeld: sites zien voortaan het adres van je netwerk. Je kunt Tor weer inschakelen in Instellingen, onder ‘%1$s’.</string>
     <string name="sources_title">Bronnen</string>
     <string name="sources_add">Toevoegen</string>
     <string name="sources_with_account">met account</string>

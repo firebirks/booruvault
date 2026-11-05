@@ -179,6 +179,13 @@
     <string name="tor_search_stores">Искать в магазинах</string>
     <string name="tor_orbot_site">Сайт Orbot</string>
     <string name="tor_install_with">Установить Orbot через…</string>
+    <string name="tor_install_orbot">Установить Orbot</string>
+    <string name="tor_orbot_off_title">Orbot не запущен</string>
+    <string name="tor_orbot_off_text">Откройте Orbot и запустите Tor. Результаты загрузятся сами, как только соединение будет проверено.</string>
+    <string name="tor_verify_failed_title">Не удалось проверить Tor</string>
+    <string name="tor_connect_directly">Подключиться напрямую</string>
+    <string name="tor_direct_confirm_title">Подключиться напрямую?</string>
+    <string name="tor_direct_confirm_text">Tor будет выключен: с этого момента сайты видят адрес вашей сети. Снова включить Tor можно в настройках, в разделе «%1$s».</string>
     <string name="sources_title">Источники</string>
     <string name="sources_add">Добавить</string>
     <string name="sources_with_account">с аккаунтом</string>

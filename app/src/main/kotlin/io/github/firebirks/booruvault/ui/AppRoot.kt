@@ -66,7 +66,6 @@ import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.downloads.DownloadsScreen
-import io.github.firebirks.booruvault.ui.settings.OrbotSetup
 import io.github.firebirks.booruvault.ui.settings.SettingsTab
 import io.github.firebirks.booruvault.ui.vault.RouteChoiceScreen
 import io.github.firebirks.booruvault.ui.vault.UnlockScreen
@@ -96,7 +95,6 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
         val vaultState by container.vault.state.collectAsStateWithLifecycle()
         val routeChosen by container.tor.routeChosen.collectAsStateWithLifecycle()
         var offerBiometric by rememberSaveable { mutableStateOf(false) }
-        var orbotSetup by rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
         // A settings change that could not be sealed to storage is said once, wherever the user is.
         LaunchedEffect(Unit) {
@@ -111,17 +109,13 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
             )
             is VaultState.Unlocked -> when {
                 !ready -> CenteredProgress(stringResource(R.string.opening_vault))
-                // Asked before anything goes out: the main screens are what make requests.
-                !routeChosen -> RouteChoiceScreen(onChosen = { useTor ->
-                    container.tor.chooseRoute(useTor)
-                    orbotSetup = useTor
-                })
+                // Asked before anything goes out: the main screens are what make requests. With
+                // Tor chosen, what is still missing (Orbot, its exit check) is said where the
+                // results would be, and the way to it offered there.
+                !routeChosen -> RouteChoiceScreen(onChosen = container.tor::chooseRoute)
                 else -> {
-                    ProvideLinkOpener {
-                        MainScaffold(requestedTab)
-                        if (orbotSetup) OrbotSetup(onDone = { orbotSetup = false })
-                    }
-                    if (offerBiometric && !orbotSetup) BiometricOffer(onDone = { offerBiometric = false })
+                    ProvideLinkOpener { MainScaffold(requestedTab) }
+                    if (offerBiometric) BiometricOffer(onDone = { offerBiometric = false })
                 }
             }
         }

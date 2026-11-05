@@ -187,6 +187,13 @@
     <string name="tor_search_stores">البحث في المتاجر</string>
     <string name="tor_orbot_site">موقع Orbot</string>
     <string name="tor_install_with">تثبيت Orbot باستخدام…</string>
+    <string name="tor_install_orbot">تثبيت Orbot</string>
+    <string name="tor_orbot_off_title">Orbot لا يعمل</string>
+    <string name="tor_orbot_off_text">افتح Orbot وشغّل Tor. تُحمَّل النتائج تلقائيًا بمجرد التحقق من الاتصال.</string>
+    <string name="tor_verify_failed_title">تعذّر التحقق من Tor</string>
+    <string name="tor_connect_directly">الاتصال مباشرة بدلًا من ذلك</string>
+    <string name="tor_direct_confirm_title">الاتصال مباشرة؟</string>
+    <string name="tor_direct_confirm_text">سيتم إيقاف Tor: من الآن فصاعدًا ترى المواقع عنوان شبكتك. يمكنك إعادة تشغيل Tor من الإعدادات، ضمن «%1$s».</string>
     <string name="sources_title">المصادر</string>
     <string name="sources_add">إضافة</string>
     <string name="sources_with_account">مع حساب</string>

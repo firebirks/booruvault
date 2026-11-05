@@ -722,14 +722,17 @@ private fun TorSettings() {
                 delay(3000)
             }
         }
-        ListItem(
-            headlineContent = { Text(torStatusText(state)) },
-            supportingContent = { Text(stringResource(R.string.tor_vpn_hint), style = MaterialTheme.typography.bodySmall) },
-        )
+        // One line says where Tor stands: Orbot, the port and the exit check together.
         TorVerdict(state)
+        Text(
+            stringResource(R.string.tor_vpn_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        )
         TorPortField(tor, state.socksPort)
         Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { tor.orbotLaunchIntent()?.let { context.startActivity(it) } }) { Text(stringResource(R.string.tor_open_orbot)) }
+            OutlinedButton(onClick = { openOrbot(context, tor) }) { Text(stringResource(R.string.tor_open_orbot)) }
             OutlinedButton(enabled = !verifying, onClick = {
                 verifying = true
                 // In the app's scope: leaving the screen must not cut the check short.
@@ -748,12 +751,8 @@ private fun TorSettings() {
 }
 
 /**
- * The local port the app connects to Orbot on. It is applied when the field is left or confirmed,
- * not at every keystroke: each change drops the connections opened along the old route.
- */
-/**
  * The one line that matters, in colour: green when the exit check passed, red when it failed or
- * nothing answers on the port, neutral while it is being run.
+ * nothing answers on the port, neutral while the port is being greeted or the check is being run.
  */
 @Composable
 private fun TorVerdict(state: TorState) {
@@ -767,6 +766,11 @@ private fun TorVerdict(state: TorState) {
         )
         state.status == TorStatus.OFF || state.status == TorStatus.NOT_INSTALLED -> Verdict(
             MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer, Icons.Outlined.ErrorOutline, torStatusText(state),
+        )
+        // Orbot answers on the port; whether it is Tor behind it is what is still being checked.
+        state.status == TorStatus.ON -> Verdict(
+            MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, Icons.Outlined.HourglassTop,
+            stringResource(R.string.tor_status_on, state.socksPort) + " · " + stringResource(R.string.tor_verifying),
         )
         else -> Verdict(
             MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, Icons.Outlined.HourglassTop, stringResource(R.string.tor_verifying),
@@ -795,12 +799,17 @@ private fun torStatusText(state: TorState): String = when (state.status) {
     TorStatus.OFF, TorStatus.DISABLED -> stringResource(R.string.tor_status_off)
 }
 
+/**
+ * The local port the app connects to Orbot on. It is applied when the field is left or confirmed,
+ * not at every keystroke: each change drops the connections opened along the old route. A value
+ * that is no port is not applied, and the field goes back to the port in use.
+ */
 @Composable
 private fun TorPortField(tor: TorManager, port: Int) {
     var text by remember(port) { mutableStateOf(port.toString()) }
     val valid = text.toIntOrNull()?.let { it in 1..65535 } == true
     fun commit() {
-        text.toIntOrNull()?.let(tor::setSocksPort)
+        if (!valid || !tor.setSocksPort(text.toInt())) text = port.toString()
     }
     OutlinedTextField(
         value = text,

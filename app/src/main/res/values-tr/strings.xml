@@ -171,6 +171,13 @@
     <string name="tor_search_stores">Mağazalarda ara</string>
     <string name="tor_orbot_site">Orbot web sitesi</string>
     <string name="tor_install_with">Orbot\'u şununla yükle…</string>
+    <string name="tor_install_orbot">Orbot\'u yükle</string>
+    <string name="tor_orbot_off_title">Orbot çalışmıyor</string>
+    <string name="tor_orbot_off_text">Orbot\'u açıp Tor\'u başlatın. Bağlantı doğrulanınca sonuçlar kendiliğinden yüklenir.</string>
+    <string name="tor_verify_failed_title">Tor doğrulanamadı</string>
+    <string name="tor_connect_directly">Bunun yerine doğrudan bağlan</string>
+    <string name="tor_direct_confirm_title">Doğrudan bağlanılsın mı?</string>
+    <string name="tor_direct_confirm_text">Tor kapatılır: artık siteler ağınızın adresini görür. Tor\'u Ayarlar\'da “%1$s” bölümünden yeniden açabilirsiniz.</string>
     <string name="sources_title">Kaynaklar</string>
     <string name="sources_add">Ekle</string>
     <string name="sources_with_account">hesaplı</string>

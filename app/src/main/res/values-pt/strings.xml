@@ -175,6 +175,13 @@
     <string name="tor_search_stores">Pesquisar nas lojas</string>
     <string name="tor_orbot_site">Site do Orbot</string>
     <string name="tor_install_with">Instalar o Orbot com…</string>
+    <string name="tor_install_orbot">Instalar o Orbot</string>
+    <string name="tor_orbot_off_title">O Orbot não está em execução</string>
+    <string name="tor_orbot_off_text">Abra o Orbot e inicie o Tor. Os resultados carregam sozinhos assim que a conexão for verificada.</string>
+    <string name="tor_verify_failed_title">Não foi possível verificar o Tor</string>
+    <string name="tor_connect_directly">Conectar diretamente</string>
+    <string name="tor_direct_confirm_title">Conectar diretamente?</string>
+    <string name="tor_direct_confirm_text">O Tor é desligado: a partir de agora os sites veem o endereço da sua rede. Você pode religar o Tor em Ajustes, em “%1$s”.</string>
     <string name="sources_title">Fontes</string>
     <string name="sources_add">Adicionar</string>
     <string name="sources_with_account">com conta</string>

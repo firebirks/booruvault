@@ -167,6 +167,13 @@
     <string name="tor_search_stores">ค้นหาในสโตร์</string>
     <string name="tor_orbot_site">เว็บไซต์ Orbot</string>
     <string name="tor_install_with">ติดตั้ง Orbot ด้วย…</string>
+    <string name="tor_install_orbot">ติดตั้ง Orbot</string>
+    <string name="tor_orbot_off_title">Orbot ไม่ได้ทำงานอยู่</string>
+    <string name="tor_orbot_off_text">เปิด Orbot แล้วเริ่ม Tor ผลลัพธ์จะโหลดเองเมื่อยืนยันการเชื่อมต่อแล้ว</string>
+    <string name="tor_verify_failed_title">ไม่สามารถยืนยัน Tor ได้</string>
+    <string name="tor_connect_directly">เชื่อมต่อโดยตรงแทน</string>
+    <string name="tor_direct_confirm_title">เชื่อมต่อโดยตรงหรือไม่</string>
+    <string name="tor_direct_confirm_text">Tor จะถูกปิด: นับจากนี้เว็บไซต์จะเห็นที่อยู่เครือข่ายของคุณ คุณเปิด Tor ได้อีกครั้งในการตั้งค่า ที่หัวข้อ “%1$s”</string>
     <string name="sources_title">แหล่งที่มา</string>
     <string name="sources_add">เพิ่ม</string>
     <string name="sources_with_account">มีบัญชี</string>

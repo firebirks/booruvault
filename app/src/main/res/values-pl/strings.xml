@@ -179,6 +179,13 @@
     <string name="tor_search_stores">Szukaj w sklepach</string>
     <string name="tor_orbot_site">Strona Orbot</string>
     <string name="tor_install_with">Zainstaluj Orbot przez…</string>
+    <string name="tor_install_orbot">Zainstaluj Orbot</string>
+    <string name="tor_orbot_off_title">Orbot nie jest uruchomiony</string>
+    <string name="tor_orbot_off_text">Otwórz Orbot i uruchom Tor. Wyniki wczytają się same, gdy połączenie zostanie zweryfikowane.</string>
+    <string name="tor_verify_failed_title">Nie udało się zweryfikować Tora</string>
+    <string name="tor_connect_directly">Połącz się bezpośrednio</string>
+    <string name="tor_direct_confirm_title">Połączyć się bezpośrednio?</string>
+    <string name="tor_direct_confirm_text">Tor zostanie wyłączony: od teraz strony widzą adres twojej sieci. Możesz ponownie włączyć Tor w Ustawieniach, w sekcji „%1$s”.</string>
     <string name="sources_title">Źródła</string>
     <string name="sources_add">Dodaj</string>
     <string name="sources_with_account">z kontem</string>

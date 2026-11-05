@@ -167,6 +167,13 @@
     <string name="tor_search_stores">Cari di toko aplikasi</string>
     <string name="tor_orbot_site">Situs web Orbot</string>
     <string name="tor_install_with">Pasang Orbot dengan…</string>
+    <string name="tor_install_orbot">Pasang Orbot</string>
+    <string name="tor_orbot_off_title">Orbot tidak berjalan</string>
+    <string name="tor_orbot_off_text">Buka Orbot dan mulai Tor. Hasil akan dimuat sendiri begitu koneksi terverifikasi.</string>
+    <string name="tor_verify_failed_title">Tor tidak dapat diverifikasi</string>
+    <string name="tor_connect_directly">Hubungkan langsung saja</string>
+    <string name="tor_direct_confirm_title">Hubungkan langsung?</string>
+    <string name="tor_direct_confirm_text">Tor dimatikan: mulai sekarang situs melihat alamat jaringan Anda. Anda bisa menyalakan Tor lagi di Setelan, pada “%1$s”.</string>
     <string name="sources_title">Sumber</string>
     <string name="sources_add">Tambah</string>
     <string name="sources_with_account">dengan akun</string>

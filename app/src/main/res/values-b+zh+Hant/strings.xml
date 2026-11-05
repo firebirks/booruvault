@@ -167,6 +167,13 @@
     <string name="tor_search_stores">搜尋商店</string>
     <string name="tor_orbot_site">Orbot 網站</string>
     <string name="tor_install_with">透過…安裝 Orbot</string>
+    <string name="tor_install_orbot">安裝 Orbot</string>
+    <string name="tor_orbot_off_title">Orbot 未執行</string>
+    <string name="tor_orbot_off_text">開啟 Orbot 並啟動 Tor。連線通過驗證後，結果會自動載入。</string>
+    <string name="tor_verify_failed_title">無法驗證 Tor</string>
+    <string name="tor_connect_directly">改為直接連線</string>
+    <string name="tor_direct_confirm_title">直接連線？</string>
+    <string name="tor_direct_confirm_text">Tor 將被關閉：此後網站會看到你所在網路的位址。可在「設定」的「%1$s」中重新開啟 Tor。</string>
     <string name="sources_title">來源</string>
     <string name="sources_add">新增</string>
     <string name="sources_with_account">使用帳號</string>

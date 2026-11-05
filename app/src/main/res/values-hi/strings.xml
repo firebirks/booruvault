@@ -171,6 +171,13 @@
     <string name="tor_search_stores">स्टोर में खोजें</string>
     <string name="tor_orbot_site">Orbot की वेबसाइट</string>
     <string name="tor_install_with">Orbot इससे इंस्टॉल करें…</string>
+    <string name="tor_install_orbot">Orbot इंस्टॉल करें</string>
+    <string name="tor_orbot_off_title">Orbot चल नहीं रहा है</string>
+    <string name="tor_orbot_off_text">Orbot खोलें और Tor शुरू करें। कनेक्शन सत्यापित होते ही परिणाम अपने आप लोड हो जाएंगे।</string>
+    <string name="tor_verify_failed_title">Tor सत्यापित नहीं हो सका</string>
+    <string name="tor_connect_directly">इसके बजाय सीधे कनेक्ट करें</string>
+    <string name="tor_direct_confirm_title">सीधे कनेक्ट करें?</string>
+    <string name="tor_direct_confirm_text">Tor बंद कर दिया जाएगा: अब से साइटें आपके नेटवर्क का पता देखेंगी। आप सेटिंग में “%1$s” के अंतर्गत Tor फिर से चालू कर सकते हैं।</string>
     <string name="sources_title">स्रोत</string>
     <string name="sources_add">जोड़ें</string>
     <string name="sources_with_account">खाते के साथ</string>

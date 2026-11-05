@@ -167,6 +167,13 @@
     <string name="tor_search_stores">搜索应用商店</string>
     <string name="tor_orbot_site">Orbot 网站</string>
     <string name="tor_install_with">通过…安装 Orbot</string>
+    <string name="tor_install_orbot">安装 Orbot</string>
+    <string name="tor_orbot_off_title">Orbot 未运行</string>
+    <string name="tor_orbot_off_text">打开 Orbot 并启动 Tor。连接通过验证后，结果会自动加载。</string>
+    <string name="tor_verify_failed_title">无法验证 Tor</string>
+    <string name="tor_connect_directly">改为直接连接</string>
+    <string name="tor_direct_confirm_title">直接连接？</string>
+    <string name="tor_direct_confirm_text">Tor 将被关闭：此后网站会看到你所在网络的地址。可在“设置”的“%1$s”中重新开启 Tor。</string>
     <string name="sources_title">来源</string>
     <string name="sources_add">添加</string>
     <string name="sources_with_account">使用账号</string>

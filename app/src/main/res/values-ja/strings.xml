@@ -167,6 +167,13 @@
     <string name="tor_search_stores">ストアで検索</string>
     <string name="tor_orbot_site">Orbot のウェブサイト</string>
     <string name="tor_install_with">Orbot のインストールに使うアプリ</string>
+    <string name="tor_install_orbot">Orbot をインストール</string>
+    <string name="tor_orbot_off_title">Orbot が起動していません</string>
+    <string name="tor_orbot_off_text">Orbot を開いて Tor を起動してください。接続が確認されると、結果は自動的に読み込まれます。</string>
+    <string name="tor_verify_failed_title">Tor を確認できませんでした</string>
+    <string name="tor_connect_directly">代わりに直接接続する</string>
+    <string name="tor_direct_confirm_title">直接接続しますか？</string>
+    <string name="tor_direct_confirm_text">Tor をオフにします。以後、サイトにはあなたのネットワークのアドレスが見えます。設定の「%1$s」から Tor を再びオンにできます。</string>
     <string name="sources_title">ソース</string>
     <string name="sources_add">追加</string>
     <string name="sources_with_account">アカウントあり</string>

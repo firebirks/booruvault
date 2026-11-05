@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.ui.browse
 
+import io.github.firebirks.booruvault.util.blockedByTor
 import io.github.firebirks.booruvault.util.toProblem
 import io.github.firebirks.booruvault.util.Problem
 import androidx.compose.runtime.getValue
@@ -178,6 +179,15 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                         var previous: Any? = null
                         c.settings.settings.map { Triple(it.allowedRatings, it.blacklist, it.pageSize) }.distinctUntilChanged().collect { key ->
                             if (previous != null && previous != key) restart(refreshing = false)
+                            previous = key
+                        }
+                    }
+                    launch {
+                        // A load that failed for want of Tor is tried again by itself once the
+                        // exit check passes, or Tor is switched off: no Retry to find.
+                        var previous: Any? = null
+                        c.tor.state.map { it.enabled to (it.verifiedExit != null) }.distinctUntilChanged().collect { key ->
+                            if (previous != null && previous != key && _state.value.error?.blockedByTor() == true) loadMore(force = true)
                             previous = key
                         }
                     }

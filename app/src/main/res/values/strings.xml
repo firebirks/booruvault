@@ -177,6 +177,13 @@
     <string name="tor_search_stores">Search the stores</string>
     <string name="tor_orbot_site">Orbot website</string>
     <string name="tor_install_with">Install Orbot with…</string>
+    <string name="tor_install_orbot">Install Orbot</string>
+    <string name="tor_orbot_off_title">Orbot is not running</string>
+    <string name="tor_orbot_off_text">Open Orbot and start Tor. The results load by themselves once the connection is verified.</string>
+    <string name="tor_verify_failed_title">Tor could not be verified</string>
+    <string name="tor_connect_directly">Connect directly instead</string>
+    <string name="tor_direct_confirm_title">Connect directly?</string>
+    <string name="tor_direct_confirm_text">Tor is turned off: from now on sites see your network\'s address. You can turn Tor back on in Settings, under “%1$s”.</string>
     <string name="sources_title">Sources</string>
     <string name="sources_add">Add</string>
     <string name="sources_with_account">with account</string>

@@ -43,6 +43,12 @@ data class Problem(val code: Code, val detail: String? = null) {
     }
 }
 
+/** Whether a request failed for want of Tor: nothing to retry until Orbot answers and its exit is verified. */
+fun Problem.blockedByTor(): Boolean = when (code) {
+    Problem.Code.TOR_UNVERIFIED, Problem.Code.TOR_UNREACHABLE, Problem.Code.TOR_DNS_BLOCKED -> true
+    else -> false
+}
+
 /** An exception that knows which [Problem] it stands for. */
 interface HasProblem {
     val problem: Problem
