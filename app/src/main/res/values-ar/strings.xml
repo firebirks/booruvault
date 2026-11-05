@@ -480,6 +480,7 @@
     <string name="browse_no_sources_text">أضف مصدرًا من الإعدادات.</string>
     <string name="browse_check_needed">التحقق مطلوب</string>
     <string name="browse_load_failed">تعذّر التحميل</string>
+    <string name="browse_retry_in">ستُعاد المحاولة بعد %1$d ث.</string>
     <string name="browse_no_results">لا توجد نتائج</string>
     <plurals name="browse_hidden">
         <item quantity="zero">تم إخفاء %d منشور بسبب فلاتر المحتوى.</item>

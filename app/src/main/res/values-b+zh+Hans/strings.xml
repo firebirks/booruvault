@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">请在设置中添加一个。</string>
     <string name="browse_check_needed">需要验证</string>
     <string name="browse_load_failed">无法加载</string>
+    <string name="browse_retry_in">%1$d 秒后重试。</string>
     <string name="browse_no_results">无结果</string>
     <plurals name="browse_hidden">
         <item quantity="other">内容过滤器隐藏了 %d 个帖子。</item>

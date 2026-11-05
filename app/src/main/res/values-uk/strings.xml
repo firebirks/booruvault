@@ -440,6 +440,7 @@
     <string name="browse_no_sources_text">Додайте джерело в налаштуваннях.</string>
     <string name="browse_check_needed">Потрібна перевірка</string>
     <string name="browse_load_failed">Не вдалося завантажити</string>
+    <string name="browse_retry_in">Повтор через %1$d с.</string>
     <string name="browse_no_results">Немає результатів</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d допис приховано фільтрами вмісту.</item>

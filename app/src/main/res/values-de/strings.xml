@@ -400,6 +400,7 @@
     <string name="browse_no_sources_text">Füge eine in den Einstellungen hinzu.</string>
     <string name="browse_check_needed">Prüfung erforderlich</string>
     <string name="browse_load_failed">Laden fehlgeschlagen</string>
+    <string name="browse_retry_in">Neuer Versuch in %1$d s.</string>
     <string name="browse_no_results">Keine Ergebnisse</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d Post durch die Inhaltsfilter ausgeblendet.</item>

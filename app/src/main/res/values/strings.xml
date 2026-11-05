@@ -406,6 +406,7 @@
     <string name="browse_no_sources_text">Add one in the settings.</string>
     <string name="browse_check_needed">Check needed</string>
     <string name="browse_load_failed">Could not load</string>
+    <string name="browse_retry_in">Trying again in %1$d s.</string>
     <string name="browse_no_results">No results</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d post hidden by the content filters.</item>

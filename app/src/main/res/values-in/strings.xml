@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">Tambahkan sumber di setelan.</string>
     <string name="browse_check_needed">Perlu pemeriksaan</string>
     <string name="browse_load_failed">Tidak dapat memuat</string>
+    <string name="browse_retry_in">Mencoba lagi dalam %1$d dtk.</string>
     <string name="browse_no_results">Tidak ada hasil</string>
     <plurals name="browse_hidden">
         <item quantity="other">%d postingan disembunyikan oleh filter konten.</item>

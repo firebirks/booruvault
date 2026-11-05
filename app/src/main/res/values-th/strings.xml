@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">เพิ่มแหล่งที่มาได้ในการตั้งค่า</string>
     <string name="browse_check_needed">ต้องตรวจสอบ</string>
     <string name="browse_load_failed">โหลดไม่ได้</string>
+    <string name="browse_retry_in">จะลองใหม่ใน %1$d วินาที</string>
     <string name="browse_no_results">ไม่มีผลลัพธ์</string>
     <plurals name="browse_hidden">
         <item quantity="other">ตัวกรองเนื้อหาซ่อนไว้ %d โพสต์</item>

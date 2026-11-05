@@ -400,6 +400,7 @@
     <string name="browse_no_sources_text">Voeg er een toe in de instellingen.</string>
     <string name="browse_check_needed">Controle nodig</string>
     <string name="browse_load_failed">Kan niet laden</string>
+    <string name="browse_retry_in">Nieuwe poging over %1$d s.</string>
     <string name="browse_no_results">Geen resultaten</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d post verborgen door de inhoudsfilters.</item>

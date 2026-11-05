@@ -420,6 +420,7 @@
     <string name="browse_no_sources_text">Ajoutez-en une dans les paramètres.</string>
     <string name="browse_check_needed">Vérification requise</string>
     <string name="browse_load_failed">Chargement impossible</string>
+    <string name="browse_retry_in">Nouvel essai dans %1$d s.</string>
     <string name="browse_no_results">Aucun résultat</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d post masqué par les filtres de contenu.</item>

@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">設定で追加してください。</string>
     <string name="browse_check_needed">確認が必要です</string>
     <string name="browse_load_failed">読み込めませんでした</string>
+    <string name="browse_retry_in">%1$d 秒後に再試行します。</string>
     <string name="browse_no_results">結果なし</string>
     <plurals name="browse_hidden">
         <item quantity="other">%d 件の投稿がコンテンツフィルタで非表示になっています。</item>

@@ -440,6 +440,7 @@
     <string name="browse_no_sources_text">Dodaj źródło w ustawieniach.</string>
     <string name="browse_check_needed">Wymagana weryfikacja</string>
     <string name="browse_load_failed">Nie udało się wczytać</string>
+    <string name="browse_retry_in">Ponowna próba za %1$d s.</string>
     <string name="browse_no_results">Brak wyników</string>
     <plurals name="browse_hidden">
         <item quantity="one">Filtry treści ukryły %d post.</item>

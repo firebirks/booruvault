@@ -140,6 +140,12 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
      * what it hid.
      */
     private var fetched: List<Post> = emptyList()
+
+    /**
+     * Set by a refresh: what is shown stays until the first fresh page replaces it, so a refresh
+     * that fails leaves the results, with the reason, rather than a blank.
+     */
+    private var replaceOnNextPage = false
     private var loadJob: Job? = null
     private var suggestJob: Job? = null
 
@@ -214,6 +220,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         page = 0
         seen.clear()
         fetched = emptyList()
+        replaceOnNextPage = false
         input = TextFieldValue("")
         _suggestions.value = emptyList()
         _selection.value = emptySet()
@@ -250,8 +257,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 if (_state.value.generation != generation) return
                 page = next
                 val fresh = raw.filter { seen.add(it.id) }
-                fetched = fetched + fresh
-                update { it.refiltered().copy(endReached = raw.isEmpty()) }
+                fetched = if (replaceOnNextPage) fresh else fetched + fresh
+                replaceOnNextPage = false
+                update { it.refiltered().copy(endReached = raw.isEmpty(), refreshing = false) }
                 // A page the filters emptied entirely would leave nothing to scroll to; fetch on.
                 if (raw.isEmpty() || fresh.any { settings.allows(it) } || ++emptyPages >= 5) break
             }
@@ -278,12 +286,14 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         cancelResolves()
         page = 0
         seen.clear()
-        fetched = emptyList()
         _selection.value = emptySet()
+        replaceOnNextPage = refreshing
+        if (!refreshing) fetched = emptyList()
         _state.update {
             it.copy(
-                posts = emptyList(), loading = false, refreshing = refreshing, endReached = false,
-                error = null, challengeUrl = null, hidden = 0, generation = it.generation + 1,
+                posts = if (refreshing) it.posts else emptyList(), hidden = if (refreshing) it.hidden else 0,
+                loading = false, refreshing = refreshing, endReached = false,
+                error = null, challengeUrl = null, generation = it.generation + 1,
                 startIndex = 0, startOffset = 0,
             )
         }
@@ -331,6 +341,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         seen.clear()
         seen.addAll(grid.seen)
         fetched = grid.fetched
+        replaceOnNextPage = false
         _selection.value = emptySet()
         position = grid.index to grid.offset
         _state.update {

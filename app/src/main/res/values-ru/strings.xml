@@ -440,6 +440,7 @@
     <string name="browse_no_sources_text">Добавьте источник в настройках.</string>
     <string name="browse_check_needed">Требуется проверка</string>
     <string name="browse_load_failed">Не удалось загрузить</string>
+    <string name="browse_retry_in">Повтор через %1$d с.</string>
     <string name="browse_no_results">Нет результатов</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d пост скрыт фильтрами контента.</item>

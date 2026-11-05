@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">Hãy thêm một nguồn trong cài đặt.</string>
     <string name="browse_check_needed">Cần kiểm tra</string>
     <string name="browse_load_failed">Không tải được</string>
+    <string name="browse_retry_in">Thử lại sau %1$d giây.</string>
     <string name="browse_no_results">Không có kết quả</string>
     <plurals name="browse_hidden">
         <item quantity="other">%d bài đăng bị bộ lọc nội dung ẩn.</item>

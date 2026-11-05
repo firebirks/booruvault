@@ -400,6 +400,7 @@
     <string name="browse_no_sources_text">Ayarlardan bir tane ekleyin.</string>
     <string name="browse_check_needed">Doğrulama gerekli</string>
     <string name="browse_load_failed">Yüklenemedi</string>
+    <string name="browse_retry_in">%1$d sn sonra yeniden denenecek.</string>
     <string name="browse_no_results">Sonuç yok</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d gönderi içerik filtreleri tarafından gizlendi.</item>

@@ -135,11 +135,16 @@ import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
 import io.github.firebirks.booruvault.ui.settings.TorBlockedState
+import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.blockedByTor
 import io.github.firebirks.booruvault.util.formatCount
 import io.github.firebirks.booruvault.vault.VaultState
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/** How long a site that asked for a pause is given before the load is tried again by itself. */
+private const val RATE_LIMIT_WAIT_SECONDS = 15
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -205,6 +210,22 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
 
     val challenge = LocalChallenge.current
     fun verify(url: String) = challenge.open(state.source, url) { vm.loadMore(force = true) }
+
+    // A site that asks for a pause gets one, counted down on screen, then the load repeats by itself.
+    var retryIn by remember { mutableIntStateOf(0) }
+    LaunchedEffect(state.error, state.generation) {
+        if (state.error?.code != Problem.Code.RATE_LIMITED) {
+            retryIn = 0
+            return@LaunchedEffect
+        }
+        retryIn = RATE_LIMIT_WAIT_SECONDS
+        while (retryIn > 0) {
+            delay(1000)
+            retryIn--
+        }
+        vm.loadMore(force = true)
+    }
+    val errorText = state.error?.let { problemText(it) + if (retryIn > 0) " " + stringResource(R.string.browse_retry_in, retryIn) else "" }
 
     val resources = LocalResources.current
     fun queue(action: () -> Int) {
@@ -280,7 +301,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                     // load repeats by itself once that is there.
                     state.posts.isEmpty() && state.error?.blockedByTor() == true && torState.enabled -> TorBlockedState()
                     state.posts.isEmpty() && state.error != null -> MessageState(
-                        Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), state.error?.let { problemText(it) },
+                        Icons.Outlined.CloudOff, stringResource(R.string.browse_load_failed), errorText,
                         actionLabel = stringResource(R.string.action_retry), onAction = { vm.loadMore(force = true) },
                     )
                     // Results all hidden by the filters: the filters are a tap away, and a source
@@ -318,7 +339,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                         item(span = StaggeredGridItemSpan.FullLine, key = "footer") {
                             GridFooter(
                                 loading = state.loading,
-                                error = state.error?.let { problemText(it) },
+                                error = errorText,
                                 endReached = state.endReached,
                                 hidden = state.hidden,
                                 challenge = state.challengeUrl != null,

@@ -380,6 +380,7 @@
     <string name="browse_no_sources_text">請在設定中新增一個。</string>
     <string name="browse_check_needed">需要驗證</string>
     <string name="browse_load_failed">無法載入</string>
+    <string name="browse_retry_in">%1$d 秒後重試。</string>
     <string name="browse_no_results">沒有結果</string>
     <plurals name="browse_hidden">
         <item quantity="other">有 %d 則貼文已被內容篩選器隱藏。</item>

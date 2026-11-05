@@ -400,6 +400,7 @@
     <string name="browse_no_sources_text">सेटिंग में एक स्रोत जोड़ें।</string>
     <string name="browse_check_needed">जांच ज़रूरी है</string>
     <string name="browse_load_failed">लोड नहीं हो सका</string>
+    <string name="browse_retry_in">%1$d सेकंड में फिर कोशिश होगी।</string>
     <string name="browse_no_results">कोई नतीजा नहीं</string>
     <plurals name="browse_hidden">
         <item quantity="one">%d पोस्ट सामग्री फ़िल्टर से छिपाई गई।</item>
