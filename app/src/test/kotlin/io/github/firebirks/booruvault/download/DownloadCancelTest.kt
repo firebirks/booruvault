@@ -47,8 +47,8 @@ class DownloadCancelTest {
     private val source = BooruSource("safebooru-donmai", "Safebooru", BooruEngine.DANBOORU, "https://safebooru.donmai.us")
 
     /** Shorter than the test's own waits: a cancellation that only waited for it would show. */
-    // Long enough that a loaded machine does not let a stalled transfer time out before the checks.
-    private val readTimeoutMs = 4000L
+    // Long enough that no stalled transfer times out within the test: the server cuts them instead.
+    private val readTimeoutMs = 30_000L
 
     @After
     fun tearDown() {
@@ -82,8 +82,14 @@ class DownloadCancelTest {
             }
         }
 
-        override fun close() {
+        /** Cuts every connection accepted so far; the transfers on them fail, as a read cut short does. */
+        fun dropConnections() {
             open.forEach { runCatching { it.close() } }
+            open.clear()
+        }
+
+        override fun close() {
+            dropConnections()
             server.close()
         }
     }
@@ -139,14 +145,16 @@ class DownloadCancelTest {
             val cancelled = downloads.tasks.value.first { it.bytes > 0 }
             downloads.cancel(cancelled.key)
 
-            // The place is free well before the read timeout could have freed it.
-            withTimeout(readTimeoutMs / 2) { downloads.tasks.first { list -> list.single { it.post.id == 4L }.status == DownloadStatus.RUNNING } }
-            // Once the timeout has passed, the read that was cut short has not been taken for a failure,
-            // while the transfers left stalled did meet the timeout: it was short enough to tell the two apart.
-            delay(readTimeoutMs + 1500)
+            // The place is free well before the read timeout could have freed it: the fourth is
+            // under way, its first bytes in, so its connection is one the server holds too.
+            withTimeout(10_000) { downloads.tasks.first { list -> list.single { it.post.id == 4L }.bytes > 0 } }
+            // The transfers left stalled are cut by the server and fail, as a read cut short does;
+            // the one the user cancelled, whose read was cut the same way, is not taken for a failure.
+            server.dropConnections()
+            withTimeout(10_000) {
+                downloads.tasks.first { list -> list.filter { it.post.id != cancelled.post.id }.all { it.status == DownloadStatus.FAILED } }
+            }
             assertEquals(DownloadStatus.CANCELLED, downloads.status(cancelled.post.id))
-            val stalled = downloads.tasks.value.filter { it.post.id in 1L..3L && it.post.id != cancelled.post.id }
-            assertTrue(stalled.all { it.status == DownloadStatus.FAILED })
         }
     }
 }

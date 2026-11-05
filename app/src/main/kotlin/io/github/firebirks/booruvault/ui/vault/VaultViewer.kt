@@ -50,6 +50,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -59,6 +60,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -94,6 +97,9 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
     val start = remember { items.indexOfFirst { it.id == startId }.coerceAtLeast(0) }
     val pager = rememberPagerState(initialPage = start) { items.size }
     var chrome by rememberSaveable { mutableStateOf(true) }
+    // The bar's height, measured: the player's sound button sits under it, whatever the font size makes of it.
+    var chromeHeight by remember { mutableIntStateOf(0) }
+    val soundButtonTop = if (chromeHeight > 0) with(LocalDensity.current) { chromeHeight.toDp() } + 8.dp else null
     var info by remember { mutableStateOf<VaultItem?>(null) }
     var confirmDelete by remember { mutableStateOf<VaultItem?>(null) }
     val videoSource = remember { SealedDataSource.Factory(container.vaultStore) }
@@ -127,7 +133,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
             val item = items[page]
             if (item.isVideo) {
                 if (page == pager.currentPage) {
-                    VideoPlayer(SealedDataSource.uriFor(item.id), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it })
+                    VideoPlayer(SealedDataSource.uriFor(item.id), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it }, soundButtonTop = soundButtonTop)
                 } else if (item.hasThumbnail) {
                     AsyncImage(VaultImage(item.id, thumbnail = true), null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
@@ -156,6 +162,7 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
             Row(
                 Modifier
                     .fillMaxWidth()
+                    .onSizeChanged { chromeHeight = it.height }
                     .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)))
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(4.dp),

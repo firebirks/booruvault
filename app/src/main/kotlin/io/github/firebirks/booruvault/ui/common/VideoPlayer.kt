@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.unit.Dp
+import androidx.media3.common.AudioAttributes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.VolumeOff
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
@@ -52,6 +54,7 @@ private var videosMuted by mutableStateOf(true)
  * It starts muted, with a button that turns the sound on, and stays as last set.
  */
 @OptIn(UnstableApi::class)
+@kotlin.OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun VideoPlayer(
     uri: Uri,
@@ -59,11 +62,16 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     /** Told when a tap shows or hides the player's controls, so a viewer can follow with its own. */
     onControlsVisible: ((Boolean) -> Unit)? = null,
+    /** How far from the top the sound button sits: under the viewer's own bar, whose height the viewer measures. */
+    soundButtonTop: Dp? = null,
 ) {
     val context = LocalContext.current
     val player = remember(uri) {
         ExoPlayer.Builder(context)
             .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+            // With the sound on, other audio pauses for it, and unplugged headphones pause it.
+            .setAudioAttributes(AudioAttributes.DEFAULT, true)
+            .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
                 setMediaItem(MediaItem.fromUri(uri))
@@ -104,8 +112,11 @@ fun VideoPlayer(
                 player.volume = if (videosMuted) 0f else 1f
             },
             colors = IconButtonDefaults.iconButtonColors(containerColor = ComposeColor.Black.copy(alpha = 0.45f), contentColor = ComposeColor.White),
-            // Under the viewer's own bar and clear of the player's, whose seek bar and settings sit at the bottom.
-            modifier = Modifier.align(Alignment.TopEnd).windowInsetsPadding(WindowInsets.statusBars).padding(top = 64.dp, end = 12.dp),
+            // Under the viewer's own bar and clear of the player's, whose seek bar and settings sit
+            // at the bottom. The status bar counts whether shown or hidden, so the button stays put.
+            modifier = Modifier.align(Alignment.TopEnd)
+                .then(if (soundButtonTop != null) Modifier.padding(top = soundButtonTop) else Modifier.windowInsetsPadding(WindowInsets.statusBarsIgnoringVisibility).padding(top = 64.dp))
+                .padding(end = 12.dp),
         ) {
             Icon(
                 if (videosMuted) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,

@@ -193,16 +193,23 @@ fun UnlockScreen(title: String, subtitle: String) {
             imeAction = ImeAction.Go,
             onDone = ::unlockWithPassword,
             isError = error != null,
-            supportingText = error,
             enabled = !working,
             modifier = Modifier.fillMaxWidth(),
         )
-        Button(onClick = ::unlockWithPassword, enabled = password.isNotEmpty() && !working, modifier = Modifier.fillMaxWidth()) {
+        // Under the field rather than in it: a text that appears inside a live region that is
+        // always there is announced; the field's own supporting text, merged into it, is not.
+        Box(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }, contentAlignment = Alignment.Center) {
+            error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center) }
+        }
+        // The button's text is what a screen reader has of it: the seconds the key takes are said as they begin.
+        Button(
+            onClick = ::unlockWithPassword, enabled = password.isNotEmpty() && !working,
+            modifier = Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
+        ) {
             if (working) {
                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
                 Spacer(Modifier.size(10.dp))
-                // Said aloud too: the seconds the key takes are otherwise silent to a screen reader.
-                Text(stringResource(R.string.unlock_deriving), Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                Text(stringResource(R.string.unlock_deriving))
             } else {
                 Text(stringResource(R.string.unlock_action))
             }

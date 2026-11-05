@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.ui.common
 
+import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
@@ -20,8 +21,6 @@ fun ViewerSystemBars(hidden: Boolean) {
     DisposableEffect(hidden, configuration.uiMode, configuration.orientation) {
         val window = view.context.findActivity()?.window
         val controller = window?.let { WindowCompat.getInsetsController(it, view) }
-        val lightStatus = controller?.isAppearanceLightStatusBars
-        val lightNav = controller?.isAppearanceLightNavigationBars
         controller?.isAppearanceLightStatusBars = false
         controller?.isAppearanceLightNavigationBars = false
         if (hidden) {
@@ -32,8 +31,12 @@ fun ViewerSystemBars(hidden: Boolean) {
         }
         onDispose {
             controller?.show(WindowInsetsCompat.Type.systemBars())
-            lightStatus?.let { controller.isAppearanceLightStatusBars = it }
-            lightNav?.let { controller.isAppearanceLightNavigationBars = it }
+            // Back to the theme's own: dark icons over a light theme, light over a dark one, as
+            // the theme stands now. What was found on entry would be stale after a change of
+            // dark mode the viewer lived through.
+            val night = (view.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            controller?.isAppearanceLightStatusBars = !night
+            controller?.isAppearanceLightNavigationBars = !night
         }
     }
 }

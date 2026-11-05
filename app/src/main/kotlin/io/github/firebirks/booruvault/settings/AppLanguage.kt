@@ -69,6 +69,16 @@ object AppLanguage {
         return true
     }
 
+    /**
+     * Makes the chosen language the process's default locale, which dates and counts are
+     * formatted by. The system sets that default back to the phone's at every configuration
+     * change, which the activity now lives through, so the application calls this again then.
+     */
+    fun applyDefault(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) return
+        current(context)?.let { Locale.setDefault(Locale.forLanguageTag(it)) }
+    }
+
     /** [base] with the chosen language, for attachBaseContext; [base] itself when there is none. */
     fun wrap(base: Context): Context {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) return base

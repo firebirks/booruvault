@@ -73,6 +73,7 @@ import io.github.firebirks.booruvault.ui.common.browserStart
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
 import kotlinx.coroutines.CancellationException
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -170,9 +171,12 @@ private fun credentialLabels(engine: BooruEngine): Triple<Int, Int, Int>? = when
     BooruEngine.GELBOORU_HTML, BooruEngine.SHIMMIE, BooruEngine.HTML_GENERIC -> null
 }
 
-/** [url] as typed, with https in front when no scheme was, and the scheme in lower case. */
+/**
+ * [url] as typed, with https in front when no scheme was, and the scheme in lower case. A
+ * scheme typed twice, as a paste over the field's own https:// gives, is taken once.
+ */
 private fun withScheme(url: String): String {
-    val trimmed = url.trim()
+    val trimmed = url.trim().replace(Regex("^(https?://)+(?=https?://)", RegexOption.IGNORE_CASE), "")
     if (trimmed.isEmpty()) return trimmed
     if (!trimmed.contains("://")) return "https://$trimmed"
     val scheme = trimmed.substringBefore("://")
@@ -213,7 +217,8 @@ fun SourceEditor(id: String?, onDone: () -> Unit) {
     // An address typed without its scheme is taken as https; one without a host is not an
     // address. A host needs no dot: a Shimmie on the LAN answers to a name alone, or to localhost.
     val address = withScheme(url)
-    val addressValid = address.matches(Regex("https?://[^\\s/]+.*", RegexOption.IGNORE_CASE))
+    // What the client will parse, with the page template's placeholders filled in for the check.
+    val addressValid = address.replace("{tags}", "x").replace("{page}", "1").toHttpUrlOrNull() != null
     val addressWrong = url.isNotBlank() && url.trim() != "https://" && !addressValid
     val valid = name.isNotBlank() && addressValid
 

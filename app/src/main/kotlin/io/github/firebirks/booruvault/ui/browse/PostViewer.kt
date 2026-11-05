@@ -70,6 +70,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -79,6 +80,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -136,6 +139,9 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
     }
     val pager = rememberPagerState(initialPage = startIndex.coerceIn(0, posts.lastIndex)) { posts.size }
     var chrome by rememberSaveable { mutableStateOf(true) }
+    // The bar's height, measured: the player's sound button sits under it, whatever the font size makes of it.
+    var chromeHeight by remember { mutableIntStateOf(0) }
+    val soundButtonTop = if (chromeHeight > 0) with(LocalDensity.current) { chromeHeight.toDp() } + 8.dp else null
     var info by remember { mutableStateOf<Post?>(null) }
     var collectionFromTag by remember { mutableStateOf<String?>(null) }
     // The post blacklisted from the viewer and the ones that followed it: once the rule has taken
@@ -192,7 +198,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 )
             } else if (post.kind == MediaKind.VIDEO && url != null) {
                 if (page == pager.currentPage) {
-                    VideoPlayer(Uri.parse(url), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it })
+                    VideoPlayer(Uri.parse(url), videoSource, Modifier.fillMaxSize(), onControlsVisible = { chrome = it }, soundButtonTop = soundButtonTop)
                 } else {
                     AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
@@ -207,6 +213,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
             Row(
                 Modifier
                     .fillMaxWidth()
+                    .onSizeChanged { chromeHeight = it.height }
                     .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)))
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 4.dp, vertical = 4.dp),
