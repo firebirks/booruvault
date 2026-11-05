@@ -411,6 +411,8 @@ class VaultTest {
         VaultRekeyer(root, vault, store, scope)
         withTimeout(20_000) {
             while (SealedFormat.versionOf(media) != SealedFormat.VERSION) kotlinx.coroutines.delay(50)
+            // The pass that left nothing behind says so, and the files are not looked over again.
+            while (!File(root, "format-${SealedFormat.VERSION}").exists()) kotlinx.coroutines.delay(50)
         }
         assertEquals(0L, media.length() % SealedFormat.MEDIA_QUANTUM)
         assertArrayEquals(data, store.openMedia(store.items.value.single().id).use { it.readAll() })

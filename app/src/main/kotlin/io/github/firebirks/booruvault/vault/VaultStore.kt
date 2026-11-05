@@ -76,11 +76,13 @@ class VaultStore(
 
     init {
         scope.launch(Dispatchers.IO) {
-            // Leftovers of writes interrupted by a crash; new writes wait until this is done.
+            // Leftovers of writes interrupted by a crash, the re-sealer's copies included; new
+            // writes wait until this is done.
             try {
                 mediaDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 thumbDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 metaDir.listFiles { f -> f.name.endsWith(".tmp") }?.forEach { it.delete() }
+                listOf(root, mediaDir, thumbDir, metaDir).forEach { dir -> dir.listFiles { f -> f.name.endsWith(".rekey") }?.forEach { it.delete() } }
             } finally {
                 cleaned.complete(Unit)
             }

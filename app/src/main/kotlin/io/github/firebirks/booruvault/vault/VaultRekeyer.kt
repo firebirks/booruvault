@@ -4,7 +4,9 @@ import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
+import io.github.firebirks.booruvault.vault.crypto.SyncedFileOutputStream
 import io.github.firebirks.booruvault.vault.crypto.VaultKeys
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
@@ -32,8 +34,9 @@ data class RekeyProgress(val done: Int, val total: Int, val rekeying: Boolean = 
  * retired pairs would leave it sealed to a key the vault no longer has.
  *
  * It also brings files of an older sealed format up to the current one, the padded one that
- * hides their sizes: at each unlock, the files still in an older format are re-sealed in one
- * pass; what cannot be written now waits for the next unlock.
+ * hides their sizes: at an unlock, the files still in an older format are re-sealed in one
+ * pass; what cannot be written now waits for the next unlock. Once a pass leaves none behind
+ * a marker says so, and the files are not looked over again: nothing writes the older format.
  */
 class VaultRekeyer(
     private val root: File,
@@ -46,18 +49,30 @@ class VaultRekeyer(
     /** Non-null while re-sealing is under way. */
     val progress: StateFlow<RekeyProgress?> = _progress.asStateFlow()
 
+    /** Exists once every file was found in the current format; holds nothing, and is gone with the vault. */
+    private val formatMarker = File(root, "format-${SealedFormat.VERSION}")
+
     init {
         scope.launch(Dispatchers.IO) {
             vault.state.collectLatest { state ->
                 try {
                     if (state is VaultState.Unlocked) {
-                        if (state.keys.retired.isNotEmpty()) run(state.keys, rekey = true) else if (olderFormat().isNotEmpty()) run(state.keys, rekey = false)
+                        when {
+                            state.keys.retired.isNotEmpty() -> run(state.keys, rekey = true)
+                            formatMarker.exists() -> Unit
+                            olderFormat().isNotEmpty() -> run(state.keys, rekey = false)
+                            else -> markFormatCurrent()
+                        }
                     }
                 } finally {
                     _progress.value = null
                 }
             }
         }
+    }
+
+    private fun markFormatCurrent() {
+        runCatching { formatMarker.createNewFile() }
     }
 
     private enum class Outcome { RESEALED, CURRENT, UNREADABLE, NOT_WRITTEN }
@@ -99,12 +114,17 @@ class VaultRekeyer(
                 _progress.value = RekeyProgress(done, files.size, rekey)
             }
             // Nothing hangs on an older format but its sizes: one pass, the rest at the next unlock.
-            if (!rekey) return
+            if (!rekey) {
+                if (failed == 0) markFormatCurrent()
+                return
+            }
             cleanPasses = if (resealed == 0 && failed == 0 && writesBefore == 0) cleanPasses + 1 else 0
             // A write that read the old recipient just before the header changed may still land.
             val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
             if (settled) {
                 vault.retireFinished(keys.recipient)
+                // Everything was written anew, in the current format.
+                markFormatCurrent()
                 return
             }
             delay(if (resealed == 0) 1000 else 50)
@@ -126,9 +146,11 @@ class VaultRekeyer(
 
     /**
      * Re-seals [file] if a retired pair sealed it, or an older format did; tells a current file
-     * from one that would not open.
+     * from one that would not open. The copy is synced to storage before it replaces the file,
+     * as the vault's other writes are, so a power cut right after leaves the old file rather
+     * than an empty new one; and it stops where it is when the vault locks, the copy deleted.
      */
-    private fun reseal(file: File, keys: VaultKeys): Outcome {
+    private suspend fun reseal(file: File, keys: VaultKeys): Outcome {
         val sealed = try {
             SealedFile(file, keys)
         } catch (e: Exception) {
@@ -136,17 +158,29 @@ class VaultRekeyer(
         }
         sealed.use { source ->
             if (source.sealedTo.encoded.contentEquals(keys.recipient.encoded) && source.version == SealedFormat.VERSION) return Outcome.CURRENT
+            // Without room for the copy, the write would fill the storage to the last byte, at every unlock.
+            val room = file.parentFile?.usableSpace ?: 0L
+            if (room < file.length() + SealedFormat.MAX_PADDING + SPACE_MARGIN) return Outcome.NOT_WRITTEN
             val modified = file.lastModified()
             val length = file.length()
             val tmp = File(file.path + SUFFIX)
             // Padded as the store would pad it: to the media quantum under media/, the small one elsewhere.
             val quantum = if (file.parentFile?.name == "media") SealedFormat.MEDIA_QUANTUM else SealedFormat.SMALL_QUANTUM
             try {
-                SealedOutputStream(tmp.outputStream().buffered(256 * 1024), keys.recipient, quantum = quantum).use { out ->
+                // An empty payload is proven by its one chunk, which the copy below never reads.
+                if (source.size == 0L) {
+                    try {
+                        source.readAll()
+                    } catch (e: Exception) {
+                        throw Unreadable(e)
+                    }
+                }
+                SealedOutputStream(SyncedFileOutputStream(tmp).buffered(256 * 1024), keys.recipient, quantum = quantum).use { out ->
                     val buffer = ByteArray(256 * 1024)
                     try {
                         val input = source.inputStream()
                         while (true) {
+                            currentCoroutineContext().ensureActive()
                             val n = try {
                                 input.read(buffer)
                             } catch (e: Exception) {
@@ -168,6 +202,9 @@ class VaultRekeyer(
                     return Outcome.NOT_WRITTEN
                 }
                 return Outcome.RESEALED
+            } catch (e: CancellationException) {
+                tmp.delete()
+                throw e
             } catch (e: Unreadable) {
                 tmp.delete()
                 return Outcome.UNREADABLE
@@ -182,5 +219,8 @@ class VaultRekeyer(
         const val SUFFIX = ".rekey"
         const val GRACE_MS = 2000L
         const val GIVE_UP_AFTER = 5
+
+        /** Storage left alone when a copy is made: the vault's other writes, and the phone's, need some. */
+        const val SPACE_MARGIN = 64L shl 20
     }
 }
