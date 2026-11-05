@@ -430,6 +430,8 @@
     <string name="viewer_details">विवरण और टैग</string>
     <string name="viewer_in_vault">तिजोरी में</string>
     <string name="viewer_downloading">डाउनलोड हो रहा है</string>
+    <string name="video_mute">आवाज़ बंद करें</string>
+    <string name="video_unmute">आवाज़ चालू करें</string>
     <string name="viewer_blacklisted">“%1$s” ब्लैकलिस्ट में जोड़ा गया</string>
     <string name="viewer_score">स्कोर %1$d</string>
     <string name="viewer_source">स्रोत: </string>

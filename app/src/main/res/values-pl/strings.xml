@@ -474,6 +474,8 @@
     <string name="viewer_details">Szczegóły i tagi</string>
     <string name="viewer_in_vault">W sejfie</string>
     <string name="viewer_downloading">Trwa pobieranie</string>
+    <string name="video_mute">Wyłącz dźwięk</string>
+    <string name="video_unmute">Włącz dźwięk</string>
     <string name="viewer_blacklisted">Dodano „%1$s” do czarnej listy</string>
     <string name="viewer_score">Punkty: %1$d</string>
     <string name="viewer_source">Źródło: </string>

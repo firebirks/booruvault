@@ -408,6 +408,8 @@
     <string name="viewer_details">รายละเอียดและแท็ก</string>
     <string name="viewer_in_vault">อยู่ในคลังนิรภัย</string>
     <string name="viewer_downloading">กำลังดาวน์โหลด</string>
+    <string name="video_mute">ปิดเสียง</string>
+    <string name="video_unmute">เปิดเสียง</string>
     <string name="viewer_blacklisted">เพิ่ม “%1$s” ลงในบัญชีดำแล้ว</string>
     <string name="viewer_score">คะแนน %1$d</string>
     <string name="viewer_source">แหล่งที่มา: </string>

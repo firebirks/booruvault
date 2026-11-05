@@ -408,6 +408,8 @@
     <string name="viewer_details">详情和标签</string>
     <string name="viewer_in_vault">已在保险库中</string>
     <string name="viewer_downloading">正在下载</string>
+    <string name="video_mute">关闭声音</string>
+    <string name="video_unmute">打开声音</string>
     <string name="viewer_blacklisted">已将“%1$s”加入黑名单</string>
     <string name="viewer_score">评分 %1$d</string>
     <string name="viewer_source">来源：</string>

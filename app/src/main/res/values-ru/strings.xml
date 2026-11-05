@@ -474,6 +474,8 @@
     <string name="viewer_details">Подробности и теги</string>
     <string name="viewer_in_vault">В хранилище</string>
     <string name="viewer_downloading">Загружается</string>
+    <string name="video_mute">Выключить звук</string>
+    <string name="video_unmute">Включить звук</string>
     <string name="viewer_blacklisted">«%1$s» добавлен в чёрный список</string>
     <string name="viewer_score">Оценка %1$d</string>
     <string name="viewer_source">Источник: </string>

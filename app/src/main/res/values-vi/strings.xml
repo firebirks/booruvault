@@ -408,6 +408,8 @@
     <string name="viewer_details">Chi tiết và thẻ</string>
     <string name="viewer_in_vault">Đã có trong kho</string>
     <string name="viewer_downloading">Đang tải xuống</string>
+    <string name="video_mute">Tắt tiếng</string>
+    <string name="video_unmute">Bật tiếng</string>
     <string name="viewer_blacklisted">Đã thêm “%1$s” vào danh sách đen</string>
     <string name="viewer_score">Điểm %1$d</string>
     <string name="viewer_source">Nguồn: </string>

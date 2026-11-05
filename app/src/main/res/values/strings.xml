@@ -436,6 +436,8 @@
     <string name="viewer_details">Details and tags</string>
     <string name="viewer_in_vault">In the vault</string>
     <string name="viewer_downloading">Downloading</string>
+    <string name="video_mute">Turn the sound off</string>
+    <string name="video_unmute">Turn the sound on</string>
     <string name="viewer_blacklisted">“%1$s” added to the blacklist</string>
     <string name="viewer_score">Score %1$d</string>
     <string name="viewer_source">Source: </string>

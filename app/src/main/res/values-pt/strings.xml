@@ -452,6 +452,8 @@
     <string name="viewer_details">Detalhes e tags</string>
     <string name="viewer_in_vault">No cofre</string>
     <string name="viewer_downloading">Baixando</string>
+    <string name="video_mute">Desativar o som</string>
+    <string name="video_unmute">Ativar o som</string>
     <string name="viewer_blacklisted">“%1$s” adicionada à lista de bloqueio</string>
     <string name="viewer_score">Pontuação %1$d</string>
     <string name="viewer_source">Fonte: </string>

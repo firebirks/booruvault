@@ -408,6 +408,8 @@
     <string name="viewer_details">Detail dan tag</string>
     <string name="viewer_in_vault">Di brankas</string>
     <string name="viewer_downloading">Mengunduh</string>
+    <string name="video_mute">Matikan suara</string>
+    <string name="video_unmute">Nyalakan suara</string>
     <string name="viewer_blacklisted">“%1$s” ditambahkan ke daftar hitam</string>
     <string name="viewer_score">Skor %1$d</string>
     <string name="viewer_source">Sumber: </string>

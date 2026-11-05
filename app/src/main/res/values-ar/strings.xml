@@ -518,6 +518,8 @@
     <string name="viewer_details">التفاصيل والوسوم</string>
     <string name="viewer_in_vault">في الخزنة</string>
     <string name="viewer_downloading">جارٍ التنزيل</string>
+    <string name="video_mute">كتم الصوت</string>
+    <string name="video_unmute">تشغيل الصوت</string>
     <string name="viewer_blacklisted">تمت إضافة «%1$s» إلى القائمة السوداء</string>
     <string name="viewer_score">النقاط: %1$d</string>
     <string name="viewer_source">المصدر: </string>

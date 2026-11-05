@@ -408,6 +408,8 @@
     <string name="viewer_details">詳細資料和標籤</string>
     <string name="viewer_in_vault">已在保險庫中</string>
     <string name="viewer_downloading">下載中</string>
+    <string name="video_mute">關閉聲音</string>
+    <string name="video_unmute">開啟聲音</string>
     <string name="viewer_blacklisted">已將「%1$s」加入黑名單</string>
     <string name="viewer_score">分數 %1$d</string>
     <string name="viewer_source">來源：</string>

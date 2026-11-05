@@ -408,6 +408,8 @@
     <string name="viewer_details">詳細とタグ</string>
     <string name="viewer_in_vault">保管庫に保存済み</string>
     <string name="viewer_downloading">ダウンロード中</string>
+    <string name="video_mute">音を消す</string>
+    <string name="video_unmute">音を出す</string>
     <string name="viewer_blacklisted">「%1$s」をブラックリストに追加しました</string>
     <string name="viewer_score">スコア %1$d</string>
     <string name="viewer_source">ソース：</string>

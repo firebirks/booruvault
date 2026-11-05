@@ -430,6 +430,8 @@
     <string name="viewer_details">Ayrıntılar ve etiketler</string>
     <string name="viewer_in_vault">Kasada</string>
     <string name="viewer_downloading">İndiriliyor</string>
+    <string name="video_mute">Sesi kapat</string>
+    <string name="video_unmute">Sesi aç</string>
     <string name="viewer_blacklisted">“%1$s” kara listeye eklendi</string>
     <string name="viewer_score">Puan %1$d</string>
     <string name="viewer_source">Kaynak: </string>

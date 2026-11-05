@@ -430,6 +430,8 @@
     <string name="viewer_details">Details en tags</string>
     <string name="viewer_in_vault">In de kluis</string>
     <string name="viewer_downloading">Bezig met downloaden</string>
+    <string name="video_mute">Geluid uit</string>
+    <string name="video_unmute">Geluid aan</string>
     <string name="viewer_blacklisted">‘%1$s’ toegevoegd aan de zwarte lijst</string>
     <string name="viewer_score">Score %1$d</string>
     <string name="viewer_source">Bron: </string>

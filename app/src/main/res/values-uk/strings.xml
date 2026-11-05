@@ -474,6 +474,8 @@
     <string name="viewer_details">Подробиці й теги</string>
     <string name="viewer_in_vault">У сховищі</string>
     <string name="viewer_downloading">Завантажується</string>
+    <string name="video_mute">Вимкнути звук</string>
+    <string name="video_unmute">Увімкнути звук</string>
     <string name="viewer_blacklisted">«%1$s» додано до чорного списку</string>
     <string name="viewer_score">Оцінка %1$d</string>
     <string name="viewer_source">Джерело: </string>

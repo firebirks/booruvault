@@ -430,6 +430,8 @@
     <string name="viewer_details">Details und Tags</string>
     <string name="viewer_in_vault">Im Tresor</string>
     <string name="viewer_downloading">Wird heruntergeladen</string>
+    <string name="video_mute">Ton aus</string>
+    <string name="video_unmute">Ton ein</string>
     <string name="viewer_blacklisted">„%1$s“ zur Sperrliste hinzugefügt</string>
     <string name="viewer_score">Punktzahl %1$d</string>
     <string name="viewer_source">Quelle: </string>
