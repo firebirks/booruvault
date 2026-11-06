@@ -169,6 +169,10 @@
     <string name="tor_off_title">Turn Tor off?</string>
     <string name="tor_off_text">Searches, images, downloads and the built-in browser will then reach sites directly, and sites will see your own address. Logins and anti-bot checks passed through Tor are not carried over to the direct connection.</string>
     <string name="tor_off_confirm">Turn off</string>
+    <string name="tor_badge_verified">Tor on, exit verified</string>
+    <string name="tor_badge_checking">Tor on, checking the exit</string>
+    <string name="tor_badge_failed">Tor on, not working</string>
+    <string name="tor_badge_off">Tor off, direct connection</string>
     <string name="route_title">How should the app connect?</string>
     <string name="route_text">Choose how BooruVault reaches the sites. Nothing goes out until you do.</string>
     <string name="route_tor_hint">Sites see a Tor node\'s address instead of yours. Needs the Orbot app, and is slower.</string>

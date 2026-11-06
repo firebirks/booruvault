@@ -159,6 +159,10 @@
     <string name="tor_off_title">Torをオフにしますか？</string>
     <string name="tor_off_text">検索、画像、ダウンロード、内蔵ブラウザはサイトに直接接続し、サイトにはあなた自身のアドレスが見えます。Tor経由で行ったログインやボット対策の確認は、直接接続には引き継がれません。</string>
     <string name="tor_off_confirm">オフにする</string>
+    <string name="tor_badge_verified">Tor オン、出口を確認済み</string>
+    <string name="tor_badge_checking">Tor オン、出口を確認中</string>
+    <string name="tor_badge_failed">Tor オン、動作していません</string>
+    <string name="tor_badge_off">Tor オフ、直接接続</string>
     <string name="route_title">アプリの接続方法を選んでください</string>
     <string name="route_text">BooruVault がサイトに接続する方法を選びます。選ぶまでは何も送信されません。</string>
     <string name="route_tor_hint">サイトにはあなたのアドレスではなく Tor ノードのアドレスが見えます。Orbot アプリが必要で、速度は遅くなります。</string>

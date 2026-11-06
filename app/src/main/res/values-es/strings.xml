@@ -167,6 +167,10 @@
     <string name="tor_off_title">¿Desactivar Tor?</string>
     <string name="tor_off_text">Las búsquedas, las imágenes, las descargas y el navegador integrado llegarán a los sitios directamente, y los sitios verán tu propia dirección. Los inicios de sesión y las verificaciones anti-bot hechos a través de Tor no pasan a la conexión directa.</string>
     <string name="tor_off_confirm">Desactivar</string>
+    <string name="tor_badge_verified">Tor activado, salida verificada</string>
+    <string name="tor_badge_checking">Tor activado, verificando la salida</string>
+    <string name="tor_badge_failed">Tor activado, no funciona</string>
+    <string name="tor_badge_off">Tor desactivado, conexión directa</string>
     <string name="route_title">¿Cómo debe conectarse la app?</string>
     <string name="route_text">Elige cómo llega BooruVault a los sitios. Hasta que elijas, no sale nada.</string>
     <string name="route_tor_hint">Los sitios ven la dirección de un nodo de Tor en lugar de la tuya. Necesita la app Orbot y es más lento.</string>

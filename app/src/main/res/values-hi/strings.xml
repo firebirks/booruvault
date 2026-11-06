@@ -163,6 +163,10 @@
     <string name="tor_off_title">Tor बंद करें?</string>
     <string name="tor_off_text">खोज, चित्र, डाउनलोड और बिल्ट-इन ब्राउज़र सीधे साइटों तक पहुँचेंगे, और साइटें आपका अपना पता देखेंगी। Tor के ज़रिए किए गए लॉगिन और एंटी-बॉट जाँचें सीधे कनेक्शन पर नहीं आतीं।</string>
     <string name="tor_off_confirm">बंद करें</string>
+    <string name="tor_badge_verified">Tor चालू, निकास सत्यापित</string>
+    <string name="tor_badge_checking">Tor चालू, निकास की जाँच हो रही है</string>
+    <string name="tor_badge_failed">Tor चालू, काम नहीं कर रहा</string>
+    <string name="tor_badge_off">Tor बंद, सीधा कनेक्शन</string>
     <string name="route_title">ऐप कैसे कनेक्ट हो?</string>
     <string name="route_text">चुनें कि BooruVault साइटों तक कैसे पहुंचे। जब तक आप नहीं चुनते, कुछ भी बाहर नहीं जाता।</string>
     <string name="route_tor_hint">साइटें आपके पते के बजाय एक Tor नोड का पता देखती हैं। Orbot ऐप चाहिए, और यह धीमा है।</string>

@@ -163,6 +163,10 @@
     <string name="tor_off_title">Tor ausschalten?</string>
     <string name="tor_off_text">Suchen, Bilder, Downloads und der integrierte Browser erreichen die Websites dann direkt, und die Websites sehen deine eigene Adresse. Anmeldungen und Anti-Bot-Prüfungen über Tor werden nicht auf die direkte Verbindung übertragen.</string>
     <string name="tor_off_confirm">Ausschalten</string>
+    <string name="tor_badge_verified">Tor an, Ausgang geprüft</string>
+    <string name="tor_badge_checking">Tor an, Ausgang wird geprüft</string>
+    <string name="tor_badge_failed">Tor an, funktioniert nicht</string>
+    <string name="tor_badge_off">Tor aus, direkte Verbindung</string>
     <string name="route_title">Wie soll sich die App verbinden?</string>
     <string name="route_text">Wähle, wie BooruVault die Websites erreicht. Bis du gewählt hast, geht nichts hinaus.</string>
     <string name="route_tor_hint">Websites sehen die Adresse eines Tor-Knotens statt deiner. Benötigt die App Orbot und ist langsamer.</string>

@@ -179,6 +179,10 @@
     <string name="tor_off_title">إيقاف Tor؟</string>
     <string name="tor_off_text">ستصل عمليات البحث والصور والتنزيلات والمتصفح المدمج إلى المواقع مباشرة، وسترى المواقع عنوانك الحقيقي. لا تنتقل عمليات تسجيل الدخول والتحققات من الروبوتات التي تمت عبر Tor إلى الاتصال المباشر.</string>
     <string name="tor_off_confirm">إيقاف</string>
+    <string name="tor_badge_verified">Tor مفعّل، المخرج متحقَّق منه</string>
+    <string name="tor_badge_checking">Tor مفعّل، جارٍ التحقق من المخرج</string>
+    <string name="tor_badge_failed">Tor مفعّل، لا يعمل</string>
+    <string name="tor_badge_off">Tor متوقف، اتصال مباشر</string>
     <string name="route_title">كيف يتصل التطبيق؟</string>
     <string name="route_text">اختر كيف يصل BooruVault إلى المواقع. لا يخرج شيء حتى تختار.</string>
     <string name="route_tor_hint">ترى المواقع عنوان عقدة Tor بدلًا من عنوانك. يحتاج إلى تطبيق Orbot، وهو أبطأ.</string>

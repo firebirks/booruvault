@@ -171,6 +171,10 @@
     <string name="tor_off_title">Вимкнути Tor?</string>
     <string name="tor_off_text">Пошук, зображення, завантаження та вбудований браузер звертатимуться до сайтів напряму, і сайти бачитимуть вашу власну адресу. Входи в облікові записи та перевірки від ботів, пройдені через Tor, не переносяться на пряме з\'єднання.</string>
     <string name="tor_off_confirm">Вимкнути</string>
+    <string name="tor_badge_verified">Tor увімкнено, вихід перевірено</string>
+    <string name="tor_badge_checking">Tor увімкнено, вихід перевіряється</string>
+    <string name="tor_badge_failed">Tor увімкнено, не працює</string>
+    <string name="tor_badge_off">Tor вимкнено, пряме з\'єднання</string>
     <string name="route_title">Як застосунку підключатися?</string>
     <string name="route_text">Виберіть, як BooruVault звертатиметься до сайтів. Поки ви не виберете, нічого не надсилається.</string>
     <string name="route_tor_hint">Сайти бачать адресу вузла Tor, а не вашу. Потрібен застосунок Orbot, і це повільніше.</string>

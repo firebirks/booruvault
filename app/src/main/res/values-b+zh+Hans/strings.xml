@@ -159,6 +159,10 @@
     <string name="tor_off_title">关闭 Tor？</string>
     <string name="tor_off_text">搜索、图片、下载和内置浏览器将直接连接网站，网站会看到你自己的地址。通过 Tor 完成的登录和反机器人验证不会转到直接连接。</string>
     <string name="tor_off_confirm">关闭</string>
+    <string name="tor_badge_verified">Tor 已开启，出口已验证</string>
+    <string name="tor_badge_checking">Tor 已开启，正在验证出口</string>
+    <string name="tor_badge_failed">Tor 已开启，但无法工作</string>
+    <string name="tor_badge_off">Tor 已关闭，直接连接</string>
     <string name="route_title">应用应如何连接？</string>
     <string name="route_text">选择 BooruVault 访问网站的方式。在你选择之前，不会发出任何请求。</string>
     <string name="route_tor_hint">网站看到的是 Tor 节点的地址，而不是你的地址。需要 Orbot 应用，速度较慢。</string>

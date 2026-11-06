@@ -171,6 +171,10 @@
     <string name="tor_off_title">Wyłączyć Tor?</string>
     <string name="tor_off_text">Wyszukiwania, obrazy, pobieranie i wbudowana przeglądarka będą łączyć się ze stronami bezpośrednio, a strony zobaczą twój własny adres. Logowania i weryfikacje antybotowe przez Tor nie przechodzą na połączenie bezpośrednie.</string>
     <string name="tor_off_confirm">Wyłącz</string>
+    <string name="tor_badge_verified">Tor włączony, wyjście zweryfikowane</string>
+    <string name="tor_badge_checking">Tor włączony, trwa weryfikacja wyjścia</string>
+    <string name="tor_badge_failed">Tor włączony, nie działa</string>
+    <string name="tor_badge_off">Tor wyłączony, połączenie bezpośrednie</string>
     <string name="route_title">Jak aplikacja ma się łączyć?</string>
     <string name="route_text">Wybierz, jak BooruVault łączy się z witrynami. Dopóki nie wybierzesz, nic nie wychodzi.</string>
     <string name="route_tor_hint">Witryny widzą adres węzła Tor zamiast Twojego. Wymaga aplikacji Orbot i działa wolniej.</string>

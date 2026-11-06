@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.ui.browse
 
+import io.github.firebirks.booruvault.net.TorState
 import java.util.UUID
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import io.github.firebirks.booruvault.vault.TagCollection
@@ -152,7 +153,7 @@ private const val RATE_LIMIT_RETRIES = 3
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenContentFilter: () -> Unit, onOpenSources: () -> Unit) {
+fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenContentFilter: () -> Unit, onOpenSources: () -> Unit, onOpenNetwork: () -> Unit) {
     val container = LocalContainer.current
     val vm = containerViewModel { BrowseViewModel(it) }
     val state by vm.state.collectAsStateWithLifecycle()
@@ -290,6 +291,8 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                     onOpenWebPage = { showWebPage = true },
                     onCloseWebPage = if (state.source?.id == BrowseViewModel.WEB_PAGE_SOURCE) vm::closeWebPage else null,
                     onSaveSearch = { saveSearch = true },
+                    tor = torState,
+                    onOpenNetwork = onOpenNetwork,
                 )
             }
         },
@@ -463,6 +466,8 @@ private fun BrowseTopBar(
     /** Non-null while a page opened on the spot is being browsed. */
     onCloseWebPage: (() -> Unit)?,
     onSaveSearch: () -> Unit,
+    tor: TorState,
+    onOpenNetwork: () -> Unit,
 ) {
     var sourceMenu by remember { mutableStateOf(false) }
     var overflow by remember { mutableStateOf(false) }
@@ -492,6 +497,8 @@ private fun BrowseTopBar(
                     IconButton(onClick = onOpenSite) { Icon(Icons.Outlined.AccountCircle, stringResource(R.string.source_open_browser)) }
                 }
                 Spacer(Modifier.weight(1f))
+                // Where the route stands, at a glance; a tap opens its settings.
+                TorBadgeButton(tor, onOpenNetwork)
                 Box {
                     IconButton(onClick = { overflow = true }) { Icon(Icons.Outlined.MoreVert, stringResource(R.string.action_more)) }
                     DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {

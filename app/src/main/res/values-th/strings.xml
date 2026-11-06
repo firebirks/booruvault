@@ -159,6 +159,10 @@
     <string name="tor_off_title">ปิด Tor ไหม</string>
     <string name="tor_off_text">การค้นหา รูปภาพ การดาวน์โหลด และเบราว์เซอร์ในตัวจะเชื่อมต่อเว็บไซต์โดยตรง และเว็บไซต์จะเห็นที่อยู่ของคุณเอง การล็อกอินและการยืนยันกันบอตที่ทำผ่าน Tor จะไม่ถูกนำไปใช้กับการเชื่อมต่อโดยตรง</string>
     <string name="tor_off_confirm">ปิด</string>
+    <string name="tor_badge_verified">Tor เปิดอยู่ ยืนยันทางออกแล้ว</string>
+    <string name="tor_badge_checking">Tor เปิดอยู่ กำลังตรวจสอบทางออก</string>
+    <string name="tor_badge_failed">Tor เปิดอยู่ แต่ใช้งานไม่ได้</string>
+    <string name="tor_badge_off">Tor ปิดอยู่ เชื่อมต่อโดยตรง</string>
     <string name="route_title">ให้แอปเชื่อมต่ออย่างไร</string>
     <string name="route_text">เลือกวิธีที่ BooruVault เข้าถึงเว็บไซต์ จนกว่าคุณจะเลือก จะไม่มีอะไรถูกส่งออกไป</string>
     <string name="route_tor_hint">เว็บไซต์จะเห็นที่อยู่ของโหนด Tor แทนที่อยู่ของคุณ ต้องใช้แอป Orbot และช้ากว่า</string>

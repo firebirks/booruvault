@@ -159,6 +159,10 @@
     <string name="tor_off_title">Matikan Tor?</string>
     <string name="tor_off_text">Pencarian, gambar, unduhan, dan browser bawaan akan menjangkau situs secara langsung, dan situs akan melihat alamat Anda sendiri. Login dan pemeriksaan anti-bot yang dilakukan lewat Tor tidak terbawa ke koneksi langsung.</string>
     <string name="tor_off_confirm">Matikan</string>
+    <string name="tor_badge_verified">Tor aktif, exit terverifikasi</string>
+    <string name="tor_badge_checking">Tor aktif, memeriksa exit</string>
+    <string name="tor_badge_failed">Tor aktif, tidak berfungsi</string>
+    <string name="tor_badge_off">Tor nonaktif, koneksi langsung</string>
     <string name="route_title">Bagaimana aplikasi harus terhubung?</string>
     <string name="route_text">Pilih cara BooruVault menjangkau situs. Sampai Anda memilih, tidak ada yang keluar.</string>
     <string name="route_tor_hint">Situs melihat alamat node Tor, bukan alamat Anda. Memerlukan aplikasi Orbot dan lebih lambat.</string>

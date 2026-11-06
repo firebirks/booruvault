@@ -247,6 +247,10 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
                                 settingsPage = "sources"
                                 open(Tab.SETTINGS)
                             },
+                            onOpenNetwork = {
+                                settingsPage = "network"
+                                open(Tab.SETTINGS)
+                            },
                         )
                         Tab.VAULT -> VaultTab(onOpenItem = { vaultViewer = it })
                         Tab.DOWNLOADS -> DownloadsScreen()

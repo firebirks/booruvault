@@ -163,6 +163,10 @@
     <string name="tor_off_title">Tor uitzetten?</string>
     <string name="tor_off_text">Zoekopdrachten, afbeeldingen, downloads en de ingebouwde browser bereiken sites dan rechtstreeks, en sites zien je eigen adres. Aanmeldingen en anti-botcontroles via Tor gaan niet mee naar de directe verbinding.</string>
     <string name="tor_off_confirm">Uitzetten</string>
+    <string name="tor_badge_verified">Tor aan, uitgang gecontroleerd</string>
+    <string name="tor_badge_checking">Tor aan, uitgang wordt gecontroleerd</string>
+    <string name="tor_badge_failed">Tor aan, werkt niet</string>
+    <string name="tor_badge_off">Tor uit, directe verbinding</string>
     <string name="route_title">Hoe moet de app verbinding maken?</string>
     <string name="route_text">Kies hoe BooruVault de sites bereikt. Tot je kiest, gaat er niets naar buiten.</string>
     <string name="route_tor_hint">Sites zien het adres van een Tor-knooppunt in plaats van het jouwe. Vereist de app Orbot en is trager.</string>

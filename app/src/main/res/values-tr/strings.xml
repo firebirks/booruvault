@@ -163,6 +163,10 @@
     <string name="tor_off_title">Tor kapatılsın mı?</string>
     <string name="tor_off_text">Aramalar, görseller, indirmeler ve yerleşik tarayıcı sitelere doğrudan bağlanır ve siteler kendi adresinizi görür. Tor üzerinden yapılan girişler ve bot karşıtı doğrulamalar doğrudan bağlantıya aktarılmaz.</string>
     <string name="tor_off_confirm">Kapat</string>
+    <string name="tor_badge_verified">Tor açık, çıkış doğrulandı</string>
+    <string name="tor_badge_checking">Tor açık, çıkış doğrulanıyor</string>
+    <string name="tor_badge_failed">Tor açık, çalışmıyor</string>
+    <string name="tor_badge_off">Tor kapalı, doğrudan bağlantı</string>
     <string name="route_title">Uygulama nasıl bağlansın?</string>
     <string name="route_text">BooruVault\'un sitelere nasıl ulaşacağını seçin. Siz seçene kadar hiçbir şey dışarı çıkmaz.</string>
     <string name="route_tor_hint">Siteler sizin adresiniz yerine bir Tor düğümünün adresini görür. Orbot uygulaması gerekir ve daha yavaştır.</string>

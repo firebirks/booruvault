@@ -171,6 +171,10 @@
     <string name="tor_off_title">Отключить Tor?</string>
     <string name="tor_off_text">Поиск, изображения, загрузки и встроенный браузер будут обращаться к сайтам напрямую, и сайты увидят ваш собственный адрес. Входы в аккаунты и проверки от ботов, пройденные через Tor, не переносятся на прямое соединение.</string>
     <string name="tor_off_confirm">Отключить</string>
+    <string name="tor_badge_verified">Tor включён, выход проверен</string>
+    <string name="tor_badge_checking">Tor включён, выход проверяется</string>
+    <string name="tor_badge_failed">Tor включён, не работает</string>
+    <string name="tor_badge_off">Tor выключен, прямое соединение</string>
     <string name="route_title">Как приложению подключаться?</string>
     <string name="route_text">Выберите, как BooruVault будет обращаться к сайтам. Пока вы не выберете, ничего не отправляется.</string>
     <string name="route_tor_hint">Сайты видят адрес узла Tor, а не ваш. Нужно приложение Orbot, и это медленнее.</string>
