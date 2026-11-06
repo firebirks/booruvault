@@ -177,7 +177,7 @@ Requirements:
 A release is a commit and a tag:
 
 1. Raise `versionCode` (always by one) and `versionName` in `app/build.gradle.kts`.
-2. Write `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
+2. Write `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, at most 500 characters, and give the version its dated entry in [CHANGELOG.md](CHANGELOG.md).
 3. Commit, tag `v<versionName>` and push the tag.
 
 The tag starts the `Release` workflow, which checks that the tag matches `versionName`, runs the tests, builds the APK signed with the project's key (kept in the repository secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD` and `KEY_PASSWORD`) and publishes it, with its SHA-256, as a GitHub release whose notes are the changelog. Obtainium and direct installs use that APK.
