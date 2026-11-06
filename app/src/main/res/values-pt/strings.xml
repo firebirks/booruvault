@@ -235,6 +235,7 @@
     <string name="source_site_title">Site</string>
     <string name="source_site_hint">Para fazer login, passar por uma verificação ou alterar as preferências do site. Os cookies ficam criptografados no cofre e valem tanto para a API quanto para as páginas web.</string>
     <string name="source_open_browser">Abrir o site no navegador integrado</string>
+    <string name="browse_open_site_title">Abrir %1$s no navegador integrado?</string>
     <string name="source_cookies_saved">Cookies do site salvos: toque em Testar para verificar</string>
     <string name="source_test">Testar</string>
     <plurals name="source_test_ok">

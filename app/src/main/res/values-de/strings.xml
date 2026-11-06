@@ -231,6 +231,7 @@
     <string name="source_site_title">Website</string>
     <string name="source_site_hint">Zum Anmelden, Bestehen einer Prüfung oder Ändern der Website-Einstellungen. Cookies bleiben verschlüsselt im Tresor und gelten sowohl für die API als auch für die Webseiten.</string>
     <string name="source_open_browser">Website im integrierten Browser öffnen</string>
+    <string name="browse_open_site_title">%1$s im integrierten Browser öffnen?</string>
     <string name="source_cookies_saved">Website-Cookies gespeichert: Tippe zum Prüfen auf Testen</string>
     <string name="source_test">Testen</string>
     <plurals name="source_test_ok">

@@ -227,6 +227,7 @@
     <string name="source_site_title">网站</string>
     <string name="source_site_hint">用于登录、通过验证或更改网站偏好设置。Cookie 会加密保存在保险库中，同时适用于 API 和网页。</string>
     <string name="source_open_browser">在内置浏览器中打开网站</string>
+    <string name="browse_open_site_title">在内置浏览器中打开 %1$s？</string>
     <string name="source_cookies_saved">网站 Cookie 已保存：点按“测试”进行检查</string>
     <string name="source_test">测试</string>
     <plurals name="source_test_ok">

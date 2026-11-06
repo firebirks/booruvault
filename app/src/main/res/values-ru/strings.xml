@@ -239,6 +239,7 @@
     <string name="source_site_title">Сайт</string>
     <string name="source_site_hint">Чтобы войти, пройти проверку или изменить настройки сайта. Cookie хранятся зашифрованными в хранилище и действуют как для API, так и для веб-страниц.</string>
     <string name="source_open_browser">Открыть сайт во встроенном браузере</string>
+    <string name="browse_open_site_title">Открыть %1$s во встроенном браузере?</string>
     <string name="source_cookies_saved">Cookie сайта сохранены: нажмите «Проверить»</string>
     <string name="source_test">Проверить</string>
     <plurals name="source_test_ok">

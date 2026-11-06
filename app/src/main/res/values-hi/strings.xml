@@ -231,6 +231,7 @@
     <string name="source_site_title">साइट</string>
     <string name="source_site_hint">लॉग इन करने, कोई जांच पास करने या साइट की प्राथमिकताएं बदलने के लिए। कुकी तिजोरी में एन्क्रिप्टेड रहती हैं और API व वेब पेज, दोनों पर लागू होती हैं।</string>
     <string name="source_open_browser">बिल्ट-इन ब्राउज़र में साइट खोलें</string>
+    <string name="browse_open_site_title">%1$s को बिल्ट-इन ब्राउज़र में खोलें?</string>
     <string name="source_cookies_saved">साइट की कुकी सेव हो गईं: जांचने के लिए टेस्ट पर टैप करें</string>
     <string name="source_test">टेस्ट</string>
     <plurals name="source_test_ok">

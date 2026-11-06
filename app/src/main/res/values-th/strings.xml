@@ -227,6 +227,7 @@
     <string name="source_site_title">เว็บไซต์</string>
     <string name="source_site_hint">ใช้เพื่อเข้าสู่ระบบ ผ่านการตรวจสอบ หรือเปลี่ยนค่ากำหนดของเว็บไซต์ คุกกี้จะถูกเข้ารหัสเก็บไว้ในคลังนิรภัยและใช้ได้กับทั้ง API และหน้าเว็บ</string>
     <string name="source_open_browser">เปิดเว็บไซต์ในเบราว์เซอร์ในตัว</string>
+    <string name="browse_open_site_title">เปิด %1$s ในเบราว์เซอร์ในตัวไหม</string>
     <string name="source_cookies_saved">บันทึกคุกกี้ของเว็บไซต์แล้ว: แตะ “ทดสอบ” เพื่อตรวจสอบ</string>
     <string name="source_test">ทดสอบ</string>
     <plurals name="source_test_ok">

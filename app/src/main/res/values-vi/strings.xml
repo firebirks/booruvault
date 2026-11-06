@@ -227,6 +227,7 @@
     <string name="source_site_title">Trang web</string>
     <string name="source_site_hint">Dùng để đăng nhập, vượt qua kiểm tra hoặc thay đổi tùy chọn của trang web. Cookie luôn được mã hóa trong kho và áp dụng cho cả API lẫn các trang web.</string>
     <string name="source_open_browser">Mở trang web trong trình duyệt tích hợp</string>
+    <string name="browse_open_site_title">Mở %1$s trong trình duyệt tích hợp?</string>
     <string name="source_cookies_saved">Đã lưu cookie của trang web: nhấn “Thử” để kiểm tra</string>
     <string name="source_test">Thử</string>
     <plurals name="source_test_ok">

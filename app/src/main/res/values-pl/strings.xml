@@ -239,6 +239,7 @@
     <string name="source_site_title">Witryna</string>
     <string name="source_site_hint">Aby się zalogować, przejść weryfikację lub zmienić preferencje witryny. Pliki cookie pozostają zaszyfrowane w sejfie i działają zarówno dla API, jak i dla stron WWW.</string>
     <string name="source_open_browser">Otwórz witrynę we wbudowanej przeglądarce</string>
+    <string name="browse_open_site_title">Otworzyć %1$s we wbudowanej przeglądarce?</string>
     <string name="source_cookies_saved">Zapisano pliki cookie witryny: dotknij przycisku Testuj, aby sprawdzić</string>
     <string name="source_test">Testuj</string>
     <plurals name="source_test_ok">

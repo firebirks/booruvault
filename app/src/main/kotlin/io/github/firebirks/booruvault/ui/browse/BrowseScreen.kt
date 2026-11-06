@@ -62,7 +62,7 @@ import androidx.compose.material.icons.outlined.Gif
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Web
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Schedule
@@ -471,6 +471,22 @@ private fun BrowseTopBar(
 ) {
     var sourceMenu by remember { mutableStateOf(false) }
     var overflow by remember { mutableStateOf(false) }
+    var confirmSite by remember { mutableStateOf(false) }
+    if (confirmSite && onOpenSite != null) {
+        AlertDialog(
+            onDismissRequest = { confirmSite = false },
+            icon = { Icon(Icons.Outlined.Web, null) },
+            title = { Text(stringResource(R.string.browse_open_site_title, sourceName)) },
+            text = { Text(stringResource(R.string.browser_hint)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmSite = false
+                    onOpenSite()
+                }) { Text(stringResource(R.string.action_open)) }
+            },
+            dismissButton = { TextButton(onClick = { confirmSite = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
     Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
         Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 12.dp).padding(bottom = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -493,8 +509,9 @@ private fun BrowseTopBar(
                     }
                 }
                 if (onOpenSite != null) {
-                    // Not the icon of a link that leaves the app: this opens the site inside it, for its account.
-                    IconButton(onClick = onOpenSite) { Icon(Icons.Outlined.AccountCircle, stringResource(R.string.source_open_browser)) }
+                    // A browser window, not the arrow of a link that leaves the app: the site opens inside it,
+                    // for its account, its checks and its preferences. Asked first, as it is easy to tap by mistake.
+                    IconButton(onClick = { confirmSite = true }) { Icon(Icons.Outlined.Web, stringResource(R.string.source_open_browser)) }
                 }
                 Spacer(Modifier.weight(1f))
                 // Where the route stands, at a glance; a tap opens its settings.

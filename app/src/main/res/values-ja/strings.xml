@@ -227,6 +227,7 @@
     <string name="source_site_title">サイト</string>
     <string name="source_site_hint">ログインや確認の通過、サイト設定の変更に使用します。Cookie は保管庫内で暗号化されたまま保存され、API とウェブページの両方に適用されます。</string>
     <string name="source_open_browser">内蔵ブラウザでサイトを開く</string>
+    <string name="browse_open_site_title">%1$s を内蔵ブラウザで開きますか？</string>
     <string name="source_cookies_saved">サイトの Cookie を保存しました。「テスト」をタップして確認してください</string>
     <string name="source_test">テスト</string>
     <plurals name="source_test_ok">

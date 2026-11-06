@@ -29,7 +29,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **The route at a glance:** an onion in the top bar of Browse says where Tor stands: purple once the exit is verified, yellow while it is being checked, red when Tor is on but not working, grey and struck through when Tor is off. A tap opens the network settings.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
 - **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source. Only general content is shown until you choose otherwise; turning on questionable or explicit first asks you to confirm that you are an adult.
-- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences. The site's cookies are then kept in the vault. It opens from the icon next to the source name in Browse, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
+- **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences. The site's cookies are then kept in the vault. It opens from the browser-window icon next to the source name in Browse, after a confirmation, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
 
 ### Downloads
 

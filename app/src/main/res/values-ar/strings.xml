@@ -247,6 +247,7 @@
     <string name="source_site_title">الموقع</string>
     <string name="source_site_hint">لتسجيل الدخول أو اجتياز تحقق أو تغيير تفضيلات الموقع. تبقى ملفات تعريف الارتباط مشفّرة في الخزنة وتنطبق على كلٍّ من API وصفحات الويب.</string>
     <string name="source_open_browser">فتح الموقع في المتصفح المدمج</string>
+    <string name="browse_open_site_title">فتح %1$s في المتصفح المدمج؟</string>
     <string name="source_cookies_saved">تم حفظ ملفات تعريف الارتباط للموقع: انقر على «اختبار» للتحقق</string>
     <string name="source_test">اختبار</string>
     <plurals name="source_test_ok">

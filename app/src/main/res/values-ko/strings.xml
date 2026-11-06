@@ -227,6 +227,7 @@
     <string name="source_site_title">사이트</string>
     <string name="source_site_hint">로그인하거나, 확인을 통과하거나, 사이트 설정을 변경할 때 사용합니다. 쿠키는 보관함에 암호화된 상태로 유지되며 API와 웹 페이지 모두에 적용됩니다.</string>
     <string name="source_open_browser">내장 브라우저에서 사이트 열기</string>
+    <string name="browse_open_site_title">%1$s을(를) 내장 브라우저에서 열까요?</string>
     <string name="source_cookies_saved">사이트 쿠키를 저장했습니다. ‘테스트’를 눌러 확인하세요</string>
     <string name="source_test">테스트</string>
     <plurals name="source_test_ok">

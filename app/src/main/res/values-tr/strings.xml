@@ -231,6 +231,7 @@
     <string name="source_site_title">Site</string>
     <string name="source_site_hint">Oturum açmak, bir doğrulamayı geçmek veya site tercihlerini değiştirmek için. Çerezler kasada şifreli kalır ve hem API hem de web sayfaları için geçerlidir.</string>
     <string name="source_open_browser">Siteyi yerleşik tarayıcıda aç</string>
+    <string name="browse_open_site_title">%1$s yerleşik tarayıcıda açılsın mı?</string>
     <string name="source_cookies_saved">Site çerezleri kaydedildi: kontrol etmek için Test\'e dokunun</string>
     <string name="source_test">Test</string>
     <plurals name="source_test_ok">

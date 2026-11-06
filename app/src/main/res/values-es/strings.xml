@@ -235,6 +235,7 @@
     <string name="source_site_title">Sitio</string>
     <string name="source_site_hint">Para iniciar sesión, superar una verificación o cambiar las preferencias del sitio. Las cookies permanecen cifradas en la bóveda y se aplican tanto a la API como a las páginas web.</string>
     <string name="source_open_browser">Abrir el sitio en el navegador integrado</string>
+    <string name="browse_open_site_title">¿Abrir %1$s en el navegador integrado?</string>
     <string name="source_cookies_saved">Cookies del sitio guardadas: toca Probar para comprobarlo</string>
     <string name="source_test">Probar</string>
     <plurals name="source_test_ok">

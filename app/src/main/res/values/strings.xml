@@ -237,6 +237,7 @@
     <string name="source_site_title">Site</string>
     <string name="source_site_hint">To log in, pass a check or change the site\'s preferences. Cookies stay encrypted in the vault and apply to both the API and the web pages.</string>
     <string name="source_open_browser">Open the site in the built-in browser</string>
+    <string name="browse_open_site_title">Open %1$s in the built-in browser?</string>
     <string name="source_cookies_saved">Site cookies saved: tap Test to check</string>
     <string name="source_test">Test</string>
     <plurals name="source_test_ok">
