@@ -19,11 +19,10 @@ import io.github.firebirks.booruvault.net.RouteChoiceGate
 import io.github.firebirks.booruvault.net.RouteTls
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorExitGate
+import io.github.firebirks.booruvault.net.TorFailures
 import io.github.firebirks.booruvault.net.TorListenerWatch
 import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorRouteGuard
-import io.github.firebirks.booruvault.net.TorUnreachableException
-import io.github.firebirks.booruvault.net.TorUnverifiedException
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.util.LibraryBuffers
 import io.github.firebirks.booruvault.util.SensitiveClipboard
@@ -53,7 +52,6 @@ import kotlinx.serialization.json.Json
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import java.io.File
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -101,14 +99,8 @@ class AppContainer(private val context: Context) {
         .addInterceptor(RouteChoiceGate { tor.routeChosen.value })
         // Nothing leaves before the exit check says the SOCKS listener really is Tor.
         .addInterceptor(TorExitGate({ tor.enabled }, { tor.verified }) { tor.refreshStatus() })
-        .addInterceptor { chain ->
-            try {
-                chain.proceed(chain.request())
-            } catch (e: IOException) {
-                if (tor.enabled && !chain.call().isCanceled() && e !is TorUnreachableException && e !is TorUnverifiedException) throw TorUnreachableException(e)
-                throw e
-            }
-        }
+        // Through Tor: a longer wait for the circuit, and Orbot blamed only when its port is silent.
+        .addInterceptor(TorFailures({ tor.enabled }, { tor.state.value.socksPort }))
         .addInterceptor(DefaultUserAgent)
         // Per attempt: a redirect or a retry of a call let through finds a withdrawn verdict here.
         .addNetworkInterceptor(TorRouteGuard({ tor.enabled }, { tor.verified }))

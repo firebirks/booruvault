@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Ağ hatası: %1$s</string>
+    <string name="problem_timeout">Site yanıt vermekte çok gecikti: yeniden deneyin.</string>
     <string name="problem_tor_unreachable">Tor\'a ulaşılamıyor: Orbot\'un çalıştığından emin olun.</string>
     <string name="problem_tor_dns_blocked">Yerel DNS sorgusu engellendi: Tor açıkken adlar yalnızca Tor üzerinden çözümlenir.</string>
     <string name="problem_tor_unverified">Tor çıkışı henüz doğrulanmadı: bağlantıların gerçekten Tor üzerinden çıktığı denetleniyor.</string>

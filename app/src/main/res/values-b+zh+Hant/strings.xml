@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">網路錯誤：%1$s</string>
+    <string name="problem_timeout">網站回應逾時：請再試一次。</string>
     <string name="problem_tor_unreachable">無法連上 Tor：請確認 Orbot 正在執行。</string>
     <string name="problem_tor_dns_blocked">已封鎖本機 DNS 查詢：開啟 Tor 時，網域名稱只會透過 Tor 解析。</string>
     <string name="problem_tor_unverified">Tor 出口尚未驗證：正在確認連線確實經由 Tor。</string>

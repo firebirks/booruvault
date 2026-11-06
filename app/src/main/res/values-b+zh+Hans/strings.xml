@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">网络错误：%1$s</string>
+    <string name="problem_timeout">网站响应超时：请重试。</string>
     <string name="problem_tor_unreachable">无法连接 Tor：请检查 Orbot 是否正在运行。</string>
     <string name="problem_tor_dns_blocked">已阻止本地 DNS 查询：开启 Tor 后，域名只通过 Tor 解析。</string>
     <string name="problem_tor_unverified">Tor 出口尚未验证：正在确认连接确实经由 Tor。</string>

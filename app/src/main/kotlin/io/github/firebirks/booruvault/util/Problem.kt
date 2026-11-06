@@ -11,6 +11,8 @@ data class Problem(val code: Code, val detail: String? = null) {
     @Serializable
     enum class Code {
         NETWORK,
+        /** The connection or the answer took too long: over Tor, most often a slow circuit. */
+        TIMEOUT,
         TOR_UNREACHABLE,
         TOR_DNS_BLOCKED,
         TOR_UNVERIFIED,
@@ -65,11 +67,13 @@ open class ProblemException(final override val problem: Problem, cause: Throwabl
 
 /**
  * The most telling problem along the cause chain: a network error caused by Tor being down is
- * reported as Tor being down.
+ * reported as Tor being down, and one that is a timeout as a timeout.
  */
 fun Throwable.toProblem(): Problem {
-    val known = generateSequence(this) { it.cause }.take(8).mapNotNull { (it as? HasProblem)?.problem }.toList()
+    val chain = generateSequence(this) { it.cause }.take(8).toList()
+    val known = chain.mapNotNull { (it as? HasProblem)?.problem }
     known.firstOrNull { it.code != Problem.Code.NETWORK }?.let { return it }
+    if (chain.any { it is java.net.SocketTimeoutException }) return Problem(Problem.Code.TIMEOUT)
     known.firstOrNull()?.let { return it }
     val detail = message ?: javaClass.simpleName
     return Problem(if (this is java.io.IOException) Problem.Code.NETWORK else Problem.Code.UNKNOWN, detail)

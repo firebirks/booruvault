@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Ошибка сети: %1$s</string>
+    <string name="problem_timeout">Сайт слишком долго не отвечал: попробуйте ещё раз.</string>
     <string name="problem_tor_unreachable">Tor недоступен: проверьте, что Orbot запущен.</string>
     <string name="problem_tor_dns_blocked">Локальный DNS-запрос заблокирован: при включённом Tor имена разрешаются только через Tor.</string>
     <string name="problem_tor_unverified">Выход Tor ещё не проверен: проверяется, действительно ли соединения выходят через Tor.</string>

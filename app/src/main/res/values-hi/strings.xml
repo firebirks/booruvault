@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">नेटवर्क त्रुटि: %1$s</string>
+    <string name="problem_timeout">साइट ने जवाब देने में बहुत देर लगाई: फिर से कोशिश करें।</string>
     <string name="problem_tor_unreachable">Tor तक नहीं पहुंचा जा सका: जांचें कि Orbot चल रहा है।</string>
     <string name="problem_tor_dns_blocked">लोकल DNS लुकअप ब्लॉक किया गया: Tor चालू होने पर नाम केवल Tor के ज़रिए रिज़ॉल्व होते हैं।</string>
     <string name="problem_tor_unverified">Tor निकास अभी सत्यापित नहीं: जाँच हो रही है कि कनेक्शन सच में Tor से बाहर जाते हैं।</string>

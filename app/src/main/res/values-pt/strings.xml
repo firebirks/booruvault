@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Erro de rede: %1$s</string>
+    <string name="problem_timeout">O site demorou demais para responder: tente novamente.</string>
     <string name="problem_tor_unreachable">Não foi possível alcançar o Tor: verifique se o Orbot está em execução.</string>
     <string name="problem_tor_dns_blocked">Consulta DNS local bloqueada: com o Tor ativado, os nomes são resolvidos apenas pelo Tor.</string>
     <string name="problem_tor_unverified">Saída do Tor ainda não verificada: verificando se as conexões realmente saem pelo Tor.</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Błąd sieci: %1$s</string>
+    <string name="problem_timeout">Strona zbyt długo nie odpowiadała: spróbuj ponownie.</string>
     <string name="problem_tor_unreachable">Tor jest nieosiągalny: sprawdź, czy Orbot działa.</string>
     <string name="problem_tor_dns_blocked">Zablokowano lokalne zapytanie DNS: gdy Tor jest włączony, nazwy są rozwiązywane wyłącznie przez Tor.</string>
     <string name="problem_tor_unverified">Wyjście Tor jeszcze niezweryfikowane: trwa sprawdzanie, czy połączenia naprawdę wychodzą przez Tor.</string>

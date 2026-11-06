@@ -37,6 +37,7 @@ import java.net.SocketAddress
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.URI
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.net.ssl.SSLException
 
@@ -403,6 +404,41 @@ class TorRouteGuard(private val enabled: () -> Boolean, private val verified: ()
         }
         if (enabled() && !verified() && !exitCheck) throw TorUnverifiedException()
         return chain.proceed(chain.request())
+    }
+}
+
+/**
+ * Says what a request that failed with Tor on ran into. Only a port that no longer answers SOCKS5
+ * makes it Tor unreachable, which tells the user to look at Orbot. A circuit too slow to build is
+ * a timeout, and a site Tor cannot reach, a reset from the exit or a TLS failure stay the network
+ * errors they are: Orbot is running, and checking it would be looking in the wrong place.
+ *
+ * Through Tor the connection also gets [connectTimeoutMs] instead of the client's own: it covers
+ * the SOCKS exchange, whose answer waits for Tor to build a circuit to the site, and that takes
+ * tens of seconds often enough, well past what a direct connection is given.
+ */
+class TorFailures(
+    private val enabled: () -> Boolean,
+    private val port: () -> Int,
+    private val connectTimeoutMs: Int = TOR_CONNECT_TIMEOUT_MS,
+    private val listening: (Int) -> Boolean = { socks5Listening(it) },
+) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val through = if (enabled()) chain.withConnectTimeout(connectTimeoutMs, TimeUnit.MILLISECONDS) else chain
+        try {
+            return through.proceed(through.request())
+        } catch (e: IOException) {
+            // A failure that already says what it is, a call the user dropped, or Tor switched off
+            // meanwhile: nothing to put down to the listener.
+            if (e is HasProblem || !enabled() || chain.call().isCanceled()) throw e
+            if (!listening(port())) throw TorUnreachableException(e)
+            throw e
+        }
+    }
+
+    companion object {
+        /** Tor gives up building a circuit after about a minute; the connection waits as long. */
+        const val TOR_CONNECT_TIMEOUT_MS = 60_000
     }
 }
 

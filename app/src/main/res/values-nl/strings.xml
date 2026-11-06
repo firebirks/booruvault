@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Netwerkfout: %1$s</string>
+    <string name="problem_timeout">De site deed er te lang over om te antwoorden: probeer het opnieuw.</string>
     <string name="problem_tor_unreachable">Tor is niet bereikbaar: controleer of Orbot actief is.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-opzoeking geblokkeerd: met Tor aan worden namen alleen via Tor omgezet.</string>
     <string name="problem_tor_unverified">Tor-uitgang nog niet gecontroleerd: er wordt gecontroleerd of verbindingen echt via Tor naar buiten gaan.</string>

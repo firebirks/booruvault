@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">خطأ في الشبكة: %1$s</string>
+    <string name="problem_timeout">استغرق الموقع وقتًا طويلًا للرد: حاول مرة أخرى.</string>
     <string name="problem_tor_unreachable">يتعذّر الوصول إلى Tor: تأكّد من أن Orbot قيد التشغيل.</string>
     <string name="problem_tor_dns_blocked">تم حظر استعلام DNS المحلي: عند تفعيل Tor، لا تُحَلّ أسماء النطاقات إلا عبر Tor.</string>
     <string name="problem_tor_unverified">لم يُتحقق من مخرج Tor بعد: يجري التأكد من أن الاتصالات تخرج فعلًا عبر Tor.</string>

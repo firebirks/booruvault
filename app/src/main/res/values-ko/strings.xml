@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">네트워크 오류: %1$s</string>
+    <string name="problem_timeout">사이트 응답이 너무 오래 걸렸습니다. 다시 시도하세요.</string>
     <string name="problem_tor_unreachable">Tor에 연결할 수 없습니다. Orbot이 실행 중인지 확인하세요.</string>
     <string name="problem_tor_dns_blocked">로컬 DNS 조회가 차단되었습니다. Tor가 켜져 있으면 이름은 Tor를 통해서만 확인됩니다.</string>
     <string name="problem_tor_unverified">Tor 출구가 아직 확인되지 않았습니다. 연결이 정말 Tor를 통해 나가는지 확인 중입니다.</string>

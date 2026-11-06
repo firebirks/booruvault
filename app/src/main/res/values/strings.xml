@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name" translatable="false">BooruVault</string>
     <string name="problem_network">Network error: %1$s</string>
+    <string name="problem_timeout">The site took too long to answer: try again.</string>
     <string name="problem_tor_unreachable">Tor is unreachable: check that Orbot is running.</string>
     <string name="problem_tor_dns_blocked">Local DNS lookup blocked: with Tor on, names are resolved only through Tor.</string>
     <string name="problem_tor_unverified">Tor exit not verified yet: checking that connections really leave through Tor.</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">ข้อผิดพลาดของเครือข่าย: %1$s</string>
+    <string name="problem_timeout">เว็บไซต์ใช้เวลาตอบนานเกินไป: ลองอีกครั้ง</string>
     <string name="problem_tor_unreachable">เชื่อมต่อ Tor ไม่ได้: ตรวจสอบว่า Orbot ทำงานอยู่</string>
     <string name="problem_tor_dns_blocked">บล็อกการค้นหา DNS ในเครื่องแล้ว: เมื่อเปิด Tor ชื่อโดเมนจะถูกแปลงผ่าน Tor เท่านั้น</string>
     <string name="problem_tor_unverified">ยังไม่ได้ยืนยันทางออก Tor: กำลังตรวจสอบว่าการเชื่อมต่อออกผ่าน Tor จริง</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Kesalahan jaringan: %1$s</string>
+    <string name="problem_timeout">Situs terlalu lama menjawab: coba lagi.</string>
     <string name="problem_tor_unreachable">Tor tidak dapat dijangkau: pastikan Orbot sedang berjalan.</string>
     <string name="problem_tor_dns_blocked">Pencarian DNS lokal diblokir: saat Tor aktif, nama domain hanya diterjemahkan melalui Tor.</string>
     <string name="problem_tor_unverified">Keluaran Tor belum diverifikasi: memeriksa bahwa koneksi benar-benar keluar lewat Tor.</string>

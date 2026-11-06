@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="problem_network">Lỗi mạng: %1$s</string>
+    <string name="problem_timeout">Trang web phản hồi quá lâu: hãy thử lại.</string>
     <string name="problem_tor_unreachable">Không kết nối được tới Tor: hãy kiểm tra xem Orbot có đang chạy không.</string>
     <string name="problem_tor_dns_blocked">Đã chặn tra cứu DNS cục bộ: khi bật Tor, tên miền chỉ được phân giải qua Tor.</string>
     <string name="problem_tor_unverified">Lối ra Tor chưa được xác minh: đang kiểm tra kết nối có thật sự đi ra qua Tor.</string>

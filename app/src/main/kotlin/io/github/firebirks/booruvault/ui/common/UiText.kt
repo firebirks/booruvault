@@ -49,6 +49,7 @@ fun Context.problemText(problem: Problem): String {
     val detail = problem.detail.orEmpty()
     return when (problem.code) {
         Problem.Code.NETWORK -> getString(R.string.problem_network, detail)
+        Problem.Code.TIMEOUT -> getString(R.string.problem_timeout)
         Problem.Code.TOR_UNREACHABLE -> getString(R.string.problem_tor_unreachable)
         Problem.Code.TOR_DNS_BLOCKED -> getString(R.string.problem_tor_dns_blocked)
         Problem.Code.TOR_UNVERIFIED -> getString(R.string.problem_tor_unverified)
