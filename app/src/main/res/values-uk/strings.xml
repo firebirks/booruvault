@@ -322,6 +322,12 @@
         <item quantity="many">%d елементів</item>
         <item quantity="other">%d елемента</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="one">%1$d з %2$d елемента</item>
+        <item quantity="few">%1$d з %2$d елементів</item>
+        <item quantity="many">%1$d з %2$d елементів</item>
+        <item quantity="other">%1$d з %2$d елемента</item>
+    </plurals>
     <string name="vault_export_folder">Експортувати в папку</string>
     <string name="vault_import">Імпортувати з пристрою</string>
     <string name="vault_oldest_first">Спочатку старіші</string>

@@ -304,6 +304,10 @@
         <item quantity="one">%d öğe</item>
         <item quantity="other">%d öğe</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="one">%1$d / %2$d öğe</item>
+        <item quantity="other">%1$d / %2$d öğe</item>
+    </plurals>
     <string name="vault_export_folder">Bir klasöre dışa aktar</string>
     <string name="vault_import">Cihazdan içe aktar</string>
     <string name="vault_oldest_first">Önce en eski</string>

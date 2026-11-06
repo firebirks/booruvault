@@ -304,6 +304,10 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="one">%1$d van %2$d item</item>
+        <item quantity="other">%1$d van %2$d items</item>
+    </plurals>
     <string name="vault_export_folder">Exporteren naar een map</string>
     <string name="vault_import">Importeren van apparaat</string>
     <string name="vault_oldest_first">Oudste eerst</string>

@@ -84,11 +84,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.ui.common.CenteredProgress
@@ -112,6 +114,7 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     val container = LocalContainer.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
     val vm = containerViewModel { VaultViewModel(it) }
     val shown by vm.items.collectAsStateWithLifecycle()
     val items = shown.orEmpty()
@@ -175,9 +178,12 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     title = {
                         Column {
                             Text(stringResource(R.string.vault_title))
+                            // A filter or a collection that hides some items says how many it shows, and what they weigh.
+                            val narrowed = shown != null && items.size != total.size
                             Text(
-                                pluralStringResource(R.plurals.vault_items, total.size, total.size) + " · " +
-                                    formatBytes(context, total.sumOf { it.size }),
+                                (if (narrowed) pluralStringResource(R.plurals.vault_items_shown, total.size, items.size, total.size)
+                                else pluralStringResource(R.plurals.vault_items, total.size, total.size)) + " · " +
+                                    formatBytes(context, (if (narrowed) items else total).sumOf { it.size }),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -207,12 +213,17 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                 OutlinedTextField(
                     value = vm.query,
                     onValueChange = { vm.query = it },
-                    placeholder = { Text(stringResource(R.string.vault_filter_hint)) },
+                    // One line, as the field is: a hint that wraps would make it taller than the one in Browse.
+                    placeholder = { Text(stringResource(R.string.vault_filter_hint), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                     leadingIcon = { Icon(Icons.Outlined.Search, null) },
                     trailingIcon = {
                         if (vm.query.isNotEmpty()) {
                             Row {
-                                IconButton(onClick = { creating = vm.query }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
+                                IconButton(onClick = {
+                                    // The dialog would hand the focus back to the field, and the keyboard with it.
+                                    focusManager.clearFocus()
+                                    creating = vm.query
+                                }) { Icon(Icons.Outlined.BookmarkAdd, stringResource(R.string.collection_save)) }
                                 IconButton(onClick = { vm.query = "" }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear)) }
                             }
                         }
@@ -250,7 +261,10 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
                     }
                     item(key = "new") {
                         AssistChip(
-                            onClick = { creating = vm.query },
+                            onClick = {
+                                focusManager.clearFocus()
+                                creating = vm.query
+                            },
                             label = { Text(stringResource(R.string.collection_new)) },
                             leadingIcon = { Icon(Icons.Outlined.Add, null) },
                         )

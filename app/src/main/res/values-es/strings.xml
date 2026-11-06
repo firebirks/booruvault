@@ -313,6 +313,11 @@
         <item quantity="many">%d elementos</item>
         <item quantity="other">%d elementos</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="one">%1$d de %2$d elemento</item>
+        <item quantity="many">%1$d de %2$d elementos</item>
+        <item quantity="other">%1$d de %2$d elementos</item>
+    </plurals>
     <string name="vault_export_folder">Exportar a una carpeta</string>
     <string name="vault_import">Importar desde el dispositivo</string>
     <string name="vault_oldest_first">Más antiguos primero</string>

@@ -340,6 +340,14 @@
         <item quantity="many">%d عنصرًا</item>
         <item quantity="other">%d عنصر</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="zero">%1$d من %2$d عنصر</item>
+        <item quantity="one">%1$d من %2$d عنصر</item>
+        <item quantity="two">%1$d من %2$d عنصرين</item>
+        <item quantity="few">%1$d من %2$d عناصر</item>
+        <item quantity="many">%1$d من %2$d عنصرًا</item>
+        <item quantity="other">%1$d من %2$d عنصر</item>
+    </plurals>
     <string name="vault_export_folder">تصدير إلى مجلد</string>
     <string name="vault_import">استيراد من الجهاز</string>
     <string name="vault_oldest_first">الأقدم أولًا</string>

@@ -295,6 +295,9 @@
     <plurals name="vault_items">
         <item quantity="other">항목 %d개</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="other">항목 %2$d개 중 %1$d개</item>
+    </plurals>
     <string name="vault_export_folder">폴더로 내보내기</string>
     <string name="vault_import">기기에서 가져오기</string>
     <string name="vault_oldest_first">오래된 순</string>

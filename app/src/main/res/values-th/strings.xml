@@ -295,6 +295,9 @@
     <plurals name="vault_items">
         <item quantity="other">%d รายการ</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="other">%1$d จาก %2$d รายการ</item>
+    </plurals>
     <string name="vault_export_folder">ส่งออกไปยังโฟลเดอร์</string>
     <string name="vault_import">นำเข้าจากอุปกรณ์</string>
     <string name="vault_oldest_first">เก่าสุดก่อน</string>

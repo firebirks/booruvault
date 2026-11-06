@@ -295,6 +295,9 @@
     <plurals name="vault_items">
         <item quantity="other">%d 件</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="other">%2$d 件中 %1$d 件</item>
+    </plurals>
     <string name="vault_export_folder">フォルダにエクスポート</string>
     <string name="vault_import">デバイスからインポート</string>
     <string name="vault_oldest_first">古い順</string>

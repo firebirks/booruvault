@@ -310,6 +310,10 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="one">%1$d of %2$d item</item>
+        <item quantity="other">%1$d of %2$d items</item>
+    </plurals>
     <string name="vault_export_folder">Export to a folder</string>
     <string name="vault_import">Import from the device</string>
     <string name="vault_oldest_first">Oldest first</string>

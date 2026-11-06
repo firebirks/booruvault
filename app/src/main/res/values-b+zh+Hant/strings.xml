@@ -295,6 +295,9 @@
     <plurals name="vault_items">
         <item quantity="other">%d 個項目</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="other">%1$d / %2$d 個項目</item>
+    </plurals>
     <string name="vault_export_folder">匯出到資料夾</string>
     <string name="vault_import">從裝置匯入</string>
     <string name="vault_oldest_first">最舊的優先</string>

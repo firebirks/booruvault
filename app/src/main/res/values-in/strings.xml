@@ -295,6 +295,9 @@
     <plurals name="vault_items">
         <item quantity="other">%d item</item>
     </plurals>
+    <plurals name="vault_items_shown">
+        <item quantity="other">%1$d dari %2$d item</item>
+    </plurals>
     <string name="vault_export_folder">Ekspor ke folder</string>
     <string name="vault_import">Impor dari perangkat</string>
     <string name="vault_oldest_first">Terlama dulu</string>
