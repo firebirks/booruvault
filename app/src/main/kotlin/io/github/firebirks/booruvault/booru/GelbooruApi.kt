@@ -7,6 +7,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
+import org.jsoup.parser.Parser
 
 /**
  * Gelbooru 0.2 and its forks (safebooru.org, rule34.xxx, xbooru, tbib...), and with [htmlOnly]
@@ -104,8 +105,8 @@ class GelbooruApi(
                 else -> Rating.UNKNOWN
             },
             score = o.int("score"),
-            tags = o.str("tags").orEmpty().split(' ').filter { it.isNotBlank() }.map { Tag(it) },
-            source = o.str("source"),
+            tags = o.str("tags").orEmpty().split(' ').filter { it.isNotBlank() }.map { Tag(unescape(it)) },
+            source = o.str("source")?.let(::unescape),
             createdAt = parseGelbooruDate(o.str("created_at")) ?: o.long("change")?.let { it * 1000 },
             postUrl = "$webHost/index.php?page=post&s=view&id=$id",
         )
@@ -157,7 +158,7 @@ class GelbooruApi(
                 null
             } ?: continue
             val suggestions = list.mapNotNull { it.obj() }.mapNotNull { o ->
-                val name = o.str("value") ?: return@mapNotNull null
+                val name = o.str("value")?.let(::unescape) ?: return@mapNotNull null
                 // autocomplete.php puts the count in the label: "name (123)".
                 val count = o.long("post_count")
                     ?: o.str("label")?.substringAfterLast('(')?.substringBefore(')')?.toLongOrNull()
@@ -186,6 +187,14 @@ class GelbooruApi(
             pageSizes.clear()
         }
     }
+
+    /**
+     * Gelbooru keeps tags, and the sources typed in with them, HTML-escaped (`jack-o&#039;-lantern`,
+     * `:&gt;`, `&amp;` in a URL), and its API hands them over that way. Its search takes either form
+     * alike, so the names are kept as they read: the same as the site's own pages give, and as a
+     * person types them in a search, a blacklist or a collection.
+     */
+    private fun unescape(text: String): String = Parser.unescapeEntities(text, false)
 
     private fun gelbooruCategory(name: String?): TagCategory = when (name) {
         "artist" -> TagCategory.ARTIST

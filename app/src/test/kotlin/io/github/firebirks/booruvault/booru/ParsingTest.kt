@@ -117,6 +117,26 @@ class ParsingTest {
     }
 
     @Test
+    fun gelbooruEntitiesAreDecoded() = runBlocking {
+        // Gelbooru keeps tags and sources HTML-escaped, as recorded from safebooru.org. Its search
+        // takes either form, so the names are kept as a person reads them.
+        val body = """[{"id":7291803,"file_url":"https:\/\/safebooru.org\/images\/1\/a.jpg","image":"a.jpg","directory":1,
+            "width":1,"height":1,"rating":"general","tags":":&gt; :&lt; jack-o&#039;-lantern sirfetch&#039;d",
+            "source":"https:\/\/x.wixmp.com\/f\/a.jpg?token=1&amp;filename=b.jpg"}]"""
+        val p = api(BooruEngine.GELBOORU, "https://safebooru.org", body).posts("", 1, 1).single()
+        assertEquals(listOf(":>", ":<", "jack-o'-lantern", "sirfetch'd"), p.tagNames)
+        assertEquals("https://x.wixmp.com/f/a.jpg?token=1&filename=b.jpg", p.source)
+    }
+
+    @Test
+    fun gelbooruAutocompleteEntitiesAreDecoded() = runBlocking {
+        val body = """[{"label":"jack-o&#039;-lantern (12295)","value":"jack-o&#039;-lantern"}]"""
+        val suggestion = api(BooruEngine.GELBOORU, "https://safebooru.org", body).autocomplete("jack-o").single()
+        assertEquals("jack-o'-lantern", suggestion.name)
+        assertEquals(12295L, suggestion.count)
+    }
+
+    @Test
     fun gelbooruEmptyBodyAndAuthError() = runBlocking {
         assertTrue(api(BooruEngine.GELBOORU, "https://safebooru.org", "").posts("zzz", 1, 1).isEmpty())
         try {
