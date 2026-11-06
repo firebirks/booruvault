@@ -134,7 +134,7 @@ On the JVM this is best effort and not a guarantee:
 
 ## Tor
 
-**Asked at the first start:** right after the vault is created, and before anything goes out, the app asks whether to use Tor through Orbot or a direct connection. The two answers look alike and neither is picked in advance. Until one is chosen, no screen that makes requests is shown, and the HTTP client and the built-in browser refuse anything that would leave; a unit test checks that no name is looked up and no connection made. With Tor chosen, the results screen says what is still missing, Orbot or its exit check, offers to open or install it, or to connect directly instead, and loads by itself once the check passes. The choice can be changed in Settings › Network and built-in browser. Installs that already had a vault are not asked.
+**Asked at the first start:** right after the vault is created, and before anything goes out, the app asks whether to use Tor through Orbot or a direct connection. The two answers look alike and neither is picked in advance. Until one is chosen, no screen that makes requests is shown, and the HTTP client and the built-in browser refuse anything that would leave; a unit test checks that no name is looked up and no connection made. With Tor chosen, the results screen says what is still missing, Orbot or its exit check, offers to open or install it, or to connect directly instead, and loads by itself once the check passes. The choice can be changed in Settings › Network and built-in browser, where turning Tor off asks first, since what follows goes out from the home address. Installs that already had a vault are not asked.
 
 BooruVault uses [Orbot](https://orbot.app). When Tor is enabled:
 

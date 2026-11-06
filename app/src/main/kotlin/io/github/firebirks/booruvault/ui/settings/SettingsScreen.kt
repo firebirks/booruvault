@@ -755,11 +755,24 @@ private fun TorSettings() {
     val state by tor.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var askInstall by remember { mutableStateOf(false) }
+    var confirmOff by remember { mutableStateOf(false) }
     var verifying by remember { mutableStateOf(false) }
 
-    SwitchRow(stringResource(R.string.tor_use), stringResource(R.string.tor_use_hint), state.enabled) { on ->
-        if (on && !tor.isOrbotInstalled()) askInstall = true else tor.setEnabled(on)
+    // Turning Tor off sends what follows from the home address, so it is asked for, not slipped
+    // into: the long explanation is not part of the switch, where a tap while reading would count.
+    SwitchRow(stringResource(R.string.tor_use), checked = state.enabled) { on ->
+        when {
+            on && !tor.isOrbotInstalled() -> askInstall = true
+            on -> tor.setEnabled(true)
+            else -> confirmOff = true
+        }
     }
+    Text(
+        stringResource(R.string.tor_use_hint),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+    )
     if (state.enabled) {
         // Orbot tells nothing by itself; while this is on screen, and the app in front, the
         // port is greeted every few seconds.
@@ -798,6 +811,20 @@ private fun TorSettings() {
     }
 
     if (askInstall) OrbotInstallDialog(stringResource(R.string.tor_need_orbot_text), onDismiss = { askInstall = false })
+    if (confirmOff) {
+        AlertDialog(
+            onDismissRequest = { confirmOff = false },
+            title = { Text(stringResource(R.string.tor_off_title)) },
+            text = { Text(stringResource(R.string.tor_off_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmOff = false
+                    tor.setEnabled(false)
+                }) { Text(stringResource(R.string.tor_off_confirm), color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { TextButton(onClick = { confirmOff = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
 }
 
 /**
