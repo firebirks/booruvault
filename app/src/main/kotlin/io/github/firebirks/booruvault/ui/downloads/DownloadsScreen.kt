@@ -76,6 +76,8 @@ fun DownloadsScreen() {
     val done = tasks.count { it.status == DownloadStatus.DONE }
     val failed = tasks.count { it.status == DownloadStatus.FAILED }
     val retriable = failed + tasks.count { it.status == DownloadStatus.CANCELLED }
+    // A collection a problem stopped is an error too, listed with the downloads.
+    val errors = failed + batches.count { it.problem != null }
     val context = LocalContext.current
     val challenge = LocalChallenge.current
 
@@ -85,12 +87,12 @@ fun DownloadsScreen() {
                 title = {
                     Column {
                         Text(stringResource(R.string.downloads_title))
-                        if (tasks.isNotEmpty()) {
+                        if (tasks.isNotEmpty() || batches.isNotEmpty()) {
                             Text(
                                 listOfNotNull(
                                     pluralStringResource(R.plurals.downloads_active, active, active),
                                     pluralStringResource(R.plurals.downloads_saved, done, done),
-                                    if (failed > 0) pluralStringResource(R.plurals.downloads_errors, failed, failed) else null,
+                                    if (errors > 0) pluralStringResource(R.plurals.downloads_errors, errors, errors) else null,
                                 ).joinToString(" · "),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -157,6 +159,7 @@ fun DownloadsScreen() {
                     batch,
                     onCancel = { downloads.cancelBatch(batch.key) },
                     onRetry = { downloads.retryBatch(batch.key) },
+                    onRemove = { downloads.removeBatch(batch.key) },
                     // A check met reading the search is the site's own, passed at its home.
                     onVerify = if (batch.problem?.code == Problem.Code.CHALLENGE) {
                         { challenge.open(batch.source, batch.source.baseUrl, ChallengeMode.SITE) { downloads.retryBatch(batch.key) } }
@@ -171,6 +174,7 @@ fun DownloadsScreen() {
                     task, { formatBytes(context, it) },
                     onCancel = { downloads.cancel(task.key) },
                     onRetry = { downloads.retry(task.key) },
+                    onRemove = { downloads.remove(task.key) },
                     onVerify = check?.let { problem ->
                         {
                             // A file host guards the file itself and is passed there; a check met on
@@ -186,7 +190,7 @@ fun DownloadsScreen() {
 }
 
 @Composable
-private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit, onVerify: (() -> Unit)?) {
+private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
         headlineContent = { Text(stringResource(R.string.batch_title, batch.tags.ifBlank { stringResource(R.string.batch_everything) })) },
         supportingContent = {
@@ -208,14 +212,23 @@ private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit,
             if (batch.active) {
                 IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.batch_stop)) }
             } else {
-                IconButton(onClick = onRetry) { Icon(Icons.Outlined.Refresh, stringResource(R.string.action_retry)) }
+                RetryOrRemove(onRetry, onRemove)
             }
         },
     )
 }
 
+/** What a stopped row offers: try it again, or take just this one off the list. */
 @Composable
-private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () -> Unit, onRetry: () -> Unit, onVerify: (() -> Unit)?) {
+private fun RetryOrRemove(onRetry: () -> Unit, onRemove: () -> Unit) {
+    Row {
+        IconButton(onClick = onRetry) { Icon(Icons.Outlined.Refresh, stringResource(R.string.action_retry)) }
+        IconButton(onClick = onRemove) { Icon(Icons.Outlined.Close, stringResource(R.string.action_remove)) }
+    }
+}
+
+@Composable
+private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
         headlineContent = { Text("${task.source.name} #${task.post.id}") },
         supportingContent = {
@@ -256,8 +269,11 @@ private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () ->
         trailingContent = {
             when (task.status) {
                 DownloadStatus.QUEUED, DownloadStatus.RUNNING -> IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.action_cancel)) }
-                DownloadStatus.FAILED, DownloadStatus.CANCELLED -> IconButton(onClick = onRetry) { Icon(Icons.Outlined.Refresh, stringResource(R.string.action_retry)) }
-                DownloadStatus.DONE, DownloadStatus.SKIPPED -> Icon(Icons.Outlined.CheckCircle, null, tint = MaterialTheme.colorScheme.primary)
+                DownloadStatus.FAILED, DownloadStatus.CANCELLED -> RetryOrRemove(onRetry, onRemove)
+                // As wide as the buttons on the other rows, so the icons line up.
+                DownloadStatus.DONE, DownloadStatus.SKIPPED -> Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                    Icon(Icons.Outlined.CheckCircle, null, tint = MaterialTheme.colorScheme.primary)
+                }
             }
         },
     )

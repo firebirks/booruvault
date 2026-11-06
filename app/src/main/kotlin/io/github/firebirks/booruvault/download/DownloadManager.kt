@@ -131,6 +131,7 @@ class DownloadManager(
     json: Json,
     root: File,
     private val scope: CoroutineScope,
+    private val timeoutRetryPauseMs: Long = 3_000,
 ) {
     private val saved = SealedJson(File(root, "downloads.bin"), SavedQueue.serializer(), json)
 
@@ -338,7 +339,7 @@ class DownloadManager(
                 val seen = HashSet<Long>()
                 // Filters that let nothing through would otherwise have every page read.
                 while (found < batch.target && barren < MAX_BARREN_PAGES) {
-                    val posts = api.posts(batch.tags, page, limit)
+                    val posts = retryingTimeouts { api.posts(batch.tags, page, limit) }
                     if (posts.isEmpty()) break
                     val allowed = posts.filter { seen.add(it.id) && policy.allows(it) }.take(batch.target - found)
                     barren = if (allowed.isEmpty()) barren + 1 else 0
@@ -440,6 +441,34 @@ class DownloadManager(
         _batches.update { list -> list.filter { !it.retriable } }
     }
 
+    /** Takes one download off the list, unless it is under way: done, skipped, failed or cancelled. */
+    fun remove(key: Long) {
+        _tasks.update { list -> list.filterNot { it.key == key && !it.active } }
+    }
+
+    /** Takes one collection off the list, unless it is under way: stopped by a problem or by the user. */
+    fun removeBatch(key: Long) {
+        _batches.update { list -> list.filterNot { it.key == key && !it.active } }
+    }
+
+    /**
+     * Runs [block] again, after a pause, while it fails on a timeout, up to [TIMEOUT_RETRIES] more
+     * times. Over Tor a timeout is most often a slow circuit, and the next try may take another.
+     */
+    private suspend fun <T> retryingTimeouts(block: suspend () -> T): T {
+        var tries = 0
+        while (true) {
+            try {
+                return block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (tries++ >= TIMEOUT_RETRIES || e.toProblem().code != Problem.Code.TIMEOUT) throw e
+                delay(timeoutRetryPauseMs)
+            }
+        }
+    }
+
     private fun set(key: Long, transform: (DownloadTask) -> DownloadTask) {
         _tasks.update { list -> list.map { if (it.key == key) transform(it) else it } }
     }
@@ -454,7 +483,8 @@ class DownloadManager(
         job.start()
     }
 
-    private suspend fun run(key: Long) {
+    /** [tries]: the attempts already made, each ended by a timeout. */
+    private suspend fun run(key: Long, tries: Int = 0) {
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.QUEUED) return
         var post = task.post
@@ -570,6 +600,13 @@ class DownloadManager(
                 throw e as? CancellationException ?: CancellationException("download cancelled", e)
             }
             val met = e.toProblem()
+            if (met.code == Problem.Code.TIMEOUT && tries < TIMEOUT_RETRIES) {
+                // Over Tor most often a slow circuit: the next try may take another. The place
+                // among the parallel transfers is kept through the pause.
+                set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1) }
+                delay(timeoutRetryPauseMs)
+                return run(key, tries + 1)
+            }
             val checked = checkedAt[task.source.id]
             // A file host's check names the file; one met on the site's own pages names nothing.
             val guarded = (met.detail ?: task.source.baseUrl).toHttpUrlOrNull()?.host
@@ -585,6 +622,9 @@ class DownloadManager(
 
         /** Pages in a row that add nothing the filters allow, after which a batch stops looking. */
         const val MAX_BARREN_PAGES = 10
+
+        /** Tries after the first that a timeout earns a file or a page, before it counts as failed. */
+        const val TIMEOUT_RETRIES = 2
     }
 
     private fun startService() {

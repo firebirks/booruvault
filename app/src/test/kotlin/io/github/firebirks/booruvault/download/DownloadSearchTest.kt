@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.download
 
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruEngine
+import io.github.firebirks.booruvault.booru.BooruException
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.Rating
@@ -28,6 +29,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.net.SocketTimeoutException
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -87,7 +89,7 @@ class DownloadSearchTest {
         vault.create(password.toCharArray(), fastKdf)
         withTimeout(5000) { settings.ready.first { it } }
         val store = VaultStore(root, vault, json, scope)
-        return DownloadManager({}, { api }, OkHttpClient(), { false }, { _, _ -> false }, store, vault, settings, json, root, managerScope)
+        return DownloadManager({}, { api }, OkHttpClient(), { false }, { _, _ -> false }, store, vault, settings, json, root, managerScope, timeoutRetryPauseMs = 0)
     }
 
     /** Waits until no batch is still collecting. */
@@ -142,6 +144,58 @@ class DownloadSearchTest {
         assertEquals(Problem(Problem.Code.RATE_LIMITED), batch?.problem)
         assertEquals(42, batch?.found)
         assertEquals(2, batch?.nextPage)
+    }
+
+    /** What a page read gives when the network times out under it, as [getText] wraps it. */
+    private fun timedOut() = BooruException(Problem.Code.NETWORK, "Read timed out", SocketTimeoutException("Read timed out"))
+
+    @Test
+    fun `a page that times out is read again before the collection gives up`() = runBlocking {
+        val pages = sized(42, 100, 37)
+        var timeouts = 1
+        val api = FakeApi { page -> if (page == 2 && timeouts-- > 0) throw timedOut() else pages(page) }
+        val downloads = manager(api)
+
+        downloads.downloadSearch(source, "pikachu", 500)
+        downloads.settled()
+
+        assertEquals((1L..179L).toSet(), downloads.queuedIds())
+        assertEquals(listOf(1, 2, 2, 3, 4), api.asked)
+        assertTrue(downloads.batches.value.isEmpty())
+    }
+
+    @Test
+    fun `a page that keeps timing out stops the collection with a timeout`() = runBlocking {
+        val pages = sized(42, 100, 37)
+        val api = FakeApi { page -> if (page == 2) throw timedOut() else pages(page) }
+        val downloads = manager(api)
+
+        downloads.downloadSearch(source, "pikachu", 500)
+        val batch = downloads.settled().single()
+
+        assertEquals(Problem.Code.TIMEOUT, batch.problem?.code)
+        assertEquals(listOf(1, 2, 2, 2), api.asked)
+    }
+
+    @Test
+    fun `a stopped collection can be removed on its own, and one under way cannot`() = runBlocking {
+        val pages = sized(42, 100, 37)
+        val gate = kotlinx.coroutines.CompletableDeferred<Unit>()
+        val api = FakeApi(before = { page -> if (page == 2) gate.await() }, pages = pages)
+        val downloads = manager(api)
+        downloads.downloadSearch(source, "pikachu", 500)
+        withTimeout(10_000) { downloads.batches.first { list -> list.any { it.found == 42 } } }
+
+        val running = downloads.batches.value.single()
+        downloads.removeBatch(running.key)
+        assertEquals("a collection under way stays listed", listOf(running.key), downloads.batches.value.map { it.key })
+        assertTrue(downloads.batches.value.single().active)
+
+        downloads.cancelAll()
+        gate.complete(Unit)
+        val stopped = downloads.settled().single()
+        downloads.removeBatch(stopped.key)
+        assertTrue(downloads.batches.value.isEmpty())
     }
 
     @Test

@@ -35,7 +35,8 @@ All three are signed with the same key, so updates install over each other. A bu
 - **What you can download:** single posts, a multi-selection, or every result of a search (up to 1000).
 - **Encrypted while streaming:** files are sealed as they arrive, so plaintext never touches storage.
 - **Background:** three downloads run in parallel under a foreground service. Its notification shows counts only.
-- **The queue** is sealed in the vault and resumes after a restart.
+- **The queue** is sealed in the vault and resumes after a restart. A download or a collection that stopped can be retried or removed on its own, or all of them at once.
+- **Timeouts:** a file or a search page that times out is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
 - **On lock:** the queue is paused and dropped from memory. A risky option lets it keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
 - **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock.
 

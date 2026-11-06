@@ -159,6 +159,25 @@ class DownloadCancelTest {
     }
 
     @Test
+    fun `one download that was stopped can be removed on its own, and one under way cannot`() = runBlocking {
+        StallingServer().use { server ->
+            val downloads = manager()
+            downloads.enqueue(listOf(post(1, server.port), post(2, server.port)), source)
+            withTimeout(10_000) { downloads.tasks.first { list -> list.all { it.bytes > 0 } } }
+            val first = downloads.tasks.value.single { it.post.id == 1L }.key
+            val second = downloads.tasks.value.single { it.post.id == 2L }.key
+            downloads.cancel(first)
+            withTimeout(5000) { downloads.tasks.first { list -> list.single { it.key == first }.status == DownloadStatus.CANCELLED } }
+
+            downloads.remove(second)
+            downloads.remove(first)
+            assertEquals(listOf(2L), downloads.tasks.value.map { it.post.id })
+            assertEquals(DownloadStatus.RUNNING, downloads.status(2))
+        }
+        Unit
+    }
+
+    @Test
     fun `removing what is finished keeps what was cancelled, which can be retried, and removing what failed takes it`() = runBlocking {
         StallingServer().use { server ->
             val downloads = manager()
