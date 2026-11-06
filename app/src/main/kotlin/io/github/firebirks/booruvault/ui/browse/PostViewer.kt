@@ -1,5 +1,7 @@
 package io.github.firebirks.booruvault.ui.browse
 
+import io.github.firebirks.booruvault.ui.common.ViewerTextShadow
+import io.github.firebirks.booruvault.ui.common.ViewerChromeScrim
 import java.util.UUID
 import io.github.firebirks.booruvault.vault.TagCollection
 import io.github.firebirks.booruvault.ui.vault.CollectionDialog
@@ -77,7 +79,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -214,17 +215,17 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 Modifier
                     .fillMaxWidth()
                     .onSizeChanged { chromeHeight = it.height }
-                    .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)))
+                    .background(ViewerChromeScrim)
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 4.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = ::close) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back), tint = Color.White) }
                 Column(Modifier.weight(1f)) {
-                    Text("#${post.id}", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    Text("#${post.id}", color = Color.White, style = MaterialTheme.typography.titleMedium.copy(shadow = ViewerTextShadow))
                     Text(
                         "${state.source?.name.orEmpty()} · ${pager.currentPage + 1}/${posts.size}",
-                        color = Color.White.copy(alpha = 0.75f), style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.labelMedium.copy(shadow = ViewerTextShadow),
                     )
                 }
                 IconButton(onClick = { links.open(post.postUrl) }) { Icon(Icons.Outlined.OpenInBrowser, stringResource(R.string.viewer_open_browser), tint = Color.White) }

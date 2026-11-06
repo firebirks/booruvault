@@ -43,7 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
@@ -119,10 +122,14 @@ fun categoryColor(category: TagCategory): Color {
 
 @Composable
 fun CenteredProgress(label: String? = null, modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    // Padded and centred line by line as MessageState is: a label long enough to wrap (the Tor
+    // exit check's) would otherwise run from edge to edge, its lines flush left.
+    Box(modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CircularProgressIndicator()
-            if (label != null) Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (label != null) {
+                Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+            }
         }
     }
 }
@@ -189,3 +196,16 @@ fun PasswordField(
         modifier = modifier,
     )
 }
+
+/**
+ * Behind a viewer's top bar: dark under the title and the line below it, fading out past them,
+ * so the white text stays legible over a bright image.
+ */
+val ViewerChromeScrim: Brush = Brush.verticalGradient(
+    0f to Color.Black.copy(alpha = 0.75f),
+    0.75f to Color.Black.copy(alpha = 0.55f),
+    1f to Color.Transparent,
+)
+
+/** A soft shadow under a viewer's white text, for what the scrim leaves bright. */
+val ViewerTextShadow = Shadow(Color.Black, Offset.Zero, blurRadius = 6f)

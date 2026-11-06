@@ -1,5 +1,7 @@
 package io.github.firebirks.booruvault.ui.vault
 
+import io.github.firebirks.booruvault.ui.common.ViewerTextShadow
+import io.github.firebirks.booruvault.ui.common.ViewerChromeScrim
 import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
@@ -57,7 +59,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -163,15 +164,15 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
                 Modifier
                     .fillMaxWidth()
                     .onSizeChanged { chromeHeight = it.height }
-                    .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)))
+                    .background(ViewerChromeScrim)
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = ::close) { Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(R.string.action_back), tint = Color.White) }
                 Column(Modifier.weight(1f)) {
-                    Text(item.fileName, color = Color.White, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("${pager.currentPage + 1}/${items.size}", color = Color.White.copy(alpha = 0.75f), style = MaterialTheme.typography.labelMedium)
+                    Text(item.fileName, color = Color.White, style = MaterialTheme.typography.titleMedium.copy(shadow = ViewerTextShadow), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("${pager.currentPage + 1}/${items.size}", color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.labelMedium.copy(shadow = ViewerTextShadow))
                 }
                 IconButton(onClick = { info = item }) { Icon(Icons.Outlined.Info, stringResource(R.string.vault_details), tint = Color.White) }
                 IconButton(onClick = {
