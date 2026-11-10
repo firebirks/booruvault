@@ -47,8 +47,11 @@ import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -483,8 +486,12 @@ class DownloadManager(
         job.start()
     }
 
-    /** [tries]: the attempts already made, each ended by a timeout. */
-    private suspend fun run(key: Long, tries: Int = 0) {
+    /**
+     * [retries]: the tries a failure may still earn this file before it counts as failed.
+     * [resume]: whether a transfer cut short may ask for the rest; false once the file's host
+     * has answered such a request with something else.
+     */
+    private suspend fun run(key: Long, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true) {
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.QUEUED) return
         var post = task.post
@@ -494,6 +501,8 @@ class DownloadManager(
         }
         set(key) { it.copy(status = DownloadStatus.RUNNING) }
         val id = store.newId()
+        var left = retries
+        var resumable = resume
         try {
             if (post.needsResolve) {
                 post = api(task.source).resolve(post)
@@ -517,26 +526,57 @@ class DownloadManager(
                 val total = body.contentLength()
                 if (total > VaultStore.MAX_MEDIA_BYTES) throw MediaTooLargeException()
                 set(key) { it.copy(total = total) }
+                val validator = if (resumable) resumeValidator(response) else null
                 store.writeMedia(id) { out ->
-                    body.byteStream().use { input ->
-                        val buffer = ByteArray(64 * 1024)
-                        var done = 0L
-                        var reported = 0L
-                        try {
-                            while (true) {
-                                currentCoroutineContext().ensureActive()
-                                val n = input.read(buffer)
-                                if (n < 0) break
-                                out.write(buffer, 0, n)
-                                done += n
-                                if (done - reported >= 256 * 1024) {
-                                    reported = done
-                                    set(key) { it.copy(bytes = done) }
-                                }
-                            }
-                        } finally {
-                            buffer.fill(0)
+                    var done = 0L
+                    var reported = 0L
+                    val count: (Int) -> Unit = { n ->
+                        done += n
+                        if (done - reported >= 256 * 1024) {
+                            reported = done
+                            val bytes = done
+                            set(key) { it.copy(bytes = bytes) }
                         }
+                    }
+                    var cut = receive(body.byteStream(), out, count)
+                    // Cut short by the network, with part of the file already sealed: the rest is
+                    // asked for and sealed after it, rather than the whole file once more.
+                    var gained = done
+                    while (cut != null) {
+                        val failure: IOException = cut
+                        currentCoroutineContext().ensureActive()
+                        if (validator == null || done == 0L || failure.toProblem().code !in RESUMED) throw failure
+                        // What was read is kept, so the tries start over; they run out only on
+                        // attempts in a row that bring nothing.
+                        if (gained > 0) left = TIMEOUT_RETRIES
+                        if (left == 0) throw failure
+                        left--
+                        delay(timeoutRetryPauseMs)
+                        val from = done
+                        cut = try {
+                            client.newCall(resumeRequest(url, task.source, from, validator)).withResponse { rest ->
+                                if (rest.header("cf-mitigated").equals("challenge", ignoreCase = true)) {
+                                    throw ProblemException(Problem.Code.CHALLENGE, url)
+                                }
+                                if (!resumesAt(rest, from, total)) {
+                                    // The host does not hand out parts, or the file is no longer
+                                    // the one begun: from its first byte, or not at all. Asking
+                                    // was no try at the file, and does not count as one.
+                                    resumable = false
+                                    left++
+                                    throw failure
+                                }
+                                receive(rest.body.byteStream(), out, count)
+                            }
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: IOException) {
+                            // Refused, or stopped by something a further try will not mend: that
+                            // ends it. Anything else cut this request before it brought a byte.
+                            if (!resumable || e.toProblem().code !in RESUMED) throw e
+                            e
+                        }
+                        gained = done - from
                     }
                 }
             }
@@ -600,12 +640,12 @@ class DownloadManager(
                 throw e as? CancellationException ?: CancellationException("download cancelled", e)
             }
             val met = e.toProblem()
-            if (met.code == Problem.Code.TIMEOUT && tries < TIMEOUT_RETRIES) {
+            if (met.code == Problem.Code.TIMEOUT && left > 0) {
                 // Over Tor most often a slow circuit: the next try may take another. The place
                 // among the parallel transfers is kept through the pause.
                 set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1) }
                 delay(timeoutRetryPauseMs)
-                return run(key, tries + 1)
+                return run(key, left - 1, resumable)
             }
             val checked = checkedAt[task.source.id]
             // A file host's check names the file; one met on the site's own pages names nothing.
@@ -623,8 +663,39 @@ class DownloadManager(
         /** Pages in a row that add nothing the filters allow, after which a batch stops looking. */
         const val MAX_BARREN_PAGES = 10
 
-        /** Tries after the first that a timeout earns a file or a page, before it counts as failed. */
+        /**
+         * Tries after the first that a timeout earns a file or a page, before it counts as
+         * failed. A file taken up where it was cut gets them anew each time it brings something.
+         */
         const val TIMEOUT_RETRIES = 2
+
+        /** What cuts a transfer short without saying anything about the file: the rest is worth asking for. */
+        val RESUMED = setOf(Problem.Code.TIMEOUT, Problem.Code.NETWORK)
+    }
+
+    /**
+     * Copies what [input] gives into [out], telling [count] of each piece. Returns null at the end
+     * of the input, or the failure that cut the reading short; a failure of [out] is thrown.
+     */
+    private suspend fun receive(input: InputStream, out: OutputStream, count: (Int) -> Unit): IOException? {
+        val buffer = ByteArray(64 * 1024)
+        try {
+            input.use {
+                while (true) {
+                    currentCoroutineContext().ensureActive()
+                    val n = try {
+                        it.read(buffer)
+                    } catch (e: IOException) {
+                        return e
+                    }
+                    if (n < 0) return null
+                    out.write(buffer, 0, n)
+                    count(n)
+                }
+            }
+        } finally {
+            buffer.fill(0)
+        }
     }
 
     private fun startService() {
@@ -639,6 +710,36 @@ class DownloadManager(
 internal fun downloadRequest(url: String, source: BooruSource): Request = Request.Builder().url(url)
     .header("User-Agent", UserAgents.forSource(source))
     .build()
+
+/**
+ * What a later request can name to be given the rest of the file [response] began, and nothing
+ * else: a strong ETag, or the date the file was last changed. Null when the rest cannot be asked
+ * for: the host hands out no parts, names nothing to hold the file to, or sent it without a
+ * length, as one unpacked on the way arrives, whose bytes are not the ones the host counts.
+ */
+internal fun resumeValidator(response: Response): String? {
+    if (response.code != 200 || response.body.contentLength() <= 0) return null
+    if (response.header("Accept-Ranges").equals("none", ignoreCase = true)) return null
+    return response.header("ETag")?.takeIf { it.isNotBlank() && !it.startsWith("W/") }
+        ?: response.header("Last-Modified")?.takeIf { it.isNotBlank() }
+}
+
+/** [downloadRequest] for the bytes from [from] on, of the file [validator] names and of no other. */
+internal fun resumeRequest(url: String, source: BooruSource, from: Long, validator: String): Request =
+    downloadRequest(url, source).newBuilder()
+        .header("Range", "bytes=$from-")
+        .header("If-Range", validator)
+        .build()
+
+/** Whether [response] is the part asked for: the bytes from [from] on, of a file [total] bytes long. */
+internal fun resumesAt(response: Response, from: Long, total: Long): Boolean {
+    if (response.code != 206) return false
+    val range = CONTENT_RANGE.matchEntire(response.header("Content-Range")?.trim() ?: return false) ?: return false
+    val (start, end, length) = range.destructured
+    return start.toLongOrNull() == from && end.toLongOrNull() == total - 1 && (length == "*" || length.toLongOrNull() == total)
+}
+
+private val CONTENT_RANGE = Regex("""bytes\s+(\d+)-(\d+)/(\d+|\*)""", RegexOption.IGNORE_CASE)
 
 /** The downloads of [sourceId] an anti-bot check stopped. */
 internal fun challengedKeys(tasks: List<DownloadTask>, sourceId: String): List<Long> = tasks

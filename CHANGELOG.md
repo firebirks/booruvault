@@ -6,6 +6,9 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 
 ## [Unreleased]
 
+### Added
+- A download cut short or stalled is taken up where it stopped, when the file's host allows it, instead of starting over: over a slow Tor circuit a large file no longer begins again at every stall.
+
 ### Changed
 - In the network settings, where Tor stands and the buttons that act on it come right under the switch, before the explanations.
 - Back from a settings page opened from Browse, by the onion, the content filter or the missing sources, returns to Browse instead of the settings' hub.
