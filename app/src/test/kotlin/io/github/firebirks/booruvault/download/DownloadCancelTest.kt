@@ -193,4 +193,23 @@ class DownloadCancelTest {
         }
         Unit
     }
+    @Test
+    fun `downloads take their places in the order they were queued`() = runBlocking {
+        // Many times over: left to chance, the order comes out right most of the time.
+        repeat(25) {
+            StallingServer().use { server ->
+                val downloads = manager()
+                downloads.enqueue((1L..6L).map { post(it, server.port) }, source)
+                withTimeout(10_000) { downloads.tasks.first { list -> list.count { it.bytes > 0 } == 3 } }
+                assertEquals(listOf(1L, 2L, 3L), downloads.tasks.value.filter { it.bytes > 0 }.map { it.post.id })
+                assertTrue(downloads.tasks.value.filter { it.post.id > 3 }.all { it.status == DownloadStatus.QUEUED })
+
+                // The place one of them gives up goes to the first still waiting, not to any of them.
+                downloads.cancel(downloads.tasks.value.single { it.post.id == 2L }.key)
+                withTimeout(10_000) { downloads.tasks.first { list -> list.any { it.post.id > 3 && it.bytes > 0 } } }
+                assertEquals(listOf(4L), downloads.tasks.value.filter { it.post.id > 3 && it.status != DownloadStatus.QUEUED }.map { it.post.id })
+                downloads.cancelAll()
+            }
+        }
+    }
 }

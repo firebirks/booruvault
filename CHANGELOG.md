@@ -16,6 +16,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - Back from a settings page opened from Browse, by the onion, the content filter or the missing sources, returns to Browse instead of the settings' hub.
 
 ### Fixed
+- Downloads start in the order they were queued: they used to race for the three places, and a post queued later could start before an earlier one.
 - A full image that fails to load in a viewer says why and offers to try again, instead of leaving its preview under a spinner for good. A check in front of the file can be passed in the built-in browser from there.
 - A blacklist edited just before leaving the content filter is saved, instead of being dropped with the page.
 - A long source name, a page's host or a large font no longer pushes the browser, the onion and the menu off the top bar of Browse: the name is cut short instead.

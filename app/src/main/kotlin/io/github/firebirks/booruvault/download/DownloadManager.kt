@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -257,6 +258,14 @@ class DownloadManager(
     private val checkedAt = ConcurrentHashMap<String, Long>()
     private val keys = AtomicLong()
     private val parallel = Semaphore(3)
+
+    /**
+     * Where a download comes to wait for one of the places: one at a time, so they reach the
+     * wait, which hands the places out first come first served, in the order they were queued.
+     * Left to as many threads as there are downloads, they would race to it, and a post queued
+     * later could start before one queued earlier.
+     */
+    private val turn = Dispatchers.IO.limitedParallelism(1)
 
     init {
         scope.launch {
@@ -480,18 +489,22 @@ class DownloadManager(
         // Listed before it starts, and taken off the list only if still the one listed: a retry
         // after a cancellation puts a newer job under the same key while the old one unwinds.
         // On completion rather than in a finally, so a job cancelled before it ran is taken off too.
-        val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) { parallel.withPermit { run(task.key) } }
+        val job = scope.launch(turn, start = CoroutineStart.LAZY) {
+            val own = coroutineContext.job
+            parallel.withPermit { withContext(Dispatchers.IO) { run(task.key, own) } }
+        }
         job.invokeOnCompletion { jobs.remove(task.key, job) }
         jobs[task.key] = job
         job.start()
     }
 
     /**
+     * [own]: the job this download was launched as, the one listed under its key.
      * [retries]: the tries a failure may still earn this file before it counts as failed.
      * [resume]: whether a transfer cut short may ask for the rest; false once the file's host
      * has answered such a request with something else.
      */
-    private suspend fun run(key: Long, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true) {
+    private suspend fun run(key: Long, own: Job, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true) {
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.QUEUED) return
         var post = task.post
@@ -636,7 +649,7 @@ class DownloadManager(
                 // would. That is no failure to report, and the job ends as a cancelled one does.
                 // The status is written only by the job still listed for the key: an older one,
                 // unwinding after a retry replaced it, must not mark the retry cancelled.
-                if (jobs[key] === currentCoroutineContext().job) set(key) { it.copy(status = DownloadStatus.CANCELLED) }
+                if (jobs[key] === own) set(key) { it.copy(status = DownloadStatus.CANCELLED) }
                 throw e as? CancellationException ?: CancellationException("download cancelled", e)
             }
             val met = e.toProblem()
@@ -645,7 +658,7 @@ class DownloadManager(
                 // among the parallel transfers is kept through the pause.
                 set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1) }
                 delay(timeoutRetryPauseMs)
-                return run(key, left - 1, resumable)
+                return run(key, own, left - 1, resumable)
             }
             val checked = checkedAt[task.source.id]
             // A file host's check names the file; one met on the site's own pages names nothing.
