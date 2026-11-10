@@ -115,7 +115,7 @@ All files live in the app's private storage, under `files/vault/`:
 | `vault.json` | Header: KDF parameters, public key, wrapped private key, and during a re-keying the retired key boxed to the new one. **Clear**, holds no user data. |
 | `meta/<id>` | Item metadata (source of truth). Sealed. |
 | `media/<id>`, `thumbs/<id>` | File and thumbnail. Sealed. |
-| `index.bin` | Cache of all metadata, rebuilt from `meta/` if lost. Sealed. |
+| `index.bin` | Cache of all metadata, rebuilt from `meta/` if lost. Written once changes have settled, not for each one, so it may lag behind `meta/`; an unlock reads what it missed. Sealed. |
 | `config.bin` | Settings, sources, API keys. Sealed. |
 | `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with, one set for Tor and one for the direct connection. Sealed. |
 | `downloads.bin` | Pending, failed and cancelled downloads, and search collections in progress. Sealed. |

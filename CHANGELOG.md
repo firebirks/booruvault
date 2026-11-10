@@ -11,6 +11,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - A download cut short or stalled is taken up where it stopped, when the file's host allows it, instead of starting over: over a slow Tor circuit a large file no longer begins again at every stall.
 
 ### Changed
+- The vault's index is written once a run of downloads, imports or deletions has settled, instead of every time a few items arrived: with thousands of items in the vault, downloading many more no longer rewrites megabytes for each of them. An index left behind by a lock or by the end of the app is caught up at the next unlock.
 - In the network settings, where Tor stands and the buttons that act on it come right under the switch, before the explanations.
 - Back from a settings page opened from Browse, by the onion, the content filter or the missing sources, returns to Browse instead of the settings' hub.
 
