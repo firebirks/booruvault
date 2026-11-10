@@ -777,12 +777,6 @@ private fun TorSettings() {
             else -> confirmOff = true
         }
     }
-    Text(
-        stringResource(R.string.tor_use_hint),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-    )
     if (state.enabled) {
         // Orbot tells nothing by itself; while this is on screen, and the app in front, the
         // port is greeted every few seconds.
@@ -795,15 +789,10 @@ private fun TorSettings() {
                 }
             }
         }
-        // One line says where Tor stands: Orbot, the port and the exit check together.
+        // One line says where Tor stands: Orbot, the port and the exit check together. It comes
+        // right under the switch, with what can be done about it, and before the explanations:
+        // the onion in Browse sends here to find out what is wrong, not to read how Tor works.
         TorVerdict(state)
-        Text(
-            stringResource(R.string.tor_vpn_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-        )
-        TorPortField(tor, state.socksPort)
         Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { openOrbot(context, tor) }) { Text(stringResource(R.string.tor_open_orbot)) }
             OutlinedButton(enabled = !verifying, onClick = {
@@ -818,6 +807,21 @@ private fun TorSettings() {
                 }
             }) { Text(stringResource(if (verifying) R.string.tor_verifying else R.string.tor_verify)) }
         }
+    }
+    Text(
+        stringResource(R.string.tor_use_hint),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+    )
+    if (state.enabled) {
+        Text(
+            stringResource(R.string.tor_vpn_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        )
+        TorPortField(tor, state.socksPort)
     }
 
     if (askInstall) OrbotInstallDialog(stringResource(R.string.tor_need_orbot_text), onDismiss = { askInstall = false })
