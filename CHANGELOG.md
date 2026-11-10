@@ -7,6 +7,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ## [Unreleased]
 
 ### Added
+- The whole vault can be saved as one file, still encrypted, from Settings > Vault, and restored on the first screen of an install that has no vault: files, tags, settings, sources and collections come back, opened by the password the vault had. Nothing is decrypted to make it, and the site cookies, the download queue and the fingerprint's copy of the key stay behind.
 - A download cut short or stalled is taken up where it stopped, when the file's host allows it, instead of starting over: over a slow Tor circuit a large file no longer begins again at every stall.
 
 ### Changed

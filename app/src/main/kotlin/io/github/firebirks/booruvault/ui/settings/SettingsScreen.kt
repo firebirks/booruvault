@@ -313,7 +313,7 @@ private fun BrowsingSettings() {
     }
 }
 
-/** The lock, the password, the shortcut past it, and the one irreversible action, last. */
+/** The lock, the password, the shortcut past it, the backup, and the one irreversible action, last. */
 @Composable
 private fun VaultSettings() {
     val container = LocalContainer.current
@@ -387,6 +387,8 @@ private fun VaultSettings() {
         stringResource(R.string.settings_secure_screen_hint),
         settings.secureScreen,
     ) { scope.launch { repo.setSecureScreen(it) } }
+    HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+    BackupRow()
     HorizontalDivider(Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
     ListItem(
         headlineContent = { Text(stringResource(R.string.settings_delete_vault), color = MaterialTheme.colorScheme.error) },
@@ -751,6 +753,7 @@ internal fun DestroyVaultDialog(onDismiss: () -> Unit) {
         confirmButton = {
             TextButton(enabled = sameConfirmWord(typed, word), onClick = {
                 container.downloads.cancelAll()
+                container.backups.cancel()
                 scope.launch {
                     container.vault.destroy()
                     BiometricKey.delete()

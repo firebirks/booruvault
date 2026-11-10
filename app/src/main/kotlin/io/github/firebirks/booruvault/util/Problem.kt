@@ -45,6 +45,12 @@ data class Problem(val code: Code, val detail: String? = null) {
         FILE_UNREADABLE,
         /** The settings file could not be read: the settings start afresh, the file kept aside. */
         SETTINGS_UNREADABLE,
+        /** A file picked to restore the vault from is not a backup, or is cut short or damaged. */
+        BACKUP_UNREADABLE,
+        /** A backup in a format this version of the app does not know: a later one made it. */
+        BACKUP_NEWER,
+        /** The password was changed while a backup was being made: its files no longer match its header. */
+        BACKUP_KEY_CHANGED,
         UNKNOWN,
     }
 }

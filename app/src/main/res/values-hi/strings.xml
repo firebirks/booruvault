@@ -31,6 +31,9 @@
     <string name="problem_storage_write">फ़ोन के स्टोरेज में लिखा नहीं जा सका: %1$s</string>
     <string name="problem_file_unreadable">फ़ाइल पढ़ी नहीं जा सकी: %1$s</string>
     <string name="problem_settings_unreadable">सेटिंग पढ़ी नहीं जा सकीं और नए सिरे से शुरू होती हैं। फ़ाइल %1$s के रूप में रखी गई है</string>
+    <string name="problem_backup_unreadable">यह फ़ाइल BooruVault का बैकअप नहीं है, या यह अधूरी या खराब है</string>
+    <string name="problem_backup_newer">यह बैकअप ऐप के नए संस्करण से बनाया गया है। ऐप अपडेट करें, फिर इसे बहाल करें।</string>
+    <string name="problem_backup_key_changed">बैकअप बनाते समय पासवर्ड बदल दिया गया। बैकअप फिर से बनाएं।</string>
     <string name="problem_unknown">त्रुटि: %1$s</string>
     <string name="rating_general">सामान्य</string>
     <string name="rating_sensitive">संवेदनशील</string>
@@ -120,6 +123,17 @@
     <string name="settings_cookies_cleared">कुकी मिटा दी गईं</string>
     <string name="settings_cookies_clear_title">साइट कुकीज़ हटाएँ?</string>
     <string name="settings_cookies_clear_text">हर साइट आपको दोनों मार्गों पर भूल जाएगी: लॉगिन खो जाएँगे और एंटी-बॉट जाँच फिर से पास करनी होगी।</string>
+    <string name="settings_backup">तिजोरी का बैकअप</string>
+    <string name="settings_backup_hint">पूरी तिजोरी को एक एन्क्रिप्टेड फ़ाइल के रूप में सहेजें, ताकि उसे कहीं और रखा जा सके या दूसरे फ़ोन पर ले जाया जा सके</string>
+    <string name="backup_text">बैकअप में आपकी फ़ाइलें उनके टैग के साथ, आपकी सेटिंग, स्रोत और API कुंजियां होती हैं, वैसे ही एन्क्रिप्टेड जैसे वे तिजोरी में हैं: इसे बनाने के लिए कुछ भी डिक्रिप्ट नहीं किया जाता। साइटों की कुकी और डाउनलोड कतार इसमें शामिल नहीं हैं।\n\nयह उसी पासवर्ड से खुलता है जो तिजोरी का अभी है, और उतना ही मज़बूत है जितना वह पासवर्ड: जिसके हाथ यह फ़ाइल लगे, वह जितनी देर चाहे इस पर पासवर्ड आज़मा सकता है। बाद में पासवर्ड बदलने से पहले बना बैकअप नहीं बदलता।\n\nइसे इस्तेमाल करने के लिए, ऐसे इंस्टॉल की पहली स्क्रीन पर “%1$s” चुनें जिसमें अभी कोई तिजोरी नहीं है।</string>
+    <string name="backup_choose">सहेजने की जगह चुनें</string>
+    <string name="backup_progress">बैकअप सहेजा जा रहा है: %2$s में से %1$s</string>
+    <string name="backup_done">बैकअप सहेजा गया: %1$s</string>
+    <string name="backup_failed">बैकअप नहीं बनाया जा सका। %1$s</string>
+    <string name="restore_action">बैकअप से बहाल करें</string>
+    <string name="restore_progress">बैकअप बहाल किया जा रहा है: %2$s में से %1$s</string>
+    <string name="restore_failed">बैकअप बहाल नहीं किया जा सका। %1$s</string>
+    <string name="restore_done">बैकअप बहाल हो गया है। इसे उस पासवर्ड से अनलॉक करें जो बैकअप बनाते समय तिजोरी का था।</string>
     <string name="settings_delete_vault">तिजोरी मिटाएं</string>
     <string name="settings_delete_vault_hint">सामग्री, सेटिंग, स्रोत और कुंजी को हमेशा के लिए मिटा देता है। इसे वापस नहीं लाया जा सकता।</string>
     <string name="settings_section_about">जानकारी</string>

@@ -80,6 +80,9 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.STORAGE_WRITE -> getString(R.string.problem_storage_write, detail)
         Problem.Code.FILE_UNREADABLE -> getString(R.string.problem_file_unreadable, detail)
         Problem.Code.SETTINGS_UNREADABLE -> getString(R.string.problem_settings_unreadable, detail)
+        Problem.Code.BACKUP_UNREADABLE -> getString(R.string.problem_backup_unreadable)
+        Problem.Code.BACKUP_NEWER -> getString(R.string.problem_backup_newer)
+        Problem.Code.BACKUP_KEY_CHANGED -> getString(R.string.problem_backup_key_changed)
         Problem.Code.UNKNOWN -> getString(R.string.problem_unknown, detail)
     }
 }

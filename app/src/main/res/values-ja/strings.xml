@@ -31,6 +31,9 @@
     <string name="problem_storage_write">端末のストレージに書き込めませんでした: %1$s</string>
     <string name="problem_file_unreadable">ファイルを読み取れませんでした：%1$s</string>
     <string name="problem_settings_unreadable">設定を読み込めなかったため、初期状態に戻りました。ファイルは %1$s として保存されています</string>
+    <string name="problem_backup_unreadable">このファイルは BooruVault のバックアップではないか、不完全または破損しています</string>
+    <string name="problem_backup_newer">このバックアップは、より新しいバージョンのアプリで作成されています。アプリを更新してから復元してください。</string>
+    <string name="problem_backup_key_changed">バックアップの作成中にパスワードが変更されました。もう一度バックアップを作成してください。</string>
     <string name="problem_unknown">エラー：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">センシティブ</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">Cookie を削除しました</string>
     <string name="settings_cookies_clear_title">サイトの Cookie を削除しますか？</string>
     <string name="settings_cookies_clear_text">すべてのサイトが、どちらの経路でもあなたを忘れます。ログインは失われ、ボット対策チェックをもう一度通過する必要があります。</string>
+    <string name="settings_backup">保管庫のバックアップ</string>
+    <string name="settings_backup_hint">保管庫全体を暗号化された1つのファイルとして保存します。別の場所での保管や、別の端末への移行に使えます</string>
+    <string name="backup_text">バックアップには、ファイルとそのタグ、設定、ソース、API キーが、保管庫内と同じく暗号化されたまま含まれます。作成時に復号されるものはありません。サイトの Cookie とダウンロードのキューは含まれません。\n\nバックアップは保管庫の現在のパスワードで開きます。その強さはパスワード次第です。ファイルを手に入れた人は、好きなだけパスワードを試すことができます。あとでパスワードを変更しても、作成済みのバックアップは変わりません。\n\n使うには、まだ保管庫のない端末の最初の画面で「%1$s」を選んでください。</string>
+    <string name="backup_choose">保存先を選択</string>
+    <string name="backup_progress">バックアップを保存中：%1$s / %2$s</string>
+    <string name="backup_done">バックアップを保存しました：%1$s</string>
+    <string name="backup_failed">バックアップを作成できませんでした。%1$s</string>
+    <string name="restore_action">バックアップを復元</string>
+    <string name="restore_progress">バックアップを復元中：%1$s / %2$s</string>
+    <string name="restore_failed">バックアップを復元できませんでした。%1$s</string>
+    <string name="restore_done">バックアップを復元しました。バックアップ作成時の保管庫のパスワードでロックを解除してください。</string>
     <string name="settings_delete_vault">保管庫を削除</string>
     <string name="settings_delete_vault_hint">コンテンツ、設定、ソース、鍵を消去します。元に戻すことはできません。</string>
     <string name="settings_section_about">このアプリについて</string>

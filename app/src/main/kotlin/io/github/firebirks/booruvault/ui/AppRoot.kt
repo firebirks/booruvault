@@ -76,6 +76,7 @@ import io.github.firebirks.booruvault.ui.vault.UnlockScreen
 import io.github.firebirks.booruvault.ui.vault.VaultTab
 import io.github.firebirks.booruvault.ui.vault.VaultViewModel
 import io.github.firebirks.booruvault.ui.vault.VaultViewer
+import io.github.firebirks.booruvault.vault.BackupState
 import io.github.firebirks.booruvault.vault.VaultState
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -98,6 +99,8 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
         val ready by container.settings.ready.collectAsStateWithLifecycle()
         val vaultState by container.vault.state.collectAsStateWithLifecycle()
         val routeChosen by container.tor.routeChosen.collectAsStateWithLifecycle()
+        val backup by container.backups.state.collectAsStateWithLifecycle()
+        val restored = backup is BackupState.Done && backup.restoring
         var offerBiometric by rememberSaveable { mutableStateOf(false) }
         val context = LocalContext.current
         // A settings change that could not be sealed to storage is said once, wherever the user is.
@@ -107,9 +110,10 @@ fun AppRoot(container: AppContainer, requestedTab: MutableStateFlow<String?>) {
         when (vaultState) {
             VaultState.Missing -> VaultSetupScreen(onCreated = { offerBiometric = true })
             VaultState.Damaged -> VaultDamagedScreen()
+            // A vault just brought back from a backup says so, and which password opens it.
             VaultState.Locked -> UnlockScreen(
                 title = stringResource(R.string.unlock_title_app),
-                subtitle = stringResource(R.string.unlock_subtitle_app),
+                subtitle = stringResource(if (restored) R.string.restore_done else R.string.unlock_subtitle_app),
             )
             is VaultState.Unlocked -> when {
                 !ready -> CenteredProgress(stringResource(R.string.opening_vault))

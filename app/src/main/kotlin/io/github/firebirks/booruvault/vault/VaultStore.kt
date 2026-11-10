@@ -293,7 +293,7 @@ class VaultStore(
         /** The most one media file may hold; a download or import past it is dropped. */
         const val MAX_MEDIA_BYTES = 2L shl 30
 
-        private val ID = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+        internal val ID = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
     }
 }
 

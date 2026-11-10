@@ -31,6 +31,9 @@
     <string name="problem_storage_write">เขียนลงที่เก็บข้อมูลของโทรศัพท์ไม่ได้: %1$s</string>
     <string name="problem_file_unreadable">อ่านไฟล์ไม่ได้: %1$s</string>
     <string name="problem_settings_unreadable">อ่านการตั้งค่าไม่ได้ จึงเริ่มใหม่ตั้งแต่ต้น ไฟล์ถูกเก็บไว้เป็น %1$s</string>
+    <string name="problem_backup_unreadable">ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ BooruVault หรือไม่สมบูรณ์หรือเสียหาย</string>
+    <string name="problem_backup_newer">ข้อมูลสำรองนี้สร้างโดยแอปเวอร์ชันที่ใหม่กว่า โปรดอัปเดตแอปแล้วจึงกู้คืน</string>
+    <string name="problem_backup_key_changed">รหัสผ่านถูกเปลี่ยนระหว่างที่กำลังสร้างข้อมูลสำรอง โปรดสร้างข้อมูลสำรองอีกครั้ง</string>
     <string name="problem_unknown">ข้อผิดพลาด: %1$s</string>
     <string name="rating_general">ทั่วไป</string>
     <string name="rating_sensitive">ละเอียดอ่อน</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">ลบคุกกี้แล้ว</string>
     <string name="settings_cookies_clear_title">ลบคุกกี้ของเว็บไซต์หรือไม่</string>
     <string name="settings_cookies_clear_text">ทุกเว็บไซต์จะลืมคุณในทั้งสองเส้นทาง: การเข้าสู่ระบบหายไป และต้องผ่านการตรวจสอบป้องกันบอตอีกครั้ง</string>
+    <string name="settings_backup">สำรองข้อมูลคลังนิรภัย</string>
+    <string name="settings_backup_hint">บันทึกคลังนิรภัยทั้งหมดเป็นไฟล์เข้ารหัสไฟล์เดียว เพื่อเก็บไว้ที่อื่นหรือย้ายไปยังโทรศัพท์เครื่องอื่น</string>
+    <string name="backup_text">ข้อมูลสำรองประกอบด้วยไฟล์ของคุณพร้อมแท็ก การตั้งค่า แหล่งที่มา และคีย์ API ซึ่งเข้ารหัสไว้เหมือนที่อยู่ในคลังนิรภัย: ไม่มีการถอดรหัสสิ่งใดเพื่อสร้างข้อมูลสำรอง คุกกี้ของเว็บไซต์และคิวดาวน์โหลดจะไม่ถูกรวมไว้\n\nข้อมูลสำรองเปิดได้ด้วยรหัสผ่านที่คลังนิรภัยใช้อยู่ตอนนี้ และปลอดภัยเท่ากับรหัสผ่านนั้นเท่านั้น: ผู้ที่ได้ไฟล์ไปสามารถลองรหัสผ่านได้นานเท่าที่ต้องการ การเปลี่ยนรหัสผ่านในภายหลังไม่ได้เปลี่ยนข้อมูลสำรองที่สร้างไว้แล้ว\n\nหากต้องการใช้ ให้เลือก “%1$s” ในหน้าจอแรกของการติดตั้งที่ยังไม่มีคลังนิรภัย</string>
+    <string name="backup_choose">เลือกตำแหน่งที่จะบันทึก</string>
+    <string name="backup_progress">กำลังบันทึกข้อมูลสำรอง: %1$s จาก %2$s</string>
+    <string name="backup_done">บันทึกข้อมูลสำรองแล้ว: %1$s</string>
+    <string name="backup_failed">สร้างข้อมูลสำรองไม่ได้ %1$s</string>
+    <string name="restore_action">กู้คืนจากข้อมูลสำรอง</string>
+    <string name="restore_progress">กำลังกู้คืนข้อมูลสำรอง: %1$s จาก %2$s</string>
+    <string name="restore_failed">กู้คืนข้อมูลสำรองไม่ได้ %1$s</string>
+    <string name="restore_done">กู้คืนข้อมูลสำรองแล้ว ปลดล็อกด้วยรหัสผ่านที่คลังนิรภัยใช้อยู่ตอนที่สร้างข้อมูลสำรอง</string>
     <string name="settings_delete_vault">ลบคลังนิรภัย</string>
     <string name="settings_delete_vault_hint">ลบเนื้อหา การตั้งค่า แหล่งที่มา และคีย์อย่างถาวรโดยกู้คืนไม่ได้</string>
     <string name="settings_section_about">เกี่ยวกับ</string>

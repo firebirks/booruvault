@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Impossibile scrivere nella memoria del telefono: %1$s</string>
     <string name="problem_file_unreadable">Impossibile leggere il file: %1$s</string>
     <string name="problem_settings_unreadable">Impossibile leggere le impostazioni, che ripartono da zero. Il file è stato conservato come %1$s</string>
+    <string name="problem_backup_unreadable">Questo file non è un backup di BooruVault, oppure è incompleto o danneggiato</string>
+    <string name="problem_backup_newer">Questo backup è stato creato da una versione più recente dell\'app. Aggiorna l\'app e poi ripristinalo.</string>
+    <string name="problem_backup_key_changed">La password è stata cambiata mentre il backup era in corso. Rifai il backup.</string>
     <string name="problem_unknown">Errore: %1$s</string>
     <string name="rating_general">Generale</string>
     <string name="rating_sensitive">Sensibile</string>
@@ -122,6 +125,17 @@
     <string name="settings_cookies_cleared">Cookie cancellati</string>
     <string name="settings_cookies_clear_title">Eliminare i cookie dei siti?</string>
     <string name="settings_cookies_clear_text">Ogni sito ti dimentica, su entrambe le vie: gli accessi vanno persi e i controlli anti-bot vanno superati di nuovo.</string>
+    <string name="settings_backup">Backup del vault</string>
+    <string name="settings_backup_hint">Salva l\'intero vault in un unico file cifrato, da conservare altrove o da portare su un altro telefono</string>
+    <string name="backup_text">Il backup contiene i tuoi file con i loro tag, le impostazioni, le fonti e le API key, cifrati come lo sono nel vault: per crearlo non viene decifrato nulla. Restano fuori i cookie dei siti e la coda dei download.\n\nSi apre con la password che il vault ha adesso, ed è robusto quanto quella password: chi entra in possesso del file può provarci tutte le password che vuole, senza limiti di tempo. Cambiare la password in seguito non cambia un backup già fatto.\n\nPer usarlo, scegli «%1$s» nella prima schermata di un\'installazione che non ha ancora un vault.</string>
+    <string name="backup_choose">Scegli dove salvare</string>
+    <string name="backup_progress">Salvataggio del backup: %1$s di %2$s</string>
+    <string name="backup_done">Backup salvato: %1$s</string>
+    <string name="backup_failed">Impossibile creare il backup. %1$s</string>
+    <string name="restore_action">Ripristina un backup</string>
+    <string name="restore_progress">Ripristino del backup: %1$s di %2$s</string>
+    <string name="restore_failed">Impossibile ripristinare il backup. %1$s</string>
+    <string name="restore_done">Backup ripristinato. Sbloccalo con la password che il vault aveva quando è stato fatto il backup.</string>
     <string name="settings_delete_vault">Elimina il vault</string>
     <string name="settings_delete_vault_hint">Cancella in modo irreversibile contenuti, impostazioni, fonti e chiave.</string>
     <string name="settings_section_about">Informazioni</string>

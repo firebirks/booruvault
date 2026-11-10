@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Не удалось записать в память телефона: %1$s</string>
     <string name="problem_file_unreadable">Не удалось прочитать файл: %1$s</string>
     <string name="problem_settings_unreadable">Не удалось прочитать настройки, они начаты заново. Файл сохранён как %1$s</string>
+    <string name="problem_backup_unreadable">Этот файл не является резервной копией BooruVault либо он неполон или повреждён</string>
+    <string name="problem_backup_newer">Эта резервная копия создана более новой версией приложения. Обновите приложение, затем восстановите её.</string>
+    <string name="problem_backup_key_changed">Пароль был изменён, пока создавалась резервная копия. Создайте копию заново.</string>
     <string name="problem_unknown">Ошибка: %1$s</string>
     <string name="rating_general">Общий</string>
     <string name="rating_sensitive">Чувствительный</string>
@@ -124,6 +127,17 @@
     <string name="settings_cookies_cleared">Cookie удалены</string>
     <string name="settings_cookies_clear_title">Удалить cookie сайтов?</string>
     <string name="settings_cookies_clear_text">Все сайты забудут вас на обоих маршрутах: входы будут потеряны, а проверки на бота придётся пройти снова.</string>
+    <string name="settings_backup">Резервная копия хранилища</string>
+    <string name="settings_backup_hint">Сохранить всё хранилище в один зашифрованный файл, чтобы держать его в другом месте или перенести на другой телефон</string>
+    <string name="backup_text">Копия содержит ваши файлы с тегами, настройки, источники и API-ключи, зашифрованные так же, как в хранилище: при её создании ничего не расшифровывается. Cookie сайтов и очередь загрузок в неё не входят.\n\nОна открывается паролем, который у хранилища сейчас, и защищена ровно настолько, насколько надёжен этот пароль: тот, кто получит файл, сможет подбирать к нему пароли сколько угодно. Смена пароля позже не меняет уже сделанную копию.\n\nЧтобы воспользоваться ею, выберите «%1$s» на первом экране установки, в которой ещё нет хранилища.</string>
+    <string name="backup_choose">Выбрать место сохранения</string>
+    <string name="backup_progress">Сохранение резервной копии: %1$s из %2$s</string>
+    <string name="backup_done">Резервная копия сохранена: %1$s</string>
+    <string name="backup_failed">Не удалось создать резервную копию. %1$s</string>
+    <string name="restore_action">Восстановить из резервной копии</string>
+    <string name="restore_progress">Восстановление резервной копии: %1$s из %2$s</string>
+    <string name="restore_failed">Не удалось восстановить резервную копию. %1$s</string>
+    <string name="restore_done">Резервная копия восстановлена. Разблокируйте её паролем, который был у хранилища на момент создания копии.</string>
     <string name="settings_delete_vault">Удалить хранилище</string>
     <string name="settings_delete_vault_hint">Безвозвратно стирает контент, настройки, источники и ключ.</string>
     <string name="settings_section_about">О приложении</string>

@@ -31,6 +31,9 @@
     <string name="problem_storage_write">تعذّرت الكتابة في ذاكرة الهاتف: %1$s</string>
     <string name="problem_file_unreadable">تعذّرت قراءة الملف: %1$s</string>
     <string name="problem_settings_unreadable">تعذّرت قراءة الإعدادات، فعادت إلى حالتها الأولى. حُفظ الملف باسم %1$s</string>
+    <string name="problem_backup_unreadable">هذا الملف ليس نسخة احتياطية من BooruVault، أو أنه ناقص أو تالف</string>
+    <string name="problem_backup_newer">أُنشئت هذه النسخة الاحتياطية بإصدار أحدث من التطبيق. حدّث التطبيق ثم استعدها.</string>
+    <string name="problem_backup_key_changed">تغيّرت كلمة المرور أثناء إنشاء النسخة الاحتياطية. أنشئ النسخة من جديد.</string>
     <string name="problem_unknown">خطأ: %1$s</string>
     <string name="rating_general">عام</string>
     <string name="rating_sensitive">حسّاس</string>
@@ -128,6 +131,17 @@
     <string name="settings_cookies_cleared">تم حذف ملفات تعريف الارتباط</string>
     <string name="settings_cookies_clear_title">حذف ملفات تعريف الارتباط للمواقع؟</string>
     <string name="settings_cookies_clear_text">تنساك كل المواقع على المسارين: تُفقد تسجيلات الدخول، ويجب اجتياز فحوصات مكافحة الروبوتات من جديد.</string>
+    <string name="settings_backup">نسخة احتياطية للخزنة</string>
+    <string name="settings_backup_hint">احفظ الخزنة كاملةً في ملف مشفّر واحد، لتحتفظ به في مكان آخر أو تنقله إلى هاتف آخر</string>
+    <string name="backup_text">تحتوي النسخة الاحتياطية على ملفاتك مع وسومها، وإعداداتك ومصادرك ومفاتيح API، مشفّرةً كما هي في الخزنة: لا يُفكّ تشفير أي شيء لإنشائها. ملفات تعريف الارتباط الخاصة بالمواقع وقائمة انتظار التنزيلات غير مشمولة.\n\nتُفتح بكلمة المرور الحالية للخزنة، وقوتها من قوة تلك الكلمة فقط: من يحصل على الملف يستطيع تجربة كلمات المرور عليه بقدر ما يشاء. تغيير كلمة المرور لاحقًا لا يغيّر نسخة احتياطية أُنشئت من قبل.\n\nلاستخدامها، اختر «%1$s» في الشاشة الأولى لتثبيت ليست فيه خزنة بعد.</string>
+    <string name="backup_choose">اختيار مكان الحفظ</string>
+    <string name="backup_progress">جارٍ حفظ النسخة الاحتياطية: %1$s من %2$s</string>
+    <string name="backup_done">حُفظت النسخة الاحتياطية: %1$s</string>
+    <string name="backup_failed">تعذّر إنشاء النسخة الاحتياطية. %1$s</string>
+    <string name="restore_action">استعادة نسخة احتياطية</string>
+    <string name="restore_progress">جارٍ استعادة النسخة الاحتياطية: %1$s من %2$s</string>
+    <string name="restore_failed">تعذّرت استعادة النسخة الاحتياطية. %1$s</string>
+    <string name="restore_done">تمت استعادة النسخة الاحتياطية. افتح قفلها بكلمة المرور التي كانت للخزنة عند إنشاء النسخة.</string>
     <string name="settings_delete_vault">حذف الخزنة</string>
     <string name="settings_delete_vault_hint">يمحو المحتوى والإعدادات والمصادر والمفتاح نهائيًا دون إمكانية التراجع.</string>
     <string name="settings_section_about">حول التطبيق</string>

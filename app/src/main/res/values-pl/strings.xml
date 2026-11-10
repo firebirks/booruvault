@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Nie udało się zapisać w pamięci telefonu: %1$s</string>
     <string name="problem_file_unreadable">Nie udało się odczytać pliku: %1$s</string>
     <string name="problem_settings_unreadable">Nie udało się odczytać ustawień, które zaczynają od nowa. Plik zachowano jako %1$s</string>
+    <string name="problem_backup_unreadable">Ten plik nie jest kopią zapasową BooruVault albo jest niekompletny lub uszkodzony</string>
+    <string name="problem_backup_newer">Tę kopię zapasową utworzyła nowsza wersja aplikacji. Zaktualizuj aplikację, a potem ją przywróć.</string>
+    <string name="problem_backup_key_changed">Hasło zostało zmienione w trakcie tworzenia kopii zapasowej. Utwórz kopię ponownie.</string>
     <string name="problem_unknown">Błąd: %1$s</string>
     <string name="rating_general">Ogólne</string>
     <string name="rating_sensitive">Wrażliwe</string>
@@ -124,6 +127,17 @@
     <string name="settings_cookies_cleared">Usunięto pliki cookie</string>
     <string name="settings_cookies_clear_title">Usunąć pliki cookie stron?</string>
     <string name="settings_cookies_clear_text">Każda strona cię zapomina, na obu trasach: logowania przepadają, a kontrole anty-bot trzeba przejść ponownie.</string>
+    <string name="settings_backup">Kopia zapasowa sejfu</string>
+    <string name="settings_backup_hint">Zapisz cały sejf w jednym zaszyfrowanym pliku, aby przechować go gdzie indziej lub przenieść na inny telefon</string>
+    <string name="backup_text">Kopia zawiera twoje pliki z tagami, ustawienia, źródła i klucze API, zaszyfrowane tak jak w sejfie: przy jej tworzeniu nic nie jest odszyfrowywane. Pliki cookie witryn i kolejka pobierania nie są do niej dołączane.\n\nOtwiera ją hasło, które sejf ma teraz, i jest tak mocna jak to hasło: kto zdobędzie plik, może próbować na nim haseł bez ograniczeń. Późniejsza zmiana hasła nie zmienia kopii, która już powstała.\n\nAby jej użyć, wybierz „%1$s” na pierwszym ekranie instalacji, która nie ma jeszcze sejfu.</string>
+    <string name="backup_choose">Wybierz miejsce zapisu</string>
+    <string name="backup_progress">Zapisywanie kopii zapasowej: %1$s z %2$s</string>
+    <string name="backup_done">Kopia zapasowa zapisana: %1$s</string>
+    <string name="backup_failed">Nie udało się utworzyć kopii zapasowej. %1$s</string>
+    <string name="restore_action">Przywróć kopię zapasową</string>
+    <string name="restore_progress">Przywracanie kopii zapasowej: %1$s z %2$s</string>
+    <string name="restore_failed">Nie udało się przywrócić kopii zapasowej. %1$s</string>
+    <string name="restore_done">Kopia zapasowa została przywrócona. Odblokuj ją hasłem, które sejf miał w chwili tworzenia kopii.</string>
     <string name="settings_delete_vault">Usuń sejf</string>
     <string name="settings_delete_vault_hint">Nieodwracalnie usuwa zawartość, ustawienia, źródła i klucz.</string>
     <string name="settings_section_about">Informacje</string>

@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Không thể ghi vào bộ nhớ của điện thoại: %1$s</string>
     <string name="problem_file_unreadable">Không thể đọc tệp: %1$s</string>
     <string name="problem_settings_unreadable">Không thể đọc cài đặt nên bắt đầu lại từ đầu. Tệp đã được giữ lại với tên %1$s</string>
+    <string name="problem_backup_unreadable">Tệp này không phải là bản sao lưu của BooruVault, hoặc không đầy đủ hay đã hỏng</string>
+    <string name="problem_backup_newer">Bản sao lưu này được tạo bởi phiên bản ứng dụng mới hơn. Hãy cập nhật ứng dụng rồi khôi phục.</string>
+    <string name="problem_backup_key_changed">Mật khẩu đã bị đổi trong khi đang tạo bản sao lưu. Hãy tạo lại bản sao lưu.</string>
     <string name="problem_unknown">Lỗi: %1$s</string>
     <string name="rating_general">Phổ thông</string>
     <string name="rating_sensitive">Nhạy cảm</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">Đã xóa cookie</string>
     <string name="settings_cookies_clear_title">Xóa cookie của các trang web?</string>
     <string name="settings_cookies_clear_text">Mọi trang web sẽ quên bạn trên cả hai tuyến: đăng nhập bị mất và phải vượt qua kiểm tra chống bot lần nữa.</string>
+    <string name="settings_backup">Bản sao lưu kho</string>
+    <string name="settings_backup_hint">Lưu toàn bộ kho thành một tệp được mã hóa, để cất ở nơi khác hoặc chuyển sang điện thoại khác</string>
+    <string name="backup_text">Bản sao lưu chứa các tệp của bạn cùng thẻ của chúng, cài đặt, nguồn và khóa API, được mã hóa như trong kho: không có gì được giải mã để tạo ra nó. Cookie của các trang web và hàng đợi tải xuống không được đưa vào.\n\nBản sao lưu được mở bằng mật khẩu hiện tại của kho, và chỉ mạnh bằng chính mật khẩu đó: ai có được tệp này đều có thể thử mật khẩu bao lâu tùy ý. Đổi mật khẩu sau này không làm thay đổi bản sao lưu đã tạo.\n\nĐể dùng, hãy chọn “%1$s” ở màn hình đầu tiên của một bản cài đặt chưa có kho.</string>
+    <string name="backup_choose">Chọn nơi lưu</string>
+    <string name="backup_progress">Đang lưu bản sao lưu: %1$s trên %2$s</string>
+    <string name="backup_done">Đã lưu bản sao lưu: %1$s</string>
+    <string name="backup_failed">Không thể tạo bản sao lưu. %1$s</string>
+    <string name="restore_action">Khôi phục bản sao lưu</string>
+    <string name="restore_progress">Đang khôi phục bản sao lưu: %1$s trên %2$s</string>
+    <string name="restore_failed">Không thể khôi phục bản sao lưu. %1$s</string>
+    <string name="restore_done">Đã khôi phục bản sao lưu. Hãy mở khóa bằng mật khẩu mà kho có khi bản sao lưu được tạo.</string>
     <string name="settings_delete_vault">Xóa kho</string>
     <string name="settings_delete_vault_hint">Xóa nội dung, cài đặt, nguồn và khóa mã hóa. Không thể hoàn tác.</string>
     <string name="settings_section_about">Giới thiệu</string>

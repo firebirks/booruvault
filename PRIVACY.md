@@ -16,7 +16,11 @@ Everything the app keeps is encrypted in the vault: downloaded files, settings, 
 
 ## What is never collected
 
-No usage statistics, no identifiers, no logs of what you browse. There is no backup of the vault to any cloud: `allowBackup` is off.
+No usage statistics, no identifiers, no logs of what you browse. The system makes no backup of the vault to any cloud: `allowBackup` is off.
+
+## The backup you make yourself
+
+Settings can save the whole vault as one file, wherever you tell the system to put it. It is written without being decrypted, and holds what the vault holds, except the site cookies, the download queue and the fingerprint's copy of the key. The app sends it nowhere: where it goes after that is up to you. Outside the phone only the vault's password protects it, and whoever holds the file can try passwords on it at leisure, so a backup deserves a strong one.
 
 ## Who is responsible for your data
 

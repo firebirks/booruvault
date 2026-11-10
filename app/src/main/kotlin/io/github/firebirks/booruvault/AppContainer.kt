@@ -27,7 +27,10 @@ import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.util.LibraryBuffers
 import io.github.firebirks.booruvault.util.SensitiveClipboard
 import io.github.firebirks.booruvault.vault.AutoLock
+import io.github.firebirks.booruvault.vault.BackupRunner
+import io.github.firebirks.booruvault.vault.BackupService
 import io.github.firebirks.booruvault.vault.SystemLockAlarm
+import io.github.firebirks.booruvault.vault.VaultBackup
 import io.github.firebirks.booruvault.vault.VaultImageFetcher
 import io.github.firebirks.booruvault.vault.VaultImageKeyer
 import io.github.firebirks.booruvault.vault.VaultManager
@@ -124,6 +127,9 @@ class AppContainer(private val context: Context) {
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
     val rekeyer = VaultRekeyer(vaultDir, vault, vaultStore, scope)
     val transfer = VaultTransfer(context, vaultStore)
+    val backups = BackupRunner(context, VaultBackup(vaultDir, vault, json), vault, scope) {
+        ContextCompat.startForegroundService(context, Intent(context, BackupService::class.java))
+    }
     val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
     val downloads = DownloadManager(
         { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },

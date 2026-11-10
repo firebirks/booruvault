@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Tidak dapat menulis ke penyimpanan ponsel: %1$s</string>
     <string name="problem_file_unreadable">File tidak dapat dibaca: %1$s</string>
     <string name="problem_settings_unreadable">Pengaturan tidak dapat dibaca dan dimulai dari awal. Berkas disimpan sebagai %1$s</string>
+    <string name="problem_backup_unreadable">File ini bukan cadangan BooruVault, atau tidak lengkap atau rusak</string>
+    <string name="problem_backup_newer">Cadangan ini dibuat oleh versi aplikasi yang lebih baru. Perbarui aplikasi, lalu pulihkan.</string>
+    <string name="problem_backup_key_changed">Sandi diubah saat cadangan sedang dibuat. Buat cadangan lagi.</string>
     <string name="problem_unknown">Kesalahan: %1$s</string>
     <string name="rating_general">Umum</string>
     <string name="rating_sensitive">Sensitif</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">Cookie dihapus</string>
     <string name="settings_cookies_clear_title">Hapus cookie situs?</string>
     <string name="settings_cookies_clear_text">Setiap situs melupakan Anda, di kedua rute: login hilang dan pemeriksaan anti-bot harus dilewati lagi.</string>
+    <string name="settings_backup">Cadangan brankas</string>
+    <string name="settings_backup_hint">Simpan seluruh brankas sebagai satu file terenkripsi, untuk disimpan di tempat lain atau dipindahkan ke ponsel lain</string>
+    <string name="backup_text">Cadangan berisi file Anda beserta tag-nya, setelan, sumber, dan kunci API, terenkripsi seperti di dalam brankas: tidak ada yang didekripsi untuk membuatnya. Cookie situs dan antrean unduhan tidak disertakan.\n\nCadangan dibuka dengan sandi brankas saat ini, dan hanya sekuat sandi itu: siapa pun yang mendapatkan file tersebut dapat mencoba sandi sebanyak yang ia mau. Mengubah sandi di kemudian hari tidak mengubah cadangan yang sudah dibuat.\n\nUntuk memakainya, pilih “%1$s” di layar pertama pada instalasi yang belum memiliki brankas.</string>
+    <string name="backup_choose">Pilih tempat menyimpan</string>
+    <string name="backup_progress">Menyimpan cadangan: %1$s dari %2$s</string>
+    <string name="backup_done">Cadangan tersimpan: %1$s</string>
+    <string name="backup_failed">Cadangan tidak dapat dibuat. %1$s</string>
+    <string name="restore_action">Pulihkan cadangan</string>
+    <string name="restore_progress">Memulihkan cadangan: %1$s dari %2$s</string>
+    <string name="restore_failed">Cadangan tidak dapat dipulihkan. %1$s</string>
+    <string name="restore_done">Cadangan telah dipulihkan. Buka kuncinya dengan sandi yang dimiliki brankas saat cadangan dibuat.</string>
     <string name="settings_delete_vault">Hapus brankas</string>
     <string name="settings_delete_vault_hint">Menghapus konten, setelan, sumber, dan kunci secara permanen, tanpa bisa dipulihkan.</string>
     <string name="settings_section_about">Tentang</string>

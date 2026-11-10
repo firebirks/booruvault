@@ -22,7 +22,8 @@
         </intent>
     </queries>
 
-    <!-- No backup: the vault is useless without its Keystore key and the rest is cache. -->
+    <!-- No system backup or device transfer: the vault leaves the phone only as the backup the
+         user makes from the settings, to a place of their choosing. -->
     <application
         android:name=".BooruVaultApp"
         android:allowBackup="false"
@@ -60,6 +61,12 @@
 
         <service
             android:name=".download.DownloadService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Keeps the app alive while a backup of the vault is written or brought back. -->
+        <service
+            android:name=".vault.BackupService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 

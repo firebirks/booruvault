@@ -31,6 +31,9 @@
     <string name="problem_storage_write">휴대전화 저장소에 쓸 수 없습니다: %1$s</string>
     <string name="problem_file_unreadable">파일을 읽을 수 없습니다: %1$s</string>
     <string name="problem_settings_unreadable">설정을 읽을 수 없어 처음부터 다시 시작합니다. 파일은 %1$s(으)로 보관되었습니다</string>
+    <string name="problem_backup_unreadable">이 파일은 BooruVault 백업이 아니거나, 불완전하거나 손상되었습니다</string>
+    <string name="problem_backup_newer">이 백업은 더 최신 버전의 앱에서 만들어졌습니다. 앱을 업데이트한 후 복원하세요.</string>
+    <string name="problem_backup_key_changed">백업을 만드는 동안 비밀번호가 변경되었습니다. 백업을 다시 만드세요.</string>
     <string name="problem_unknown">오류: %1$s</string>
     <string name="rating_general">일반</string>
     <string name="rating_sensitive">민감</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">쿠키를 삭제했습니다</string>
     <string name="settings_cookies_clear_title">사이트 쿠키를 삭제할까요?</string>
     <string name="settings_cookies_clear_text">모든 사이트가 두 경로 모두에서 나를 잊습니다. 로그인이 사라지고 봇 방지 확인을 다시 통과해야 합니다.</string>
+    <string name="settings_backup">보관함 백업</string>
+    <string name="settings_backup_hint">보관함 전체를 암호화된 파일 하나로 저장합니다. 다른 곳에 보관하거나 다른 휴대전화로 옮길 때 사용하세요</string>
+    <string name="backup_text">백업에는 파일과 태그, 설정, 소스, API 키가 보관함에 있는 그대로 암호화된 채 담깁니다. 백업을 만들 때 복호화되는 것은 없습니다. 사이트 쿠키와 다운로드 대기열은 포함되지 않습니다.\n\n백업은 보관함의 현재 비밀번호로 열리며, 그 비밀번호만큼만 안전합니다. 파일을 손에 넣은 사람은 원하는 만큼 비밀번호를 시도해 볼 수 있습니다. 나중에 비밀번호를 바꿔도 이미 만든 백업은 바뀌지 않습니다.\n\n사용하려면 아직 보관함이 없는 설치본의 첫 화면에서 ‘%1$s’을 선택하세요.</string>
+    <string name="backup_choose">저장할 위치 선택</string>
+    <string name="backup_progress">백업 저장 중: %1$s / %2$s</string>
+    <string name="backup_done">백업 저장됨: %1$s</string>
+    <string name="backup_failed">백업을 만들 수 없습니다. %1$s</string>
+    <string name="restore_action">백업 복원</string>
+    <string name="restore_progress">백업 복원 중: %1$s / %2$s</string>
+    <string name="restore_failed">백업을 복원할 수 없습니다. %1$s</string>
+    <string name="restore_done">백업이 복원되었습니다. 백업을 만들 당시 보관함의 비밀번호로 잠금을 해제하세요.</string>
     <string name="settings_delete_vault">보관함 삭제</string>
     <string name="settings_delete_vault_hint">콘텐츠, 설정, 소스, 키를 지웁니다. 되돌릴 수 없습니다.</string>
     <string name="settings_section_about">정보</string>

@@ -31,6 +31,9 @@
     <string name="problem_storage_write">No se pudo escribir en el almacenamiento del teléfono: %1$s</string>
     <string name="problem_file_unreadable">No se pudo leer el archivo: %1$s</string>
     <string name="problem_settings_unreadable">No se pudo leer la configuración, que vuelve a empezar de cero. El archivo se conservó como %1$s</string>
+    <string name="problem_backup_unreadable">Este archivo no es una copia de seguridad de BooruVault, o está incompleto o dañado</string>
+    <string name="problem_backup_newer">Esta copia de seguridad se creó con una versión más reciente de la app. Actualiza la app y luego restáurala.</string>
+    <string name="problem_backup_key_changed">La contraseña se cambió mientras se creaba la copia de seguridad. Vuelve a crearla.</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensible</string>
@@ -122,6 +125,17 @@
     <string name="settings_cookies_cleared">Cookies eliminadas</string>
     <string name="settings_cookies_clear_title">¿Eliminar las cookies de los sitios?</string>
     <string name="settings_cookies_clear_text">Todos los sitios te olvidan, por ambas rutas: se pierden los inicios de sesión y hay que volver a pasar las comprobaciones anti-bot.</string>
+    <string name="settings_backup">Copia de seguridad de la bóveda</string>
+    <string name="settings_backup_hint">Guarda toda la bóveda en un único archivo cifrado, para conservarlo en otro lugar o pasarlo a otro teléfono</string>
+    <string name="backup_text">La copia contiene tus archivos con sus etiquetas, tus ajustes, las fuentes y las claves de API, cifrados tal como están en la bóveda: no se descifra nada para crearla. Quedan fuera las cookies de los sitios y la cola de descargas.\n\nSe abre con la contraseña que la bóveda tiene ahora, y es tan segura como esa contraseña: quien consiga el archivo puede probar contraseñas todo el tiempo que quiera. Cambiar la contraseña más adelante no cambia una copia ya hecha.\n\nPara usarla, elige “%1$s” en la primera pantalla de una instalación que aún no tenga bóveda.</string>
+    <string name="backup_choose">Elegir dónde guardar</string>
+    <string name="backup_progress">Guardando la copia de seguridad: %1$s de %2$s</string>
+    <string name="backup_done">Copia de seguridad guardada: %1$s</string>
+    <string name="backup_failed">No se pudo crear la copia de seguridad. %1$s</string>
+    <string name="restore_action">Restaurar una copia de seguridad</string>
+    <string name="restore_progress">Restaurando la copia de seguridad: %1$s de %2$s</string>
+    <string name="restore_failed">No se pudo restaurar la copia de seguridad. %1$s</string>
+    <string name="restore_done">Copia de seguridad restaurada. Desbloquéala con la contraseña que tenía la bóveda cuando se hizo la copia.</string>
     <string name="settings_delete_vault">Eliminar la bóveda</string>
     <string name="settings_delete_vault_hint">Borra de forma irreversible el contenido, los ajustes, las fuentes y la clave.</string>
     <string name="settings_section_about">Acerca de</string>

@@ -49,6 +49,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **Contents:** grid with filtering (tags, `-tag`, `type:video|gif|image`, `source:name`), viewer, info sheet, delete.
 - **Collections:** bookmarked tag sets shown as chips at the top of the vault. A collection holds every item whose tags match its query (e.g. “Landscapes” = `landscape -rain`), including items saved later. The query uses booru syntax: exact tags, `-tag`, `~tag` alternatives, `*` wildcards, plus `type:`, `source:` and `rating:`. The vault's filter box speaks the same language, except that a plain word is found inside any tag, file name or source as you type; a filter saved as a collection is rewritten with wildcards (`land` becomes `*land*`) so the collection holds what the filter showed. Collections can also be created from a search in Browse, or from a tag in a post's details. Their names and queries are sealed in the vault.
 - **Import** from the device, optionally deleting the originals. **Export** decrypted copies to a folder or a single file. A single file, downloaded or imported, may hold up to 2 GB.
+- **Backup:** Settings > Vault saves the whole vault as one file, still encrypted, to keep elsewhere or to move to another phone; the first screen of an install without a vault restores it, and it then opens with the password it had. See [Backup](#backup).
 - **Screen protection** (no screenshots, hidden in recents), always on while locked.
 
 ### Privacy and network
@@ -125,6 +126,17 @@ File names are random UUIDs. The number of files remains visible, and, once the 
 
 The other clear-text settings are the Tor on/off switch, Orbot's port and whether the route was chosen at first start (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only whether the app is set to use Tor, and on which local port. Before Android 13 the app's language is kept in clear too (`shared_prefs/ui.xml`), as it must show on the lock screen; from Android 13 the system keeps it.
 
+### Backup
+
+A backup is a ZIP of the vault's own files as they lie on storage: the header, the settings (`config.bin`) and each item's media, thumbnail and metadata. Nothing is decrypted to make it and the private key is not needed, so one under way goes on if the vault locks meanwhile.
+
+- **What it tells:** what the vault's folder tells, and no more. The header is in clear, as on the phone; every other file is sealed, under its random name and at its padded size. The entries are stored uncompressed and all bear one fixed date, not the files' own, which would say when each item was saved.
+- **What protects it:** the password alone. On the phone the header sits in the app's private storage; in a backup it travels with the files, and whoever holds the file can try passwords against Argon2id for as long as they like. A backup deserves a strong password.
+- **A password changed later** does not reach a backup already made: it still opens with the password the vault had then. Changing the password while a backup is being written makes that backup fail, to be made again, since files re-sealed meanwhile would be to a key its header does not hold. One made while the files are still being re-sealed after a change holds the retired key boxed in its header, as the vault does, and the re-sealing goes on after a restore.
+- **Left out:** the index, which is rebuilt from the metadata; the site cookies, which belong to the route and the browser they were earned with; the download queue; and the biometric copy of the key, which only the Keystore of the phone it was made on can open.
+- **Restoring** is offered where there is no vault, on the first screen. The backup is laid out whole beside the vault's place and moved there only once its last entry, which counts the others, has been read: a file that is not a backup, one cut short, or one written by a later version leaves no vault and no files. Nothing in it is taken on its word: only the names a backup uses are accepted, each file must begin as a sealed file does and stay within the size its kind can have, and the header is read as the vault's own is at every start. The route question is asked again after the first unlock, since the choice between Tor and a direct connection is kept outside the vault and does not travel with it.
+- **While it runs,** a foreground service keeps the app alive; its notification says how far it is. A backup that fails or is stopped deletes the file it had begun.
+
 ### Memory
 
 Arrays the app owns are overwritten once used: passwords, derived keys, decrypted keys, chunk and transfer buffers, thumbnails.
@@ -165,7 +177,7 @@ Requirements:
 
 ```sh
 ./gradlew assembleDebug        # app/build/outputs/apk/debug/app-debug.apk
-./gradlew testDebugUnitTest    # JVM tests: crypto, vault, sealed state, parsers, Tor routing
+./gradlew testDebugUnitTest    # JVM tests: crypto, vault, backup, sealed state, downloads, parsers, Tor routing
 ./gradlew lintDebug
 ./gradlew assembleRelease      # minified with R8; unsigned, no signing config is included
 ```

@@ -32,6 +32,9 @@
     <string name="problem_storage_write">Could not write to the phone\'s storage: %1$s</string>
     <string name="problem_file_unreadable">The file could not be read: %1$s</string>
     <string name="problem_settings_unreadable">The settings could not be read and start afresh. The file was kept as %1$s</string>
+    <string name="problem_backup_unreadable">This file is not a BooruVault backup, or it is incomplete or damaged</string>
+    <string name="problem_backup_newer">This backup was made by a newer version of the app. Update the app, then restore it.</string>
+    <string name="problem_backup_key_changed">The password was changed while the backup was being made. Make the backup again.</string>
     <string name="problem_unknown">Error: %1$s</string>
     <string name="rating_general">General</string>
     <string name="rating_sensitive">Sensitive</string>
@@ -125,6 +128,17 @@
     <string name="settings_cookies_cleared">Cookies deleted</string>
     <string name="settings_cookies_clear_title">Delete the site cookies?</string>
     <string name="settings_cookies_clear_text">Every site forgets you, on both routes: logins are lost, and anti-bot checks must be passed again.</string>
+    <string name="settings_backup">Vault backup</string>
+    <string name="settings_backup_hint">Save the whole vault as one encrypted file, to keep elsewhere or to move to another phone</string>
+    <string name="backup_text">The backup holds your files with their tags, your settings, sources and API keys, sealed as they are in the vault: nothing is decrypted to make it. Site cookies and the download queue are left out.\n\nIt opens with the password the vault has now, and it is only as strong as that password: whoever gets the file can try passwords on it for as long as they like. Changing the password later does not change a backup already made.\n\nTo use it, choose “%1$s” on the first screen of an install that has no vault yet.</string>
+    <string name="backup_choose">Choose where to save</string>
+    <string name="backup_progress">Saving the backup: %1$s of %2$s</string>
+    <string name="backup_done">Backup saved: %1$s</string>
+    <string name="backup_failed">The backup could not be made. %1$s</string>
+    <string name="restore_action">Restore a backup</string>
+    <string name="restore_progress">Restoring the backup: %1$s of %2$s</string>
+    <string name="restore_failed">The backup could not be restored. %1$s</string>
+    <string name="restore_done">The backup is restored. Unlock it with the password the vault had when the backup was made.</string>
     <string name="settings_delete_vault">Delete the vault</string>
     <string name="settings_delete_vault_hint">Irreversibly erases content, settings, sources and the key.</string>
     <string name="settings_section_about">About</string>

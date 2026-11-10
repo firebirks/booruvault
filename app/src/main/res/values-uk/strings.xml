@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Не вдалося записати в пам\'ять телефона: %1$s</string>
     <string name="problem_file_unreadable">Не вдалося прочитати файл: %1$s</string>
     <string name="problem_settings_unreadable">Не вдалося прочитати налаштування, їх розпочато заново. Файл збережено як %1$s</string>
+    <string name="problem_backup_unreadable">Цей файл не є резервною копією BooruVault або він неповний чи пошкоджений</string>
+    <string name="problem_backup_newer">Цю резервну копію створено новішою версією застосунку. Оновіть застосунок, а потім відновіть її.</string>
+    <string name="problem_backup_key_changed">Пароль було змінено, поки створювалася резервна копія. Створіть копію знову.</string>
     <string name="problem_unknown">Помилка: %1$s</string>
     <string name="rating_general">Загальний</string>
     <string name="rating_sensitive">Чутливий</string>
@@ -124,6 +127,17 @@
     <string name="settings_cookies_cleared">Cookie видалено</string>
     <string name="settings_cookies_clear_title">Видалити cookie сайтів?</string>
     <string name="settings_cookies_clear_text">Усі сайти забудуть вас на обох маршрутах: входи буде втрачено, а перевірки на бота доведеться пройти знову.</string>
+    <string name="settings_backup">Резервна копія сховища</string>
+    <string name="settings_backup_hint">Зберегти все сховище в один зашифрований файл, щоб тримати його в іншому місці або перенести на інший телефон</string>
+    <string name="backup_text">Копія містить ваші файли з тегами, налаштування, джерела та API-ключі, зашифровані так само, як у сховищі: під час її створення нічого не розшифровується. Cookie сайтів і черга завантажень до неї не входять.\n\nВона відкривається паролем, який сховище має зараз, і захищена рівно настільки, наскільки надійний цей пароль: той, хто отримає файл, зможе добирати до нього паролі скільки завгодно. Зміна пароля пізніше не змінює вже зроблену копію.\n\nЩоб скористатися нею, виберіть «%1$s» на першому екрані встановлення, у якому ще немає сховища.</string>
+    <string name="backup_choose">Вибрати місце збереження</string>
+    <string name="backup_progress">Збереження резервної копії: %1$s із %2$s</string>
+    <string name="backup_done">Резервну копію збережено: %1$s</string>
+    <string name="backup_failed">Не вдалося створити резервну копію. %1$s</string>
+    <string name="restore_action">Відновити з резервної копії</string>
+    <string name="restore_progress">Відновлення резервної копії: %1$s із %2$s</string>
+    <string name="restore_failed">Не вдалося відновити резервну копію. %1$s</string>
+    <string name="restore_done">Резервну копію відновлено. Розблокуйте її паролем, який сховище мало на момент створення копії.</string>
     <string name="settings_delete_vault">Видалити сховище</string>
     <string name="settings_delete_vault_hint">Безповоротно стирає вміст, налаштування, джерела та ключ.</string>
     <string name="settings_section_about">Про застосунок</string>

@@ -31,6 +31,9 @@
     <string name="problem_storage_write">In den Speicher des Telefons konnte nicht geschrieben werden: %1$s</string>
     <string name="problem_file_unreadable">Die Datei konnte nicht gelesen werden: %1$s</string>
     <string name="problem_settings_unreadable">Die Einstellungen konnten nicht gelesen werden und beginnen von vorn. Die Datei wurde als %1$s aufbewahrt</string>
+    <string name="problem_backup_unreadable">Diese Datei ist kein BooruVault-Backup, oder sie ist unvollständig oder beschädigt</string>
+    <string name="problem_backup_newer">Dieses Backup wurde mit einer neueren Version der App erstellt. Aktualisiere die App und stelle es dann wieder her.</string>
+    <string name="problem_backup_key_changed">Das Passwort wurde geändert, während das Backup erstellt wurde. Erstelle das Backup erneut.</string>
     <string name="problem_unknown">Fehler: %1$s</string>
     <string name="rating_general">Allgemein</string>
     <string name="rating_sensitive">Sensibel</string>
@@ -120,6 +123,17 @@
     <string name="settings_cookies_cleared">Cookies gelöscht</string>
     <string name="settings_cookies_clear_title">Website-Cookies löschen?</string>
     <string name="settings_cookies_clear_text">Jede Seite vergisst dich, auf beiden Wegen: Anmeldungen gehen verloren, und Anti-Bot-Prüfungen müssen erneut bestanden werden.</string>
+    <string name="settings_backup">Tresor-Backup</string>
+    <string name="settings_backup_hint">Den ganzen Tresor als eine verschlüsselte Datei speichern, zum Aufbewahren an einem anderen Ort oder für den Umzug auf ein anderes Telefon</string>
+    <string name="backup_text">Das Backup enthält deine Dateien mit ihren Tags, deine Einstellungen, Quellen und API-Schlüssel, verschlüsselt wie im Tresor: Beim Erstellen wird nichts entschlüsselt. Website-Cookies und die Download-Warteschlange bleiben außen vor.\n\nEs lässt sich mit dem Passwort öffnen, das der Tresor jetzt hat, und ist nur so stark wie dieses Passwort: Wer die Datei bekommt, kann beliebig lange Passwörter daran ausprobieren. Ein späterer Passwortwechsel ändert nichts an einem bereits erstellten Backup.\n\nUm es zu verwenden, wähle „%1$s“ auf dem ersten Bildschirm einer Installation, die noch keinen Tresor hat.</string>
+    <string name="backup_choose">Speicherort wählen</string>
+    <string name="backup_progress">Backup wird gespeichert: %1$s von %2$s</string>
+    <string name="backup_done">Backup gespeichert: %1$s</string>
+    <string name="backup_failed">Das Backup konnte nicht erstellt werden. %1$s</string>
+    <string name="restore_action">Backup wiederherstellen</string>
+    <string name="restore_progress">Backup wird wiederhergestellt: %1$s von %2$s</string>
+    <string name="restore_failed">Das Backup konnte nicht wiederhergestellt werden. %1$s</string>
+    <string name="restore_done">Das Backup wurde wiederhergestellt. Entsperre es mit dem Passwort, das der Tresor hatte, als das Backup erstellt wurde.</string>
     <string name="settings_delete_vault">Tresor löschen</string>
     <string name="settings_delete_vault_hint">Löscht unwiderruflich Inhalte, Einstellungen, Quellen und den Schlüssel.</string>
     <string name="settings_section_about">Über</string>

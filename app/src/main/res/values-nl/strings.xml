@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Kon niet naar de opslag van de telefoon schrijven: %1$s</string>
     <string name="problem_file_unreadable">Het bestand kon niet worden gelezen: %1$s</string>
     <string name="problem_settings_unreadable">De instellingen konden niet worden gelezen en beginnen opnieuw. Het bestand is bewaard als %1$s</string>
+    <string name="problem_backup_unreadable">Dit bestand is geen BooruVault-back-up, of het is onvolledig of beschadigd</string>
+    <string name="problem_backup_newer">Deze back-up is gemaakt met een nieuwere versie van de app. Werk de app bij en zet hem daarna terug.</string>
+    <string name="problem_backup_key_changed">Het wachtwoord is gewijzigd terwijl de back-up werd gemaakt. Maak de back-up opnieuw.</string>
     <string name="problem_unknown">Fout: %1$s</string>
     <string name="rating_general">Algemeen</string>
     <string name="rating_sensitive">Gevoelig</string>
@@ -120,6 +123,17 @@
     <string name="settings_cookies_cleared">Cookies verwijderd</string>
     <string name="settings_cookies_clear_title">Sitecookies verwijderen?</string>
     <string name="settings_cookies_clear_text">Elke site vergeet je, via beide routes: aanmeldingen gaan verloren en anti-botcontroles moeten opnieuw worden doorlopen.</string>
+    <string name="settings_backup">Back-up van de kluis</string>
+    <string name="settings_backup_hint">Sla de hele kluis op als één versleuteld bestand, om elders te bewaren of naar een andere telefoon over te zetten</string>
+    <string name="backup_text">De back-up bevat je bestanden met hun tags, je instellingen, bronnen en API-sleutels, versleuteld zoals ze in de kluis staan: er wordt niets ontsleuteld om hem te maken. Cookies van sites en de downloadwachtrij blijven erbuiten.\n\nHij gaat open met het wachtwoord dat de kluis nu heeft en is precies zo sterk als dat wachtwoord: wie het bestand in handen krijgt, kan er onbeperkt wachtwoorden op proberen. Het wachtwoord later wijzigen verandert niets aan een back-up die al is gemaakt.\n\nOm hem te gebruiken kies je ‘%1$s’ op het eerste scherm van een installatie die nog geen kluis heeft.</string>
+    <string name="backup_choose">Kiezen waar op te slaan</string>
+    <string name="backup_progress">Back-up opslaan: %1$s van %2$s</string>
+    <string name="backup_done">Back-up opgeslagen: %1$s</string>
+    <string name="backup_failed">De back-up kon niet worden gemaakt. %1$s</string>
+    <string name="restore_action">Back-up terugzetten</string>
+    <string name="restore_progress">Back-up terugzetten: %1$s van %2$s</string>
+    <string name="restore_failed">De back-up kon niet worden teruggezet. %1$s</string>
+    <string name="restore_done">De back-up is teruggezet. Ontgrendel hem met het wachtwoord dat de kluis had toen de back-up werd gemaakt.</string>
     <string name="settings_delete_vault">Kluis verwijderen</string>
     <string name="settings_delete_vault_hint">Wist onherroepelijk inhoud, instellingen, bronnen en de sleutel.</string>
     <string name="settings_section_about">Over</string>

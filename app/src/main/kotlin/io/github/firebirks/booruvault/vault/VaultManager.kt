@@ -91,6 +91,8 @@ class VaultManager(
 
     /** The header as found at start: null when there is none, a failure when it cannot be read. */
     private val found: Result<VaultHeader?> = runCatching { readHeader() }
+
+    @Volatile
     private var header: VaultHeader? = found.getOrNull()
     private val _state = MutableStateFlow<VaultState>(stateOf(found))
 
@@ -343,6 +345,36 @@ class VaultManager(
         }
     }
 
+    /**
+     * The header as a backup carries it: without the biometric copy of the key, which only this
+     * phone's Keystore opens. The retired pairs stay, for the files a password change has not
+     * re-sealed yet. Null when there is no vault.
+     */
+    fun headerForBackup(): VaultHeader? = header?.copy(biometricWrapped = null, biometricIv = null)
+
+    /**
+     * Makes [staged], the files of a vault brought back from a backup, the vault, where there is
+     * none: it comes locked, to be opened with the password it had when it was backed up. Its
+     * header is read as any header is, and one this app cannot use is refused with the vault
+     * still missing. A biometric copy of the key, were one there, is dropped: its Keystore key
+     * stayed on the phone it was made on.
+     */
+    suspend fun adopt(staged: File) = mutex.withLock {
+        withContext(Dispatchers.IO) {
+            check(header == null && _state.value == VaultState.Missing && !headerFile.exists()) { "vault already exists" }
+            val read = readHeader(File(staged, headerFile.name)) ?: throw VaultHeaderException("no vault header to restore")
+            val adopted = read.copy(biometricWrapped = null, biometricIv = null)
+            writeHeader(adopted, staged)
+            // Whatever is left where the vault goes belongs to no vault: there is no header for it.
+            root.deleteRecursively()
+            if (!staged.moveOver(root)) throw java.io.IOException("cannot put the restored vault in place")
+            header = adopted
+            _biometric.value = false
+            _rekeyPending.value = adopted.retired.isNotEmpty()
+            _state.value = VaultState.Locked
+        }
+    }
+
     /** Deletes the vault and everything in it. Irreversible. */
     suspend fun destroy() = mutex.withLock {
         withContext(Dispatchers.IO) {
@@ -399,8 +431,8 @@ class VaultManager(
      * Null when there is no header; throws when there is one this app cannot use, so that the
      * vault is reported as damaged at start rather than failing at the unlock, or crashing.
      */
-    private fun readHeader(): VaultHeader? {
-        val file = headerFile.takeIf { it.exists() } ?: return null
+    private fun readHeader(from: File = headerFile): VaultHeader? {
+        val file = from.takeIf { it.exists() } ?: return null
         val read = json.decodeFromString(VaultHeader.serializer(), file.readText())
         if (read.version != 1) throw VaultHeaderException("vault header version ${read.version} is not known to this app")
         // Everything the unlock will decode, decoded now: a field that is not what it says is a damaged header.
@@ -415,13 +447,13 @@ class VaultManager(
         return read
     }
 
-    private fun writeHeader(value: VaultHeader) {
-        val tmp = File(root, "vault.json.tmp")
+    private fun writeHeader(value: VaultHeader, dir: File = root) {
+        val tmp = File(dir, "vault.json.tmp")
         tmp.outputStream().use { out ->
             out.write(json.encodeToString(VaultHeader.serializer(), value).toByteArray())
             out.fd.sync()
         }
-        if (!tmp.moveOver(headerFile)) throw java.io.IOException("cannot write vault header")
+        if (!tmp.moveOver(File(dir, headerFile.name))) throw java.io.IOException("cannot write vault header")
     }
 
     private companion object {

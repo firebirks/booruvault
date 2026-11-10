@@ -54,8 +54,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.TextButton
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
+import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
+import io.github.firebirks.booruvault.util.formatBytes
+import io.github.firebirks.booruvault.vault.BackupState
+import io.github.firebirks.booruvault.vault.VaultBackup
 import io.github.firebirks.booruvault.ui.common.findActivity
 import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.settings.DestroyVaultDialog
@@ -244,9 +253,22 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
     val tooShort = password.isNotEmpty() && password.length < MIN_PASSWORD
     val mismatch = confirm.isNotEmpty() && confirm != password
     val valid = password.length >= MIN_PASSWORD && password == confirm && understood
+    // The other way to a vault: one brought back from a backup, which comes with its own password.
+    val backups = LocalContainer.current.backups
+    val backupState by backups.state.collectAsStateWithLifecycle()
+    val restoring = (backupState as? BackupState.Running)?.takeIf { it.restoring }
+    val restoreFailed = (backupState as? BackupState.Failed)?.takeIf { it.restoring }
+    val askNotifications = rememberNotificationPermission()
+    val restorePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            error = null
+            backups.restore(uri)
+        }
+    }
+    val busy = working || restoring != null
 
     fun create() {
-        if (!valid || working) return
+        if (!valid || busy) return
         working = true
         error = null
         scope.launch {
@@ -281,26 +303,26 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
             value = password, onValueChange = { password = it }, label = stringResource(R.string.password),
             imeAction = ImeAction.Next, onDone = { focus.moveFocus(FocusDirection.Down) }, isError = tooShort,
             supportingText = stringResource(R.string.password_too_short, MIN_PASSWORD),
-            enabled = !working, modifier = Modifier.fillMaxWidth(),
+            enabled = !busy, modifier = Modifier.fillMaxWidth(),
         )
         PasswordField(
             value = confirm, onValueChange = { confirm = it }, label = stringResource(R.string.password_confirm),
             onDone = ::create, isError = mismatch,
             supportingText = if (mismatch) stringResource(R.string.password_mismatch) else null,
-            enabled = !working, modifier = Modifier.fillMaxWidth(),
+            enabled = !busy, modifier = Modifier.fillMaxWidth(),
         )
         // The whole row toggles, and reads as one checkbox with its text.
         Row(
-            Modifier.fillMaxWidth().toggleable(value = understood, enabled = !working, role = Role.Checkbox, onValueChange = { understood = it }),
+            Modifier.fillMaxWidth().toggleable(value = understood, enabled = !busy, role = Role.Checkbox, onValueChange = { understood = it }),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Checkbox(checked = understood, onCheckedChange = null, enabled = !working)
+            Checkbox(checked = understood, onCheckedChange = null, enabled = !busy)
             Text(
                 stringResource(R.string.setup_understood),
                 style = MaterialTheme.typography.bodySmall,
             )
         }
-        Button(onClick = ::create, enabled = valid && !working, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = ::create, enabled = valid && !busy, modifier = Modifier.fillMaxWidth()) {
             if (working) {
                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
                 Spacer(Modifier.size(10.dp))
@@ -312,7 +334,36 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
         // The live region sits on a box that is always there: a text that appears inside it is
         // announced, one that appears as a new node is not.
         Box(Modifier.fillMaxWidth().semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }, contentAlignment = Alignment.Center) {
-            error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center) }
+            val shown = error ?: restoreFailed?.let { stringResource(R.string.restore_failed, context.problemText(it.problem)) }
+            shown?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center) }
+        }
+        if (restoring != null) {
+            // A backup is read whole before it becomes the vault: how far, and a way to stop.
+            Column(
+                Modifier.fillMaxWidth().semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (restoring.total > 0) {
+                    Text(
+                        stringResource(R.string.restore_progress, formatBytes(context, restoring.done), formatBytes(context, restoring.total)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                    LinearProgressIndicator(progress = { (restoring.done.toFloat() / restoring.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth())
+                } else {
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                }
+            }
+            TextButton(onClick = backups::cancel) { Text(stringResource(R.string.action_cancel)) }
+        } else {
+            TextButton(
+                onClick = {
+                    askNotifications()
+                    restorePicker.launch(arrayOf(VaultBackup.MIME, "application/x-zip-compressed", "application/octet-stream"))
+                },
+                enabled = !working,
+            ) { Text(stringResource(R.string.restore_action)) }
         }
     }
 }

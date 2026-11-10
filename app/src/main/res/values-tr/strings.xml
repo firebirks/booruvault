@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Telefonun depolama alanına yazılamadı: %1$s</string>
     <string name="problem_file_unreadable">Dosya okunamadı: %1$s</string>
     <string name="problem_settings_unreadable">Ayarlar okunamadı ve baştan başlıyor. Dosya %1$s olarak saklandı</string>
+    <string name="problem_backup_unreadable">Bu dosya bir BooruVault yedeği değil ya da eksik veya bozuk</string>
+    <string name="problem_backup_newer">Bu yedek, uygulamanın daha yeni bir sürümüyle oluşturulmuş. Uygulamayı güncelleyin, ardından geri yükleyin.</string>
+    <string name="problem_backup_key_changed">Yedek oluşturulurken parola değiştirildi. Yedeği yeniden oluşturun.</string>
     <string name="problem_unknown">Hata: %1$s</string>
     <string name="rating_general">Genel</string>
     <string name="rating_sensitive">Hassas</string>
@@ -120,6 +123,17 @@
     <string name="settings_cookies_cleared">Çerezler silindi</string>
     <string name="settings_cookies_clear_title">Site çerezleri silinsin mi?</string>
     <string name="settings_cookies_clear_text">Her site sizi unutur, her iki yolda da: oturumlar kaybolur ve bot karşıtı denetimler yeniden geçilmelidir.</string>
+    <string name="settings_backup">Kasa yedeği</string>
+    <string name="settings_backup_hint">Kasanın tamamını tek bir şifreli dosya olarak kaydedin; başka bir yerde saklamak ya da başka bir telefona taşımak için</string>
+    <string name="backup_text">Yedek; dosyalarınızı etiketleriyle, ayarlarınızı, kaynaklarınızı ve API anahtarlarınızı kasadaki gibi şifreli olarak içerir: oluşturulurken hiçbir şeyin şifresi çözülmez. Site çerezleri ve indirme kuyruğu yedeğe alınmaz.\n\nKasanın şu anki parolasıyla açılır ve ancak o parola kadar güçlüdür: dosyayı ele geçiren biri üzerinde dilediği kadar parola deneyebilir. Parolayı sonradan değiştirmek, önceden alınmış bir yedeği değiştirmez.\n\nKullanmak için, henüz kasası olmayan bir kurulumun ilk ekranında “%1$s” seçeneğini seçin.</string>
+    <string name="backup_choose">Kaydedilecek yeri seç</string>
+    <string name="backup_progress">Yedek kaydediliyor: %1$s / %2$s</string>
+    <string name="backup_done">Yedek kaydedildi: %1$s</string>
+    <string name="backup_failed">Yedek oluşturulamadı. %1$s</string>
+    <string name="restore_action">Yedeği geri yükle</string>
+    <string name="restore_progress">Yedek geri yükleniyor: %1$s / %2$s</string>
+    <string name="restore_failed">Yedek geri yüklenemedi. %1$s</string>
+    <string name="restore_done">Yedek geri yüklendi. Yedek alındığında kasanın sahip olduğu parolayla kilidini açın.</string>
     <string name="settings_delete_vault">Kasayı sil</string>
     <string name="settings_delete_vault_hint">İçeriği, ayarları, kaynakları ve anahtarı geri döndürülemez şekilde siler.</string>
     <string name="settings_section_about">Hakkında</string>

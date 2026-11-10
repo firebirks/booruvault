@@ -31,6 +31,9 @@
     <string name="problem_storage_write">无法写入手机存储：%1$s</string>
     <string name="problem_file_unreadable">无法读取文件：%1$s</string>
     <string name="problem_settings_unreadable">无法读取设置，已恢复为初始状态。文件已保留为 %1$s</string>
+    <string name="problem_backup_unreadable">此文件不是 BooruVault 备份，或者不完整或已损坏</string>
+    <string name="problem_backup_newer">此备份由更新版本的应用创建。请先更新应用，再进行恢复。</string>
+    <string name="problem_backup_key_changed">制作备份期间密码被修改。请重新制作备份。</string>
     <string name="problem_unknown">错误：%1$s</string>
     <string name="rating_general">一般</string>
     <string name="rating_sensitive">敏感</string>
@@ -118,6 +121,17 @@
     <string name="settings_cookies_cleared">Cookie 已删除</string>
     <string name="settings_cookies_clear_title">删除网站 Cookie？</string>
     <string name="settings_cookies_clear_text">所有网站在两条路线上都会忘记你：登录状态丢失，反机器人验证需要重新通过。</string>
+    <string name="settings_backup">保险库备份</string>
+    <string name="settings_backup_hint">将整个保险库保存为一个加密文件，可存放在别处或迁移到另一部手机</string>
+    <string name="backup_text">备份包含你的文件及其标签、设置、来源和 API 密钥，与在保险库中一样保持加密：制作备份时不会解密任何内容。网站 Cookie 和下载队列不包含在内。\n\n备份用保险库当前的密码打开，其安全性完全取决于这个密码：拿到文件的人可以不限次数地尝试密码。之后修改密码不会改变已经制作的备份。\n\n使用时，请在尚无保险库的安装的首个界面选择“%1$s”。</string>
+    <string name="backup_choose">选择保存位置</string>
+    <string name="backup_progress">正在保存备份：%1$s / %2$s</string>
+    <string name="backup_done">备份已保存：%1$s</string>
+    <string name="backup_failed">无法创建备份。%1$s</string>
+    <string name="restore_action">恢复备份</string>
+    <string name="restore_progress">正在恢复备份：%1$s / %2$s</string>
+    <string name="restore_failed">无法恢复备份。%1$s</string>
+    <string name="restore_done">备份已恢复。请使用制作备份时保险库的密码解锁。</string>
     <string name="settings_delete_vault">删除保险库</string>
     <string name="settings_delete_vault_hint">不可逆地清除内容、设置、来源和密钥。</string>
     <string name="settings_section_about">关于</string>

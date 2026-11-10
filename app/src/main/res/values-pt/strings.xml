@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Não foi possível gravar no armazenamento do telefone: %1$s</string>
     <string name="problem_file_unreadable">Não foi possível ler o arquivo: %1$s</string>
     <string name="problem_settings_unreadable">Não foi possível ler os ajustes, que recomeçam do zero. O arquivo foi mantido como %1$s</string>
+    <string name="problem_backup_unreadable">Este arquivo não é um backup do BooruVault, ou está incompleto ou danificado</string>
+    <string name="problem_backup_newer">Este backup foi criado por uma versão mais recente do app. Atualize o app e depois restaure-o.</string>
+    <string name="problem_backup_key_changed">A senha foi alterada enquanto o backup era criado. Faça o backup de novo.</string>
     <string name="problem_unknown">Erro: %1$s</string>
     <string name="rating_general">Geral</string>
     <string name="rating_sensitive">Sensível</string>
@@ -122,6 +125,17 @@
     <string name="settings_cookies_cleared">Cookies excluídos</string>
     <string name="settings_cookies_clear_title">Excluir os cookies dos sites?</string>
     <string name="settings_cookies_clear_text">Todos os sites esquecem você, pelas duas rotas: os logins se perdem e as verificações anti-bot precisam ser passadas de novo.</string>
+    <string name="settings_backup">Backup do cofre</string>
+    <string name="settings_backup_hint">Salve o cofre inteiro em um único arquivo criptografado, para guardar em outro lugar ou levar para outro telefone</string>
+    <string name="backup_text">O backup contém seus arquivos com as tags, seus ajustes, fontes e chaves de API, criptografados como estão no cofre: nada é descriptografado para criá-lo. Os cookies dos sites e a fila de downloads ficam de fora.\n\nEle abre com a senha que o cofre tem agora e é tão forte quanto essa senha: quem conseguir o arquivo pode testar senhas nele pelo tempo que quiser. Mudar a senha depois não muda um backup já feito.\n\nPara usá-lo, escolha “%1$s” na primeira tela de uma instalação que ainda não tem cofre.</string>
+    <string name="backup_choose">Escolher onde salvar</string>
+    <string name="backup_progress">Salvando o backup: %1$s de %2$s</string>
+    <string name="backup_done">Backup salvo: %1$s</string>
+    <string name="backup_failed">Não foi possível criar o backup. %1$s</string>
+    <string name="restore_action">Restaurar um backup</string>
+    <string name="restore_progress">Restaurando o backup: %1$s de %2$s</string>
+    <string name="restore_failed">Não foi possível restaurar o backup. %1$s</string>
+    <string name="restore_done">O backup foi restaurado. Desbloqueie-o com a senha que o cofre tinha quando o backup foi feito.</string>
     <string name="settings_delete_vault">Excluir o cofre</string>
     <string name="settings_delete_vault_hint">Apaga de forma irreversível o conteúdo, os ajustes, as fontes e a chave.</string>
     <string name="settings_section_about">Sobre</string>

@@ -31,6 +31,9 @@
     <string name="problem_storage_write">Impossible d\'écrire dans la mémoire du téléphone : %1$s</string>
     <string name="problem_file_unreadable">Le fichier n\'a pas pu être lu : %1$s</string>
     <string name="problem_settings_unreadable">Les réglages n\'ont pas pu être lus et repartent de zéro. Le fichier a été conservé sous le nom %1$s</string>
+    <string name="problem_backup_unreadable">Ce fichier n\'est pas une sauvegarde BooruVault, ou il est incomplet ou endommagé</string>
+    <string name="problem_backup_newer">Cette sauvegarde a été créée par une version plus récente de l\'application. Mettez l\'application à jour, puis restaurez-la.</string>
+    <string name="problem_backup_key_changed">Le mot de passe a été changé pendant la création de la sauvegarde. Refaites la sauvegarde.</string>
     <string name="problem_unknown">Erreur : %1$s</string>
     <string name="rating_general">Général</string>
     <string name="rating_sensitive">Sensible</string>
@@ -122,6 +125,17 @@
     <string name="settings_cookies_cleared">Cookies supprimés</string>
     <string name="settings_cookies_clear_title">Supprimer les cookies des sites ?</string>
     <string name="settings_cookies_clear_text">Tous les sites vous oublient, sur les deux routes : les connexions sont perdues et les contrôles anti-bot sont à repasser.</string>
+    <string name="settings_backup">Sauvegarde du coffre</string>
+    <string name="settings_backup_hint">Enregistre tout le coffre dans un seul fichier chiffré, à conserver ailleurs ou à transférer sur un autre téléphone</string>
+    <string name="backup_text">La sauvegarde contient vos fichiers avec leurs tags, vos paramètres, vos sources et vos clés API, chiffrés comme ils le sont dans le coffre : rien n\'est déchiffré pour la créer. Les cookies des sites et la file d\'attente des téléchargements n\'en font pas partie.\n\nElle s\'ouvre avec le mot de passe actuel du coffre, et sa protection ne vaut que ce mot de passe : quiconque obtient le fichier peut y essayer des mots de passe aussi longtemps qu\'il le souhaite. Changer le mot de passe plus tard ne change pas une sauvegarde déjà faite.\n\nPour l\'utiliser, choisissez « %1$s » sur le premier écran d\'une installation qui n\'a pas encore de coffre.</string>
+    <string name="backup_choose">Choisir où enregistrer</string>
+    <string name="backup_progress">Enregistrement de la sauvegarde : %1$s sur %2$s</string>
+    <string name="backup_done">Sauvegarde enregistrée : %1$s</string>
+    <string name="backup_failed">La sauvegarde n\'a pas pu être créée. %1$s</string>
+    <string name="restore_action">Restaurer une sauvegarde</string>
+    <string name="restore_progress">Restauration de la sauvegarde : %1$s sur %2$s</string>
+    <string name="restore_failed">La sauvegarde n\'a pas pu être restaurée. %1$s</string>
+    <string name="restore_done">La sauvegarde est restaurée. Déverrouillez-la avec le mot de passe que le coffre avait au moment de la sauvegarde.</string>
     <string name="settings_delete_vault">Supprimer le coffre</string>
     <string name="settings_delete_vault_hint">Efface de façon irréversible le contenu, les paramètres, les sources et la clé.</string>
     <string name="settings_section_about">À propos</string>
