@@ -490,30 +490,34 @@ private fun BrowseTopBar(
     Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
         Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 12.dp).padding(bottom = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box {
-                    TextButton(onClick = { sourceMenu = true }) {
-                        Text(sourceName, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Icon(Icons.Outlined.ArrowDropDown, contentDescription = stringResource(R.string.browse_change_source))
-                    }
-                    DropdownMenu(expanded = sourceMenu, onDismissRequest = { sourceMenu = false }) {
-                        sources.forEach { (id, name) ->
-                            DropdownMenuItem(
-                                text = { Text(name) },
-                                onClick = {
-                                    sourceMenu = false
-                                    onSelectSource(id)
-                                },
-                                trailingIcon = { if (id == selectedId) Icon(Icons.Outlined.Check, null) },
-                            )
+                // The name takes what the icons leave, and is cut short before any of them is: a
+                // long one, a page's host or a large font would otherwise push the browser, the
+                // onion and the menu, where a page opened on the spot is closed, off the bar.
+                Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.weight(1f, fill = false)) {
+                        TextButton(onClick = { sourceMenu = true }) {
+                            Text(sourceName, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                            Icon(Icons.Outlined.ArrowDropDown, contentDescription = stringResource(R.string.browse_change_source))
+                        }
+                        DropdownMenu(expanded = sourceMenu, onDismissRequest = { sourceMenu = false }) {
+                            sources.forEach { (id, name) ->
+                                DropdownMenuItem(
+                                    text = { Text(name) },
+                                    onClick = {
+                                        sourceMenu = false
+                                        onSelectSource(id)
+                                    },
+                                    trailingIcon = { if (id == selectedId) Icon(Icons.Outlined.Check, null) },
+                                )
+                            }
                         }
                     }
+                    if (onOpenSite != null) {
+                        // A browser window, not the arrow of a link that leaves the app: the site opens inside it,
+                        // for its account, its checks and its preferences. Asked first, as it is easy to tap by mistake.
+                        IconButton(onClick = { confirmSite = true }) { Icon(Icons.Outlined.Web, stringResource(R.string.source_open_browser)) }
+                    }
                 }
-                if (onOpenSite != null) {
-                    // A browser window, not the arrow of a link that leaves the app: the site opens inside it,
-                    // for its account, its checks and its preferences. Asked first, as it is easy to tap by mistake.
-                    IconButton(onClick = { confirmSite = true }) { Icon(Icons.Outlined.Web, stringResource(R.string.source_open_browser)) }
-                }
-                Spacer(Modifier.weight(1f))
                 // Where the route stands, at a glance; a tap opens its settings.
                 TorBadgeButton(tor, onOpenNetwork)
                 Box {
