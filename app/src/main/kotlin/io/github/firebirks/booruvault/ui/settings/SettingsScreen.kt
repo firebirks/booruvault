@@ -115,7 +115,7 @@ import java.io.IOException
  * shows where every page stands, so most answers are there without opening one.
  */
 @Composable
-fun SettingsTab(requestedPage: String? = null, onRequestShown: () -> Unit = {}) {
+fun SettingsTab(requestedPage: String? = null, onRequestShown: () -> Unit = {}, returnPage: String? = null, onReturn: () -> Unit = {}) {
     var page by rememberSaveable { mutableStateOf("main") }
     // Another tab can send here with a page in mind, such as the content filter from empty results.
     LaunchedEffect(requestedPage) {
@@ -124,8 +124,14 @@ fun SettingsTab(requestedPage: String? = null, onRequestShown: () -> Unit = {}) 
             onRequestShown()
         }
     }
-    BackHandler(enabled = page != "main") { page = if (page.startsWith("source:")) "sources" else "main" }
-    val back = { page = "main" }
+    // The way back from [returnPage], the page another tab opened, leads to that tab, by the
+    // arrow as by Back: the hub was never passed through.
+    val back = {
+        val (before, leaves) = settingsBack(page, returnPage)
+        page = before
+        if (leaves) onReturn()
+    }
+    BackHandler(enabled = page != "main", onBack = back)
     when {
         page == "main" -> SettingsMain(onOpen = { page = it })
         page == "sources" -> SourcesScreen(onBack = back, onEdit = { page = "source:$it" })
@@ -138,6 +144,15 @@ fun SettingsTab(requestedPage: String? = null, onRequestShown: () -> Unit = {}) 
         page == "language" -> SettingsPage(stringResource(R.string.settings_language), back) { LanguageSettings() }
         page == "about" -> SettingsPage(stringResource(R.string.settings_section_about), back) { AboutPage() }
     }
+}
+
+/**
+ * Where Back leads from [page]: the page before it, and whether the settings are left for the
+ * tab that opened [returnPage]. They are then left at the hub, for the next visit.
+ */
+internal fun settingsBack(page: String, returnPage: String?): Pair<String, Boolean> = when {
+    page.startsWith("source:") -> "sources" to false
+    else -> "main" to (page == returnPage)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

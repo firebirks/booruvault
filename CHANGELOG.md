@@ -8,6 +8,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 
 ### Changed
 - In the network settings, where Tor stands and the buttons that act on it come right under the switch, before the explanations.
+- Back from a settings page opened from Browse, by the onion, the content filter or the missing sources, returns to Browse instead of the settings' hub.
 
 ### Fixed
 - A full image that fails to load in a viewer says why and offers to try again, instead of leaving its preview under a spinner for good. A check in front of the file can be passed in the built-in browser from there.

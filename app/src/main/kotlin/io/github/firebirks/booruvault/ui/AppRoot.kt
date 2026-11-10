@@ -172,7 +172,11 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     val container = LocalContainer.current
     var trail by rememberSaveable(stateSaver = TrailSaver) { mutableStateOf(listOf(Tab.BROWSE)) }
     val tab = trail.last()
+    // The page of the settings another tab opened, for as long as the way back from it leads
+    // to that tab: until it is taken, or the user moves on by the bar.
+    var settingsReturn by rememberSaveable { mutableStateOf<String?>(null) }
     fun open(item: Tab) {
+        settingsReturn = null
         trail = trail.visit(item)
     }
     // Index into the browse results, or id of a vault item, of the open full-screen viewer.
@@ -180,6 +184,11 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
     var vaultViewer by rememberSaveable { mutableStateOf<String?>(null) }
     // A page of the settings another tab asked for, until the settings have opened it.
     var settingsPage by rememberSaveable { mutableStateOf<String?>(null) }
+    fun openSettings(page: String) {
+        open(Tab.SETTINGS)
+        settingsPage = page
+        settingsReturn = page
+    }
     val holder = rememberSaveableStateHolder()
     val browse = containerViewModel { BrowseViewModel(it) }
     val vault = containerViewModel { VaultViewModel(it) }
@@ -239,22 +248,21 @@ private fun MainScaffold(requestedTab: MutableStateFlow<String?>) {
                         Tab.BROWSE -> BrowseScreen(
                             onOpenPost = { postViewer = it },
                             onNeedVault = { open(Tab.VAULT) },
-                            onOpenContentFilter = {
-                                settingsPage = "content"
-                                open(Tab.SETTINGS)
-                            },
-                            onOpenSources = {
-                                settingsPage = "sources"
-                                open(Tab.SETTINGS)
-                            },
-                            onOpenNetwork = {
-                                settingsPage = "network"
-                                open(Tab.SETTINGS)
-                            },
+                            onOpenContentFilter = { openSettings("content") },
+                            onOpenSources = { openSettings("sources") },
+                            onOpenNetwork = { openSettings("network") },
                         )
                         Tab.VAULT -> VaultTab(onOpenItem = { vaultViewer = it })
                         Tab.DOWNLOADS -> DownloadsScreen()
-                        Tab.SETTINGS -> SettingsTab(requestedPage = settingsPage, onRequestShown = { settingsPage = null })
+                        Tab.SETTINGS -> SettingsTab(
+                            requestedPage = settingsPage,
+                            onRequestShown = { settingsPage = null },
+                            returnPage = settingsReturn,
+                            onReturn = {
+                                settingsReturn = null
+                                if (trail.size > 1) trail = trail.dropLast(1)
+                            },
+                        )
                     }
                 }
             }
