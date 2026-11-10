@@ -71,6 +71,9 @@ import androidx.media3.common.util.UnstableApi
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.VideoPlayer
 import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
+import io.github.firebirks.booruvault.ui.common.ViewerLoadError
+import io.github.firebirks.booruvault.ui.common.rememberViewerImageLoad
+import io.github.firebirks.booruvault.ui.common.vaultImageProblem
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.resolve
@@ -140,20 +143,24 @@ fun VaultViewer(startId: String, onClose: () -> Unit, onSearchTag: (String) -> U
                 }
             } else {
                 val zoomState = rememberZoomableImageState()
+                // A file that cannot be opened or decoded says so, rather than leave its thumbnail waiting.
+                val load = rememberViewerImageLoad(VaultImage(item.id, thumbnail = false))
+                val problem = load.failure?.vaultImageProblem()
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     if (!zoomState.isImageDisplayed) {
                         if (item.hasThumbnail) {
                             AsyncImage(VaultImage(item.id, thumbnail = true), null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                         }
-                        CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
+                        if (problem == null) CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
                     }
                     ZoomableAsyncImage(
-                        model = VaultImage(item.id, thumbnail = false),
+                        model = load.request,
                         contentDescription = item.fileName,
                         state = zoomState,
                         onClick = { chrome = !chrome },
                         modifier = Modifier.fillMaxSize(),
                     )
+                    ViewerLoadError(problem, onRetry = load.retry, onVerify = null)
                 }
             }
         }

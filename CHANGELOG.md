@@ -4,6 +4,11 @@ All notable changes to BooruVault. The format follows [Keep a Changelog](https:/
 
 Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
 
+## [Unreleased]
+
+### Fixed
+- A full image that fails to load in a viewer says why and offers to try again, instead of leaving its preview under a spinner for good. A check in front of the file can be passed in the built-in browser from there.
+
 ## [0.4.0] - 2026-11-06
 
 ### Added

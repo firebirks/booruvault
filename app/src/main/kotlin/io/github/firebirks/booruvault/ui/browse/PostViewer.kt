@@ -8,7 +8,6 @@ import io.github.firebirks.booruvault.ui.vault.CollectionDialog
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.ui.platform.LocalResources
 import io.github.firebirks.booruvault.util.Problem
-import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
@@ -101,15 +100,17 @@ import io.github.firebirks.booruvault.ui.common.ViewerSystemBars
 import io.github.firebirks.booruvault.ui.common.categoryColor
 import io.github.firebirks.booruvault.ui.common.containerViewModel
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
+import io.github.firebirks.booruvault.ui.common.ChallengeMode
+import io.github.firebirks.booruvault.ui.common.ViewerLoadError
+import io.github.firebirks.booruvault.ui.common.rememberViewerImageLoad
+import io.github.firebirks.booruvault.ui.common.remoteImageProblem
+import io.github.firebirks.booruvault.download.downloadProblem
 import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.rememberNotificationPermission
 import io.github.firebirks.booruvault.util.formatBytes
 import io.github.firebirks.booruvault.util.formatDate
 import io.github.firebirks.booruvault.vault.VaultState
 import coil3.compose.AsyncImage
-import coil3.network.NetworkHeaders
-import coil3.network.httpHeaders
-import coil3.request.ImageRequest
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -204,7 +205,13 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                     AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
                 }
             } else {
-                ZoomablePostImage(post, url, UserAgents.forSource(state.source), onTap = { chrome = !chrome })
+                val source = state.source
+                ZoomablePostImage(
+                    post, url, UserAgents.forSource(source),
+                    // A file host guards the file itself: its check is passed at the file's address.
+                    onVerify = source?.let { { address, onPassed -> challenge.open(it, address, ChallengeMode.ADDRESS, onPassed) } },
+                    onTap = { chrome = !chrome },
+                )
             }
         }
 
@@ -315,39 +322,51 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
 private fun PendingPost(post: Post, error: Problem?, onRetry: () -> Unit, onVerify: (() -> Unit)?, onTap: () -> Unit) {
     Box(Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures { onTap() } }, contentAlignment = Alignment.Center) {
         AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
-        if (error == null) {
-            CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
-        } else {
-            Column(
-                Modifier.background(Color.Black.copy(alpha = 0.7f)).padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(problemText(error), color = Color.White, style = MaterialTheme.typography.bodyMedium)
-                if (onVerify != null) TextButton(onClick = onVerify) { Text(stringResource(R.string.action_verify_in_browser)) }
-                TextButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
-            }
-        }
+        if (error == null) CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
+        ViewerLoadError(error, onRetry, onVerify)
     }
 }
 
+/**
+ * The post's full image over its preview. A load that fails says why and offers to try again,
+ * rather than leave the preview waiting; [onVerify] opens the built-in browser at an address
+ * whose check guards the file, and runs what it is handed once the check is passed.
+ */
 @Composable
-private fun ZoomablePostImage(post: Post, url: String?, userAgent: String, onTap: () -> Unit) {
-    val context = LocalContext.current
+private fun ZoomablePostImage(post: Post, url: String?, userAgent: String, onVerify: ((address: String, onPassed: () -> Unit) -> Unit)?, onTap: () -> Unit) {
+    val tor = LocalContainer.current.tor
     val zoomState = rememberZoomableImageState()
+    val load = rememberViewerImageLoad(url, userAgent)
+    // When this file's check was passed in the browser. Met again right after, it is not offered
+    // once more, as for a download: the site does not take the pass from the app.
+    var checkedAt by remember(url) { mutableStateOf<Long?>(null) }
+    val problem = load.failure?.let { downloadProblem(it.remoteImageProblem(url), checkedAt, passExpired = false, System.currentTimeMillis(), tor.enabled) }
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (!zoomState.isImageDisplayed) {
             AsyncImage(post.previewUrl, null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
-            CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
+            if (problem == null) CircularProgressIndicator(Modifier.size(36.dp), color = Color.White)
         }
         ZoomableAsyncImage(
-            // Named as the source's other requests are: an original may be refused to the browser's name.
-            model = remember(url, userAgent) {
-                ImageRequest.Builder(context).data(url).httpHeaders(NetworkHeaders.Builder().set("User-Agent", userAgent).build()).build()
-            },
+            model = load.request,
             contentDescription = post.tagNames.take(8).joinToString(" "),
             state = zoomState,
             onClick = { onTap() },
             modifier = Modifier.fillMaxSize(),
+        )
+        ViewerLoadError(
+            problem,
+            // A post without a file has nothing to ask for again.
+            onRetry = load.retry.takeIf { url != null },
+            onVerify = if (problem?.code == Problem.Code.CHALLENGE && url != null && onVerify != null) {
+                {
+                    onVerify(url) {
+                        checkedAt = System.currentTimeMillis()
+                        load.retry()
+                    }
+                }
+            } else {
+                null
+            },
         )
     }
 }
