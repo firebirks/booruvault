@@ -8,6 +8,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 
 ### Fixed
 - A full image that fails to load in a viewer says why and offers to try again, instead of leaving its preview under a spinner for good. A check in front of the file can be passed in the built-in browser from there.
+- A blacklist edited just before leaving the content filter is saved, instead of being dropped with the page.
 
 ## [0.4.0] - 2026-11-06
 

@@ -62,12 +62,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -233,7 +235,8 @@ private fun autoLockLabel(seconds: Int): String = when (seconds) {
 /** What is shown and what is hidden: ratings and the blacklist. */
 @Composable
 private fun ContentSettings() {
-    val repo = LocalContainer.current.settings
+    val container = LocalContainer.current
+    val repo = container.settings
     val settings by repo.settings.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var adultAsked by remember { mutableStateOf<Rating?>(null) }
@@ -258,7 +261,8 @@ private fun ContentSettings() {
             scope.launch { repo.setRatings(settings.allowedRatings + rating) }
         }
     }
-    BlacklistEditor(settings.blacklist) { scope.launch { repo.setBlacklist(it) } }
+    // In the app's scope: the page's own ends with the page, and would cut short a save begun on the way out.
+    BlacklistEditor(settings.blacklist) { container.scope.launch { repo.setBlacklist(it) } }
 }
 
 /** Questionable and explicit posts are for adults; the first of the two to be turned on asks. */
@@ -621,6 +625,12 @@ private fun BlacklistEditor(stored: String, onSave: (String) -> Unit) {
         if (!edited) return@LaunchedEffect
         delay(600)
         if (text != stored) onSave(text)
+    }
+    // Leaving the page inside that pause cancels the save waiting in it: what was typed is saved on the way out.
+    val storedNow by rememberUpdatedState(stored)
+    val saveNow by rememberUpdatedState(onSave)
+    DisposableEffect(Unit) {
+        onDispose { if (edited && text != storedNow) saveNow(text) }
     }
     OutlinedTextField(
         value = text,
