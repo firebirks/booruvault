@@ -6,6 +6,7 @@ Vault
 • A password hardened with Argon2id, optional fingerprint unlock, auto-lock after a time in the background.
 • Downloads are sealed to the vault's public key while they stream, so they can land even while the vault is locked and plaintext never touches storage.
 • Collections by tag query, filters, import from the device, export in clear on request.
+• Backup of the whole vault as one file, still encrypted, to keep elsewhere or to move to another phone.
 • Screen protection against screenshots and the recent-apps preview.
 
 Tor and privacy
@@ -22,6 +23,6 @@ Browsing
 • A built-in browser to pass anti-bot checks, log in or set site preferences; it stays on the site it was opened for, and the cookies it brings back are kept in the vault.
 
 Downloads
-• Single posts, a selection or a whole search, in the background. The queue survives a lock and a restart.
+• Single posts, a selection or a whole search, in the background. The queue survives a lock and a restart, and a file cut short is taken up where it stopped when its host allows.
 
 Free software under the GNU GPL v3.

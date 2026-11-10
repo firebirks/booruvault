@@ -35,10 +35,10 @@ All three are signed with the same key, so updates install over each other. A bu
 
 - **What you can download:** single posts, a multi-selection, or every result of a search (up to 1000).
 - **Encrypted while streaming:** files are sealed as they arrive, so plaintext never touches storage.
-- **Background:** three downloads run in parallel under a foreground service. Its notification shows counts only.
+- **Background:** three downloads run in parallel under a foreground service, started in the order they were queued. Its notification shows counts only.
 - **The queue** is sealed in the vault and resumes after a restart. A download or a collection that stopped can be retried or removed on its own, or all of them at once.
 - **Cut short:** a file whose transfer stalls or is cut is taken up where it stopped, when its host hands out parts of a file and names the file so that the rest is surely the same one (a strong `ETag`, or the date it was last changed): the rest is sealed right after what the vault already holds of it. It goes on for as long as each try brings something, and gives up after two in a row that bring nothing. From a host that does not, the file is read again from its first byte.
-- **Timeouts:** a file or a search page that times out is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
+- **Timeouts:** a search page that times out, or a file that cannot be taken up where it stopped, is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
 - **On lock:** the queue is paused and dropped from memory. A risky option lets it keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
 - **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock.
 
@@ -134,7 +134,7 @@ A backup is a ZIP of the vault's own files as they lie on storage: the header, t
 - **What protects it:** the password alone. On the phone the header sits in the app's private storage; in a backup it travels with the files, and whoever holds the file can try passwords against Argon2id for as long as they like. A backup deserves a strong password.
 - **A password changed later** does not reach a backup already made: it still opens with the password the vault had then. Changing the password while a backup is being written makes that backup fail, to be made again, since files re-sealed meanwhile would be to a key its header does not hold. One made while the files are still being re-sealed after a change holds the retired key boxed in its header, as the vault does, and the re-sealing goes on after a restore.
 - **Left out:** the index, which is rebuilt from the metadata; the site cookies, which belong to the route and the browser they were earned with; the download queue; and the biometric copy of the key, which only the Keystore of the phone it was made on can open.
-- **Restoring** is offered where there is no vault, on the first screen. The backup is laid out whole beside the vault's place and moved there only once its last entry, which counts the others, has been read: a file that is not a backup, one cut short, or one written by a later version leaves no vault and no files. Nothing in it is taken on its word: only the names a backup uses are accepted, each file must begin as a sealed file does and stay within the size its kind can have, and the header is read as the vault's own is at every start. The route question is asked again after the first unlock, since the choice between Tor and a direct connection is kept outside the vault and does not travel with it.
+- **Restoring** is offered where there is no vault, on the first screen. The backup is laid out whole beside the vault's place (`files/vault.restore/`, cleared at the next start if the app was closed midway) and moved there only once its last entry, which counts the others, has been read: a file that is not a backup, one cut short, or one written by a later version leaves no vault and no files. Nothing in it is taken on its word: only the names a backup uses are accepted, each file must begin as a sealed file does and stay within the size its kind can have, and the header is read as the vault's own is at every start. The route question is asked again after the first unlock, since the choice between Tor and a direct connection is kept outside the vault and does not travel with it.
 - **While it runs,** a foreground service keeps the app alive; its notification says how far it is. A backup that fails or is stopped deletes the file it had begun.
 
 ### Memory
@@ -211,7 +211,7 @@ app/src/main/kotlin/io/github/firebirks/booruvault/
 ├── download/   download queue and foreground service
 ├── net/        sealed cookie jar, Tor/Orbot, built-in browser hardening
 ├── settings/   sealed settings, content filter
-├── vault/      key management, sealed store, import/export, Coil and Media3 adapters
+├── vault/      key management, sealed store, import/export, backup, Coil and Media3 adapters
 │   └── crypto/ Argon2id, HKDF, AES-GCM, the sealed stream format
 ├── ui/         Compose screens: browse, vault, downloads, settings, lock screens
 └── util/
@@ -224,6 +224,8 @@ app/src/main/kotlin/io/github/firebirks/booruvault/
 - **Accounts and blocks:** some sites need an API key, and some block Tor or ask for anti-bot checks more often.
 - **WebView storage:** cleared as far as the platform allows; a few profile files may remain.
 - **Memory:** the clearing is best effort, see [Memory](#memory).
+- **Backups are whole:** each one writes the entire vault again, and needs that much room where it is saved; there is no backup that adds only what is new. One is restored only where there is no vault, never merged into one that exists.
+- **Resuming a download** needs a host that hands out parts of a file and names the file; elsewhere a transfer cut short starts over, as before.
 
 ## License
 

@@ -115,7 +115,9 @@ private data class SavedBatch(
 
 /**
  * Downloads posts straight into the vault: the response body is sealed as it streams, so the
- * plaintext never touches storage.
+ * plaintext never touches storage. Three run at a time, in the order they were queued; one cut
+ * short asks its host for the rest and seals it after what it has, when the host can be held
+ * to the same file.
  *
  * The queue itself names posts, tags and sites, so it lives in memory only while the vault is
  * unlocked. Locking seals it into the vault, stops every transfer and forgets it; the next unlock
