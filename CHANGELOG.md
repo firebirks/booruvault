@@ -21,6 +21,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - A blacklist edited just before leaving the content filter is saved, instead of being dropped with the page.
 - A long source name, a page's host or a large font no longer pushes the browser, the onion and the menu off the top bar of Browse: the name is cut short instead.
 - A download retried while Tor's exit is still being checked, as right after Orbot is started again, waits in the queue for the check and then goes out, instead of failing at once as not yet verified.
+- A download or a collection that stopped says why across the whole row, with its retry and remove buttons beside the title: the two buttons used to narrow the row, breaking the title in two and the reason into four lines.
 
 ## [0.4.0] - 2026-11-06
 

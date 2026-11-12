@@ -49,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.download.BatchJob
@@ -192,7 +193,10 @@ fun DownloadsScreen() {
 @Composable
 private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
-        headlineContent = { Text(stringResource(R.string.batch_title, batch.tags.ifBlank { stringResource(R.string.batch_everything) })) },
+        headlineContent = {
+            val title = stringResource(R.string.batch_title, batch.tags.ifBlank { stringResource(R.string.batch_everything) })
+            if (batch.active) Text(title) else StoppedHeadline(title, onRetry, onRemove)
+        },
         supportingContent = {
             Column {
                 Text(stringResource(R.string.batch_progress, batch.source.name, batch.found, batch.target))
@@ -208,20 +212,23 @@ private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit,
             }
         },
         leadingContent = { Icon(Icons.Outlined.CloudDownload, null) },
-        trailingContent = {
-            if (batch.active) {
-                IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.batch_stop)) }
-            } else {
-                RetryOrRemove(onRetry, onRemove)
-            }
+        trailingContent = if (batch.active) {
+            { IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.batch_stop)) } }
+        } else {
+            null
         },
     )
 }
 
-/** What a stopped row offers: try it again, or take just this one off the list. */
+/**
+ * The title of a stopped row with what the row offers beside it: try it again, or take just this
+ * one off the list. The buttons sit on the title's line rather than at the row's end, where two
+ * of them would narrow the whole row: what stopped it is said below, across the full width.
+ */
 @Composable
-private fun RetryOrRemove(onRetry: () -> Unit, onRemove: () -> Unit) {
-    Row {
+private fun StoppedHeadline(title: String, onRetry: () -> Unit, onRemove: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(title, Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
         IconButton(onClick = onRetry) { Icon(Icons.Outlined.Refresh, stringResource(R.string.action_retry)) }
         IconButton(onClick = onRemove) { Icon(Icons.Outlined.Close, stringResource(R.string.action_remove)) }
     }
@@ -230,7 +237,10 @@ private fun RetryOrRemove(onRetry: () -> Unit, onRemove: () -> Unit) {
 @Composable
 private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () -> Unit, onRetry: () -> Unit, onRemove: () -> Unit, onVerify: (() -> Unit)?) {
     ListItem(
-        headlineContent = { Text("${task.source.name} #${task.post.id}") },
+        headlineContent = {
+            val title = "${task.source.name} #${task.post.id}"
+            if (task.retriable) StoppedHeadline(title, onRetry, onRemove) else Text(title)
+        },
         supportingContent = {
             Column {
                 val status = when (task.status) {
@@ -266,14 +276,15 @@ private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () ->
                 modifier = Modifier.size(52.dp).clip(RoundedCornerShape(8.dp)),
             )
         },
-        trailingContent = {
-            when (task.status) {
-                DownloadStatus.QUEUED, DownloadStatus.RUNNING -> IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.action_cancel)) }
-                DownloadStatus.FAILED, DownloadStatus.CANCELLED -> RetryOrRemove(onRetry, onRemove)
-                // As wide as the buttons on the other rows, so the icons line up.
-                DownloadStatus.DONE, DownloadStatus.SKIPPED -> Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
-                    Icon(Icons.Outlined.CheckCircle, null, tint = MaterialTheme.colorScheme.primary)
-                }
+        trailingContent = when (task.status) {
+            DownloadStatus.QUEUED, DownloadStatus.RUNNING -> {
+                { IconButton(onClick = onCancel) { Icon(Icons.Outlined.Close, stringResource(R.string.action_cancel)) } }
+            }
+            // Its buttons are beside the title: see StoppedHeadline.
+            DownloadStatus.FAILED, DownloadStatus.CANCELLED -> null
+            // As wide as the buttons on the other rows, so the icons line up.
+            DownloadStatus.DONE, DownloadStatus.SKIPPED -> {
+                { Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) { Icon(Icons.Outlined.CheckCircle, null, tint = MaterialTheme.colorScheme.primary) } }
             }
         },
     )
