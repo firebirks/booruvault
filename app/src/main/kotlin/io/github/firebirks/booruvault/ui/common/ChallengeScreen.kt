@@ -17,6 +17,9 @@ import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -205,7 +208,9 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                     actions = { TextButton(onClick = { finish(true) }) { Text(stringResource(R.string.action_done)) } },
                 )
             },
-            contentWindowInsets = WindowInsets(0),
+            // Over the whole screen, tabs included: the page stops above the system's navigation
+            // bar and the keyboard, so neither covers the end of it or the field being typed in.
+            contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
         ) { padding ->
             Column(Modifier.padding(padding).fillMaxSize()) {
                 Text(
