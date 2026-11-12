@@ -39,6 +39,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **The queue** is sealed in the vault and resumes after a restart. A download or a collection that stopped can be retried or removed on its own, or all of them at once.
 - **Cut short:** a file whose transfer stalls or is cut is taken up where it stopped, when its host hands out parts of a file and names the file so that the rest is surely the same one (a strong `ETag`, or the date it was last changed): the rest is sealed right after what the vault already holds of it. It goes on for as long as each try brings something, and gives up after two in a row that bring nothing. From a host that does not, the file is read again from its first byte.
 - **Timeouts:** a search page that times out, or a file that cannot be taken up where it stopped, is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
+- **Tor being checked:** a download asked for while the exit check is on its way, as right after Orbot is started again, waits in the queue for it and goes out once it passes. With Orbot silent, or a check that failed, it fails and says so.
 - **On lock:** the queue is paused and dropped from memory. A risky option lets it keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
 - **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock.
 

@@ -133,7 +133,7 @@ class AppContainer(private val context: Context) {
     val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
     val downloads = DownloadManager(
         { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
-        vaultStore, vault, settings, json, vaultDir, scope,
+        vaultStore, vault, settings, json, vaultDir, scope, awaitTorVerdict = { tor.awaitVerdict() },
     )
     val autoLock = AutoLock(vault, settings, scope, SystemLockAlarm(context))
     val clipboard = SensitiveClipboard.of(context)

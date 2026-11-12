@@ -138,6 +138,8 @@ class DownloadManager(
     root: File,
     private val scope: CoroutineScope,
     private val timeoutRetryPauseMs: Long = 3_000,
+    /** Waits for Tor's exit check to speak, for a download it held back: true if the download may go out now. */
+    private val awaitTorVerdict: suspend () -> Boolean = { false },
 ) {
     private val saved = SealedJson(File(root, "downloads.bin"), SavedQueue.serializer(), json)
 
@@ -505,8 +507,10 @@ class DownloadManager(
      * [retries]: the tries a failure may still earn this file before it counts as failed.
      * [resume]: whether a transfer cut short may ask for the rest; false once the file's host
      * has answered such a request with something else.
+     * [holds]: the times it may still wait for Tor's exit check before being held back by it
+     * counts as failed.
      */
-    private suspend fun run(key: Long, own: Job, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true) {
+    private suspend fun run(key: Long, own: Job, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true, holds: Int = TOR_HOLDS) {
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.QUEUED) return
         var post = task.post
@@ -660,7 +664,14 @@ class DownloadManager(
                 // among the parallel transfers is kept through the pause.
                 set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1) }
                 delay(timeoutRetryPauseMs)
-                return run(key, own, left - 1, resumable)
+                return run(key, own, left - 1, resumable, holds)
+            }
+            if (met.code == Problem.Code.TOR_UNVERIFIED && holds > 0) {
+                // Held back while Tor's exit is being checked, as right after Orbot comes back:
+                // nothing went out, and it waits in the queue for the check rather than fail on
+                // what a few seconds will mend. Being held was no try at the file.
+                set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1) }
+                if (awaitTorVerdict()) return run(key, own, left, resumable, holds - 1)
             }
             val checked = checkedAt[task.source.id]
             // A file host's check names the file; one met on the site's own pages names nothing.
@@ -683,6 +694,9 @@ class DownloadManager(
          * failed. A file taken up where it was cut gets them anew each time it brings something.
          */
         const val TIMEOUT_RETRIES = 2
+
+        /** Waits for Tor's exit check that one download gets, should the verdict be withdrawn again under it. */
+        const val TOR_HOLDS = 3
 
         /** What cuts a transfer short without saying anything about the file: the rest is worth asking for. */
         val RESUMED = setOf(Problem.Code.TIMEOUT, Problem.Code.NETWORK)

@@ -20,6 +20,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - A full image that fails to load in a viewer says why and offers to try again, instead of leaving its preview under a spinner for good. A check in front of the file can be passed in the built-in browser from there.
 - A blacklist edited just before leaving the content filter is saved, instead of being dropped with the page.
 - A long source name, a page's host or a large font no longer pushes the browser, the onion and the menu off the top bar of Browse: the name is cut short instead.
+- A download retried while Tor's exit is still being checked, as right after Orbot is started again, waits in the queue for the check and then goes out, instead of failing at once as not yet verified.
 
 ## [0.4.0] - 2026-11-06
 

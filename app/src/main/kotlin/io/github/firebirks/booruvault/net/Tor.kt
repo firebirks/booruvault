@@ -12,6 +12,7 @@ import io.github.firebirks.booruvault.util.toProblem
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +40,7 @@ import java.net.SocketTimeoutException
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 import javax.net.ssl.SSLException
 
 enum class TorStatus { DISABLED, NOT_INSTALLED, CHECKING, ON, OFF }
@@ -147,6 +149,12 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     private val verifying = AtomicBoolean(false)
     private val probing = AtomicBoolean(false)
 
+    /** Counts the probes of the port begun, and names the last one over: see [awaitVerdict]. */
+    private val probesBegun = AtomicLong()
+
+    @Volatile
+    private var lastProbeOver = 0L
+
     @Volatile
     private var lastVerifyAt = 0L
 
@@ -185,6 +193,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     fun refreshStatus() {
         if (!enabled) return
         if (!probing.compareAndSet(false, true)) return
+        val probe = probesBegun.incrementAndGet()
         scope.launch(Dispatchers.IO) {
             try {
                 val status = when {
@@ -202,8 +211,12 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
                 val now = System.currentTimeMillis()
                 if (checkDue(_state.value, verifying.get(), now, lastVerifyAt)) {
                     lastVerifyAt = now
+                    // What the last check said goes as this one is asked for, not when it starts:
+                    // whoever waits on this probe must not read the old failure as the answer.
+                    _state.update { if (it.enabled) it.copy(verifyError = null) else it }
                     onVerifyNeeded()
                 }
+                lastProbeOver = probe
             } finally {
                 probing.set(false)
             }
@@ -221,6 +234,32 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
         if (!enabled) return
         _state.update { if (it.verifiedExit == null) it else it.copy(verifiedExit = null) }
         refreshStatus()
+    }
+
+    /**
+     * Waits, for a request the exit check held back, until the check has spoken: true once the
+     * exit is verified, or Tor is switched off. False when there is nothing to wait for, see
+     * [verdict], and after [timeoutMs]. The port is probed again meanwhile, which runs the check
+     * when one is due: a listener that answers with no check on its way would otherwise be
+     * waited on for nothing.
+     *
+     * That there is nothing to wait for is taken only from a probe begun after the wait was:
+     * what the state says before that may be from when Orbot was last looked at, and Orbot
+     * started since then would be given up on while its port is about to answer.
+     */
+    suspend fun awaitVerdict(timeoutMs: Long = VERDICT_WAIT_MS): Boolean {
+        val deadline = System.nanoTime() + timeoutMs * 1_000_000
+        val before = probesBegun.get()
+        while (true) {
+            when (verdict(_state.value)) {
+                true -> return true
+                false -> if (lastProbeOver > before) return false
+                null -> Unit
+            }
+            if (System.nanoTime() >= deadline) return false
+            refreshStatus()
+            delay(VERDICT_POLL_MS)
+        }
     }
 
     fun orbotLaunchIntent(): Intent? = context.packageManager.getLaunchIntentForPackage(ORBOT_PACKAGE)
@@ -287,6 +326,22 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
          */
         internal fun checkDue(state: TorState, verifying: Boolean, now: Long, lastVerifyAt: Long): Boolean =
             state.enabled && state.status == TorStatus.ON && state.verifiedExit == null && !verifying && now - lastVerifyAt >= VERIFY_INTERVAL_MS
+
+        /**
+         * What a request held back by the exit check can expect: true when it may go out, false
+         * when waiting would bring nothing (Orbot silent or missing, or a check that failed, which
+         * is not run again by itself for a while), null while the check may still pass.
+         */
+        internal fun verdict(state: TorState): Boolean? = when {
+            !state.blocking -> true
+            state.verifyError != null -> false
+            state.status == TorStatus.ON || state.status == TorStatus.CHECKING -> null
+            else -> false
+        }
+
+        /** How long a held request waits for the check: a circuit to the Tor Project can take a minute to build. */
+        private const val VERDICT_WAIT_MS = 90_000L
+        private const val VERDICT_POLL_MS = 500L
 
         /** The exit check answers with a few bytes of JSON; anything bigger is not it. */
         private const val MAX_VERIFY_BODY = 64L * 1024
