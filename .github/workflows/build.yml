@@ -9,19 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v5
+      - uses: actions/checkout@v7
+      # Gradle's cache comes from setup-java: from v6 on, setup-gradle keeps its cache in a
+      # proprietary component, so only the wrapper check is taken from gradle/actions.
+      - uses: gradle/actions/wrapper-validation@v6
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
-      - uses: gradle/actions/setup-gradle@v4
+          cache: gradle
       - name: Build, lint and run unit tests
         run: ./gradlew assembleDebug lintDebug testDebugUnitTest
       - name: Build the release APK (unsigned, as F-Droid builds it)
         run: ./gradlew assembleRelease
       - name: Keep the APKs
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: apks
           path: |
@@ -29,7 +32,7 @@ jobs:
             app/build/outputs/apk/release/app-release-unsigned.apk
       - name: Keep the test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-reports
           path: app/build/reports/tests/testDebugUnitTest
