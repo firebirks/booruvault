@@ -4,7 +4,6 @@ import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.UserAgents
-import io.github.firebirks.booruvault.booru.bytesUpTo
 import io.github.firebirks.booruvault.booru.extensionFromUrl
 import io.github.firebirks.booruvault.booru.withResponse
 import io.github.firebirks.booruvault.settings.AppSettings
@@ -32,6 +31,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
@@ -53,6 +53,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -67,6 +68,8 @@ data class DownloadTask(
     val bytes: Long = 0,
     val total: Long = -1,
     val problem: Problem? = null,
+    /** Names the row's preview among the [QueuePreviews]; the row keeps it for as long as it is listed. */
+    val previewId: String = UUID.randomUUID().toString(),
 ) {
     val active: Boolean get() = status == DownloadStatus.QUEUED || status == DownloadStatus.RUNNING
 
@@ -100,7 +103,14 @@ data class BatchJob(
 private data class SavedQueue(val tasks: List<SavedTask> = emptyList(), val batches: List<SavedBatch> = emptyList())
 
 @Serializable
-private data class SavedTask(val post: Post, val source: BooruSource, val status: DownloadStatus, val problem: Problem? = null)
+private data class SavedTask(
+    val post: Post,
+    val source: BooruSource,
+    val status: DownloadStatus,
+    val problem: Problem? = null,
+    /** Null in a queue saved before previews were kept. */
+    val previewId: String? = null,
+)
 
 @Serializable
 private data class SavedBatch(
@@ -143,6 +153,9 @@ class DownloadManager(
 ) {
     private val saved = SealedJson(File(root, "downloads.bin"), SavedQueue.serializer(), json)
 
+    /** The previews of the rows listed, kept sealed so the list need not ask the sites for them again. */
+    val previews = QueuePreviews(root, vault, client)
+
     /** Whether the queue in memory is the vault's; false while locked or before it is read back. */
     @Volatile
     private var live = false
@@ -176,7 +189,7 @@ class DownloadManager(
     /** What is saved: the work to do, and what failed or was cancelled, which can be retried; what is done is not. */
     private fun snapshot(): SavedQueue = SavedQueue(
         tasks = _tasks.value.filter { it.active || it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }.map {
-            SavedTask(it.post, it.source, if (it.active) DownloadStatus.QUEUED else it.status, it.problem)
+            SavedTask(it.post, it.source, if (it.active) DownloadStatus.QUEUED else it.status, it.problem, it.previewId)
         },
         batches = _batches.value.map { SavedBatch(it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) },
     )
@@ -204,7 +217,7 @@ class DownloadManager(
         }
         live = false
         val queue = persist()
-        stopAll()
+        stopAll(queue)
         // Keep only the switch: everything else from the settings goes with the lock.
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
         _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null && !it.stopped }
@@ -216,20 +229,37 @@ class DownloadManager(
         if (!runningLocked || hasWork() || vault.state.value is VaultState.Unlocked) return
         runningLocked = false
         live = false
-        persist()
-        stopAll()
+        stopAll(persist())
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
         _paused.value = 0
         onLockedWorkDone()
     }
 
-    private fun stopAll() {
+    /** Forgets the queue. The previews go with it, but for those of the rows [kept] sealed for the next unlock. */
+    private fun stopAll(kept: SavedQueue? = null) {
         jobs.values.forEach { it.cancel() }
         jobs.clear()
         checkedAt.clear()
+        val keep = kept?.tasks?.mapNotNullTo(HashSet()) { it.previewId }.orEmpty()
+        dropPreviews(_tasks.value.filter { it.previewId !in keep })
         _tasks.value = emptyList()
         _batches.value = emptyList()
     }
+
+    private fun dropPreviews(gone: List<DownloadTask>) {
+        if (gone.isEmpty()) return
+        val ids = gone.map { it.previewId }
+        scope.launch(Dispatchers.IO) { previews.delete(ids) }
+    }
+
+    /** Takes off the list the downloads [gone] is true of, and their previews off the storage. */
+    private fun takeOff(gone: (DownloadTask) -> Boolean) {
+        val before = _tasks.getAndUpdate { list -> list.filterNot(gone) }
+        dropPreviews(before.filter(gone))
+    }
+
+    /** The id a saved row kept its preview under; a new one for a row saved without, or with one that names no file of ours. */
+    private fun previewIdOf(saved: SavedTask): String = saved.previewId?.takeIf(VaultStore.ID::matches) ?: UUID.randomUUID().toString()
 
     private fun restore(state: VaultState.Unlocked) {
         runningLocked = false
@@ -239,16 +269,22 @@ class DownloadManager(
         live = true
         _paused.value = 0
         val stoppedTasks = queue.tasks.filter { it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }
-            .map { DownloadTask(keys.incrementAndGet(), it.post, it.source, it.status, problem = it.problem) }
+            .map { DownloadTask(keys.incrementAndGet(), it.post, it.source, it.status, problem = it.problem, previewId = previewIdOf(it)) }
         _tasks.update { it + stoppedTasks }
         queue.tasks.filter { it.status == DownloadStatus.QUEUED }.groupBy { it.source }.forEach { (source, list) ->
-            enqueue(list.map { it.post }, source)
+            enqueue(list.map { it.post }, source, list.associate { it.post.id to previewIdOf(it) })
         }
         val (stopped, pending) = queue.batches.partition { it.problem != null || it.stopped }
         _batches.update { list ->
             list + stopped.map { BatchJob(keys.incrementAndGet(), it.source, it.tags, it.target, it.found, it.nextPage, it.problem, it.stopped) }
         }
         pending.forEach { downloadSearch(it.source, it.tags, it.target, it.found, it.nextPage) }
+        // Previews whose rows are gone: of downloads done, which are not saved, when the process
+        // ended with them listed. The rows are read before the word that they are the vault's
+        // still: a lock that came meanwhile has emptied them, and calls the sweep off.
+        scope.launch(Dispatchers.IO) {
+            previews.sweep { _tasks.value.mapTo(HashSet()) { it.previewId }.takeIf { live } }
+        }
     }
     private val _tasks = MutableStateFlow<List<DownloadTask>>(emptyList())
     val tasks: StateFlow<List<DownloadTask>> = _tasks.asStateFlow()
@@ -310,7 +346,10 @@ class DownloadManager(
 
 
     /** Queues posts not already queued or downloaded. Returns how many were added. */
-    fun enqueue(posts: List<Post>, source: BooruSource): Int {
+    fun enqueue(posts: List<Post>, source: BooruSource): Int = enqueue(posts, source, emptyMap())
+
+    /** [previewIds]: post id → the id its row had before a lock, whose preview is still kept. */
+    private fun enqueue(posts: List<Post>, source: BooruSource, previewIds: Map<Long, String>): Int {
         if (!live) return 0
         val added = ArrayList<DownloadTask>()
         _tasks.update { current ->
@@ -318,7 +357,8 @@ class DownloadManager(
             val taken = current.filter { it.status != DownloadStatus.FAILED && it.status != DownloadStatus.CANCELLED }
                 .mapTo(HashSet()) { it.source.id to it.post.id }
             posts.filter { (source.id to it.id) !in taken }.distinctBy { it.id }.forEach {
-                added += DownloadTask(keys.incrementAndGet(), it, source)
+                val task = DownloadTask(keys.incrementAndGet(), it, source)
+                added += previewIds[it.id]?.let { id -> task.copy(previewId = id) } ?: task
             }
             current + added
         }
@@ -447,19 +487,19 @@ class DownloadManager(
 
     /** Takes off the list what is done or skipped; what failed or was cancelled stays, to be retried. */
     fun clearFinished() {
-        _tasks.update { list -> list.filter { it.active || it.retriable } }
+        takeOff { !it.active && !it.retriable }
         _batches.update { list -> list.filter { it.active || it.retriable } }
     }
 
     /** Takes off the list what failed or was cancelled, batches a problem or the user stopped included. */
     fun clearFailed() {
-        _tasks.update { list -> list.filter { !it.retriable } }
+        takeOff { it.retriable }
         _batches.update { list -> list.filter { !it.retriable } }
     }
 
     /** Takes one download off the list, unless it is under way: done, skipped, failed or cancelled. */
     fun remove(key: Long) {
-        _tasks.update { list -> list.filterNot { it.key == key && !it.active } }
+        takeOff { it.key == key && !it.active }
     }
 
     /** Takes one collection off the list, unless it is under way: stopped by a problem or by the user. */
@@ -599,26 +639,23 @@ class DownloadManager(
                     }
                 }
             }
-            val hasThumb = post.previewUrl?.let { preview ->
-                val fetched = try {
-                    client.newCall(downloadRequest(preview, task.source)).withResponse { r ->
-                        if (r.isSuccessful) r.body.bytesUpTo(MAX_THUMBNAIL)?.takeIf { it.isNotEmpty() } else null
-                    }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    // A preview that cannot be had is no reason to drop the file; a cancellation is.
-                    currentCoroutineContext().ensureActive()
-                    null
+            // The row's own preview, kept since the row was shown, or fetched now and kept for it.
+            val preview = try {
+                previews.bytes(task.previewId, post.previewUrl, task.source)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // A preview that cannot be had is no reason to drop the file; a cancellation is.
+                currentCoroutineContext().ensureActive()
+                null
+            }
+            val hasThumb = preview?.let { bytes ->
+                try {
+                    store.writeThumbnail(id, bytes)
+                } finally {
+                    bytes.fill(0)
                 }
-                fetched?.let { bytes ->
-                    try {
-                        store.writeThumbnail(id, bytes)
-                    } finally {
-                        bytes.fill(0)
-                    }
-                    true
-                }
+                true
             } ?: false
             // A URL without an extension (common on plain web pages) is named by what the server sent.
             val served = contentType?.takeIf { it.startsWith("image/") || it.startsWith("video/") }
@@ -683,9 +720,6 @@ class DownloadManager(
     }
 
     private companion object {
-        /** A preview is a small JPEG; anything larger is not worth keeping as one. */
-        const val MAX_THUMBNAIL = 4L shl 20
-
         /** Pages in a row that add nothing the filters allow, after which a batch stops looking. */
         const val MAX_BARREN_PAGES = 10
 

@@ -41,8 +41,8 @@ internal data class BackupEnd(val entries: Int)
  * protects it once it has left the phone.
  *
  * Left out: the index, rebuilt from the metadata; the site cookies, which belong to the route
- * and the browser they were earned with; the download queue; and the biometric copy of the key,
- * which only this phone's Keystore opens.
+ * and the browser they were earned with; the download queue and its previews; and the biometric
+ * copy of the key, which only this phone's Keystore opens.
  *
  * ```
  * backup.json            {"format":1}

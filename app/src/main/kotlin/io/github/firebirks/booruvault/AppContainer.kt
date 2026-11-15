@@ -13,6 +13,8 @@ import io.github.firebirks.booruvault.booru.GelbooruApi
 import io.github.firebirks.booruvault.booru.SiteHeaders
 import io.github.firebirks.booruvault.download.DownloadManager
 import io.github.firebirks.booruvault.download.DownloadService
+import io.github.firebirks.booruvault.download.QueuePreviewFetcher
+import io.github.firebirks.booruvault.download.QueuePreviewKeyer
 import io.github.firebirks.booruvault.net.Challenge
 import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.RouteChoiceGate
@@ -165,6 +167,8 @@ class AppContainer(private val context: Context) {
             add(OkHttpNetworkFetcherFactory(callFactory = { http }))
             add(VaultImageFetcher.Factory(vaultStore))
             add(VaultImageKeyer())
+            add(QueuePreviewFetcher.Factory(downloads.previews))
+            add(QueuePreviewKeyer())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) add(AnimatedImageDecoder.Factory()) else add(GifDecoder.Factory())
         }
         .memoryCache { MemoryCache.Builder().maxSizePercent(context, 0.25).build() }

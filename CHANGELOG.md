@@ -4,6 +4,11 @@ All notable changes to BooruVault. The format follows [Keep a Changelog](https:/
 
 Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
 
+## [Unreleased]
+
+### Changed
+- The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
+
 ## [0.5.0] - 2026-11-13
 
 ### Added

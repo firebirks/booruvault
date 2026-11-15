@@ -55,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.download.BatchJob
 import io.github.firebirks.booruvault.download.DownloadStatus
 import io.github.firebirks.booruvault.download.DownloadTask
+import io.github.firebirks.booruvault.download.QueuePreview
 import io.github.firebirks.booruvault.ui.common.ChallengeMode
 import io.github.firebirks.booruvault.ui.common.LocalChallenge
 import io.github.firebirks.booruvault.ui.common.LocalContainer
@@ -270,7 +271,7 @@ private fun TaskRow(task: DownloadTask, bytes: (Long) -> String, onCancel: () ->
         },
         leadingContent = {
             AsyncImage(
-                model = task.post.previewUrl,
+                model = QueuePreview(task.previewId, task.post.previewUrl, task.source),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(52.dp).clip(RoundedCornerShape(8.dp)),

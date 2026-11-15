@@ -37,6 +37,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **Encrypted while streaming:** files are sealed as they arrive, so plaintext never touches storage.
 - **Background:** three downloads run in parallel under a foreground service, started in the order they were queued. Its notification shows counts only.
 - **The queue** is sealed in the vault and resumes after a restart. A download or a collection that stopped can be retried or removed on its own, or all of them at once.
+- **Previews in the list** are kept, sealed, for as long as their rows are listed, so the list shown again does not ask the sites for them anew. Each is asked for once: the first time its row is shown, or when its download is done, which saves the same bytes as the item's thumbnail. A row taken off the list takes its preview with it; a lock drops those of the downloads done, which it does not keep listed.
 - **Cut short:** a file whose transfer stalls or is cut is taken up where it stopped, when its host hands out parts of a file and names the file so that the rest is surely the same one (a strong `ETag`, or the date it was last changed): the rest is sealed right after what the vault already holds of it. It goes on for as long as each try brings something, and gives up after two in a row that bring nothing. From a host that does not, the file is read again from its first byte.
 - **Timeouts:** a search page that times out, or a file that cannot be taken up where it stopped, is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
 - **Tor being checked:** a download asked for while the exit check is on its way, as right after Orbot is started again, waits in the queue for it and goes out once it passes. With Orbot silent, or a check that failed, it fails and says so.
@@ -55,10 +56,10 @@ All three are signed with the same key, so updates install over each other. A bu
 
 ### Privacy and network
 
-- **No disk image cache:** browsed images stay in memory.
+- **No disk image cache:** browsed images stay in memory. Only the previews of the downloads you asked for are kept, sealed in the vault, while they are listed.
 - **Locking forgets the session:** settings, cookies, the queue, search results and vault contents are dropped from memory. The JSON library keeps no buffers for reuse, and the network buffers kept for reuse are overwritten, so neither holds on to what went through it. A garbage collection is then requested so released key material is freed.
 - **Keyboard:** every text field asks the keyboard not to learn from what is typed, the built-in browser included.
-- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. Boards on the e926 API, which asks clients to name themselves, also get the app's name and, when the request is signed with an account, its login. Boards on the Danbooru API get the app's name alone, `BooruVault`, without a version, for API calls, downloads and the viewer: Cloudflare on cdn.donmai.us puts an anti-bot check in front of original files for a client that calls itself Chrome without being Chrome, and lets one that names itself through. Once a check on such a board has been passed in the built-in browser, its requests carry that browser's name instead, since the pass is bound to it; once the site stops taking that pass, a request that carried it and still meets the check drops it, with the browser's name, and the board is told the app's name again. Grid thumbnails and the built-in browser stay Chrome.
+- **User-Agent:** to every site the app is Chrome on Android, in the reduced form Chrome itself sends, without phone model or Android version; the Chrome version is the phone's own. Boards on the e926 API, which asks clients to name themselves, also get the app's name and, when the request is signed with an account, its login. Boards on the Danbooru API get the app's name alone, `BooruVault`, without a version, for API calls, downloads and the viewer: Cloudflare on cdn.donmai.us puts an anti-bot check in front of original files for a client that calls itself Chrome without being Chrome, and lets one that names itself through. Once a check on such a board has been passed in the built-in browser, its requests carry that browser's name instead, since the pass is bound to it; once the site stops taking that pass, a request that carried it and still meets the check drops it, with the browser's name, and the board is told the app's name again. Grid thumbnails and the built-in browser stay Chrome. The previews in the list of downloads are asked for as the downloads themselves are, under the name the board's downloads go by: they are the thumbnails the downloads save.
 - **Built-in browser hardening:**
   - autofill excluded and third-party cookies blocked;
   - reduced User-Agent, without phone model or Android version;
@@ -98,7 +99,7 @@ biometric Keystore key (optional) ─────────────AES-256
 
 ### Sealed files
 
-Every file (media, thumbnails, metadata, the index, settings, cookies, the queue) is sealed to the vault's **public** key:
+Every file (media, thumbnails, metadata, the index, settings, cookies, the queue and its previews) is sealed to the vault's **public** key:
 
 - **ECIES:** an ephemeral P-256 key pair, ECDH with the vault key, and HKDF-SHA256 over a random salt, the header and both public keys. This yields an AES-256 key and a nonce prefix for this file only.
 - **Chunks:** the payload is split into 64 KiB chunks, each sealed with AES-256-GCM. The nonce is `prefix ‖ chunk index ‖ last-chunk flag`, and the whole header is the associated data. Reordering, truncation and tampering are all detected.
@@ -120,10 +121,11 @@ All files live in the app's private storage, under `files/vault/`:
 | `config.bin` | Settings, sources, API keys. Sealed. |
 | `cookies.bin` | Kept site cookies and the User-Agent each site's check was passed with, one set for Tor and one for the direct connection. Sealed. |
 | `downloads.bin` | Pending, failed and cancelled downloads, and search collections in progress. Sealed. |
+| `previews/<id>` | The preview of a download listed, under an id of its row's own. A cache: gone with the row, and fetched again if it will not open. Sealed. |
 | `format-2` | Empty marker: every sealed file was found in the current, padded format, so they are not looked over at each unlock. **Clear**. |
 | `*.corrupt` | A sealed settings, cookies or queue file that could not be read, set aside rather than written over. Sealed. |
 
-File names are random UUIDs. The number of files remains visible, and, once the background re-sealing is done, each file's size to within 64 KiB for media and 4 KiB for the rest.
+File names are random UUIDs. The number of files remains visible, that of the previews being at most that of the downloads listed, and, once the background re-sealing is done, each file's size to within 64 KiB for media and 4 KiB for the rest.
 
 The other clear-text settings are the Tor on/off switch, Orbot's port and whether the route was chosen at first start (`shared_prefs/network.xml`). They must hold from process start, before any unlock, so that no connection can go out directly. They reveal only whether the app is set to use Tor, and on which local port. Before Android 13 the app's language is kept in clear too (`shared_prefs/ui.xml`), as it must show on the lock screen; from Android 13 the system keeps it.
 
@@ -134,7 +136,7 @@ A backup is a ZIP of the vault's own files as they lie on storage: the header, t
 - **What it tells:** what the vault's folder tells, and no more. The header is in clear, as on the phone; every other file is sealed, under its random name and at its padded size. The entries are stored uncompressed and all bear one fixed date, not the files' own, which would say when each item was saved.
 - **What protects it:** the password alone. On the phone the header sits in the app's private storage; in a backup it travels with the files, and whoever holds the file can try passwords against Argon2id for as long as they like. A backup deserves a strong password.
 - **A password changed later** does not reach a backup already made: it still opens with the password the vault had then. Changing the password while a backup is being written makes that backup fail, to be made again, since files re-sealed meanwhile would be to a key its header does not hold. One made while the files are still being re-sealed after a change holds the retired key boxed in its header, as the vault does, and the re-sealing goes on after a restore.
-- **Left out:** the index, which is rebuilt from the metadata; the site cookies, which belong to the route and the browser they were earned with; the download queue; and the biometric copy of the key, which only the Keystore of the phone it was made on can open.
+- **Left out:** the index, which is rebuilt from the metadata; the site cookies, which belong to the route and the browser they were earned with; the download queue and its previews; and the biometric copy of the key, which only the Keystore of the phone it was made on can open.
 - **Restoring** is offered where there is no vault, on the first screen. The backup is laid out whole beside the vault's place (`files/vault.restore/`, cleared at the next start if the app was closed midway) and moved there only once its last entry, which counts the others, has been read: a file that is not a backup, one cut short, or one written by a later version leaves no vault and no files. Nothing in it is taken on its word: only the names a backup uses are accepted, each file must begin as a sealed file does and stay within the size its kind can have, and the header is read as the vault's own is at every start. The route question is asked again after the first unlock, since the choice between Tor and a direct connection is kept outside the vault and does not travel with it.
 - **While it runs,** a foreground service keeps the app alive; its notification says how far it is. A backup that fails or is stopped deletes the file it had begun.
 

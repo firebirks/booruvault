@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.download.QueuePreviews
 import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
@@ -160,7 +161,8 @@ class VaultRekeyer(
 
     /** Every sealed file of the vault, finished writes only. */
     private fun candidates(): List<File> {
-        val items = listOf("media", "thumbs", "meta").flatMap { dir ->
+        // The previews of the downloads listed are a cache, but one sealed like the rest.
+        val items = listOf("media", "thumbs", "meta", QueuePreviews.DIR).flatMap { dir ->
             File(root, dir).listFiles { f -> f.isFile && !f.name.endsWith(".part") && !f.name.endsWith(".tmp") && !f.name.endsWith(SUFFIX) }
                 ?.toList().orEmpty()
         }
