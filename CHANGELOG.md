@@ -12,6 +12,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ### Fixed
 - A post from a site read through its web pages is checked against the content filter and the blacklist again once its own page is read, when it is downloaded: "download all" or a selection could save a post whose page said a rating or a tag the filter hides, since its list page said nothing of it. Such a download is now skipped, and says why.
 - The downloads a lock left queued wait, at the next unlock, until the settings and the vault's list are read: they could start under the default filters, and download again a file already in the vault.
+- A download that the phone's storage refuses to write, a full storage for one, fails and says so. It was taken for a network cut: the rest of the file was asked of the host again and sealed after a stream that might hold part of what was refused, so the file could be saved damaged, and the reason given was the network.
 - The onion in Browse no longer stays red once Tor works again: while it is yellow or red, and the app is in front, it greets Orbot's port every few seconds and has the exit checked again, as the network settings already did. It used to wait for a request to be refused, so with nothing new asked for it could stay red after Orbot was back, while the downloads under way went on through Tor.
 
 ## [0.5.0] - 2026-11-13

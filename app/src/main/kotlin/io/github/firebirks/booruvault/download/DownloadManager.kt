@@ -10,6 +10,7 @@ import io.github.firebirks.booruvault.settings.AppSettings
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.settings.allows
 import io.github.firebirks.booruvault.util.Mime
+import io.github.firebirks.booruvault.util.HasProblem
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
 import io.github.firebirks.booruvault.util.toProblem
@@ -764,31 +765,6 @@ class DownloadManager(
         val RESUMED = setOf(Problem.Code.TIMEOUT, Problem.Code.NETWORK)
     }
 
-    /**
-     * Copies what [input] gives into [out], telling [count] of each piece. Returns null at the end
-     * of the input, or the failure that cut the reading short; a failure of [out] is thrown.
-     */
-    private suspend fun receive(input: InputStream, out: OutputStream, count: (Int) -> Unit): IOException? {
-        val buffer = ByteArray(64 * 1024)
-        try {
-            input.use {
-                while (true) {
-                    currentCoroutineContext().ensureActive()
-                    val n = try {
-                        it.read(buffer)
-                    } catch (e: IOException) {
-                        return e
-                    }
-                    if (n < 0) return null
-                    out.write(buffer, 0, n)
-                    count(n)
-                }
-            }
-        } finally {
-            buffer.fill(0)
-        }
-    }
-
     private fun startService() {
         runCatching(wakeService)
     }
@@ -854,3 +830,39 @@ internal fun downloadProblem(problem: Problem, checkedAt: Long?, passExpired: Bo
 
 /** How long a check passed in the browser counts: Cloudflare's own clearance lasts about as long by default. */
 internal const val CHECK_HOLDS_MS = 30 * 60 * 1000L
+
+/**
+ * Copies what [input] gives into [out], telling [count] of each piece. Returns null at the end
+ * of the input, or the failure that cut the reading short. A failure of [out] is thrown, as a
+ * [StorageWriteException] unless it already says what it is: it is no cut that the rest of the
+ * file asked of the host would mend, and [out] may already hold part of the piece it refused.
+ */
+internal suspend fun receive(input: InputStream, out: OutputStream, count: (Int) -> Unit): IOException? {
+    val buffer = ByteArray(64 * 1024)
+    try {
+        input.use {
+            while (true) {
+                currentCoroutineContext().ensureActive()
+                val n = try {
+                    it.read(buffer)
+                } catch (e: IOException) {
+                    return e
+                }
+                if (n < 0) return null
+                try {
+                    out.write(buffer, 0, n)
+                } catch (e: IOException) {
+                    throw if (e is HasProblem) e else StorageWriteException(e)
+                }
+                count(n)
+            }
+        }
+    } finally {
+        buffer.fill(0)
+    }
+}
+
+/** The phone's storage refused part of a file being written to the vault: full, or failing. */
+class StorageWriteException(cause: IOException) : IOException(cause.message, cause), HasProblem {
+    override val problem = Problem(Problem.Code.STORAGE_WRITE, cause.message ?: cause.javaClass.simpleName)
+}
