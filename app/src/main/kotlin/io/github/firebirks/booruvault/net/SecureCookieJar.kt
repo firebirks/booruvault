@@ -50,7 +50,8 @@ private data class CookieState(
  * Only the cookies the user brought from the built-in browser (logins, site preferences,
  * clearances) are kept, sealed in the vault (`cookies.bin`). Cookies sites set on their own while
  * the app browses last for the session in memory: kept, they would be an identifier that follows
- * the user from one session to the next. A site renewing a kept cookie renews the kept copy.
+ * the user from one session to the next. A site renewing a kept cookie renews the kept copy's
+ * value, within the scope and the deadline the copy had.
  * Nothing is in memory while locked, unless downloads allowed to run behind the lock need it.
  *
  * Each [Route] has a jar of its own, and nothing in one is ever offered along the other: a
@@ -142,8 +143,24 @@ class SecureCookieJar(
         val renewsKept = synchronized(lock) {
             if (!loaded) return
             val jar = jars.getValue(route)
-            cookies.forEach { jar.put(it) }
-            cookies.any { it.key() in jar.kept }
+            var renewed = false
+            cookies.forEach { cookie ->
+                val key = cookie.key()
+                val kept = if (key in jar.kept) jar.cookies.firstOrNull { it.key() == key } else null
+                when {
+                    kept != null -> {
+                        jar.put(cookie.renewing(kept))
+                        renewed = true
+                    }
+                    else -> {
+                        // A kept cookie that ran out is gone for good: what the site sets in its
+                        // place is one of its own, for the session.
+                        jar.kept -= key
+                        jar.put(cookie)
+                    }
+                }
+            }
+            renewed
         }
         if (renewsKept) saves.trySend(Unit)
     }
@@ -273,6 +290,20 @@ class SecureCookieJar(
     }
 
     private fun Cookie.key() = "$name|$domain|$path"
+
+    /**
+     * This cookie's value as the renewal of [kept]: within the host or the site [kept] was bound
+     * to, and its deadline, which a site's own expiry cannot push back. A site that answers a
+     * host-only login with one for the whole domain, or with one that never expires, would
+     * otherwise widen it to every sibling host, or keep it sealed for good.
+     */
+    private fun Cookie.renewing(kept: Cookie): Cookie = Cookie.Builder().name(name).value(value).path(kept.path)
+        .expiresAt(minOf(expiresAt, kept.expiresAt))
+        .apply {
+            if (kept.hostOnly) hostOnlyDomain(kept.domain) else domain(kept.domain)
+            if (kept.secure) secure()
+            if (kept.httpOnly) httpOnly()
+        }.build()
 
     private fun Cookie.toStored() = StoredCookie(name, value, expiresAt, domain, path, secure, httpOnly, hostOnly)
 
