@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -37,6 +38,7 @@ class AutoLockTest {
 
     private var now = 1_000_000L
     private val alarm = object : LockAlarm {
+        @Volatile
         var at: Long? = null
 
         override fun set(atElapsed: Long) {
@@ -137,5 +139,57 @@ class AutoLockTest {
         assertEquals(1, lock.holdCount)
         another()
         assertEquals(0, lock.holdCount)
+    }
+
+    /** The vault with its settings read, the timeout set to [seconds], then locked: the password is being typed. */
+    private suspend fun lockedWithTimeout(seconds: Int): Pair<VaultManager, SettingsRepository> {
+        val vault = openVault()
+        val settings = settings(vault)
+        withTimeout(5000) { settings.ready.first { it } }
+        settings.setAutoLock(seconds)
+        vault.lock()
+        withTimeout(5000) { settings.ready.first { !it } }
+        return vault to settings
+    }
+
+    @Test
+    fun anUnlockThatEndsAfterTheAppWasLeftIsLockedAtOnceWithLockImmediately() = runBlocking {
+        val (vault, settings) = lockedWithTimeout(0)
+        val lock = AutoLock(vault, settings, scope, alarm) { now }
+        // Unlock is tapped, and the app left while the password is checked.
+        lock.onStop(owner)
+        assertTrue(vault.unlock("pw".toCharArray()))
+        withTimeout(5000) { vault.state.first { it == VaultState.Locked } }
+        assertNull(alarm.at)
+    }
+
+    @Test
+    fun anUnlockThatEndsAfterTheAppWasLeftGetsTheUsersTimeoutFromWhenItWasLeft() = runBlocking {
+        val (vault, settings) = lockedWithTimeout(60)
+        val lock = AutoLock(vault, settings, scope, alarm) { now }
+        val left = now
+        lock.onStop(owner)
+        now += 5_000
+        assertTrue(vault.unlock("pw".toCharArray()))
+        withTimeout(5000) { while (alarm.at == null) delay(10) }
+        assertEquals(left + 60_000, alarm.at)
+        // Back after the user's timeout, well short of the default's five minutes: locked.
+        now = left + 61_000
+        lock.onStart(owner)
+        assertEquals(VaultState.Locked, vault.state.value)
+    }
+
+    @Test
+    fun anUnlockThatEndsWhileTheAppIsInFrontSetsNoAlarm() = runBlocking {
+        val (vault, settings) = lockedWithTimeout(60)
+        val lock = AutoLock(vault, settings, scope, alarm) { now }
+        lock.onStop(owner)
+        now += 5_000
+        lock.onStart(owner)
+        assertTrue(vault.unlock("pw".toCharArray()))
+        withTimeout(5000) { settings.ready.first { it } }
+        delay(200)
+        assertNull(alarm.at)
+        assertTrue(vault.state.value is VaultState.Unlocked)
     }
 }

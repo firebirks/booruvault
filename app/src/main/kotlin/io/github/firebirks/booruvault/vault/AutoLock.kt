@@ -7,6 +7,8 @@ import io.github.firebirks.booruvault.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicLong
 
@@ -44,25 +46,48 @@ class AutoLock(
             return if (holdCount > 0 && configured in 0..<HOLD_SECONDS) HOLD_SECONDS else configured
         }
 
-    override fun onStop(owner: LifecycleOwner) {
+    init {
+        // An unlock that ends after the app was left, as one whose password was typed just
+        // before, finds no timer: there was nothing to lock when the app went. And until the
+        // settings are read the timeout is the default's, not the user's. Once both are there,
+        // the time away is counted again by the user's timeout.
+        scope.launch {
+            combine(vault.state, settings.ready) { state, ready -> state is VaultState.Unlocked && ready }
+                .distinctUntilChanged()
+                .collect { open -> if (open) synchronized(this@AutoLock) { if (backgroundSince > 0) arm() } }
+        }
+    }
+
+    override fun onStop(owner: LifecycleOwner) = synchronized(this) {
         backgroundSince = clock()
+        arm()
+    }
+
+    /** Sets the lock for the timeout in force, counted from when the app was left. Holds the monitor. */
+    private fun arm() {
+        disarm()
         seconds = timeout
+        val deadline = backgroundSince + seconds * 1000L
         when {
             seconds == 0 -> vault.lock()
             seconds > 0 && vault.state.value is VaultState.Unlocked -> {
                 pending = scope.launch {
-                    delay(seconds * 1000L)
+                    delay((deadline - clock()).coerceAtLeast(0))
                     lockIfDue()
                 }
-                alarm.set(backgroundSince + seconds * 1000L)
+                alarm.set(deadline)
             }
         }
     }
 
-    override fun onStart(owner: LifecycleOwner) {
+    private fun disarm() {
         pending?.cancel()
         pending = null
         alarm.cancel()
+    }
+
+    override fun onStart(owner: LifecycleOwner) = synchronized(this) {
+        disarm()
         // The alarm is inexact and the job does not run while the process is frozen.
         lockIfDue()
         backgroundSince = 0
