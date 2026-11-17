@@ -31,6 +31,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -167,6 +168,13 @@ class DownloadManager(
     @Volatile
     private var policy = AppSettings()
 
+    /**
+     * Whether [policy] is the vault's own settings rather than the defaults it is reset to. At
+     * an unlock the queue comes back before the settings are read, and its downloads wait for
+     * them: with the defaults they would be filtered, and fetched, by what the user did not choose.
+     */
+    private val policyReady = MutableStateFlow(false)
+
     /** True while downloads keep going behind a locked vault, as the user allowed. */
     @Volatile
     private var runningLocked = false
@@ -219,6 +227,7 @@ class DownloadManager(
         val queue = persist()
         stopAll(queue)
         // Keep only the switch: everything else from the settings goes with the lock.
+        policyReady.value = false
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
         _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null && !it.stopped }
         onLockedWorkDone()
@@ -230,6 +239,7 @@ class DownloadManager(
         runningLocked = false
         live = false
         stopAll(persist())
+        policyReady.value = false
         policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
         _paused.value = 0
         onLockedWorkDone()
@@ -323,7 +333,14 @@ class DownloadManager(
         }
         scope.launch {
             combine(settings.ready, settings.settings) { ready, current -> if (ready) current else null }
-                .collect { current -> if (current != null) policy = current.copy(sources = emptyList(), selectedSourceId = null) }
+                .collect { current ->
+                    // A lock resets the settings to the defaults before it drops ready, and the
+                    // two may be seen together for a moment: those defaults are no one's choice.
+                    if (current != null && vault.state.value is VaultState.Unlocked) {
+                        policy = current.copy(sources = emptyList(), selectedSourceId = null)
+                        policyReady.value = true
+                    }
+                }
         }
         scope.launch {
             combine(_tasks, _batches) { tasks, batches -> tasks.any { it.active } || batches.any { it.active } }
@@ -386,6 +403,7 @@ class DownloadManager(
         var problem: Problem? = null
         val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
             try {
+                policyReady.first { it }
                 val api = api(batch.source)
                 val limit = 100
                 var page = batch.nextPage
@@ -551,6 +569,10 @@ class DownloadManager(
      * counts as failed.
      */
     private suspend fun run(key: Long, own: Job, retries: Int = TIMEOUT_RETRIES, resume: Boolean = true, holds: Int = TOR_HOLDS) {
+        // At an unlock the queue comes back before the settings and the vault's list are read:
+        // until then the filters would be the defaults, and nothing would be found saved already.
+        policyReady.first { it }
+        store.awaitLoaded()
         val task = _tasks.value.firstOrNull { it.key == key } ?: return
         if (task.status != DownloadStatus.QUEUED) return
         var post = task.post
@@ -567,6 +589,12 @@ class DownloadManager(
                 post = api(task.source).resolve(post)
                 val resolved = post
                 set(key) { it.copy(post = resolved) }
+                // Queued from a list page that told less: read in full, the post may say a rating
+                // or tags the filters do not allow, and then it is not saved.
+                if (!policy.allows(resolved)) {
+                    set(key) { it.copy(status = DownloadStatus.SKIPPED, problem = Problem(Problem.Code.FILTERED)) }
+                    return
+                }
             }
             val original = policy.downloadOriginal
             val url = (if (original) post.bestUrl else post.viewUrl(false)) ?: throw ProblemException(Problem.Code.NO_FILE)

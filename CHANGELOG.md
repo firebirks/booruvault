@@ -10,6 +10,8 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
 
 ### Fixed
+- A post from a site read through its web pages is checked against the content filter and the blacklist again once its own page is read, when it is downloaded: "download all" or a selection could save a post whose page said a rating or a tag the filter hides, since its list page said nothing of it. Such a download is now skipped, and says why.
+- The downloads a lock left queued wait, at the next unlock, until the settings and the vault's list are read: they could start under the default filters, and download again a file already in the vault.
 - The onion in Browse no longer stays red once Tor works again: while it is yellow or red, and the app is in front, it greets Orbot's port every few seconds and has the exit checked again, as the network settings already did. It used to wait for a request to be refused, so with nothing new asked for it could stay red after Orbot was back, while the downloads under way went on through Tor.
 
 ## [0.5.0] - 2026-11-13

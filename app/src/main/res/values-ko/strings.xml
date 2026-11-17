@@ -24,6 +24,7 @@
     <string name="problem_no_file">사용할 수 있는 파일이 없습니다.</string>
     <string name="problem_too_large">파일이 2 GB 제한보다 큽니다.</string>
     <string name="problem_already_in_vault">이미 보관함에 있습니다</string>
+    <string name="problem_filtered">콘텐츠 필터로 숨겨짐</string>
     <string name="problem_no_vault">먼저 보관함을 만드세요.</string>
     <string name="problem_vault_locked">보관함이 잠겨 있습니다.</string>
     <string name="problem_folder_unavailable">폴더에 접근할 수 없습니다.</string>

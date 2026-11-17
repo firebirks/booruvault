@@ -24,6 +24,7 @@
     <string name="problem_no_file">利用できるファイルがありません。</string>
     <string name="problem_too_large">ファイルが上限の 2 GB を超えています。</string>
     <string name="problem_already_in_vault">すでに保管庫にあります</string>
+    <string name="problem_filtered">コンテンツフィルタで非表示</string>
     <string name="problem_no_vault">先に保管庫を作成してください。</string>
     <string name="problem_vault_locked">保管庫はロックされています。</string>
     <string name="problem_folder_unavailable">フォルダにアクセスできません。</string>

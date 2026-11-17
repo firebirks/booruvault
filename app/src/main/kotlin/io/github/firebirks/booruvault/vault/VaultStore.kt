@@ -17,6 +17,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -93,6 +95,18 @@ class VaultStore(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
+    /** Whether [items] is the vault's list, read since the last unlock; false while locked. */
+    private val loaded = MutableStateFlow(false)
+
+    /**
+     * Returns once [items] is the vault's list, or at once while the vault is locked, when there
+     * is no list to wait for. Right after an unlock the list is still being read, and until then
+     * nothing in the vault can be told apart from what is not.
+     */
+    suspend fun awaitLoaded() {
+        combine(manager.state, loaded) { state, read -> read || state !is VaultState.Unlocked }.first { it }
+    }
+
     private val inFlight = java.util.concurrent.atomic.AtomicInteger()
 
     /** Writes begun and not yet renamed into place; each seals to the recipient of its start. */
@@ -121,12 +135,15 @@ class VaultStore(
                             load(state.keys)
                         } finally {
                             _loading.value = false
+                            // Even when reading failed: what waits on it must not wait for good.
+                            loaded.value = true
                         }
                     } else {
                         // Nothing is written on the way out: a lock forgets at once, and a
                         // write still waiting must not take the emptied list for the vault's.
                         indexStale = false
                         loadedKeys = null
+                        loaded.value = false
                         _items.value = emptyList()
                     }
                 }

@@ -24,6 +24,7 @@
     <string name="problem_no_file">Geen bestand beschikbaar.</string>
     <string name="problem_too_large">Het bestand is groter dan de limiet van 2 GB.</string>
     <string name="problem_already_in_vault">Al in de kluis</string>
+    <string name="problem_filtered">Verborgen door de inhoudsfilters</string>
     <string name="problem_no_vault">Maak eerst de kluis aan.</string>
     <string name="problem_vault_locked">De kluis is vergrendeld.</string>
     <string name="problem_folder_unavailable">De map is niet toegankelijk.</string>

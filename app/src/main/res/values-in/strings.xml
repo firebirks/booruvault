@@ -24,6 +24,7 @@
     <string name="problem_no_file">Tidak ada file yang tersedia.</string>
     <string name="problem_too_large">Berkas melebihi batas 2 GB.</string>
     <string name="problem_already_in_vault">Sudah ada di brankas</string>
+    <string name="problem_filtered">Disembunyikan oleh filter konten</string>
     <string name="problem_no_vault">Buat brankas terlebih dahulu.</string>
     <string name="problem_vault_locked">Brankas terkunci.</string>
     <string name="problem_folder_unavailable">Folder tidak dapat diakses.</string>

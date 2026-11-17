@@ -24,6 +24,7 @@
     <string name="problem_no_file">Keine Datei verfügbar.</string>
     <string name="problem_too_large">Die Datei ist größer als das Limit von 2 GB.</string>
     <string name="problem_already_in_vault">Bereits im Tresor</string>
+    <string name="problem_filtered">Durch die Inhaltsfilter ausgeblendet</string>
     <string name="problem_no_vault">Erstelle zuerst den Tresor.</string>
     <string name="problem_vault_locked">Der Tresor ist gesperrt.</string>
     <string name="problem_folder_unavailable">Auf den Ordner kann nicht zugegriffen werden.</string>

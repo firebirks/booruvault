@@ -24,6 +24,7 @@
     <string name="problem_no_file">Không có tệp nào.</string>
     <string name="problem_too_large">Tệp lớn hơn giới hạn 2 GB.</string>
     <string name="problem_already_in_vault">Đã có trong kho</string>
+    <string name="problem_filtered">Bị bộ lọc nội dung ẩn</string>
     <string name="problem_no_vault">Hãy tạo kho trước.</string>
     <string name="problem_vault_locked">Kho đang bị khóa.</string>
     <string name="problem_folder_unavailable">Không thể truy cập thư mục.</string>

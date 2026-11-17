@@ -24,6 +24,7 @@
     <string name="problem_no_file">沒有可用的檔案。</string>
     <string name="problem_too_large">檔案超過 2 GB 的上限。</string>
     <string name="problem_already_in_vault">已在保險庫中</string>
+    <string name="problem_filtered">已被內容篩選器隱藏</string>
     <string name="problem_no_vault">請先建立保險庫。</string>
     <string name="problem_vault_locked">保險庫已鎖定。</string>
     <string name="problem_folder_unavailable">無法存取這個資料夾。</string>

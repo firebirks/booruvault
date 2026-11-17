@@ -24,6 +24,7 @@
     <string name="problem_no_file">Nessun file disponibile.</string>
     <string name="problem_too_large">Il file supera il limite di 2 GB.</string>
     <string name="problem_already_in_vault">Già nel vault</string>
+    <string name="problem_filtered">Nascosto dai filtri di contenuto</string>
     <string name="problem_no_vault">Crea prima il vault.</string>
     <string name="problem_vault_locked">Il vault è bloccato.</string>
     <string name="problem_folder_unavailable">La cartella non è accessibile.</string>

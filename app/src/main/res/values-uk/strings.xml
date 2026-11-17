@@ -24,6 +24,7 @@
     <string name="problem_no_file">Немає доступного файлу.</string>
     <string name="problem_too_large">Файл більший за межу 2 ГБ.</string>
     <string name="problem_already_in_vault">Уже у сховищі</string>
+    <string name="problem_filtered">Приховано фільтрами вмісту</string>
     <string name="problem_no_vault">Спочатку створіть сховище.</string>
     <string name="problem_vault_locked">Сховище заблоковано.</string>
     <string name="problem_folder_unavailable">Немає доступу до папки.</string>

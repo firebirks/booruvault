@@ -24,6 +24,7 @@
     <string name="problem_no_file">No hay ningún archivo disponible.</string>
     <string name="problem_too_large">El archivo supera el límite de 2 GB.</string>
     <string name="problem_already_in_vault">Ya está en la bóveda</string>
+    <string name="problem_filtered">Oculto por los filtros de contenido</string>
     <string name="problem_no_vault">Primero crea la bóveda.</string>
     <string name="problem_vault_locked">La bóveda está bloqueada.</string>
     <string name="problem_folder_unavailable">No se puede acceder a la carpeta.</string>

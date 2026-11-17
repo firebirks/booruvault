@@ -24,6 +24,7 @@
     <string name="problem_no_file">कोई फ़ाइल उपलब्ध नहीं है।</string>
     <string name="problem_too_large">फ़ाइल 2 GB की सीमा से बड़ी है।</string>
     <string name="problem_already_in_vault">पहले से तिजोरी में है</string>
+    <string name="problem_filtered">सामग्री फ़िल्टर से छिपा हुआ</string>
     <string name="problem_no_vault">पहले तिजोरी बनाएं।</string>
     <string name="problem_vault_locked">तिजोरी लॉक है।</string>
     <string name="problem_folder_unavailable">फ़ोल्डर को ऐक्सेस नहीं किया जा सकता।</string>

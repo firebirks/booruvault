@@ -73,6 +73,7 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.NO_FILE -> getString(R.string.problem_no_file)
         Problem.Code.TOO_LARGE -> getString(R.string.problem_too_large)
         Problem.Code.ALREADY_IN_VAULT -> getString(R.string.problem_already_in_vault)
+        Problem.Code.FILTERED -> getString(R.string.problem_filtered)
         Problem.Code.NO_VAULT -> getString(R.string.problem_no_vault)
         Problem.Code.VAULT_LOCKED -> getString(R.string.problem_vault_locked)
         Problem.Code.FOLDER_UNAVAILABLE -> getString(R.string.problem_folder_unavailable)

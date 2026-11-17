@@ -24,6 +24,7 @@
     <string name="problem_no_file">Kullanılabilir dosya yok.</string>
     <string name="problem_too_large">Dosya 2 GB sınırından büyük.</string>
     <string name="problem_already_in_vault">Zaten kasada</string>
+    <string name="problem_filtered">İçerik filtreleri tarafından gizlendi</string>
     <string name="problem_no_vault">Önce kasayı oluşturun.</string>
     <string name="problem_vault_locked">Kasa kilitli.</string>
     <string name="problem_folder_unavailable">Klasöre erişilemiyor.</string>

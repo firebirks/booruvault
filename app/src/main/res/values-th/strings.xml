@@ -24,6 +24,7 @@
     <string name="problem_no_file">ไม่มีไฟล์ให้ใช้</string>
     <string name="problem_too_large">ไฟล์ใหญ่กว่าขีดจำกัด 2 GB</string>
     <string name="problem_already_in_vault">อยู่ในคลังนิรภัยแล้ว</string>
+    <string name="problem_filtered">ตัวกรองเนื้อหาซ่อนไว้</string>
     <string name="problem_no_vault">สร้างคลังนิรภัยก่อน</string>
     <string name="problem_vault_locked">คลังนิรภัยถูกล็อกอยู่</string>
     <string name="problem_folder_unavailable">เข้าถึงโฟลเดอร์ไม่ได้</string>

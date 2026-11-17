@@ -121,7 +121,9 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
             tasks.forEach { task ->
                 val state = when (task.status) {
                     DownloadStatus.QUEUED, DownloadStatus.RUNNING -> SaveState.QUEUED
-                    DownloadStatus.DONE, DownloadStatus.SKIPPED -> SaveState.SAVED
+                    DownloadStatus.DONE -> SaveState.SAVED
+                    // Skipped as already in the vault; one the filters turned away is not there.
+                    DownloadStatus.SKIPPED -> if (task.problem?.code == Problem.Code.FILTERED) null else SaveState.SAVED
                     else -> null
                 }
                 if (state != null) put("${task.source.id}/${task.post.id}", state)

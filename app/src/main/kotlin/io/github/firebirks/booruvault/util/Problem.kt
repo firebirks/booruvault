@@ -35,6 +35,8 @@ data class Problem(val code: Code, val detail: String? = null) {
         NO_FILE,
         TOO_LARGE,
         ALREADY_IN_VAULT,
+        /** Read in full, the post turned out to be one the content filters or the blacklist hide. */
+        FILTERED,
         NO_VAULT,
         VAULT_LOCKED,
         FOLDER_UNAVAILABLE,

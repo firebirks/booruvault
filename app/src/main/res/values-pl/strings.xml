@@ -24,6 +24,7 @@
     <string name="problem_no_file">Brak dostępnego pliku.</string>
     <string name="problem_too_large">Plik przekracza limit 2 GB.</string>
     <string name="problem_already_in_vault">Już w sejfie</string>
+    <string name="problem_filtered">Ukryte przez filtry treści</string>
     <string name="problem_no_vault">Najpierw utwórz sejf.</string>
     <string name="problem_vault_locked">Sejf jest zablokowany.</string>
     <string name="problem_folder_unavailable">Brak dostępu do folderu.</string>

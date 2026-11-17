@@ -28,7 +28,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **Search:** tag autocomplete, infinite scrolling grid, pull to refresh. Under an empty search field each source offers its favourite tags, starred from a post's tag sheet, from the suggestions while typing or from the shelf itself, followed by the tags searched most often on it; both are kept with the settings in the vault.
 - **The route at a glance:** an onion in the top bar of Browse says where Tor stands: purple once the exit is verified, yellow while it is being checked, red when Tor is on but not working, grey and struck through when Tor is off. A tap opens the network settings. While it is yellow or red, and the app is in front, it looks again every few seconds. A download already under way when it turns red goes on through the Tor connection it was opened on; nothing new goes out until it is purple again.
 - **Viewer:** pinch zoom, swipe between posts, video playback, and a tag sheet. From the sheet you can search a tag, add it to the search, exclude it or blacklist it.
-- **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source. Only general content is shown until you choose otherwise; turning on questionable or explicit first asks you to confirm that you are an adult.
+- **Content filter:** by rating (general, sensitive, questionable, explicit, unrated) and blacklist rules, applied the same way to every source and to what is downloaded. A post from a site read through its web pages is known by its thumbnail alone until its own page is read; if that page says a rating or a tag the filter hides, the post is hidden then, and a download of it is skipped. Only general content is shown until you choose otherwise; turning on questionable or explicit first asks you to confirm that you are an adult.
 - **Built-in browser:** used to pass anti-bot checks (Cloudflare), log in, or set site preferences. The site's cookies are then kept in the vault. It opens from the browser-window icon next to the source name in Browse, after a confirmation, or from the source's settings. A session stays on the site it was opened for: a link or script leading to another site is not followed, and the bar names the host actually on screen.
 
 ### Downloads
@@ -42,7 +42,7 @@ All three are signed with the same key, so updates install over each other. A bu
 - **Timeouts:** a search page that times out, or a file that cannot be taken up where it stopped, is tried again twice by itself, a few seconds apart. Over Tor that is most often a slow circuit, and the next try may take another.
 - **Tor being checked:** a download asked for while the exit check is on its way, as right after Orbot is started again, waits in the queue for it and goes out once it passes. With Orbot silent, or a check that failed, it fails and says so.
 - **On lock:** the queue is paused and dropped from memory. A risky option lets it keep running, at the cost of keeping its URLs, tags, sources and cookies in RAM until it drains.
-- **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock.
+- **Duplicates** are skipped. Ones that cannot be detected while the vault is locked are dropped at the next unlock. The downloads a lock left queued wait, at the next unlock, until the settings and the vault's list are read, so they follow the user's filters and find what is already saved.
 
 ### Vault
 

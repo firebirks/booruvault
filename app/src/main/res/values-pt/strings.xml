@@ -24,6 +24,7 @@
     <string name="problem_no_file">Nenhum arquivo disponível.</string>
     <string name="problem_too_large">O arquivo excede o limite de 2 GB.</string>
     <string name="problem_already_in_vault">Já está no cofre</string>
+    <string name="problem_filtered">Oculto pelos filtros de conteúdo</string>
     <string name="problem_no_vault">Crie o cofre primeiro.</string>
     <string name="problem_vault_locked">O cofre está bloqueado.</string>
     <string name="problem_folder_unavailable">Não é possível acessar a pasta.</string>

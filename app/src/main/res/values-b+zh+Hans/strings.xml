@@ -24,6 +24,7 @@
     <string name="problem_no_file">没有可用的文件。</string>
     <string name="problem_too_large">文件超过 2 GB 的上限。</string>
     <string name="problem_already_in_vault">已在保险库中</string>
+    <string name="problem_filtered">已被内容过滤器隐藏</string>
     <string name="problem_no_vault">请先创建保险库。</string>
     <string name="problem_vault_locked">保险库已锁定。</string>
     <string name="problem_folder_unavailable">无法访问该文件夹。</string>

@@ -24,6 +24,7 @@
     <string name="problem_no_file">لا يتوفر أي ملف.</string>
     <string name="problem_too_large">الملف أكبر من حد 2 غيغابايت.</string>
     <string name="problem_already_in_vault">موجود بالفعل في الخزنة</string>
+    <string name="problem_filtered">مخفي بسبب فلاتر المحتوى</string>
     <string name="problem_no_vault">أنشئ الخزنة أولًا.</string>
     <string name="problem_vault_locked">الخزنة مقفلة.</string>
     <string name="problem_folder_unavailable">لا يمكن الوصول إلى المجلد.</string>

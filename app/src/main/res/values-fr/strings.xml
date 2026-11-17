@@ -24,6 +24,7 @@
     <string name="problem_no_file">Aucun fichier disponible.</string>
     <string name="problem_too_large">Le fichier dépasse la limite de 2 Go.</string>
     <string name="problem_already_in_vault">Déjà dans le coffre</string>
+    <string name="problem_filtered">Masqué par les filtres de contenu</string>
     <string name="problem_no_vault">Créez d\'abord le coffre.</string>
     <string name="problem_vault_locked">Le coffre est verrouillé.</string>
     <string name="problem_folder_unavailable">Le dossier est inaccessible.</string>

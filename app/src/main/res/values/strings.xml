@@ -25,6 +25,7 @@
     <string name="problem_no_file">No file available.</string>
     <string name="problem_too_large">The file is larger than the 2 GB limit.</string>
     <string name="problem_already_in_vault">Already in the vault</string>
+    <string name="problem_filtered">Hidden by the content filters</string>
     <string name="problem_no_vault">Create the vault first.</string>
     <string name="problem_vault_locked">The vault is locked.</string>
     <string name="problem_folder_unavailable">The folder cannot be accessed.</string>
