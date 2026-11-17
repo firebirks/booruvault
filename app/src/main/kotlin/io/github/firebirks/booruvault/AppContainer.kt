@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.github.firebirks.booruvault.booru.BooruApi
 import io.github.firebirks.booruvault.booru.BooruApiFactory
@@ -105,7 +107,7 @@ class AppContainer(private val context: Context) {
         // Nothing leaves before the exit check says the SOCKS listener really is Tor.
         .addInterceptor(TorExitGate({ tor.enabled }, { tor.verified }) { tor.refreshStatus() })
         // Through Tor: a longer wait for the circuit, and Orbot blamed only when its port is silent.
-        .addInterceptor(TorFailures({ tor.enabled }, { tor.state.value.socksPort }))
+        .addInterceptor(TorFailures({ tor.enabled }, { tor.state.value.socksPort }, onListenerLost = tor::listenerLost))
         .addInterceptor(DefaultUserAgent)
         // Per attempt: a redirect or a retry of a call let through finds a withdrawn verdict here.
         .addNetworkInterceptor(TorRouteGuard({ tor.enabled }, { tor.verified }))
@@ -184,6 +186,11 @@ class AppContainer(private val context: Context) {
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(autoLock)
+        // Orbot may have stopped while the app was away, with nothing asked of it since: its port
+        // is looked at again on the way back, and a silent one loses the verdict at once.
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) = tor.refreshStatus()
+        })
         // The names the app goes by carry the phone's Chrome version; the WebView knows it.
         scope.launch(Dispatchers.Main) { Challenge.learnChromeVersion(context) }
         scope.launch(Dispatchers.IO) {

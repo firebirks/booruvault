@@ -149,6 +149,12 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     private val verifying = AtomicBoolean(false)
     private val probing = AtomicBoolean(false)
 
+    /**
+     * Counts the times the listener was found gone. A check that began before the last of them
+     * went through a listener that is no more: whatever it says, it is not about the one there now.
+     */
+    private val listenerLosses = AtomicLong()
+
     /** Counts the probes of the port begun, and names the last one over: see [awaitVerdict]. */
     private val probesBegun = AtomicLong()
 
@@ -201,6 +207,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
                     socks5Listening(_state.value.socksPort) -> TorStatus.ON
                     else -> TorStatus.OFF
                 }
+                if (status != TorStatus.ON) listenerLosses.incrementAndGet()
                 _state.update {
                     when {
                         !it.enabled -> it
@@ -232,6 +239,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
      */
     fun listenerLost() {
         if (!enabled) return
+        listenerLosses.incrementAndGet()
         _state.update { if (it.verifiedExit == null) it else it.copy(verifiedExit = null) }
         refreshStatus()
     }
@@ -273,12 +281,13 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
     /**
      * Asks the Tor Project whether requests reach it through Tor. One check at a time, and its
-     * verdict belongs to the port it went through: a port changed meanwhile, or Tor switched off,
-     * drops it, since the new port's listener has not been checked.
+     * verdict belongs to the listener it went through: a port changed meanwhile, Tor switched
+     * off, or the listener found gone, drops it, since what answers now has not been checked.
      */
     suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
         if (!verifying.compareAndSet(false, true)) return@withContext
         val port = _state.value.socksPort
+        val losses = listenerLosses.get()
         try {
             // Switched off since the check was asked for: nothing to check, and nothing goes out.
             if (!enabled) return@withContext
@@ -290,7 +299,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
             val ip = result["IP"]?.jsonPrimitive?.content
             _state.update {
                 when {
-                    !it.enabled || it.socksPort != port -> it
+                    !speaksFor(it, port, losses, listenerLosses.get()) -> it
                     isTor -> it.copy(verifiedExit = ip ?: "?")
                     else -> it.copy(verifyError = Problem(Problem.Code.NOT_THROUGH_TOR))
                 }
@@ -298,7 +307,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            _state.update { if (!it.enabled || it.socksPort != port) it else it.copy(verifyError = e.toProblem()) }
+            _state.update { if (!speaksFor(it, port, losses, listenerLosses.get())) it else it.copy(verifyError = e.toProblem()) }
         } finally {
             verifying.set(false)
         }
@@ -326,6 +335,14 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
          */
         internal fun checkDue(state: TorState, verifying: Boolean, now: Long, lastVerifyAt: Long): Boolean =
             state.enabled && state.status == TorStatus.ON && state.verifiedExit == null && !verifying && now - lastVerifyAt >= VERIFY_INTERVAL_MS
+
+        /**
+         * Whether an exit check begun on [port], when the listener had been found gone [lossesThen]
+         * times, speaks for the listener in [state]: Tor still on, the same port, and the listener
+         * not found gone since ([lossesNow]). Otherwise its answer came from what is no longer there.
+         */
+        internal fun speaksFor(state: TorState, port: Int, lossesThen: Long, lossesNow: Long): Boolean =
+            state.enabled && state.socksPort == port && lossesNow == lossesThen
 
         /**
          * What a request held back by the exit check can expect: true when it may go out, false
@@ -477,6 +494,8 @@ class TorFailures(
     private val port: () -> Int,
     private val connectTimeoutMs: Int = TOR_CONNECT_TIMEOUT_MS,
     private val listening: (Int) -> Boolean = { socks5Listening(it) },
+    /** Told when the port is found silent: see [TorManager.listenerLost]. */
+    private val onListenerLost: () -> Unit = {},
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val through = if (enabled()) chain.withConnectTimeout(connectTimeoutMs, TimeUnit.MILLISECONDS) else chain
@@ -486,7 +505,12 @@ class TorFailures(
             // A failure that already says what it is, a call the user dropped, or Tor switched off
             // meanwhile: nothing to put down to the listener.
             if (e is HasProblem || !enabled() || chain.call().isCanceled()) throw e
-            if (!listening(port())) throw TorUnreachableException(e)
+            // A port found silent has lost what answered there: its verdict goes with it, or a
+            // listener that takes the port next would be trusted without a check.
+            if (!listening(port())) {
+                onListenerLost()
+                throw TorUnreachableException(e)
+            }
             throw e
         }
     }

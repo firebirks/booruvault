@@ -61,6 +61,7 @@ import io.github.firebirks.booruvault.net.WebViewRoute
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import java.util.concurrent.atomic.AtomicBoolean
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
@@ -192,6 +193,14 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                 break
             }
         }
+    }
+
+    // Through Tor the page stays only while the exit's verdict holds: once it is withdrawn, what
+    // answers on Orbot's port has not been checked, and the browser closes, keeping nothing.
+    if (route?.getOrNull() == Route.TOR) LaunchedEffect(Unit) {
+        container.tor.state.first { !it.enabled || it.verifiedExit == null }
+        webView?.stopLoading()
+        finish(solved = false, record = false)
     }
 
     Surface(Modifier.fillMaxSize()) {

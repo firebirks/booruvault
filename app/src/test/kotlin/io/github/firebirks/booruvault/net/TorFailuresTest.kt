@@ -78,10 +78,13 @@ class TorFailuresTest {
         return server
     }
 
+    /** How many times a client made by [client] found the port silent. */
+    private val losses = java.util.concurrent.atomic.AtomicInteger()
+
     private fun client(port: Int, torConnectTimeoutMs: Int, clientConnectTimeoutMs: Long = 5_000) = OkHttpClient.Builder()
         .proxySelector(TorProxySelector({ true }, { port }))
         .dns(TorAwareDns { true })
-        .addInterceptor(TorFailures({ true }, { port }, torConnectTimeoutMs))
+        .addInterceptor(TorFailures({ true }, { port }, torConnectTimeoutMs, onListenerLost = { losses.incrementAndGet() }))
         .connectTimeout(clientConnectTimeoutMs, TimeUnit.MILLISECONDS)
         .readTimeout(5, TimeUnit.SECONDS)
         .build()
@@ -111,6 +114,16 @@ class TorFailuresTest {
         val e = failure(client(closed, torConnectTimeoutMs = 300))
         assertTrue(e.toString(), e is TorUnreachableException)
         assertEquals(Problem.Code.TOR_UNREACHABLE, e.toProblem().code)
+        // Found silent, the listener's verdict goes: what takes the port next is checked anew.
+        assertEquals(1, losses.get())
+    }
+
+    @Test
+    fun `a failure with Orbot still answering keeps its verdict`() {
+        fakeOrbot(Connect.Fails(4)).use { orbot ->
+            failure(client(orbot.localPort, torConnectTimeoutMs = 2_000))
+            assertEquals(0, losses.get())
+        }
     }
 
     @Test

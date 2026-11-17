@@ -67,9 +67,11 @@ class HiddenBrowser(
                 withTimeout(TIMEOUT_MS) {
                     coroutineScope {
                         // The visit carries this route's cookies: once the switch is flipped it
-                        // stops, before the next browser to open sends it the other way.
+                        // stops, before the next browser to open sends it the other way. Through
+                        // Tor it stops as well once the exit's verdict is withdrawn: what answers
+                        // on Orbot's port then has not been checked.
                         val switched = launch {
-                            tor.state.first { Route.of(it.enabled) != route }
+                            tor.state.first { Route.of(it.enabled) != route || (route == Route.TOR && it.verifiedExit == null) }
                             throw BooruChallengeException(url)
                         }
                         // The built-in browser opened: the store is its now, and the visit ends.

@@ -26,4 +26,14 @@ class TorVerdictTest {
         assertEquals(false, TorManager.verdict(on.copy(status = TorStatus.NOT_INSTALLED)))
         assertEquals(false, TorManager.verdict(on.copy(verifyError = Problem(Problem.Code.NOT_THROUGH_TOR))))
     }
+
+    @Test
+    fun `an exit check speaks for the listener it went through and for no other`() {
+        val verified = on.copy(socksPort = 9050)
+        assertEquals(true, TorManager.speaksFor(verified, 9050, lossesThen = 3, lossesNow = 3))
+        // The listener was found gone while the check was on its way: whatever answers now was not checked.
+        assertEquals(false, TorManager.speaksFor(verified, 9050, lossesThen = 3, lossesNow = 4))
+        assertEquals(false, TorManager.speaksFor(verified, 9150, lossesThen = 3, lossesNow = 3))
+        assertEquals(false, TorManager.speaksFor(verified.copy(enabled = false), 9050, lossesThen = 3, lossesNow = 3))
+    }
 }
