@@ -121,6 +121,7 @@ class VaultStore(
                 thumbDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 metaDir.listFiles { f -> f.name.endsWith(".tmp") }?.forEach { it.delete() }
                 listOf(root, mediaDir, thumbDir, metaDir).forEach { dir -> dir.listFiles { f -> f.name.endsWith(".rekey") }?.forEach { it.delete() } }
+                dropUncommitted()
             } finally {
                 cleaned.complete(Unit)
             }
@@ -167,6 +168,21 @@ class VaultStore(
                 }
                 mutex.withLock { flushIndex() }
             }
+        }
+    }
+
+    /**
+     * Deletes the media and thumbnails no meta file names: a download or an import whose process
+     * ended after its file was written and before the item was committed, or a deletion cut short
+     * after its meta file went. No item lists them, so nothing else would ever take them away.
+     * Run before any write, at the start of the process: a write under way would look the same.
+     * Only against a listing of the meta files that worked, where one that failed would make
+     * every file look uncommitted.
+     */
+    private fun dropUncommitted() {
+        val committed = metaDir.list()?.toHashSet() ?: return
+        for (dir in listOf(mediaDir, thumbDir)) {
+            dir.listFiles { f -> f.isFile && ID.matches(f.name) && f.name !in committed }?.forEach { it.delete() }
         }
     }
 
