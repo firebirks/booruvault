@@ -33,6 +33,27 @@ import io.github.firebirks.booruvault.ui.common.MessageState
 import io.github.firebirks.booruvault.ui.common.problemText
 import kotlinx.coroutines.delay
 
+/**
+ * Orbot says nothing by itself, so while the caller is on screen, and the app in front, its port
+ * is greeted every few seconds: a port found silent withdraws the verdict, and one that answers
+ * with no verdict gets the exit check once it is due. In the background the probe, and the check
+ * it can set off, would go on for nothing.
+ */
+@Composable
+fun GreetOrbotWhileShown(tor: TorManager) {
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(lifecycle, tor) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while (true) {
+                tor.refreshStatus()
+                delay(ORBOT_GREETING_MS)
+            }
+        }
+    }
+}
+
+private const val ORBOT_GREETING_MS = 3000L
+
 /** Where to get Orbot: from an installed store, or from its own site; [text] says what to do next. */
 @Composable
 fun OrbotInstallDialog(text: String, onDismiss: () -> Unit) {
@@ -73,17 +94,7 @@ fun TorBlockedState(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var askInstall by remember { mutableStateOf(false) }
     var askDirect by remember { mutableStateOf(false) }
-    // Only while the app is in front: in the background the probe, and the exit check it can
-    // set off, would go on for nothing.
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(lifecycle) {
-        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            while (true) {
-                tor.refreshStatus()
-                delay(3000)
-            }
-        }
-    }
+    GreetOrbotWhileShown(tor)
     val direct = stringResource(R.string.tor_connect_directly)
     when {
         state.status == TorStatus.NOT_INSTALLED -> MessageState(

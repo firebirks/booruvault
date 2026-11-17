@@ -9,6 +9,9 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ### Changed
 - The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
 
+### Fixed
+- The onion in Browse no longer stays red once Tor works again: while it is yellow or red, and the app is in front, it greets Orbot's port every few seconds and has the exit checked again, as the network settings already did. It used to wait for a request to be refused, so with nothing new asked for it could stay red after Orbot was back, while the downloads under way went on through Tor.
+
 ## [0.5.0] - 2026-11-13
 
 ### Added

@@ -10,8 +10,10 @@ import androidx.compose.ui.res.stringResource
 import io.github.firebirks.booruvault.R
 import io.github.firebirks.booruvault.net.TorState
 import io.github.firebirks.booruvault.net.TorStatus
+import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.OnionIcon
 import io.github.firebirks.booruvault.ui.common.OnionOffIcon
+import io.github.firebirks.booruvault.ui.settings.GreetOrbotWhileShown
 
 /** What the onion in Browse's top bar says about the route. */
 enum class TorBadge { OFF, CHECKING, VERIFIED, FAILED }
@@ -29,9 +31,19 @@ fun torBadge(state: TorState): TorBadge = when {
     else -> TorBadge.CHECKING
 }
 
-/** The onion: purple when verified, yellow while checking, red when not working, grey and struck through when off. */
+/**
+ * The onion: purple when verified, yellow while checking, red when not working, grey and struck
+ * through when off.
+ *
+ * While it is yellow or red it looks again by itself, as the network settings do: otherwise it
+ * waited for a request to be refused, and with nothing new asked for it stayed red after Orbot was
+ * back, while the downloads under way went on through Tor. Once purple it is not greeted: a slow
+ * answer would withdraw a good verdict for nothing, and a listener gone is found by the first
+ * connection that fails on it.
+ */
 @Composable
 fun TorBadgeButton(state: TorState, onClick: () -> Unit) {
+    if (state.blocking) GreetOrbotWhileShown(LocalContainer.current.tor)
     val badge = torBadge(state)
     val dark = isSystemInDarkTheme()
     val tint = when (badge) {
