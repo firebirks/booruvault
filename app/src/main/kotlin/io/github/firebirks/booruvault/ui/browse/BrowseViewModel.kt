@@ -54,6 +54,11 @@ data class BrowseState(
     val challengeUrl: String? = null,
     /** Posts dropped by the rating filter or the blacklist. */
     val hidden: Int = 0,
+    /**
+     * The last pages read were all hidden by the filters, too many in a row to read on unasked:
+     * the grid says so at its end and offers to read on.
+     */
+    val stalled: Boolean = false,
     /** Bumped on every new search so the grid can jump back to the top. */
     val generation: Int = 0,
     /** Where the grid of this [generation] opens: the top, or where Back found it left. */
@@ -274,7 +279,7 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val generation = _state.value.generation
         fun update(transform: (BrowseState) -> BrowseState) =
             _state.update { if (it.generation == generation) transform(it) else it }
-        update { it.copy(loading = true, error = null, challengeUrl = null) }
+        update { it.copy(loading = true, error = null, challengeUrl = null, stalled = false) }
         fetchRoute = c.tor.state.value.routeChanges
         var cutShort = false
         try {
@@ -292,7 +297,13 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
                 update { it.refiltered().copy(endReached = raw.isEmpty(), refreshing = false) }
                 // A page the filters emptied entirely would leave nothing to scroll to; fetch on.
                 // The filters of now: they may have been tightened since the fetch began.
-                if (raw.isEmpty() || fresh.any { c.settings.settings.value.allows(it) } || ++emptyPages >= 5) break
+                if (raw.isEmpty() || fresh.any { c.settings.settings.value.allows(it) }) break
+                // So many in a row that the rest may well be the same: the grid ends here, and
+                // says so, rather than read on unasked or stop without a word.
+                if (++emptyPages >= MAX_HIDDEN_PAGES) {
+                    update { it.copy(stalled = true) }
+                    break
+                }
             }
         } catch (e: CancellationException) {
             throw e
@@ -388,7 +399,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
     private fun show(grid: LeftGrid, source: BooruSource?) {
         val query = grid.state.query
         input = TextFieldValue(query, TextRange(query.length))
-        _suggestions.value = emptyList()
+        // A list still on its way would come back over what replaced it.
+        dismissSuggestions()
         if (grid.fetched.isEmpty() || grid.pageSize != c.settings.settings.value.pageSize) {
             _state.update { it.copy(source = source, query = query) }
             restart(refreshing = false)
@@ -458,7 +470,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val host = url.substringAfter("://").substringBefore('/').removePrefix("www.")
         val source = BooruSource(WEB_PAGE_SOURCE, host, BooruEngine.HTML_GENERIC, url)
         input = TextFieldValue("")
-        _suggestions.value = emptyList()
+        // A list still on its way would come back over what replaced it.
+        dismissSuggestions()
         // The same page again: the collector sees no change, so reload it here.
         if (webPage.value == source) {
             _state.update { it.copy(query = "") }
@@ -475,12 +488,16 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
 
         /** How many most-used tags join the favourites on the shelf. */
         const val MAX_SHELF_USED = 10
+
+        /** Pages in a row the filters may empty before reading on waits for the user. */
+        const val MAX_HIDDEN_PAGES = 5
     }
 
     fun search(query: String) {
         val normalized = query.trim().replace(Regex("\\s+"), " ")
         input = TextFieldValue(normalized, TextRange(normalized.length))
-        _suggestions.value = emptyList()
+        // A list still on its way would come back over what replaced it.
+        dismissSuggestions()
         // The same search again only reloads it: there is nothing to go back to.
         if (normalized != _state.value.query) leave()
         _state.update { it.copy(query = normalized) }
@@ -559,7 +576,8 @@ class BrowseViewModel(private val c: AppContainer) : ViewModel() {
         val (prefix, _) = if (text.endsWith(' ')) "" to "" else autocompleteToken(text)
         val replaced = (if (head.isEmpty()) "" else "$head ") + prefix + tag + " "
         input = TextFieldValue(replaced, TextRange(replaced.length))
-        _suggestions.value = emptyList()
+        // A list still on its way would come back over what replaced it.
+        dismissSuggestions()
     }
 
     // Tag actions offered by the viewer's info sheet.

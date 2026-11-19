@@ -12,7 +12,6 @@ import io.github.firebirks.booruvault.ui.common.labelRes
 import io.github.firebirks.booruvault.R
 import androidx.compose.ui.res.stringResource
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -239,7 +238,7 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 IconButton(onClick = { info = post }) { Icon(Icons.Outlined.Info, stringResource(R.string.viewer_details), tint = Color.White) }
                 val alreadySaved = stringResource(R.string.problem_already_in_vault)
                 when (saveState) {
-                    SaveState.SAVED -> IconButton(onClick = { Toast.makeText(context, alreadySaved, Toast.LENGTH_SHORT).show() }) {
+                    SaveState.SAVED -> IconButton(onClick = { scope.launch { snackbar.showSnackbar(alreadySaved) } }) {
                         Icon(Icons.Outlined.Lock, stringResource(R.string.viewer_in_vault), tint = MaterialTheme.colorScheme.primaryContainer)
                     }
                     SaveState.QUEUED -> Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
@@ -311,7 +310,9 @@ fun PostViewer(startIndex: Int, onClose: () -> Unit, onSearchTag: (String) -> Un
                 collectionFromTag = null
                 scope.launch {
                     container.settings.saveCollection(TagCollection(UUID.randomUUID().toString(), name, query))
-                    Toast.makeText(context, resources.getString(R.string.collection_saved, name), Toast.LENGTH_SHORT).show()
+                    // In the viewer's own window, behind its screen protection: a toast is the
+                    // system's, and would show the collection's name in a screenshot or a recording.
+                    snackbar.showSnackbar(resources.getString(R.string.collection_saved, name))
                 }
             },
         )

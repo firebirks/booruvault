@@ -11,7 +11,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
-import android.widget.Toast
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -31,6 +30,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -64,6 +66,7 @@ import androidx.webkit.WebViewFeature
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 /** Opens [url] in the built-in browser; [onDone] runs once the user is through. */
@@ -150,6 +153,10 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
     var progress by remember { mutableIntStateOf(0) }
     var title by remember { mutableStateOf("") }
     val blocked = stringResource(R.string.browser_blocked_outside, site)
+    // In the browser's own window, behind its screen protection: a toast is the system's, and
+    // would show the site's name in a screenshot or a recording.
+    val snackbar = remember { SnackbarHostState() }
+    val snackbarScope = rememberCoroutineScope()
 
     // Several paths lead out (the check passed, a tap, Back); only the first one counts.
     val closed = remember { AtomicBoolean(false) }
@@ -206,6 +213,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
 
     Surface(Modifier.fillMaxSize()) {
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbar) },
             topBar = {
                 TopAppBar(
                     title = {
@@ -270,7 +278,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                                 // Links and scripts may point anywhere; only the site itself is followed.
                                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                                     if (!request.isForMainFrame || Challenge.allowedNavigation(site, startScheme, request.url)) return false
-                                    Toast.makeText(context, blocked, Toast.LENGTH_SHORT).show()
+                                    snackbarScope.launch { snackbar.showSnackbar(blocked) }
                                     return true
                                 }
 

@@ -359,6 +359,7 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
                                 endReached = state.endReached,
                                 hidden = state.hidden,
                                 challenge = state.challengeUrl != null,
+                                stalled = state.stalled,
                                 onRetry = { state.challengeUrl?.let(::verify) ?: vm.loadMore(force = true) },
                             )
                         }
@@ -771,13 +772,22 @@ private fun Badge(icon: androidx.compose.ui.graphics.vector.ImageVector, modifie
 }
 
 @Composable
-private fun GridFooter(loading: Boolean, error: String?, endReached: Boolean, hidden: Int, challenge: Boolean, onRetry: () -> Unit) {
+private fun GridFooter(loading: Boolean, error: String?, endReached: Boolean, hidden: Int, challenge: Boolean, stalled: Boolean, onRetry: () -> Unit) {
     Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
         when {
             loading -> CircularProgressIndicator(Modifier.size(28.dp))
             error != null -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(error, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 TextButton(onClick = onRetry) { Text(stringResource(if (challenge) R.string.action_verify_in_browser else R.string.action_retry)) }
+            }
+            // The last pages read were all hidden by the filters: reading on is the user's call.
+            stalled && !endReached -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    pluralStringResource(R.plurals.browse_end_hidden, hidden, hidden),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                TextButton(onClick = onRetry) { Text(stringResource(R.string.action_more)) }
             }
             endReached -> Text(
                 stringResource(R.string.browse_end) + if (hidden > 0) " · " + pluralStringResource(R.plurals.browse_end_hidden, hidden, hidden) else "",
