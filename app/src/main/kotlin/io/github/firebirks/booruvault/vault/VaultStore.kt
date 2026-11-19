@@ -117,7 +117,11 @@ class VaultStore(
                 thumbDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 metaDir.listFiles { f -> f.name.endsWith(".tmp") }?.forEach { it.delete() }
                 // The settings', cookies', queue's, index's and header's own, cut short at the rename.
-                root.listFiles { f -> f.isFile && f.name.endsWith(".tmp") }?.forEach { it.delete() }
+                // Each under the lock its write takes: a save begun since the start, its copy not
+                // yet renamed into place, must not lose it.
+                root.listFiles { f -> f.isFile && f.name.endsWith(".tmp") }?.forEach { tmp ->
+                    synchronized(FileLocks.of(File(root, tmp.name.removeSuffix(".tmp")))) { tmp.delete() }
+                }
                 listOf(root, mediaDir, thumbDir, metaDir).forEach { dir -> dir.listFiles { f -> f.name.endsWith(".rekey") }?.forEach { it.delete() } }
                 dropUncommitted()
             } finally {

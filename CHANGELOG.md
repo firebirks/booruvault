@@ -7,6 +7,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ## [Unreleased]
 
 ### Fixed
+- The sweep of temporary files that a write cut short left in the vault's folder, at start, waits for a save under way to put its file in place instead of deleting the copy it is writing.
 - A filter of the vault saved as a collection holds what the filter showed. A word with a colon in it, as `re:zero`, which the filter finds inside tags as any word, was saved as an exact tag; and a filter saved while a collection was looked at made a collection of the whole vault, without that collection's terms.
 
 ## [0.6.0] - 2026-11-19
