@@ -198,9 +198,10 @@ Requirements:
 
 A release is a commit and a tag:
 
-1. Raise `versionCode` (always by one) and `versionName` in `app/build.gradle.kts`.
-2. Write `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, at most 500 characters, and give the version its dated entry in [CHANGELOG.md](CHANGELOG.md).
-3. Commit, tag `v<versionName>` and push the tag.
+1. Move the workflows' pins along, in their own commit: each action to the commit of its current release, named beside it (`gh api repos/<owner>/<action>/commits/<tag> --jq .sha`), and `fdroidserver` to its current version. Nothing does this by itself: the repository has Dependabot alerts on, which say when a version in use has a known vulnerability, but no Dependabot pull requests, whose commits would be the bot's.
+2. Raise `versionCode` (always by one) and `versionName` in `app/build.gradle.kts`.
+3. Write `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, at most 500 characters, and give the version its dated entry in [CHANGELOG.md](CHANGELOG.md).
+4. Commit, tag `v<versionName>` and push the tag.
 
 The tag starts the `Release` workflow, which checks that the tag matches `versionName`, runs the tests, builds the APK signed with the project's key (kept in the repository secrets `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD` and `KEY_PASSWORD`) and publishes it, with its SHA-256, as a GitHub release whose notes are the changelog. Obtainium and direct installs use that APK. Both workflows run on `ubuntu-24.04` with every action pinned to the commit of the release named beside it, and `fdroidserver` pinned to a version, so that a tag moved to other code cannot run next to the signing keys; raising one means looking up the new release's commit.
 
