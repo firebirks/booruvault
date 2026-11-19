@@ -95,7 +95,7 @@ biometric Keystore key (optional) ─────────────AES-256
 - **The header is checked on every unlock:** the public key must be the unwrapped private key's, so a header whose public key was swapped (which would seal new files to someone else's key) is refused instead of used.
 - **The Argon2id parameters** are stored with the vault, so they can be raised later.
 - **The biometric key** is an Android Keystore AES key that requires strong biometric authentication for every use. Enrolling a new fingerprint invalidates it.
-- **Changing the password replaces the key pair.** The old private key is kept in the header, boxed to the new public key, while every file is re-sealed to the new pair in the background; then it is dropped. Once that is done, an old copy of the header opened with the old password reads nothing. Locking pauses the re-sealing and the next unlock resumes it. The biometric copy, which held the old key, is removed and must be enrolled again.
+- **Changing the password replaces the key pair.** The old private key is kept in the header, boxed to the new public key, while every file is re-sealed to the new pair in the background; then it is dropped. The retired pair is dropped only once no write that read the old key, of a file, the settings, the cookies or the queue, may still land. Once that is done, an old copy of the header opened with the old password reads nothing. Locking pauses the re-sealing and the next unlock resumes it. The biometric copy, which held the old key, is removed and must be enrolled again.
 
 ### Sealed files
 
@@ -123,7 +123,7 @@ All files live in the app's private storage, under `files/vault/`:
 | `downloads.bin` | Pending, failed and cancelled downloads, and search collections in progress. Sealed. |
 | `previews/<id>` | The preview of a download listed, under an id of its row's own. A cache: gone with the row, and fetched again if it will not open. Sealed. |
 | `format-2` | Empty marker: every sealed file was found in the current, padded format, so they are not looked over at each unlock. **Clear**. |
-| `*.corrupt` | A sealed settings, cookies or queue file that could not be read, set aside rather than written over. Sealed. |
+| `*.corrupt` | A sealed settings, cookies or queue file that could not be read, set aside rather than written over. Re-sealed with the rest after a password change; one that no key opens is deleted then. Sealed. |
 
 File names are random UUIDs. The number of files remains visible, that of the previews being at most that of the downloads listed, and, once the background re-sealing is done, each file's size to within 64 KiB for media and 4 KiB for the rest.
 

@@ -16,6 +16,7 @@ import io.github.firebirks.booruvault.vault.VaultLockedException
 import io.github.firebirks.booruvault.vault.VaultManager
 import io.github.firebirks.booruvault.vault.VaultStore
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
+import io.github.firebirks.booruvault.vault.crypto.FileLocks
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
 import kotlinx.coroutines.Dispatchers
@@ -80,14 +81,15 @@ class QueuePreviews(root: File, private val vault: VaultManager, private val cli
 
     /** A preview that cannot be kept is no failure: it is asked for again the next time. */
     private fun store(id: String, bytes: ByteArray) {
-        val recipient = vault.recipient ?: return
-        val part = File(dir, "$id.part")
-        try {
-            dir.mkdirs()
-            SealedOutputStream(FileOutputStream(part).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
-            if (!part.moveOver(File(dir, id))) part.delete()
-        } catch (e: IOException) {
-            part.delete()
+        vault.sealing { recipient ->
+            val part = File(dir, "$id.part")
+            try {
+                dir.mkdirs()
+                SealedOutputStream(FileOutputStream(part).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
+                if (!part.moveOver(File(dir, id))) part.delete()
+            } catch (e: IOException) {
+                part.delete()
+            }
         }
     }
 
@@ -95,7 +97,7 @@ class QueuePreviews(root: File, private val vault: VaultManager, private val cli
     fun delete(ids: Collection<String>) {
         ids.forEach { id ->
             if (!VaultStore.ID.matches(id)) return@forEach
-            File(dir, id).delete()
+            FileLocks.delete(File(dir, id))
             File(dir, "$id.part").delete()
             fetching.remove(id)
         }
@@ -109,7 +111,7 @@ class QueuePreviews(root: File, private val vault: VaultManager, private val cli
     fun sweep(listed: () -> Set<String>?) {
         val names = dir.list() ?: return
         val keep = listed() ?: return
-        names.filter { it.substringBefore('.') !in keep }.forEach { File(dir, it).delete() }
+        names.filter { it.substringBefore('.') !in keep }.forEach { FileLocks.delete(File(dir, it)) }
         fetching.keys.retainAll(keep)
     }
 

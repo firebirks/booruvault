@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.vault
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.util.ProblemException
 import io.github.firebirks.booruvault.util.moveOver
+import io.github.firebirks.booruvault.vault.crypto.FileLocks
 import io.github.firebirks.booruvault.vault.crypto.Recipient
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
@@ -107,11 +108,6 @@ class VaultStore(
         combine(manager.state, loaded) { state, read -> read || state !is VaultState.Unlocked }.first { it }
     }
 
-    private val inFlight = java.util.concurrent.atomic.AtomicInteger()
-
-    /** Writes begun and not yet renamed into place; each seals to the recipient of its start. */
-    val writesInFlight: Int get() = inFlight.get()
-
     init {
         scope.launch(Dispatchers.IO) {
             // Leftovers of writes interrupted by a crash, the re-sealer's copies included; new
@@ -120,6 +116,8 @@ class VaultStore(
                 mediaDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 thumbDir.listFiles { f -> f.name.endsWith(".part") }?.forEach { it.delete() }
                 metaDir.listFiles { f -> f.name.endsWith(".tmp") }?.forEach { it.delete() }
+                // The settings', cookies', queue's, index's and header's own, cut short at the rename.
+                root.listFiles { f -> f.isFile && f.name.endsWith(".tmp") }?.forEach { it.delete() }
                 listOf(root, mediaDir, thumbDir, metaDir).forEach { dir -> dir.listFiles { f -> f.name.endsWith(".rekey") }?.forEach { it.delete() } }
                 dropUncommitted()
             } finally {
@@ -203,17 +201,13 @@ class VaultStore(
 
     fun containsMd5(md5: String): Boolean = _items.value.any { it.md5.equals(md5, ignoreCase = true) }
 
-    private fun recipient(): Recipient = manager.recipient ?: throw VaultMissingException()
-
     private fun requireKeys(): VaultKeys = manager.keys ?: throw VaultLockedException()
 
     /** Seals what [block] writes as the media of item [id]. Returns the plaintext size. */
     suspend fun writeMedia(id: String, block: suspend (OutputStream) -> Unit): Long = withContext(Dispatchers.IO) {
         checkId(id)
         cleaned.await()
-        inFlight.incrementAndGet()
-        try {
-            val recipient = recipient()
+        manager.sealing { recipient ->
             mediaDir.mkdirs()
             val part = File(mediaDir, "$id.part")
             try {
@@ -227,60 +221,53 @@ class VaultStore(
                 part.delete()
                 throw e
             }
-        } finally {
-            inFlight.decrementAndGet()
-        }
+        } ?: throw VaultMissingException()
     }
 
     suspend fun writeThumbnail(id: String, jpeg: ByteArray) = withContext(Dispatchers.IO) {
         checkId(id)
         cleaned.await()
-        inFlight.incrementAndGet()
-        try {
+        manager.sealing { recipient ->
             thumbDir.mkdirs()
             val part = File(thumbDir, "$id.part")
-            SealedOutputStream(SyncedFileOutputStream(part).buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(jpeg) }
+            SealedOutputStream(SyncedFileOutputStream(part).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(jpeg) }
             if (!part.moveOver(File(thumbDir, id))) throw IOException("cannot store thumbnail")
-        } finally {
-            inFlight.decrementAndGet()
-        }
+        } ?: throw VaultMissingException()
     }
 
     /** Makes an item whose media is already written visible. */
     suspend fun commit(item: VaultItem) = withContext(Dispatchers.IO) {
         checkId(item.id)
         cleaned.await()
-        inFlight.incrementAndGet()
-        try {
+        manager.sealing { recipient ->
             metaDir.mkdirs()
             val tmp = File(metaDir, "${item.id}.tmp")
             val bytes = json.encodeToString(VaultItem.serializer(), item).toByteArray()
             try {
-                SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient(), quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
+                SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use { it.write(bytes) }
             } finally {
                 bytes.fill(0)
             }
             if (!tmp.moveOver(File(metaDir, item.id))) throw IOException("cannot store metadata")
-        } finally {
-            inFlight.decrementAndGet()
-        }
+        } ?: throw VaultMissingException()
         reconcileRequests.trySend(Unit)
     }
 
     /** Removes whatever was written for an item that will not be committed. */
     fun discard(id: String) {
         checkId(id)
-        File(metaDir, id).delete()
-        File(mediaDir, id).delete()
+        // Under the locks the re-keyer takes to put its copies in place, or one could come back.
+        FileLocks.delete(File(metaDir, id))
+        FileLocks.delete(File(mediaDir, id))
         File(mediaDir, "$id.part").delete()
-        File(thumbDir, id).delete()
+        FileLocks.delete(File(thumbDir, id))
     }
 
     suspend fun delete(ids: Set<String>) = withContext(Dispatchers.IO) {
         mutex.withLock {
             ids.forEach(::checkId)
             // Meta first: an item without meta is gone even if the rest outlives a crash.
-            ids.forEach { File(metaDir, it).delete() }
+            ids.forEach { FileLocks.delete(File(metaDir, it)) }
             ids.forEach { discard(it) }
             _items.value = _items.value.filterNot { it.id in ids }
             indexChanged()
@@ -360,21 +347,20 @@ class VaultStore(
      * not be written, on a full disk for one: the index is a cache, and one left as it was
      * costs the next unlock some reading, where a failure thrown from here would cost the app.
      */
-    private fun saveIndex(items: List<VaultItem>): Boolean {
-        val recipient = manager.recipient ?: return false
+    private fun saveIndex(items: List<VaultItem>): Boolean = manager.sealing { recipient ->
         val tmp = File(root, "index.bin.tmp")
-        return try {
+        try {
             SealedOutputStream(SyncedFileOutputStream(tmp).buffered(), recipient, quantum = SealedFormat.SMALL_QUANTUM).use {
                 json.encodeToStream(listSerializer, items, it)
             }
-            val moved = tmp.moveOver(indexFile)
+            val moved = synchronized(FileLocks.of(indexFile)) { tmp.moveOver(indexFile) }
             if (moved) indexWrites++ else tmp.delete()
             moved
         } catch (e: IOException) {
             tmp.delete()
             false
         }
-    }
+    } ?: false
 
     /** Decodes decrypted bytes, then overwrites them. */
     private inline fun <T> decode(bytes: ByteArray, parse: (String) -> T): T = try {

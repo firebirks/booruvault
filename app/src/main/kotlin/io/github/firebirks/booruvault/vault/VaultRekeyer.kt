@@ -2,6 +2,7 @@ package io.github.firebirks.booruvault.vault
 
 import io.github.firebirks.booruvault.download.QueuePreviews
 import io.github.firebirks.booruvault.util.moveOver
+import io.github.firebirks.booruvault.vault.crypto.FileLocks
 import io.github.firebirks.booruvault.vault.crypto.SealedFile
 import io.github.firebirks.booruvault.vault.crypto.SealedFormat
 import io.github.firebirks.booruvault.vault.crypto.SealedOutputStream
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.EOFException
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.attribute.BasicFileAttributes
 import java.security.GeneralSecurityException
 
 /** How far the re-sealing has come, in files; [rekeying] after a password change, otherwise to the current format. */
@@ -44,7 +47,6 @@ data class RekeyProgress(val done: Int, val total: Int, val rekeying: Boolean = 
 class VaultRekeyer(
     private val root: File,
     private val vault: VaultManager,
-    private val store: VaultStore,
     scope: CoroutineScope,
 ) {
     private val _progress = MutableStateFlow<RekeyProgress?>(null)
@@ -96,7 +98,7 @@ class VaultRekeyer(
         var cleanPasses = 0
         while (true) {
             // A write begun under the old pair can land after the listing, unseen by this pass.
-            val writesBefore = store.writesInFlight
+            val writesBefore = vault.writesInFlight
             val files = if (rekey) candidates() else olderFormat() ?: return
             var done = 0
             var resealed = 0
@@ -122,6 +124,10 @@ class VaultRekeyer(
                         val count = (failures[file.path] ?: 0) + 1
                         failures[file.path] = count
                         if (count < GIVE_UP_AFTER) failed++
+                        // A file set aside as unreadable that no key here opens either: what the app
+                        // gave up on, and an old copy of the header could still read some of. Gone
+                        // with the old pair, as the rest of what that pair sealed is re-sealed.
+                        else if (file.name.endsWith(CORRUPT)) FileLocks.delete(file)
                     }
                     Outcome.NOT_WRITTEN -> {
                         failures.remove(file.path)
@@ -138,7 +144,7 @@ class VaultRekeyer(
             }
             cleanPasses = if (resealed == 0 && failed == 0 && writesBefore == 0) cleanPasses + 1 else 0
             // A write that read the old recipient just before the header changed may still land.
-            val settled = cleanPasses >= 2 && store.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
+            val settled = cleanPasses >= 2 && vault.writesInFlight == 0 && System.currentTimeMillis() - started >= GRACE_MS
             if (settled) {
                 vault.retireFinished(keys.recipient)
                 // Everything was written anew, in the current format.
@@ -167,7 +173,10 @@ class VaultRekeyer(
                 ?.toList().orEmpty()
         }
         val blobs = listOf("index.bin", "config.bin", "cookies.bin", "downloads.bin").map { File(root, it) }.filter { it.isFile }
-        return items + blobs
+        // Set aside as unreadable, perhaps for want of a key the vault had then: the API keys of a
+        // config.bin.corrupt among them. Left out, an old copy of the header would still read them.
+        val setAside = root.listFiles { f -> f.isFile && f.name.endsWith(CORRUPT) }?.toList().orEmpty()
+        return items + blobs + setAside
     }
 
     /**
@@ -178,6 +187,9 @@ class VaultRekeyer(
      */
     private suspend fun reseal(file: File, keys: VaultKeys): Outcome {
         // Taken before the file is opened: a file replaced between the two would pass as unchanged.
+        // Its identity on storage too: a file put in place by a rename is a new one, even when
+        // its time, to the second, and its padded length are the same.
+        val identity = identityOf(file)
         val modified = file.lastModified()
         val length = file.length()
         val sealed = try {
@@ -239,9 +251,14 @@ class VaultRekeyer(
                 out.close()
                 // Closed before the move, as Windows will not replace a file that is open.
                 source.close()
-                // Rewritten meanwhile, under the current pair, or deleted: the copy is stale.
-                val unchanged = file.isFile && file.lastModified() == modified && file.length() == length
-                if (!unchanged || !tmp.moveOver(file)) {
+                // Rewritten meanwhile, under the current pair, or deleted: the copy is stale. Looked
+                // at and moved under the lock the vault's saves and deletions take, so none can come
+                // between the look and the move and be undone by the copy.
+                val moved = synchronized(FileLocks.of(file)) {
+                    val unchanged = file.isFile && identityOf(file) == identity && file.lastModified() == modified && file.length() == length
+                    unchanged && tmp.moveOver(file)
+                }
+                if (!moved) {
                     tmp.delete()
                     return Outcome.NOT_WRITTEN
                 }
@@ -259,8 +276,13 @@ class VaultRekeyer(
         }
     }
 
+    /** The file's identity on storage, where the platform tells it: a file renamed into place has another. */
+    private fun identityOf(file: File): Any? =
+        runCatching { Files.readAttributes(file.toPath(), BasicFileAttributes::class.java).fileKey() }.getOrNull()
+
     private companion object {
         const val SUFFIX = ".rekey"
+        const val CORRUPT = ".corrupt"
         const val GRACE_MS = 2000L
         const val GIVE_UP_AFTER = 5
 

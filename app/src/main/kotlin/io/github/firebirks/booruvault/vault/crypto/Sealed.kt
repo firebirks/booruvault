@@ -13,7 +13,6 @@ import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 import java.security.PrivateKey
 import java.security.PublicKey
-import java.util.concurrent.ConcurrentHashMap
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -470,9 +469,7 @@ class SealedFile(file: File, keys: VaultKeys) : Closeable {
 /** Small whole files sealed to the vault: written atomically, readable only when unlocked. */
 object SealedBlob {
     /** One writer at a time for each file: two at once would write over each other's copy. */
-    private val writing = ConcurrentHashMap<String, Any>()
-
-    fun write(file: File, recipient: Recipient, bytes: ByteArray) = synchronized(writing.computeIfAbsent(file.absolutePath) { Any() }) {
+    fun write(file: File, recipient: Recipient, bytes: ByteArray) = synchronized(FileLocks.of(file)) {
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, file.name + ".tmp")
         try {
@@ -489,6 +486,22 @@ object SealedBlob {
     /** Null when the file does not exist. The caller wipes the result once decoded. */
     fun read(file: File, keys: VaultKeys): ByteArray? =
         if (!file.exists()) null else SealedFile(file, keys).use { it.readAll() }
+}
+
+/**
+ * Locks taken by whatever puts a sealed file in place or takes it away, per path: the vault's
+ * saves and deletions, and [io.github.firebirks.booruvault.vault.VaultRekeyer], whose copy must
+ * not land over a file replaced or deleted after it last looked. Striped, so the paths of a
+ * large vault do not each keep a lock of their own; two files that share one wait for each other
+ * a moment. No one holds two at once.
+ */
+object FileLocks {
+    private val stripes = Array(64) { Any() }
+
+    fun of(file: File): Any = stripes[Math.floorMod(file.absolutePath.hashCode(), stripes.size)]
+
+    /** Deletes [file] under its lock. */
+    fun delete(file: File): Boolean = synchronized(of(file)) { file.delete() }
 }
 
 /**

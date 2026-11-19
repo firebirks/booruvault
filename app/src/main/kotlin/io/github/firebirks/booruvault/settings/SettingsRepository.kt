@@ -123,9 +123,8 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
         if (!_ready.value) return@withLock
         val next = transform(_settings.value)
         _settings.value = next
-        val recipient = vault.recipient ?: return@withLock
         try {
-            withContext(Dispatchers.IO) { store.write(recipient, next) }
+            withContext(Dispatchers.IO) { vault.sealing { recipient -> store.write(recipient, next) } }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

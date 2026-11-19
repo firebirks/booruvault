@@ -99,7 +99,7 @@ class VaultTest {
         val vault = VaultManager(root, json)
         vault.create("first".toCharArray(), fastKdf)
         val store = VaultStore(root, vault, json, scope)
-        val rekeyer = VaultRekeyer(root, vault, store, scope)
+        val rekeyer = VaultRekeyer(root, vault, scope)
         val data = Random(1).nextBytes(10_000)
         add(store, data, "a")
         awaitItems(store, 1)
@@ -140,7 +140,7 @@ class VaultTest {
         val vault = VaultManager(root, json)
         vault.create("first".toCharArray(), fastKdf)
         val store = VaultStore(root, vault, json, scope)
-        val rekeyer = VaultRekeyer(root, vault, store, scope)
+        val rekeyer = VaultRekeyer(root, vault, scope)
         // Enough files for a pass to take a while, so that a write can land while one runs.
         val media = File(root, "media").apply { mkdirs() }
         repeat(800) { n -> SealedOutputStream(File(media, store.newId()).outputStream(), vault.recipient!!).use { it.write(n) } }
@@ -191,7 +191,7 @@ class VaultTest {
         val restarted = VaultManager(root, json)
         assertTrue(restarted.rekeyPending.value)
         val restartedStore = VaultStore(root, restarted, json, scope)
-        val rekeyer = VaultRekeyer(root, restarted, restartedStore, scope)
+        val rekeyer = VaultRekeyer(root, restarted, scope)
         assertTrue(restarted.unlock("second".toCharArray()))
         awaitItems(restartedStore, 3)
         withTimeout(20_000) { restarted.rekeyPending.first { !it } }
@@ -215,7 +215,7 @@ class VaultTest {
         val vault = VaultManager(root, json)
         vault.create("first".toCharArray(), fastKdf)
         val store = VaultStore(root, vault, json, scope)
-        VaultRekeyer(root, vault, store, scope)
+        VaultRekeyer(root, vault, scope)
         val data = Random(2).nextBytes(10_000)
         add(store, data, "a")
         awaitItems(store, 1)
@@ -267,7 +267,7 @@ class VaultTest {
         val vault = VaultManager(root, json)
         vault.create("first".toCharArray(), fastKdf)
         val store = VaultStore(root, vault, json, scope)
-        VaultRekeyer(root, vault, store, scope)
+        VaultRekeyer(root, vault, scope)
         add(store, Random(3).nextBytes(200_000), "a")
         awaitItems(store, 1)
         // It opens, as its first chunk is sound, but cannot be read to the end under any key.
@@ -409,7 +409,7 @@ class VaultTest {
         assertTrue(unpadded.moveOver(media))
         assertEquals(1.toByte(), SealedFormat.versionOf(media))
 
-        VaultRekeyer(root, vault, store, scope)
+        VaultRekeyer(root, vault, scope)
         withTimeout(20_000) {
             while (SealedFormat.versionOf(media) != SealedFormat.VERSION) kotlinx.coroutines.delay(50)
             // The pass that left nothing behind says so, and the files are not looked over again.
@@ -446,7 +446,7 @@ class VaultTest {
         }
         cut.writeBytes(cut.readBytes().let { it.copyOf(it.size - 20_000) })
 
-        VaultRekeyer(root, vault, store, scope)
+        VaultRekeyer(root, vault, scope)
         withTimeout(20_000) {
             // The whole one is brought to the current format; the cut one cannot be, and does
             // not stand in the way of the marker that spares the scan from then on.
@@ -476,7 +476,7 @@ class VaultTest {
         // Cut within its header: its version still reads, and the file ends before the rest of it.
         cut.writeBytes(cut.readBytes().copyOf(12))
 
-        VaultRekeyer(root, vault, store, scope)
+        VaultRekeyer(root, vault, scope)
         withTimeout(20_000) {
             // The whole one is brought to the current format; the cut one ends where it ends at
             // every unlock, and must not stand in the way of the marker either.

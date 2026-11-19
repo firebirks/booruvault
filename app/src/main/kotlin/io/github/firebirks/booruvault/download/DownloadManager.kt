@@ -211,8 +211,7 @@ class DownloadManager(
      */
     private fun persist(onlyWhileLive: Boolean = false): SavedQueue {
         var queue: SavedQueue? = null
-        val recipient = vault.recipient
-        if (recipient != null) runCatching { saved.write(recipient) { if (onlyWhileLive && !live) null else snapshot().also { queue = it } } }
+        vault.sealing { recipient -> runCatching { saved.write(recipient) { if (onlyWhileLive && !live) null else snapshot().also { queue = it } } } }
         return queue ?: snapshot()
     }
 

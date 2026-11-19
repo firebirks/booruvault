@@ -278,12 +278,13 @@ class SecureCookieJar(
     }
 
     private fun save() {
-        val recipient = vault.recipient ?: return
         fun RouteJar.stored() = RouteCookies(cookies.filter { it.key() in kept }.map { it.toStored() }, userAgents.toMap())
-        runCatching {
-            store.write(recipient) {
-                synchronized(lock) {
-                    if (loaded) CookieState(direct = jars.getValue(Route.DIRECT).stored(), tor = jars.getValue(Route.TOR).stored()) else null
+        vault.sealing { recipient ->
+            runCatching {
+                store.write(recipient) {
+                    synchronized(lock) {
+                        if (loaded) CookieState(direct = jars.getValue(Route.DIRECT).stored(), tor = jars.getValue(Route.TOR).stored()) else null
+                    }
                 }
             }
         }

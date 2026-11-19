@@ -129,7 +129,7 @@ class AppContainer(private val context: Context) {
         .build()
 
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
-    val rekeyer = VaultRekeyer(vaultDir, vault, vaultStore, scope)
+    val rekeyer = VaultRekeyer(vaultDir, vault, scope)
     val transfer = VaultTransfer(context, vaultStore)
     val backups = BackupRunner(context, VaultBackup(vaultDir, vault, json), vault, scope) {
         ContextCompat.startForegroundService(context, Intent(context, BackupService::class.java))

@@ -123,6 +123,28 @@ class VaultManager(
     val recipient: Recipient?
         get() = header?.let { Recipient.fromEncoded(it.publicKey.fromBase64()) }
 
+    @PublishedApi
+    internal val sealingWrites = java.util.concurrent.atomic.AtomicInteger()
+
+    /** Writes sealing to the key they read as they began, not yet in place: see [sealing]. */
+    val writesInFlight: Int get() = sealingWrites.get()
+
+    /**
+     * Runs [write] with the key files are sealed to now, counted in [writesInFlight] from before
+     * the key is read until [write] returns, its file in place. After a password change,
+     * [VaultRekeyer] drops the retired pair only once none is left: one that read the old key
+     * could otherwise land after the re-keyer's last look, sealed to a key the vault no longer
+     * has. Every write of a sealed file goes through here. Null, with nothing run, without a vault.
+     */
+    inline fun <T> sealing(write: (Recipient) -> T): T? {
+        sealingWrites.incrementAndGet()
+        try {
+            return write(recipient ?: return null)
+        } finally {
+            sealingWrites.decrementAndGet()
+        }
+    }
+
     val keys: VaultKeys? get() = (_state.value as? VaultState.Unlocked)?.keys
 
     private val _biometric = MutableStateFlow(header?.biometricWrapped != null)
