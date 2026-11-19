@@ -25,7 +25,10 @@ object LibraryBuffers {
         val left = (0 until buckets).toMutableSet()
         while (left.isNotEmpty()) {
             val thread = Thread(::overwriteOwnBucket)
-            if (left.remove((thread.id and (buckets - 1L)).toInt())) {
+            // The id okio picks the bucket by: deprecated for threadId(), which okio does not use.
+            @Suppress("DEPRECATION")
+            val id = thread.id
+            if (left.remove((id and (buckets - 1L)).toInt())) {
                 thread.start()
                 thread.join()
             }

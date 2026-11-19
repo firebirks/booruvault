@@ -499,7 +499,7 @@ class TorRouteGuard(private val enabled: () -> Boolean, private val verified: ()
         // the check was on its way, it would otherwise name the app to the Tor Project from the
         // home address.
         if (!throughListener && (enabled() || exitCheck)) {
-            runCatching { connection!!.socket().close() }
+            runCatching { connection.socket().close() }
             throw TorUnreachableException(IOException(if (exitCheck) "the exit check does not go through Orbot" else "connection does not go through Orbot"))
         }
         if (enabled() && !verified() && !exitCheck) throw TorUnverifiedException()

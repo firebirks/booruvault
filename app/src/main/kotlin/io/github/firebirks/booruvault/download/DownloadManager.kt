@@ -865,15 +865,17 @@ internal const val CHECK_HOLDS_MS = 30 * 60 * 1000L
 internal suspend fun receive(input: InputStream, out: OutputStream, count: (Int) -> Unit): IOException? {
     val buffer = ByteArray(64 * 1024)
     try {
-        input.use {
+        return input.use {
+            var cut: IOException? = null
             while (true) {
                 currentCoroutineContext().ensureActive()
                 val n = try {
                     it.read(buffer)
                 } catch (e: IOException) {
-                    return e
+                    cut = e
+                    break
                 }
-                if (n < 0) return null
+                if (n < 0) break
                 try {
                     out.write(buffer, 0, n)
                 } catch (e: IOException) {
@@ -881,6 +883,7 @@ internal suspend fun receive(input: InputStream, out: OutputStream, count: (Int)
                 }
                 count(n)
             }
+            cut
         }
     } finally {
         buffer.fill(0)

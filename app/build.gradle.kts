@@ -14,7 +14,7 @@ val keystoreProperties: Properties? = rootProject.file("keystore.properties").ta
 
 android {
     namespace = "io.github.firebirks.booruvault"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "io.github.firebirks.booruvault"

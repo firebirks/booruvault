@@ -1,27 +1,23 @@
 [versions]
-agp = "9.3.2"
-kotlin = "2.4.10"
-# AndroidX is pinned to the newest set that still compiles against SDK 36; the releases after
-# these require compileSdk 37.
-composeBom = "2026.04.01"
-activityCompose = "1.12.0"
-lifecycle = "2.9.4"
-coreKtx = "1.16.0"
-fragment = "1.8.9"
+agp = "9.5.1"
+kotlin = "2.4.21"
+composeBom = "2026.09.00"
+activityCompose = "1.13.0"
+lifecycle = "2.11.0"
+coreKtx = "1.19.1"
+fragment = "1.9.1"
 biometric = "1.1.0"
 documentfile = "1.1.0"
 webkit = "1.18.0"
-media3 = "1.9.3"
+media3 = "1.11.1"
 materialIconsExtended = "1.7.8"
-# Coil 3.5+ pulls Compose 1.11.1+/1.12, which asks for compileSdk 37.
-coil = "3.4.0"
+coil = "3.6.3"
 telephoto = "0.19.0"
-# 5.5+ requires compileSdk 37.
-okhttp = "5.4.0"
-serialization = "1.12.0"
+okhttp = "5.5.1"
+serialization = "1.13.0"
 coroutines = "1.11.0"
-bouncycastle = "1.86"
-jsoup = "1.23.2"
+bouncycastle = "1.87"
+jsoup = "1.24.1"
 junit = "4.13.2"
 
 [libraries]

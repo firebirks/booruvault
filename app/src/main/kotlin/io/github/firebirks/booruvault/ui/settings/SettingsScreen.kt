@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -35,7 +36,6 @@ import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.RadioButton
@@ -491,13 +491,13 @@ private fun AboutPage() {
     ListItem(
         headlineContent = { Text(stringResource(R.string.settings_about_licence)) },
         supportingContent = { Text("GNU GPL v3") },
-        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+        trailingContent = { Icon(Icons.AutoMirrored.Outlined.OpenInNew, null) },
         modifier = Modifier.clickable { links.open("https://www.gnu.org/licenses/gpl-3.0.html") },
     )
     ListItem(
         headlineContent = { Text(stringResource(R.string.settings_about_source)) },
         supportingContent = { Text(stringResource(R.string.settings_about_source_hint)) },
-        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+        trailingContent = { Icon(Icons.AutoMirrored.Outlined.OpenInNew, null) },
         modifier = Modifier.clickable { links.open(SOURCE_URL) },
     )
     SectionHeader(stringResource(R.string.settings_about_libraries))
@@ -511,7 +511,7 @@ private fun AboutPage() {
         ListItem(
             headlineContent = { Text(library.name) },
             supportingContent = { Text("${library.author} · ${library.licence}") },
-            trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+            trailingContent = { Icon(Icons.AutoMirrored.Outlined.OpenInNew, null) },
             modifier = Modifier.clickable { links.open(library.url) },
         )
     }

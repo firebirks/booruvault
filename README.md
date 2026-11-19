@@ -180,7 +180,7 @@ Tor hides where you connect from, not who you are. To every site you are not log
 
 Requirements:
 - JDK 17;
-- Android SDK with platform 36.
+- Android SDK with platform 37 (`platforms;android-37.0`).
 
 ```sh
 ./gradlew assembleDebug        # app/build/outputs/apk/debug/app-debug.apk
@@ -191,7 +191,7 @@ Requirements:
 
 `tools/webrtc-probe/run.sh` checks on a phone over adb that the built-in browsers' script still keeps WebRTC out of every frame a page can reach; run it when the phone's WebView updates and after any change to the script. See [its README](tools/webrtc-probe/README.md).
 
-- **SDK and version pins:** `minSdk` is 26 (Android 8), `compileSdk`/`targetSdk` is 36. Several dependencies are held at the last version that compiles against SDK 36 (OkHttp 5.4, Coil 3.4, the Compose BOM). See the notes in `gradle/libs.versions.toml`.
+- **SDK and versions:** `minSdk` is 26 (Android 8), `compileSdk` is 37 and `targetSdk` 36: the app is built against Android 17's SDK, which the current libraries ask for, and still targets Android 16, so Android 17's changes of behaviour do not apply to it yet. The versions are in `gradle/libs.versions.toml`.
 - **Stack:** Kotlin, Jetpack Compose with Material 3, OkHttp, kotlinx.serialization, Coil 3 with Telephoto, Media3, jsoup, BouncyCastle (Argon2 only), androidx.biometric and androidx.webkit.
 
 ## Releasing

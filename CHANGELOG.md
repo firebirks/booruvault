@@ -6,6 +6,9 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 
 ## [Unreleased]
 
+### Changed
+- Built against Android 17's SDK (compileSdk 37), which the current libraries ask for, with them brought up to date: OkHttp 5.5, Coil 3.6, the Compose BOM 2026.09, AndroidX Core 1.19, Activity 1.13, Lifecycle 2.11, Fragment 1.9, Media3 1.11, kotlinx.serialization 1.13, BouncyCastle 1.87 and jsoup 1.24; the build itself on Gradle 9.9, the Android Gradle plugin 9.5 and Kotlin 2.4.21. The app still targets Android 16.
+
 ### Fixed
 - A few texts agree with their number in every language: a password's least length, the files re-sealed after a password change, the files of an export that stopped short, and the posts a search being collected has found. They were written for one number, as in "8 characters", and read wrongly for others in Russian, Polish, Ukrainian and Arabic above all.
 - The sweep of temporary files that a write cut short left in the vault's folder, at start, waits for a save under way to put its file in place instead of deleting the copy it is writing.
