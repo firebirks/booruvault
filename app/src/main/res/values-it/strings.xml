@@ -4,6 +4,7 @@
     <string name="problem_timeout">Il sito ci ha messo troppo a rispondere: riprova.</string>
     <string name="problem_tor_unreachable">Tor non raggiungibile: controlla che Orbot sia attivo.</string>
     <string name="problem_tor_dns_blocked">Risoluzione DNS locale bloccata: con Tor attivo i nomi si risolvono solo attraverso Tor.</string>
+    <string name="problem_onion_needs_tor">Un indirizzo onion si raggiunge solo tramite Tor: attiva Tor per aprirlo.</string>
     <string name="problem_tor_unverified">Uscita Tor non ancora verificata: controllo che le connessioni escano davvero via Tor.</string>
     <string name="problem_challenge">Il sito chiede una verifica anti-bot (Cloudflare): tocca «Verifica nel browser» per superarla.</string>
     <string name="problem_challenge_pass_refused">La verifica è stata superata, ma il sito la chiede di nuovo quando l\'app scarica questo file: una verifica superata nel browser non vale per i download, quindi ripeterla non serve.</string>

@@ -4,6 +4,7 @@
     <string name="problem_timeout">Situs terlalu lama menjawab: coba lagi.</string>
     <string name="problem_tor_unreachable">Tor tidak dapat dijangkau: pastikan Orbot sedang berjalan.</string>
     <string name="problem_tor_dns_blocked">Pencarian DNS lokal diblokir: saat Tor aktif, nama domain hanya diterjemahkan melalui Tor.</string>
+    <string name="problem_onion_needs_tor">Alamat onion hanya bisa dijangkau melalui Tor: aktifkan Tor untuk membukanya.</string>
     <string name="problem_tor_unverified">Keluaran Tor belum diverifikasi: memeriksa bahwa koneksi benar-benar keluar lewat Tor.</string>
     <string name="problem_challenge">Situs meminta pemeriksaan anti-bot (Cloudflare): ketuk “Verifikasi di browser” untuk menyelesaikannya.</string>
     <string name="problem_challenge_pass_refused">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi saat aplikasi mengunduh file ini: pemeriksaan yang diselesaikan di browser tidak berlaku untuk unduhan, jadi mengulanginya tidak akan membantu.</string>

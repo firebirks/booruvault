@@ -5,6 +5,7 @@
     <string name="problem_timeout">The site took too long to answer: try again.</string>
     <string name="problem_tor_unreachable">Tor is unreachable: check that Orbot is running.</string>
     <string name="problem_tor_dns_blocked">Local DNS lookup blocked: with Tor on, names are resolved only through Tor.</string>
+    <string name="problem_onion_needs_tor">An onion address can be reached only through Tor: turn Tor on to open it.</string>
     <string name="problem_tor_unverified">Tor exit not verified yet: checking that connections really leave through Tor.</string>
     <string name="problem_challenge">The site asks for an anti-bot check (Cloudflare): tap “Verify in the browser” to pass it.</string>
     <string name="problem_challenge_pass_refused">The check was passed, but the site asks for it again when the app downloads this file: a check passed in the browser does not count for downloads, so passing it again will not help.</string>

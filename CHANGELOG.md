@@ -14,6 +14,8 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
 
 ### Fixed
+- With Tor off, an onion address is refused, by the app and the built-in browser alike, and says that it needs Tor, instead of being asked of the network's resolver.
+- A board served over plain http is sent the cookies brought back from the built-in browser: they were all kept as https only, so a login or a passed check never reached it.
 - An image or GIF opened from the vault is decrypted as it is decoded, instead of whole into memory first: a very large one no longer ends the app for want of memory.
 - A vault header altered to ask Argon2 for more memory than the phone gives the app, though no more than the ceiling allows, makes the unlock say the vault cannot be opened, instead of ending the app.
 - A download whose transfer ends without a word short of the length its host announced, as an HTTP/2 stream may, is taken for cut, and taken up where it stopped or reported, instead of being saved cut short for good.

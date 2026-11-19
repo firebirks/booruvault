@@ -4,6 +4,7 @@
     <string name="problem_timeout">Сайт надто довго не відповідав: спробуйте ще раз.</string>
     <string name="problem_tor_unreachable">Tor недоступний: перевірте, чи запущено Orbot.</string>
     <string name="problem_tor_dns_blocked">Локальний DNS-запит заблоковано: коли Tor увімкнено, імена визначаються лише через Tor.</string>
+    <string name="problem_onion_needs_tor">Адреса onion доступна лише через Tor: увімкніть Tor, щоб відкрити її.</string>
     <string name="problem_tor_unverified">Вихід Tor ще не перевірено: перевіряється, чи з\'єднання справді виходять через Tor.</string>
     <string name="problem_challenge">Сайт вимагає антибот-перевірку (Cloudflare): натисніть «Пройти перевірку в браузері», щоб пройти її.</string>
     <string name="problem_challenge_pass_refused">Перевірку пройдено, але сайт знову вимагає її, коли застосунок завантажує цей файл: перевірка, пройдена в браузері, не діє для завантажень, тож повторювати її марно.</string>

@@ -4,6 +4,7 @@
     <string name="problem_timeout">Die Website hat zu lange nicht geantwortet: versuch es noch einmal.</string>
     <string name="problem_tor_unreachable">Tor ist nicht erreichbar: Prüfe, ob Orbot läuft.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-Abfrage blockiert: Mit aktivem Tor werden Namen nur über Tor aufgelöst.</string>
+    <string name="problem_onion_needs_tor">Eine Onion-Adresse ist nur über Tor erreichbar: Schalte Tor ein, um sie zu öffnen.</string>
     <string name="problem_tor_unverified">Tor-Ausgang noch nicht geprüft: es wird geprüft, ob Verbindungen wirklich über Tor hinausgehen.</string>
     <string name="problem_challenge">Die Website verlangt eine Anti-Bot-Prüfung (Cloudflare): Tippe auf „Im Browser prüfen“, um sie zu bestehen.</string>
     <string name="problem_challenge_pass_refused">Die Prüfung wurde bestanden, aber die Website verlangt sie erneut, wenn die App diese Datei herunterlädt: Eine im Browser bestandene Prüfung gilt nicht für Downloads, ein erneuter Versuch hilft daher nicht.</string>

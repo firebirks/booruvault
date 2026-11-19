@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.Cookie
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.ByteArrayInputStream
 
@@ -121,15 +122,25 @@ object Challenge {
                 val name = part.substringBefore('=').trim()
                 val value = part.substringAfter('=', "").trim()
                 if (name.isEmpty()) return@forEach
-                runCatching {
-                    Cookie.Builder().name(name).value(value).path("/").expiresAt(expires).secure()
-                        .apply { if (name == CLEARANCE_COOKIE) domain(site) else hostOnlyDomain(host) }
-                        .build()
-                }.getOrNull()?.let { found["$name|${it.domain}"] = it }
+                browserCookie(name, value, httpUrl, site, expires)?.let { found["$name|${it.domain}"] = it }
             }
         }
         return found.values.toList()
     }
+
+    /**
+     * The cookie [name] that the built-in browser holds for [url] of [site], as the app keeps it:
+     * see [cookiesFor]. Secure when the page was, so that a board served over plain http is sent
+     * back what it set, as a browser would send it.
+     */
+    internal fun browserCookie(name: String, value: String, url: HttpUrl, site: String, expires: Long): Cookie? = runCatching {
+        Cookie.Builder().name(name).value(value).path("/").expiresAt(expires)
+            .apply {
+                if (url.isHttps) secure()
+                if (name == CLEARANCE_COOKIE) domain(site) else hostOnlyDomain(url.host.lowercase())
+            }
+            .build()
+    }.getOrNull()
 
     const val CLEARANCE_COOKIE = "cf_clearance"
     private const val KEEP_DAYS = 30L

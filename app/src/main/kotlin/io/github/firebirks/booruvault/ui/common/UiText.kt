@@ -52,6 +52,7 @@ fun Context.problemText(problem: Problem): String {
         Problem.Code.TIMEOUT -> getString(R.string.problem_timeout)
         Problem.Code.TOR_UNREACHABLE -> getString(R.string.problem_tor_unreachable)
         Problem.Code.TOR_DNS_BLOCKED -> getString(R.string.problem_tor_dns_blocked)
+        Problem.Code.ONION_NEEDS_TOR -> getString(R.string.problem_onion_needs_tor)
         Problem.Code.TOR_UNVERIFIED -> getString(R.string.problem_tor_unverified)
         Problem.Code.CHALLENGE -> getString(R.string.problem_challenge)
         Problem.Code.CHALLENGE_PASS_REFUSED -> getString(R.string.problem_challenge_pass_refused)

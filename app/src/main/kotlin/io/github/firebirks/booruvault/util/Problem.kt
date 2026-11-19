@@ -15,6 +15,8 @@ data class Problem(val code: Code, val detail: String? = null) {
         TIMEOUT,
         TOR_UNREACHABLE,
         TOR_DNS_BLOCKED,
+        /** An onion address asked for with Tor off: only Tor knows the way to it. */
+        ONION_NEEDS_TOR,
         TOR_UNVERIFIED,
         CHALLENGE,
         CHALLENGE_PASS_REFUSED,

@@ -4,6 +4,7 @@
     <string name="problem_timeout">استغرق الموقع وقتًا طويلًا للرد: حاول مرة أخرى.</string>
     <string name="problem_tor_unreachable">يتعذّر الوصول إلى Tor: تأكّد من أن Orbot قيد التشغيل.</string>
     <string name="problem_tor_dns_blocked">تم حظر استعلام DNS المحلي: عند تفعيل Tor، لا تُحَلّ أسماء النطاقات إلا عبر Tor.</string>
+    <string name="problem_onion_needs_tor">لا يمكن الوصول إلى عنوان onion إلا عبر Tor: فعّل Tor لفتحه.</string>
     <string name="problem_tor_unverified">لم يُتحقق من مخرج Tor بعد: يجري التأكد من أن الاتصالات تخرج فعلًا عبر Tor.</string>
     <string name="problem_challenge">يطلب الموقع تحققًا مضادًا للروبوتات (Cloudflare): انقر على «التحقق في المتصفح» لاجتيازه.</string>
     <string name="problem_challenge_pass_refused">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا عندما ينزّل التطبيق هذا الملف: التحقق الذي يُجتاز في المتصفح لا يسري على التنزيلات، لذا لن تفيد إعادته.</string>

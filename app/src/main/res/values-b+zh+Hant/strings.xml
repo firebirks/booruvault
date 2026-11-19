@@ -4,6 +4,7 @@
     <string name="problem_timeout">網站回應逾時：請再試一次。</string>
     <string name="problem_tor_unreachable">無法連上 Tor：請確認 Orbot 正在執行。</string>
     <string name="problem_tor_dns_blocked">已封鎖本機 DNS 查詢：開啟 Tor 時，網域名稱只會透過 Tor 解析。</string>
+    <string name="problem_onion_needs_tor">onion 位址只能透過 Tor 連線：請開啟 Tor 後再開啟。</string>
     <string name="problem_tor_unverified">Tor 出口尚未驗證：正在確認連線確實經由 Tor。</string>
     <string name="problem_challenge">網站要求進行防機器人驗證（Cloudflare）：請輕觸「在瀏覽器中驗證」完成驗證。</string>
     <string name="problem_challenge_pass_refused">驗證已通過，但應用程式下載此檔案時網站仍再次要求驗證：在瀏覽器中通過的驗證對下載無效，因此再驗證一次也無濟於事。</string>

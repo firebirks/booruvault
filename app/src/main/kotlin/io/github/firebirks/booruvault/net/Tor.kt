@@ -392,6 +392,9 @@ fun socks5Listening(port: Int, timeoutMs: Int = 1500): Boolean = runCatching {
 class TorAwareDns(private val enabled: () -> Boolean) : okhttp3.Dns {
     override fun lookup(hostname: String): List<java.net.InetAddress> {
         if (enabled() && !isIpLiteral(hostname)) throw TorDnsBlockedException(hostname)
+        // With Tor off an onion address leads nowhere, and asking the network's resolver for one
+        // would tell it which hidden service the phone was after.
+        if (isOnion(hostname)) throw OnionWithoutTorException(hostname)
         return okhttp3.Dns.SYSTEM.lookup(hostname)
     }
 
@@ -548,6 +551,15 @@ internal fun socksListenerLost(e: IOException): Boolean = when {
     e is SSLException -> false
     e is SocketException && e.message.orEmpty().startsWith("SOCKS") -> false
     else -> true
+}
+
+/** Whether [host] is an onion address, which only Tor can reach. */
+fun isOnion(host: String): Boolean = host.lowercase().trimEnd('.').endsWith(".onion")
+
+/** An onion address asked for with Tor off: only Tor knows the way, and no resolver is asked. */
+class OnionWithoutTorException(host: String) :
+    java.net.UnknownHostException("An onion address is reached only through Tor ($host)"), HasProblem {
+    override val problem = Problem(Problem.Code.ONION_NEEDS_TOR, host)
 }
 
 /** A local name lookup refused because Tor is on. */

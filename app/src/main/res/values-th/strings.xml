@@ -4,6 +4,7 @@
     <string name="problem_timeout">เว็บไซต์ใช้เวลาตอบนานเกินไป: ลองอีกครั้ง</string>
     <string name="problem_tor_unreachable">เชื่อมต่อ Tor ไม่ได้: ตรวจสอบว่า Orbot ทำงานอยู่</string>
     <string name="problem_tor_dns_blocked">บล็อกการค้นหา DNS ในเครื่องแล้ว: เมื่อเปิด Tor ชื่อโดเมนจะถูกแปลงผ่าน Tor เท่านั้น</string>
+    <string name="problem_onion_needs_tor">เข้าถึงที่อยู่ onion ได้ผ่าน Tor เท่านั้น เปิด Tor เพื่อเปิดที่อยู่นี้</string>
     <string name="problem_tor_unverified">ยังไม่ได้ยืนยันทางออก Tor: กำลังตรวจสอบว่าการเชื่อมต่อออกผ่าน Tor จริง</string>
     <string name="problem_challenge">เว็บไซต์ต้องการให้ผ่านการตรวจสอบป้องกันบอท (Cloudflare): แตะ “ตรวจสอบในเบราว์เซอร์” เพื่อผ่านการตรวจสอบ</string>
     <string name="problem_challenge_pass_refused">ผ่านการตรวจสอบแล้ว แต่เว็บไซต์ยังขอให้ตรวจสอบอีกเมื่อแอปดาวน์โหลดไฟล์นี้: การตรวจสอบที่ผ่านในเบราว์เซอร์ใช้กับการดาวน์โหลดไม่ได้ จึงไม่มีประโยชน์ที่จะทำซ้ำ</string>

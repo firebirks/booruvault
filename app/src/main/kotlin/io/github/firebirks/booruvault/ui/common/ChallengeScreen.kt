@@ -57,6 +57,7 @@ import io.github.firebirks.booruvault.net.PrivateWebView
 import io.github.firebirks.booruvault.net.Route
 import io.github.firebirks.booruvault.net.SecureCookieJar
 import io.github.firebirks.booruvault.net.TorUnverifiedException
+import io.github.firebirks.booruvault.net.OnionWithoutTorException
 import io.github.firebirks.booruvault.net.WebViewRoute
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
@@ -132,7 +133,7 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
     var webView by remember { mutableStateOf<WebView?>(null) }
     // Null while the proxy is being applied; a message if the browser must not open at all.
     var route by remember { mutableStateOf<Result<Route>?>(null) }
-    LaunchedEffect(Unit) { route = WebViewRoute.apply(container.tor) }
+    LaunchedEffect(Unit) { route = WebViewRoute.apply(container.tor, Uri.parse(request.url).host) }
     val browse = request.mode == ChallengeMode.BROWSE
     val exact = request.mode == ChallengeMode.ADDRESS
     val origin = remember(request.url) {
@@ -235,7 +236,13 @@ fun ChallengeScreen(request: ChallengeRequest, onClose: (solved: Boolean) -> Uni
                 }
                 ready.exceptionOrNull()?.let { failure ->
                     Text(
-                        stringResource(if (failure is TorUnverifiedException) R.string.browser_tor_unverified else R.string.browser_tor_unsupported),
+                        stringResource(
+                            when (failure) {
+                                is TorUnverifiedException -> R.string.browser_tor_unverified
+                                is OnionWithoutTorException -> R.string.problem_onion_needs_tor
+                                else -> R.string.browser_tor_unsupported
+                            },
+                        ),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp),
                     )

@@ -4,6 +4,7 @@
     <string name="problem_timeout">Trang web phản hồi quá lâu: hãy thử lại.</string>
     <string name="problem_tor_unreachable">Không kết nối được tới Tor: hãy kiểm tra xem Orbot có đang chạy không.</string>
     <string name="problem_tor_dns_blocked">Đã chặn tra cứu DNS cục bộ: khi bật Tor, tên miền chỉ được phân giải qua Tor.</string>
+    <string name="problem_onion_needs_tor">Chỉ có thể truy cập địa chỉ onion qua Tor: hãy bật Tor để mở.</string>
     <string name="problem_tor_unverified">Lối ra Tor chưa được xác minh: đang kiểm tra kết nối có thật sự đi ra qua Tor.</string>
     <string name="problem_challenge">Trang web yêu cầu kiểm tra chống bot (Cloudflare): nhấn “Xác minh trong trình duyệt” để hoàn tất.</string>
     <string name="problem_challenge_pass_refused">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu khi ứng dụng tải tệp này: kiểm tra đã vượt qua trong trình duyệt không áp dụng cho các lượt tải xuống, nên làm lại cũng không giúp được.</string>

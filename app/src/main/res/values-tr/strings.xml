@@ -4,6 +4,7 @@
     <string name="problem_timeout">Site yanıt vermekte çok gecikti: yeniden deneyin.</string>
     <string name="problem_tor_unreachable">Tor\'a ulaşılamıyor: Orbot\'un çalıştığından emin olun.</string>
     <string name="problem_tor_dns_blocked">Yerel DNS sorgusu engellendi: Tor açıkken adlar yalnızca Tor üzerinden çözümlenir.</string>
+    <string name="problem_onion_needs_tor">Onion adresine yalnızca Tor üzerinden ulaşılabilir: açmak için Tor\'u etkinleştirin.</string>
     <string name="problem_tor_unverified">Tor çıkışı henüz doğrulanmadı: bağlantıların gerçekten Tor üzerinden çıktığı denetleniyor.</string>
     <string name="problem_challenge">Site bir anti-bot doğrulaması (Cloudflare) istiyor: geçmek için “Tarayıcıda doğrula” düğmesine dokunun.</string>
     <string name="problem_challenge_pass_refused">Doğrulama geçildi ama uygulama bu dosyayı indirirken site onu yeniden istiyor: tarayıcıda geçilen doğrulama indirmeler için geçerli değil, bu yüzden yeniden denemek işe yaramaz.</string>

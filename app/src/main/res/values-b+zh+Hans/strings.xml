@@ -4,6 +4,7 @@
     <string name="problem_timeout">网站响应超时：请重试。</string>
     <string name="problem_tor_unreachable">无法连接 Tor：请检查 Orbot 是否正在运行。</string>
     <string name="problem_tor_dns_blocked">已阻止本地 DNS 查询：开启 Tor 后，域名只通过 Tor 解析。</string>
+    <string name="problem_onion_needs_tor">onion 地址只能通过 Tor 访问：请开启 Tor 后再打开。</string>
     <string name="problem_tor_unverified">Tor 出口尚未验证：正在确认连接确实经由 Tor。</string>
     <string name="problem_challenge">该网站要求进行反机器人验证（Cloudflare）：请点按“在浏览器中验证”完成验证。</string>
     <string name="problem_challenge_pass_refused">验证已通过，但应用下载此文件时网站仍再次要求验证：在浏览器中通过的验证对下载无效，因此再验证一次也无济于事。</string>

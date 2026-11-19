@@ -4,6 +4,7 @@
     <string name="problem_timeout">사이트 응답이 너무 오래 걸렸습니다. 다시 시도하세요.</string>
     <string name="problem_tor_unreachable">Tor에 연결할 수 없습니다. Orbot이 실행 중인지 확인하세요.</string>
     <string name="problem_tor_dns_blocked">로컬 DNS 조회가 차단되었습니다. Tor가 켜져 있으면 이름은 Tor를 통해서만 확인됩니다.</string>
+    <string name="problem_onion_needs_tor">onion 주소는 Tor를 통해서만 접속할 수 있습니다. 열려면 Tor를 켜세요.</string>
     <string name="problem_tor_unverified">Tor 출구가 아직 확인되지 않았습니다. 연결이 정말 Tor를 통해 나가는지 확인 중입니다.</string>
     <string name="problem_challenge">사이트에서 봇 방지 확인(Cloudflare)을 요구합니다. ‘브라우저에서 확인’을 눌러 완료하세요.</string>
     <string name="problem_challenge_pass_refused">확인을 완료했지만 앱이 이 파일을 다운로드할 때 사이트가 다시 확인을 요구합니다. 브라우저에서 완료한 확인은 다운로드에 적용되지 않으므로 다시 해도 소용없습니다.</string>

@@ -4,6 +4,7 @@
     <string name="problem_timeout">De site deed er te lang over om te antwoorden: probeer het opnieuw.</string>
     <string name="problem_tor_unreachable">Tor is niet bereikbaar: controleer of Orbot actief is.</string>
     <string name="problem_tor_dns_blocked">Lokale DNS-opzoeking geblokkeerd: met Tor aan worden namen alleen via Tor omgezet.</string>
+    <string name="problem_onion_needs_tor">Een onion-adres is alleen via Tor bereikbaar: zet Tor aan om het te openen.</string>
     <string name="problem_tor_unverified">Tor-uitgang nog niet gecontroleerd: er wordt gecontroleerd of verbindingen echt via Tor naar buiten gaan.</string>
     <string name="problem_challenge">De site vraagt om een anti-botcontrole (Cloudflare): tik op ‘Controleren in browser’ om die te doorstaan.</string>
     <string name="problem_challenge_pass_refused">De controle is doorstaan, maar de site vraagt er opnieuw om wanneer de app dit bestand downloadt: een controle die in de browser is doorstaan, geldt niet voor downloads, dus opnieuw proberen helpt niet.</string>

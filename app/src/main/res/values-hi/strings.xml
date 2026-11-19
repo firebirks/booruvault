@@ -4,6 +4,7 @@
     <string name="problem_timeout">साइट ने जवाब देने में बहुत देर लगाई: फिर से कोशिश करें।</string>
     <string name="problem_tor_unreachable">Tor तक नहीं पहुंचा जा सका: जांचें कि Orbot चल रहा है।</string>
     <string name="problem_tor_dns_blocked">लोकल DNS लुकअप ब्लॉक किया गया: Tor चालू होने पर नाम केवल Tor के ज़रिए रिज़ॉल्व होते हैं।</string>
+    <string name="problem_onion_needs_tor">onion पता केवल Tor के ज़रिए खोला जा सकता है: इसे खोलने के लिए Tor चालू करें।</string>
     <string name="problem_tor_unverified">Tor निकास अभी सत्यापित नहीं: जाँच हो रही है कि कनेक्शन सच में Tor से बाहर जाते हैं।</string>
     <string name="problem_challenge">साइट एंटी-बॉट जांच (Cloudflare) मांग रही है: इसे पूरा करने के लिए “ब्राउज़र में जांचें” पर टैप करें।</string>
     <string name="problem_challenge_pass_refused">जांच पूरी हो गई थी, लेकिन ऐप के यह फ़ाइल डाउनलोड करते समय साइट इसे फिर मांग रही है: ब्राउज़र में पूरी की गई जांच डाउनलोड पर लागू नहीं होती, इसलिए इसे दोबारा करने से कोई फ़ायदा नहीं होगा।</string>

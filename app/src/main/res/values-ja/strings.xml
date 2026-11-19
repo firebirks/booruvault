@@ -4,6 +4,7 @@
     <string name="problem_timeout">サイトの応答に時間がかかりすぎました。もう一度お試しください。</string>
     <string name="problem_tor_unreachable">Tor に接続できません。Orbot が起動しているか確認してください。</string>
     <string name="problem_tor_dns_blocked">ローカルの DNS 解決をブロックしました。Tor がオンのときは、名前は Tor 経由でのみ解決されます。</string>
+    <string name="problem_onion_needs_tor">onion アドレスには Tor 経由でしかアクセスできません。開くには Tor をオンにしてください。</string>
     <string name="problem_tor_unverified">Tor の出口がまだ確認されていません。接続が本当に Tor 経由か確認中です。</string>
     <string name="problem_challenge">サイトがボット対策の確認（Cloudflare）を求めています。「ブラウザで確認」をタップして完了してください。</string>
     <string name="problem_challenge_pass_refused">確認は完了しましたが、アプリがこのファイルをダウンロードするとサイトが再び確認を求めます。ブラウザで完了した確認はダウンロードには適用されないため、もう一度行っても解決しません。</string>

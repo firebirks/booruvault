@@ -55,7 +55,7 @@ class HiddenBrowser(
         withContext(Dispatchers.Main) {
             val httpUrl = url.toHttpUrlOrNull() ?: throw BooruChallengeException(url)
             // With Tor on, a WebView that cannot be routed through it must not load anything.
-            val route = WebViewRoute.apply(tor).getOrElse { throw BooruChallengeException(url) }
+            val route = WebViewRoute.apply(tor, httpUrl.host).getOrElse { throw BooruChallengeException(url) }
             val origin = "${httpUrl.scheme}://${httpUrl.host}/"
             val site = SecureCookieJar.siteOf(httpUrl.host)
             val agent = cookies.userAgentFor(route, httpUrl.host) ?: Challenge.userAgent(context, null)

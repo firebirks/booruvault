@@ -13,9 +13,11 @@ object WebViewRoute {
      * belongs to that route. With Tor on, a WebView that cannot be proxied, or cannot have WebRTC
      * removed before page scripts run, is not opened at all: either would let traffic out around Tor.
      */
-    suspend fun apply(tor: TorManager): Result<Route> {
+    suspend fun apply(tor: TorManager, host: String? = null): Result<Route> {
         // Before the user has chosen a route, no page loads by either.
         if (!tor.routeChosen.value) return Result.failure(RouteNotChosenException())
+        // Directly, the WebView would ask the network's resolver for it, and get nowhere.
+        if (!tor.enabled && host != null && isOnion(host)) return Result.failure(OnionWithoutTorException(host))
         if (!tor.enabled) {
             if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
                 suspendCancellableCoroutine { cont ->
