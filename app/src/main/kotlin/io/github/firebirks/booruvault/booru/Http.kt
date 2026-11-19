@@ -54,19 +54,26 @@ object UserAgents {
         get() = "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/$chrome.0.0.0 Mobile Safari/537.36"
 
     /**
-     * The name for [source]'s site. e621 asks API clients for a name of their own, so for it the
-     * app's name and version ride along at the end. Not the account's, which e621 only suggests:
-     * the account already signs the API calls, and the name also goes with every image fetched
-     * without it. Danbooru boards get the app's name alone, without a version: Cloudflare on
-     * cdn.donmai.us puts a check in front of original files for a client that calls itself Chrome
-     * and is not, and lets one that names itself through. The built-in browser is a browser and
-     * says so on every site, as its name reaches every page and script it loads.
+     * The name for [source]'s site. e621 asks API clients for a name of their own, with the
+     * account's in it, so for it the app's name and version ride along at the end, and on a
+     * request [signed] with the account, as its API calls are, the account's name too, in the
+     * form e621 gives: "(by name on site)". Not on what goes out unsigned, images and files above
+     * all: the account would tag every one of them. Danbooru boards get the app's name alone,
+     * without a version: Cloudflare on cdn.donmai.us puts a check in front of original files for a
+     * client that calls itself Chrome and is not, and lets one that names itself through. The
+     * built-in browser is a browser and says so on every site, as its name reaches every page and
+     * script it loads.
      */
-    fun forSource(source: BooruSource?, webView: Boolean = false): String {
+    fun forSource(source: BooruSource?, webView: Boolean = false, signed: Boolean = false): String {
         if (webView) return this.webView
         return when (source?.engine) {
             BooruEngine.DANBOORU -> APP
-            BooruEngine.E621 -> "$browser $APP/${BuildConfig.VERSION_NAME}"
+            BooruEngine.E621 -> {
+                val own = "$browser $APP/${BuildConfig.VERSION_NAME}"
+                val login = source.login.filter { it in '!'..'~' && it != '(' && it != ')' }
+                val site = runCatching { java.net.URI(source.baseUrl.trim()).host }.getOrNull()?.lowercase()?.removePrefix("www.")
+                if (signed && login.isNotEmpty() && !site.isNullOrEmpty()) "$own (by $login on $site)" else own
+            }
             else -> browser
         }
     }

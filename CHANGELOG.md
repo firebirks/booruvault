@@ -7,6 +7,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ## [Unreleased]
 
 ### Changed
+- The API calls to an e621 or e926 board signed with an account name it in their User-Agent, as e621 asks of API clients and the README said: `(by <name> on e926.net)` after the app's name and version. Images and files, fetched without the account, still do not carry it.
 - The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
 
 ### Fixed

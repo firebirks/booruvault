@@ -7,11 +7,16 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-/** e621 / e926. Their API asks clients to name themselves; [UserAgents.forSource] does. */
+/** e621 / e926. Their API asks clients to name themselves, and the account; [UserAgents.forSource] does. */
 class E621Api(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
 
     override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
-        .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim(), Charsets.UTF_8)) }
+        .apply {
+            if (source.hasCredentials) {
+                header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim(), Charsets.UTF_8))
+                header("User-Agent", UserAgents.forSource(source, signed = true))
+            }
+        }
         .build()
 
     override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
