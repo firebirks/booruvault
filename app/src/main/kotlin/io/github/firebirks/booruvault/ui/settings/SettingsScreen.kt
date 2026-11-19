@@ -262,13 +262,13 @@ private fun ContentSettings() {
             val allowed = settings.allowedRatings
             when {
                 rating in allowed -> if (allowed.size > 1) scope.launch { repo.setRatings(allowed - rating) }
-                rating.adult && allowed.none { it.adult } -> adultAsked = rating
+                rating.asksAdultConsent(allowed) -> adultAsked = rating
                 else -> scope.launch { repo.setRatings(allowed + rating) }
             }
         },
     )
     adultAsked?.let { rating ->
-        AdultContentDialog(onDismiss = { adultAsked = null }) {
+        AdultContentDialog(rating, onDismiss = { adultAsked = null }) {
             adultAsked = null
             scope.launch { repo.setRatings(settings.allowedRatings + rating) }
         }
@@ -277,14 +277,18 @@ private fun ContentSettings() {
     BlacklistEditor(settings.blacklist) { container.scope.launch { repo.setBlacklist(it) } }
 }
 
-/** Questionable and explicit posts are for adults; the first of the two to be turned on asks. */
+/**
+ * Questionable and explicit posts are for adults, and so may be unrated ones: the first of the
+ * two adult ratings to be turned on asks, and so does Unrated while neither is on. See
+ * [Rating.asksAdultConsent].
+ */
 @Composable
-private fun AdultContentDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+private fun AdultContentDialog(rating: Rating, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = { Icon(Icons.Outlined.WarningAmber, null, tint = MaterialTheme.colorScheme.error) },
         title = { Text(stringResource(R.string.adult_confirm_title)) },
-        text = { Text(stringResource(R.string.adult_confirm_text)) },
+        text = { Text(stringResource(if (rating == Rating.UNKNOWN) R.string.adult_confirm_text_unrated else R.string.adult_confirm_text)) },
         confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.adult_confirm)) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
     )

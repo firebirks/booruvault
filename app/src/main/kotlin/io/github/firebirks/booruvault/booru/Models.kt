@@ -16,6 +16,19 @@ enum class Rating {
 
     /** Meant for adults: shown only after the user has confirmed being one. */
     val adult: Boolean get() = this == QUESTIONABLE || this == EXPLICIT
+
+    /**
+     * Turned on only once the user has confirmed being an adult: the adult ratings, and Unrated,
+     * which on a site that gives no ratings lets its explicit posts through with the rest.
+     */
+    val needsAdultConsent: Boolean get() = adult || this == UNKNOWN
+
+    /**
+     * Whether turning this rating on, with [allowed] on, first asks the user to confirm being an
+     * adult. An adult rating already on stands for that confirmation; Unrated on does not, since
+     * what it was turned on for, before it asked, need not have been adult content.
+     */
+    fun asksAdultConsent(allowed: Set<Rating>): Boolean = needsAdultConsent && this !in allowed && allowed.none { it.adult }
 }
 
 @Serializable
