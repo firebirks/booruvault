@@ -30,6 +30,9 @@ class DownloadService : Service() {
     private val scope = MainScope()
     private var observer: Job? = null
 
+    /** The last start asked of the service: see [finish]. */
+    private var lastStart = 0
+
     /** The notifications speak the language chosen in the app, like the screens. */
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(AppLanguage.wrap(newBase))
@@ -38,6 +41,7 @@ class DownloadService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        lastStart = startId
         ensureChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC else 0
         ServiceCompat.startForeground(this, PROGRESS_ID, progress(0, 0, true), type)
@@ -48,7 +52,10 @@ class DownloadService : Service() {
                     val counted = tasks.filter { it.status != DownloadStatus.CANCELLED }
                     val finished = counted.count { !it.active }
                     val collecting = batches.any { it.active }
-                    if (counted.none { it.active } && !collecting) {
+                    // Over only if it still is: work queued since this was emitted, on another
+                    // thread, has its own emission coming, and must not find the service gone.
+                    val idle = counted.none { it.active } && !collecting
+                    if (idle && downloads.tasks.value.none { it.active } && downloads.batches.value.none { it.active }) {
                         finish(counted.count { it.status == DownloadStatus.DONE }, counted.count { it.status == DownloadStatus.FAILED }, paused)
                     } else {
                         notify(PROGRESS_ID, progress(finished, counted.size, collecting))
@@ -74,7 +81,11 @@ class DownloadService : Service() {
         }
         observer?.cancel()
         observer = null
-        stopSelf()
+        // Only if no start came since the one served: work queued meanwhile has asked for the
+        // service again, and a service stopped under that request would leave Android waiting
+        // for a foreground it never gets, which it punishes by ending the app. That start puts
+        // it in the foreground again and watches anew.
+        stopSelfResult(lastStart)
     }
 
     private fun progress(finished: Int, total: Int, collecting: Boolean) = base()

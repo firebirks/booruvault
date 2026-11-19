@@ -52,6 +52,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
+import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -163,6 +164,13 @@ class DownloadManager(
     private var live = false
 
     /**
+     * Held while [live] is looked at and work is added on the strength of it, and while a lock
+     * empties the queue: a download queued on another thread between the two would otherwise land
+     * in the emptied list and go out behind a locked vault the user did not allow it to run behind.
+     */
+    private val liveLock = Any()
+
+    /**
      * What downloads need from the settings, copied while unlocked: once the vault locks the
      * settings themselves are gone, and downloads allowed to go on still need these.
      */
@@ -216,32 +224,38 @@ class DownloadManager(
     }
 
     private fun suspendForLock() {
-        if (!live) return
-        if (policy.downloadWhileLocked && hasWork()) {
-            // Allowed to go on: the queue stays in memory until it drains, then it is dropped.
-            runningLocked = true
-            persist()
-            return
+        synchronized(liveLock) {
+            if (!live) return
+            if (policy.downloadWhileLocked && hasWork()) {
+                // Allowed to go on: the queue stays in memory until it drains, then it is dropped.
+                runningLocked = true
+                persist()
+            } else {
+                live = false
+                val queue = persist()
+                stopAll(queue)
+                // Keep only the switch: everything else from the settings goes with the lock.
+                policyReady.value = false
+                policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
+                _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null && !it.stopped }
+            }
         }
-        live = false
-        val queue = persist()
-        stopAll(queue)
-        // Keep only the switch: everything else from the settings goes with the lock.
-        policyReady.value = false
-        policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
-        _paused.value = queue.tasks.count { it.status == DownloadStatus.QUEUED } + queue.batches.count { it.problem == null && !it.stopped }
-        onLockedWorkDone()
+        // What was left to run may have finished while the lock was being decided, its last
+        // word on draining lost before there was anything to drain: looked at again.
+        if (runningLocked) drainedWhileLocked() else onLockedWorkDone()
     }
 
     /** The last download behind a locked vault finished: seal what is left and forget it. */
     private fun drainedWhileLocked() {
-        if (!runningLocked || hasWork() || vault.state.value is VaultState.Unlocked) return
-        runningLocked = false
-        live = false
-        stopAll(persist())
-        policyReady.value = false
-        policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
-        _paused.value = 0
+        synchronized(liveLock) {
+            if (!runningLocked || hasWork() || vault.state.value is VaultState.Unlocked) return
+            runningLocked = false
+            live = false
+            stopAll(persist())
+            policyReady.value = false
+            policy = AppSettings(downloadWhileLocked = policy.downloadWhileLocked)
+            _paused.value = 0
+        }
         onLockedWorkDone()
     }
 
@@ -272,17 +286,21 @@ class DownloadManager(
     private fun previewIdOf(saved: SavedTask): String = saved.previewId?.takeIf(VaultStore.ID::matches) ?: UUID.randomUUID().toString()
 
     private fun restore(state: VaultState.Unlocked) {
-        runningLocked = false
-        // Still running from before the lock: the queue in memory is current.
-        if (live) return
+        synchronized(liveLock) {
+            runningLocked = false
+            // Still running from before the lock: the queue in memory is current.
+            if (live) return
+        }
         val queue = saved.read(state.keys) ?: SavedQueue()
-        live = true
+        synchronized(liveLock) { live = true }
         _paused.value = 0
         val stoppedTasks = queue.tasks.filter { it.status == DownloadStatus.FAILED || it.status == DownloadStatus.CANCELLED }
             .map { DownloadTask(keys.incrementAndGet(), it.post, it.source, it.status, problem = it.problem, previewId = previewIdOf(it)) }
         _tasks.update { it + stoppedTasks }
-        queue.tasks.filter { it.status == DownloadStatus.QUEUED }.groupBy { it.source }.forEach { (source, list) ->
-            enqueue(list.map { it.post }, source, list.associate { it.post.id to previewIdOf(it) })
+        // In the order they were queued, one run of a source's rows at a time: grouped by source,
+        // the rows of one queued after those of another would start before them.
+        runsOf(queue.tasks.filter { it.status == DownloadStatus.QUEUED }) { it.source }.forEach { run ->
+            enqueue(run.map { it.post }, run.first().source, run.associate { it.post.id to previewIdOf(it) })
         }
         val (stopped, pending) = queue.batches.partition { it.problem != null || it.stopped }
         _batches.update { list ->
@@ -367,29 +385,33 @@ class DownloadManager(
 
     /** [previewIds]: post id → the id its row had before a lock, whose preview is still kept. */
     private fun enqueue(posts: List<Post>, source: BooruSource, previewIds: Map<Long, String>): Int {
-        if (!live) return 0
         val added = ArrayList<DownloadTask>()
-        _tasks.update { current ->
-            added.clear()
-            val taken = current.filter { it.status != DownloadStatus.FAILED && it.status != DownloadStatus.CANCELLED }
-                .mapTo(HashSet()) { it.source.id to it.post.id }
-            posts.filter { (source.id to it.id) !in taken }.distinctBy { it.id }.forEach {
-                val task = DownloadTask(keys.incrementAndGet(), it, source)
-                added += previewIds[it.id]?.let { id -> task.copy(previewId = id) } ?: task
+        synchronized(liveLock) {
+            if (!live) return 0
+            _tasks.update { current ->
+                added.clear()
+                val taken = current.filter { it.status != DownloadStatus.FAILED && it.status != DownloadStatus.CANCELLED }
+                    .mapTo(HashSet()) { it.source.id to it.post.id }
+                posts.filter { (source.id to it.id) !in taken }.distinctBy { it.id }.forEach {
+                    val task = DownloadTask(keys.incrementAndGet(), it, source)
+                    added += previewIds[it.id]?.let { id -> task.copy(previewId = id) } ?: task
+                }
+                current + added
             }
-            current + added
+            added.forEach(::launch)
         }
-        added.forEach(::launch)
         if (added.isNotEmpty()) startService()
         return added.size
     }
 
     /** Collects up to [max] results of a search, page by page, and queues them as they arrive. */
     fun downloadSearch(source: BooruSource, tags: String, max: Int, alreadyFound: Int = 0, startPage: Int = 1) {
-        if (!live) return
-        val batch = BatchJob(keys.incrementAndGet(), source, tags, max, alreadyFound, startPage)
-        _batches.update { it + batch }
-        collect(batch)
+        synchronized(liveLock) {
+            if (!live) return
+            val batch = BatchJob(keys.incrementAndGet(), source, tags, max, alreadyFound, startPage)
+            _batches.update { it + batch }
+            collect(batch)
+        }
     }
 
     /**
@@ -454,13 +476,15 @@ class DownloadManager(
 
     /** Takes up a stopped batch again from the page it could not read. */
     fun retryBatch(key: Long) {
-        if (!live) return
-        var resumed: BatchJob? = null
-        _batches.update { list ->
-            resumed = null
-            list.map { if (it.key == key && !it.active) it.copy(problem = null, stopped = false).also { again -> resumed = again } else it }
+        synchronized(liveLock) {
+            if (!live) return
+            var resumed: BatchJob? = null
+            _batches.update { list ->
+                resumed = null
+                list.map { if (it.key == key && !it.active) it.copy(problem = null, stopped = false).also { again -> resumed = again } else it }
+            }
+            resumed?.let(::collect)
         }
-        resumed?.let(::collect)
     }
 
     fun cancel(key: Long) {
@@ -479,9 +503,11 @@ class DownloadManager(
         if (task.status != DownloadStatus.FAILED && task.status != DownloadStatus.CANCELLED) return
         // A job still listed is a retry already under way, whatever status an older one left.
         if (jobs[key]?.isActive == true) return
-        if (!live) return
-        set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1, problem = null) }
-        launch(task)
+        synchronized(liveLock) {
+            if (!live) return
+            set(key) { it.copy(status = DownloadStatus.QUEUED, bytes = 0, total = -1, problem = null) }
+            launch(task)
+        }
         startService()
     }
 
@@ -625,7 +651,7 @@ class DownloadManager(
                             set(key) { it.copy(bytes = bytes) }
                         }
                     }
-                    var cut = receive(body.byteStream(), out, count)
+                    var cut = receive(body.byteStream(), out, count) ?: endedShort(done, total)
                     // Cut short by the network, with part of the file already sealed: the rest is
                     // asked for and sealed after it, rather than the whole file once more.
                     var gained = done
@@ -653,7 +679,7 @@ class DownloadManager(
                                     left++
                                     throw failure
                                 }
-                                receive(rest.body.byteStream(), out, count)
+                                receive(rest.body.byteStream(), out, count) ?: endedShort(done, total)
                             }
                         } catch (e: CancellationException) {
                             throw e
@@ -861,7 +887,25 @@ internal suspend fun receive(input: InputStream, out: OutputStream, count: (Int)
     }
 }
 
+/**
+ * A transfer that ended without a word short of the length its host announced, as an HTTP/2
+ * stream may: a cut like any other, to be taken up or reported. Taken for the whole file, it
+ * would be saved cut short and, being in the vault, never asked for again.
+ */
+internal fun endedShort(done: Long, total: Long): IOException? =
+    if (total in 0..<Long.MAX_VALUE && done < total) EOFException("the transfer ended at $done of $total bytes") else null
+
 /** The phone's storage refused part of a file being written to the vault: full, or failing. */
 class StorageWriteException(cause: IOException) : IOException(cause.message, cause), HasProblem {
     override val problem = Problem(Problem.Code.STORAGE_WRITE, cause.message ?: cause.javaClass.simpleName)
+}
+
+/** [items] cut into runs of one [key] each, in their order: a key met again starts a run anew. */
+internal fun <T> runsOf(items: List<T>, key: (T) -> Any?): List<List<T>> {
+    val runs = ArrayList<MutableList<T>>()
+    for (item in items) {
+        val last = runs.lastOrNull()
+        if (last != null && key(last.first()) == key(item)) last += item else runs += mutableListOf(item)
+    }
+    return runs
 }
