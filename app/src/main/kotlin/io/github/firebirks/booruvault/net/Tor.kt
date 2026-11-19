@@ -245,6 +245,22 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     }
 
     /**
+     * The app is in front again after [awayMs] away. Orbot's port is looked at again, and after
+     * [RECHECK_AFTER_MS] away the exit is checked again as well: a process that took the port
+     * while the app was not using it, with no moment the app saw it silent, answers as Orbot did,
+     * and only the check can tell them apart. Until it passes nothing leaves, as at start.
+     */
+    fun cameBack(awayMs: Long) {
+        if (!enabled) return
+        if (exitStale(awayMs)) {
+            listenerLosses.incrementAndGet()
+            _state.update { if (it.verifiedExit == null) it else it.copy(verifiedExit = null) }
+            lastVerifyAt = 0
+        }
+        refreshStatus()
+    }
+
+    /**
      * Waits, for a request the exit check held back, until the check has spoken: true once the
      * exit is verified, or Tor is switched off. False when there is nothing to wait for, see
      * [verdict], and after [timeoutMs]. The port is probed again meanwhile, which runs the check
@@ -327,6 +343,15 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
 
         /** The least time between two automatic checks, so a check that keeps failing does not loop. */
         private const val VERIFY_INTERVAL_MS = 10_000L
+
+        /**
+         * Away this long, the exit is checked again on the way back: as long as the auto-lock's
+         * default, so the check most often runs while the password is typed.
+         */
+        const val RECHECK_AFTER_MS = 5 * 60_000L
+
+        /** Whether [awayMs] away is long enough for the exit to be checked again; see [cameBack]. */
+        internal fun exitStale(awayMs: Long): Boolean = awayMs >= RECHECK_AFTER_MS
 
         /**
          * Whether the exit check should run now: Tor on, its port answering, no verdict yet, no

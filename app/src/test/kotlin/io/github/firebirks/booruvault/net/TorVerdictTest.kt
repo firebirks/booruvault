@@ -36,4 +36,12 @@ class TorVerdictTest {
         assertEquals(false, TorManager.speaksFor(verified, 9150, lossesThen = 3, lossesNow = 3))
         assertEquals(false, TorManager.speaksFor(verified.copy(enabled = false), 9050, lossesThen = 3, lossesNow = 3))
     }
+
+    @Test
+    fun `the exit is checked again only after a long absence`() {
+        assertEquals(false, TorManager.exitStale(0))
+        assertEquals(false, TorManager.exitStale(TorManager.RECHECK_AFTER_MS - 1))
+        assertEquals(true, TorManager.exitStale(TorManager.RECHECK_AFTER_MS))
+        assertEquals(true, TorManager.exitStale(60 * 60_000L))
+    }
 }

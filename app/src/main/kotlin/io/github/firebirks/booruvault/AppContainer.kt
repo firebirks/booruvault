@@ -1,6 +1,7 @@
 package io.github.firebirks.booruvault
 
 import android.content.Context
+import android.os.SystemClock
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
@@ -187,9 +188,17 @@ class AppContainer(private val context: Context) {
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(autoLock)
         // Orbot may have stopped while the app was away, with nothing asked of it since: its port
-        // is looked at again on the way back, and a silent one loses the verdict at once.
+        // is looked at again on the way back, and a silent one loses the verdict at once; after a
+        // long absence the exit is checked again too.
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStart(owner: LifecycleOwner) = tor.refreshStatus()
+            private var leftAt = 0L
+
+            override fun onStop(owner: LifecycleOwner) {
+                leftAt = SystemClock.elapsedRealtime()
+            }
+
+            override fun onStart(owner: LifecycleOwner) =
+                tor.cameBack(if (leftAt == 0L) 0 else SystemClock.elapsedRealtime() - leftAt)
         })
         // The names the app goes by carry the phone's Chrome version; the WebView knows it.
         scope.launch(Dispatchers.Main) { Challenge.learnChromeVersion(context) }

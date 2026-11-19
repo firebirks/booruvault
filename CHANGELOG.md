@@ -10,6 +10,9 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - The sweep of temporary files that a write cut short left in the vault's folder, at start, waits for a save under way to put its file in place instead of deleting the copy it is writing.
 - A filter of the vault saved as a collection holds what the filter showed. A word with a colon in it, as `re:zero`, which the filter finds inside tags as any word, was saved as an exact tag; and a filter saved while a collection was looked at made a collection of the whole vault, without that collection's terms.
 
+### Security
+- Back in front after five minutes away, the app has Tor's exit checked again before anything leaves, as at start. A process that took Orbot's port while the app was not using it, with no moment the app saw the port silent, answered as Orbot did and was trusted until the port was next found silent.
+
 ## [0.6.0] - 2026-11-19
 
 ### Changed
