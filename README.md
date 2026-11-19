@@ -180,7 +180,7 @@ Requirements:
 
 ```sh
 ./gradlew assembleDebug        # app/build/outputs/apk/debug/app-debug.apk
-./gradlew testDebugUnitTest    # JVM tests: crypto, vault, backup, sealed state, downloads, parsers, Tor routing
+./gradlew testDebugUnitTest    # JVM tests: crypto, vault, backup, sealed state, downloads, parsers, filters and queries, Tor routing
 ./gradlew lintDebug
 ./gradlew assembleRelease      # minified with R8; unsigned, no signing config is included
 ```
