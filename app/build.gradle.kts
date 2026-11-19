@@ -36,6 +36,11 @@ android {
     }
 
     buildTypes {
+        // Beside the release on the same phone, with a vault of its own: a debug build signed with
+        // another key could not update the release, and replacing it would take the vault with it.
+        debug {
+            applicationIdSuffix = ".debug"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

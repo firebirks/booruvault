@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Told apart from the release in the launcher and the recent apps. -->
+    <string name="app_name" translatable="false">BooruVault debug</string>
+</resources>
