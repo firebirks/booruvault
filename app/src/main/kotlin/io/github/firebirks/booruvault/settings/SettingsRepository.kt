@@ -69,9 +69,9 @@ data class AppSettings(
     val selectedSource: BooruSource?
         get() = sources.firstOrNull { it.id == selectedSourceId } ?: sources.firstOrNull()
 
-    val blacklistRules: List<Set<String>>
-        get() = blacklist.lines().map { line -> line.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }.map { it.lowercase() }.toSet() }
-            .filter { it.isNotEmpty() }
+    /** The blacklist's rules, one a line, each a query: see [allows]. */
+    val blacklistRules: List<String>
+        get() = blacklistLines(blacklist)
 }
 
 /**

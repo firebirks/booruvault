@@ -96,7 +96,7 @@
     <string name="settings_ratings_title">Ratings shown</string>
     <string name="settings_ratings_hint">Shimmie2 and plain web pages have no ratings: to see their posts, turn on “Unrated”.</string>
     <string name="settings_blacklist">Blacklist</string>
-    <string name="settings_blacklist_hint">One rule per line. A post is hidden when it has every tag of a rule, e.g. “gore” or “rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">One rule per line, written as a search: a post is hidden when it matches a whole rule. -tag excludes, ~tag marks alternatives, * stands for any letters, and rating:g, s, q, e or u names a rating. E.g. “gore”, “rating:e male -solo” or “*_focus”.</string>
     <string name="settings_grid_size">Grid size</string>
     <string name="settings_page_size">Results per page</string>
     <string name="settings_viewer_original">Originals in the viewer</string>

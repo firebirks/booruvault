@@ -95,7 +95,7 @@
     <string name="settings_ratings_title">Показувані рейтинги</string>
     <string name="settings_ratings_hint">Shimmie2 і звичайні вебсторінки не мають рейтингів: щоб бачити їхні дописи, увімкніть «Без рейтингу».</string>
     <string name="settings_blacklist">Чорний список</string>
-    <string name="settings_blacklist_hint">Одне правило на рядок. Допис приховується, якщо має всі теги правила, напр. «gore» або «rating:explicit male».</string>
+    <string name="settings_blacklist_hint">Одне правило на рядок, записане як пошук: допис приховується, якщо він відповідає правилу повністю. -tag виключає, ~tag позначає варіанти, * замінює будь-які символи, а rating:g, s, q, e або u вказує рейтинг. Напр. «gore», «rating:e male -solo» або «*_focus».</string>
     <string name="settings_grid_size">Розмір сітки</string>
     <string name="settings_page_size">Результатів на сторінці</string>
     <string name="settings_viewer_original">Оригінали в переглядачі</string>

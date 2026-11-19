@@ -99,7 +99,7 @@
     <string name="settings_ratings_title">التصنيفات المعروضة</string>
     <string name="settings_ratings_hint">لا تحتوي Shimmie2 وصفحات الويب العادية على تصنيفات: لرؤية منشوراتها، فعّل «بدون تصنيف».</string>
     <string name="settings_blacklist">القائمة السوداء</string>
-    <string name="settings_blacklist_hint">قاعدة واحدة في كل سطر. يُخفى المنشور عندما يحمل كل وسوم إحدى القواعد، مثل «gore» أو «rating:explicit male».</string>
+    <string name="settings_blacklist_hint">قاعدة واحدة في كل سطر، تُكتب كبحث: يُخفى المنشور عندما يطابق قاعدة كاملة. -tag يستبعد، و~tag يحدد البدائل، و* تحل محل أي حروف، وrating:g أو s أو q أو e أو u يحدد التصنيف. مثل «gore» أو «rating:e male -solo» أو «*_focus».</string>
     <string name="settings_grid_size">حجم الشبكة</string>
     <string name="settings_page_size">النتائج في كل صفحة</string>
     <string name="settings_viewer_original">الملفات الأصلية في العارض</string>

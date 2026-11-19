@@ -93,7 +93,7 @@
     <string name="settings_ratings_title">Clasificaciones visibles</string>
     <string name="settings_ratings_hint">Shimmie2 y las páginas web simples no tienen clasificación: para ver sus posts, activa “Sin clasificar”.</string>
     <string name="settings_blacklist">Lista negra</string>
-    <string name="settings_blacklist_hint">Una regla por línea. Un post se oculta cuando tiene todas las etiquetas de una regla, p. ej., “gore” o “rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">Una regla por línea, escrita como una búsqueda: un post se oculta cuando coincide con una regla entera. -tag excluye, ~tag marca alternativas, * sustituye a cualquier letra y rating:g, s, q, e o u indica una clasificación. P. ej., “gore”, “rating:e male -solo” o “*_focus”.</string>
     <string name="settings_grid_size">Tamaño de la cuadrícula</string>
     <string name="settings_page_size">Resultados por página</string>
     <string name="settings_viewer_original">Originales en el visor</string>

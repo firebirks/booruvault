@@ -93,7 +93,7 @@
     <string name="settings_ratings_title">Rating mostrati</string>
     <string name="settings_ratings_hint">Shimmie2 e le pagine web generiche non hanno rating: per vederle serve «Senza rating».</string>
     <string name="settings_blacklist">Blacklist</string>
-    <string name="settings_blacklist_hint">Una regola per riga. Un post è nascosto se ha tutti i tag di una regola, es. «gore» o «rating:explicit male».</string>
+    <string name="settings_blacklist_hint">Una regola per riga, scritta come una ricerca: un post è nascosto se corrisponde a una regola intera. -tag esclude, ~tag indica alternative, * sta per lettere qualsiasi e rating:g, s, q, e o u indica un rating. Es. «gore», «rating:e male -solo» o «*_focus».</string>
     <string name="settings_grid_size">Dimensione griglia</string>
     <string name="settings_page_size">Risultati per pagina</string>
     <string name="settings_viewer_original">Originali nel visualizzatore</string>

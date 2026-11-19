@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">เรตที่แสดง</string>
     <string name="settings_ratings_hint">Shimmie2 และหน้าเว็บธรรมดาไม่มีเรต: หากต้องการดูโพสต์จากแหล่งเหล่านี้ ให้เปิด “ไม่มีเรต”</string>
     <string name="settings_blacklist">บัญชีดำ</string>
-    <string name="settings_blacklist_hint">หนึ่งกฎต่อหนึ่งบรรทัด โพสต์จะถูกซ่อนเมื่อมีแท็กครบทุกแท็กของกฎใดกฎหนึ่ง เช่น “gore” หรือ “rating:explicit male”</string>
+    <string name="settings_blacklist_hint">หนึ่งกฎต่อหนึ่งบรรทัด เขียนแบบเดียวกับการค้นหา โพสต์จะถูกซ่อนเมื่อตรงกับกฎทั้งกฎ -tag คือไม่รวม ~tag คือทางเลือก * แทนตัวอักษรใดก็ได้ และ rating:g, s, q, e หรือ u ระบุเรต เช่น “gore”, “rating:e male -solo” หรือ “*_focus”</string>
     <string name="settings_grid_size">ขนาดตาราง</string>
     <string name="settings_page_size">ผลลัพธ์ต่อหน้า</string>
     <string name="settings_viewer_original">แสดงต้นฉบับในตัวดูภาพ</string>

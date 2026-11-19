@@ -38,6 +38,12 @@ class TagQueryTest {
         assertEquals(listOf("e"), ids("type:gif"))
         assertEquals(listOf("d"), ids("source:e621"))
         assertEquals(listOf("c"), ids("rating:sensitive"))
+        // Initials as the app labels the ratings: s is sensitive, and safe, in full, is general.
+        assertEquals(listOf("c"), ids("rating:s"))
+        assertEquals(listOf("a", "b", "d", "e"), ids("rating:g"))
+        assertEquals(listOf("a", "b", "d", "e"), ids("rating:safe"))
+        assertEquals(listOf("a", "b", "c", "d", "e"), ids("rating:g,s"))
+        assertEquals(emptyList<String>(), ids("rating:nonsense"))
         assertEquals(listOf("a", "b", "c", "e"), ids("-type:video"))
     }
 

@@ -91,7 +91,7 @@
     <string name="settings_ratings_title">Getoonde classificaties</string>
     <string name="settings_ratings_hint">Shimmie2 en gewone webpagina\'s hebben geen classificatie: zet ‘Niet geclassificeerd’ aan om hun posts te zien.</string>
     <string name="settings_blacklist">Zwarte lijst</string>
-    <string name="settings_blacklist_hint">Eén voorwaarde per regel. Een post wordt verborgen als hij alle tags van een voorwaarde heeft, bijv. ‘gore’ of ‘rating:explicit male’.</string>
+    <string name="settings_blacklist_hint">Eén voorwaarde per regel, geschreven als een zoekopdracht: een post wordt verborgen als hij aan een hele voorwaarde voldoet. -tag sluit uit, ~tag geeft alternatieven aan, * staat voor willekeurige letters en rating:g, s, q, e of u noemt een classificatie. Bijv. ‘gore’, ‘rating:e male -solo’ of ‘*_focus’.</string>
     <string name="settings_grid_size">Rastergrootte</string>
     <string name="settings_page_size">Resultaten per pagina</string>
     <string name="settings_viewer_original">Originelen in de viewer</string>

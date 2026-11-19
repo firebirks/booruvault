@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">표시할 등급</string>
     <string name="settings_ratings_hint">Shimmie2와 일반 웹 페이지에는 등급이 없습니다. 해당 게시물을 보려면 ‘등급 없음’을 켜세요.</string>
     <string name="settings_blacklist">블랙리스트</string>
-    <string name="settings_blacklist_hint">한 줄에 규칙 하나. 규칙의 태그를 모두 가진 게시물은 숨겨집니다. 예: ‘gore’ 또는 ‘rating:explicit male’.</string>
+    <string name="settings_blacklist_hint">한 줄에 규칙 하나, 검색처럼 씁니다. 규칙 전체와 일치하는 게시물은 숨겨집니다. -tag는 제외, ~tag는 대안, *는 임의의 글자, rating:g, s, q, e, u는 등급을 뜻합니다. 예: ‘gore’, ‘rating:e male -solo’, ‘*_focus’.</string>
     <string name="settings_grid_size">그리드 크기</string>
     <string name="settings_page_size">페이지당 결과 수</string>
     <string name="settings_viewer_original">뷰어에서 원본 표시</string>

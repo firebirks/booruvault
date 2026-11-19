@@ -95,7 +95,7 @@
     <string name="settings_ratings_title">Pokazywane klasyfikacje</string>
     <string name="settings_ratings_hint">Shimmie2 i zwykłe strony WWW nie mają klasyfikacji: aby zobaczyć ich posty, włącz „Bez klasyfikacji”.</string>
     <string name="settings_blacklist">Czarna lista</string>
-    <string name="settings_blacklist_hint">Jedna reguła w wierszu. Post jest ukrywany, gdy ma wszystkie tagi danej reguły, np. „gore” lub „rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">Jedna reguła w wierszu, zapisana jak wyszukiwanie: post jest ukrywany, gdy pasuje do całej reguły. -tag wyklucza, ~tag oznacza alternatywy, * zastępuje dowolne znaki, a rating:g, s, q, e lub u wskazuje klasyfikację. Np. „gore”, „rating:e male -solo” lub „*_focus”.</string>
     <string name="settings_grid_size">Rozmiar siatki</string>
     <string name="settings_page_size">Wyniki na stronę</string>
     <string name="settings_viewer_original">Oryginały w podglądzie</string>

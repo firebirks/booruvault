@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">表示するレーティング</string>
     <string name="settings_ratings_hint">Shimmie2 と通常のウェブページにはレーティングがありません。これらの投稿を表示するには「レーティングなし」をオンにしてください。</string>
     <string name="settings_blacklist">ブラックリスト</string>
-    <string name="settings_blacklist_hint">1 行に 1 つのルール。ルールのタグをすべて持つ投稿は非表示になります。例：「gore」「rating:explicit male」</string>
+    <string name="settings_blacklist_hint">1 行に 1 つのルールを検索と同じ書き方で記述します。ルール全体に一致する投稿は非表示になります。-tag は除外、~tag はいずれか、* は任意の文字、rating:g・s・q・e・u はレーティングを表します。例：「gore」「rating:e male -solo」「*_focus」</string>
     <string name="settings_grid_size">グリッドのサイズ</string>
     <string name="settings_page_size">1 ページあたりの件数</string>
     <string name="settings_viewer_original">ビューアでオリジナルを表示</string>

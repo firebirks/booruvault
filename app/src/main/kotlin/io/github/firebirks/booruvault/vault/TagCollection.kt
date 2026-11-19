@@ -1,5 +1,7 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.booru.MediaKind
+import io.github.firebirks.booruvault.booru.Post
 import io.github.firebirks.booruvault.booru.Rating
 import kotlinx.serialization.Serializable
 
@@ -8,20 +10,56 @@ import kotlinx.serialization.Serializable
 data class TagCollection(val id: String, val name: String, val query: String, val createdAt: Long = System.currentTimeMillis())
 
 /**
- * Booru-style queries over vault items. Terms are space-separated and all must hold:
- * `tag` (exact), `-term` excludes, `~tag` terms are alternatives of which at least one must
- * hold, and `type:video|gif|image`, `source:name`, `rating:<rating>` narrow. A term with `*` as
- * a wildcard matches a whole tag, the file name or the source.
+ * What a query is matched against: an item in the vault, or a post read from a site. A post has
+ * no file name, and its source is named only where the caller knows it.
+ */
+class QuerySubject(
+    val tags: List<String>,
+    val rating: Rating,
+    val kind: MediaKind,
+    val fileName: String? = null,
+    val sourceName: String? = null,
+)
+
+fun VaultItem.asSubject() = QuerySubject(
+    tags,
+    rating,
+    when {
+        isVideo -> MediaKind.VIDEO
+        isAnimated -> MediaKind.ANIMATED
+        else -> MediaKind.IMAGE
+    },
+    fileName,
+    sourceName,
+)
+
+fun Post.asSubject(sourceName: String? = null) = QuerySubject(tagNames, rating, kind, sourceName = sourceName)
+
+/**
+ * Booru-style queries, over vault items and over posts. Terms are space-separated and all must
+ * hold: `tag` (exact), `-term` excludes, `~tag` terms are alternatives of which at least one must
+ * hold, and `type:video|gif|image`, `source:name` and `rating:` narrow. A rating is named by its
+ * initial, as the app labels them (g, s, q, e, u: general, sensitive, questionable, explicit,
+ * unrated), or in full, and several are given with commas: `rating:q,e`; "safe" is general, as
+ * most boards call it. A term with `*` as a wildcard matches a whole tag, the file name or the
+ * source.
  *
  * The vault's filter box speaks the same language, [loose]ly: there a plain word is found inside
  * any tag, the file name or the source, so "land" finds "landscape" as one types. A filter
- * saved as a collection is [widened] first, so the collection holds what the filter showed.
+ * saved as a collection is [widened] first, so the collection holds what the filter showed. Each
+ * line of the blacklist is a query too, and hides the posts it matches: see [rule].
  */
 object TagQuery {
     fun matcher(query: String, loose: Boolean = false): (VaultItem) -> Boolean {
+        val match = rule(query, loose)
+        return { item -> match(item.asSubject()) }
+    }
+
+    /** [query] as a test of a post or an item; a query with no terms holds for everything. */
+    fun rule(query: String, loose: Boolean = false): (QuerySubject) -> Boolean {
         val terms = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.map { it.lowercase() }
-        val required = ArrayList<(VaultItem) -> Boolean>()
-        val alternatives = ArrayList<(VaultItem) -> Boolean>()
+        val required = ArrayList<(QuerySubject) -> Boolean>()
+        val alternatives = ArrayList<(QuerySubject) -> Boolean>()
         for (term in terms) {
             when {
                 term.startsWith('-') && term.length > 1 -> {
@@ -32,7 +70,7 @@ object TagQuery {
                 else -> required += term(term, loose)
             }
         }
-        return { item -> required.all { it(item) } && (alternatives.isEmpty() || alternatives.any { it(item) }) }
+        return { subject -> required.all { it(subject) } && (alternatives.isEmpty() || alternatives.any { it(subject) }) }
     }
 
     /**
@@ -45,43 +83,46 @@ object TagQuery {
         if (word.isEmpty() || ':' in word || '*' in word) term else "$prefix*$word*"
     }
 
-    private fun term(term: String, loose: Boolean): (VaultItem) -> Boolean = when {
+    private fun term(term: String, loose: Boolean): (QuerySubject) -> Boolean = when {
         term.startsWith("type:") -> when (term.removePrefix("type:")) {
-            "video" -> { item -> item.isVideo }
-            "gif" -> { item -> item.isAnimated }
-            "image" -> { item -> !item.isVideo && !item.isAnimated }
+            "video" -> { subject -> subject.kind == MediaKind.VIDEO }
+            "gif" -> { subject -> subject.kind == MediaKind.ANIMATED }
+            "image" -> { subject -> subject.kind == MediaKind.IMAGE }
             else -> { _ -> false }
         }
         term.startsWith("source:") -> {
             val name = term.removePrefix("source:")
-            ({ item -> item.sourceName?.lowercase()?.contains(name) == true })
+            ({ subject -> subject.sourceName?.lowercase()?.contains(name) == true })
         }
         term.startsWith("rating:") -> {
-            val rating = ratingOf(term.removePrefix("rating:"))
-            ({ item -> item.rating == rating })
+            val ratings = ratingsOf(term.removePrefix("rating:"))
+            ({ subject -> subject.rating in ratings })
         }
         '*' in term -> {
             val pattern = Regex(term.split('*').joinToString(".*") { Regex.escape(it) })
-            ({ item ->
-                item.tags.any { pattern.matches(it.lowercase()) } ||
-                    pattern.matches(item.fileName.lowercase()) ||
-                    item.sourceName?.lowercase()?.let(pattern::matches) == true
+            ({ subject ->
+                subject.tags.any { pattern.matches(it.lowercase()) } ||
+                    subject.fileName?.lowercase()?.let(pattern::matches) == true ||
+                    subject.sourceName?.lowercase()?.let(pattern::matches) == true
             })
         }
-        loose -> { item ->
-            item.tags.any { it.contains(term, ignoreCase = true) } ||
-                item.fileName.contains(term, ignoreCase = true) ||
-                item.sourceName?.contains(term, ignoreCase = true) == true
+        loose -> { subject ->
+            subject.tags.any { it.contains(term, ignoreCase = true) } ||
+                subject.fileName?.contains(term, ignoreCase = true) == true ||
+                subject.sourceName?.contains(term, ignoreCase = true) == true
         }
-        else -> { item -> item.tags.any { it.equals(term, ignoreCase = true) } }
+        else -> { subject -> subject.tags.any { it.equals(term, ignoreCase = true) } }
     }
 
+    /** The ratings [value] names, comma-separated; one it does not know names none. */
+    internal fun ratingsOf(value: String): Set<Rating> = value.split(',').mapNotNullTo(HashSet()) { ratingOf(it.trim()) }
+
     private fun ratingOf(value: String): Rating? = when (value) {
-        "g", "general", "s", "safe" -> Rating.GENERAL
-        "sensitive" -> Rating.SENSITIVE
+        "g", "general", "safe" -> Rating.GENERAL
+        "s", "sensitive" -> Rating.SENSITIVE
         "q", "questionable" -> Rating.QUESTIONABLE
         "e", "explicit" -> Rating.EXPLICIT
-        "unknown", "unrated" -> Rating.UNKNOWN
+        "u", "unknown", "unrated" -> Rating.UNKNOWN
         else -> null
     }
 }

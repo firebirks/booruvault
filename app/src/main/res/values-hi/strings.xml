@@ -91,7 +91,7 @@
     <string name="settings_ratings_title">दिखाई जाने वाली रेटिंग</string>
     <string name="settings_ratings_hint">Shimmie2 और सामान्य वेब पेजों में रेटिंग नहीं होती: उनकी पोस्ट देखने के लिए “बिना रेटिंग” चालू करें।</string>
     <string name="settings_blacklist">ब्लैकलिस्ट</string>
-    <string name="settings_blacklist_hint">हर लाइन में एक नियम। कोई पोस्ट तब छिपाई जाती है जब उसमें किसी नियम के सभी टैग हों, जैसे “gore” या “rating:explicit male”।</string>
+    <string name="settings_blacklist_hint">हर लाइन में एक नियम, खोज की तरह लिखा हुआ: कोई पोस्ट तब छिपाई जाती है जब वह किसी पूरे नियम से मेल खाए। -tag बाहर करता है, ~tag विकल्प बताता है, * किन्हीं भी अक्षरों की जगह लेता है और rating:g, s, q, e या u रेटिंग बताता है। जैसे “gore”, “rating:e male -solo” या “*_focus”।</string>
     <string name="settings_grid_size">ग्रिड का आकार</string>
     <string name="settings_page_size">हर पेज पर नतीजे</string>
     <string name="settings_viewer_original">व्यूअर में ओरिजिनल</string>

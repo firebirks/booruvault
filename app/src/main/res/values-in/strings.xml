@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">Rating yang ditampilkan</string>
     <string name="settings_ratings_hint">Shimmie2 dan halaman web biasa tidak memiliki rating: untuk melihat postingannya, aktifkan “Tanpa rating”.</string>
     <string name="settings_blacklist">Daftar hitam</string>
-    <string name="settings_blacklist_hint">Satu aturan per baris. Postingan disembunyikan jika memiliki semua tag dari suatu aturan, mis. “gore” atau “rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">Satu aturan per baris, ditulis seperti pencarian: postingan disembunyikan jika cocok dengan seluruh aturan. -tag mengecualikan, ~tag menandai alternatif, * menggantikan huruf apa pun, dan rating:g, s, q, e, atau u menyebut rating. Mis. “gore”, “rating:e male -solo”, atau “*_focus”.</string>
     <string name="settings_grid_size">Ukuran grid</string>
     <string name="settings_page_size">Hasil per halaman</string>
     <string name="settings_viewer_original">File asli di penampil</string>

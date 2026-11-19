@@ -91,7 +91,7 @@
     <string name="settings_ratings_title">Angezeigte Einstufungen</string>
     <string name="settings_ratings_hint">Shimmie2 und einfache Webseiten haben keine Einstufungen: Um ihre Posts zu sehen, aktiviere „Nicht eingestuft“.</string>
     <string name="settings_blacklist">Sperrliste</string>
-    <string name="settings_blacklist_hint">Eine Regel pro Zeile. Ein Post wird ausgeblendet, wenn er alle Tags einer Regel hat, z. B. „gore“ oder „rating:explicit male“.</string>
+    <string name="settings_blacklist_hint">Eine Regel pro Zeile, geschrieben wie eine Suche: Ein Post wird ausgeblendet, wenn er einer ganzen Regel entspricht. -tag schließt aus, ~tag kennzeichnet Alternativen, * steht für beliebige Zeichen und rating:g, s, q, e oder u nennt eine Einstufung. Z. B. „gore“, „rating:e male -solo“ oder „*_focus“.</string>
     <string name="settings_grid_size">Rastergröße</string>
     <string name="settings_page_size">Ergebnisse pro Seite</string>
     <string name="settings_viewer_original">Originale in der Ansicht</string>

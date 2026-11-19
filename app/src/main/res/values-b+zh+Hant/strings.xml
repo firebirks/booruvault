@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">顯示的分級</string>
     <string name="settings_ratings_hint">Shimmie2 和普通網頁沒有分級：如要查看它們的貼文，請開啟「未分級」。</string>
     <string name="settings_blacklist">黑名單</string>
-    <string name="settings_blacklist_hint">每行一條規則。貼文含有某條規則的所有標籤時就會被隱藏，例如「gore」或「rating:explicit male」。</string>
+    <string name="settings_blacklist_hint">每行一條規則，寫法與搜尋相同：貼文與某條規則完全相符時就會被隱藏。-tag 表示排除，~tag 表示擇一，* 代表任意字元，rating:g、s、q、e 或 u 指定分級。例如「gore」、「rating:e male -solo」或「*_focus」。</string>
     <string name="settings_grid_size">網格大小</string>
     <string name="settings_page_size">每頁結果數</string>
     <string name="settings_viewer_original">在檢視器中顯示原圖</string>

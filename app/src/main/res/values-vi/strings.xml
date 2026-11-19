@@ -89,7 +89,7 @@
     <string name="settings_ratings_title">Phân loại hiển thị</string>
     <string name="settings_ratings_hint">Shimmie2 và trang web thông thường không có phân loại: để xem bài đăng của chúng, hãy bật “Chưa phân loại”.</string>
     <string name="settings_blacklist">Danh sách đen</string>
-    <string name="settings_blacklist_hint">Mỗi dòng một quy tắc. Bài đăng bị ẩn khi có tất cả các thẻ của một quy tắc, vd. “gore” hoặc “rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">Mỗi dòng một quy tắc, viết như một tìm kiếm: bài đăng bị ẩn khi khớp với toàn bộ một quy tắc. -tag để loại trừ, ~tag đánh dấu lựa chọn thay thế, * thay cho chữ bất kỳ và rating:g, s, q, e hoặc u chỉ định phân loại. Vd. “gore”, “rating:e male -solo” hoặc “*_focus”.</string>
     <string name="settings_grid_size">Kích thước lưới</string>
     <string name="settings_page_size">Số kết quả mỗi trang</string>
     <string name="settings_viewer_original">Ảnh gốc trong trình xem</string>

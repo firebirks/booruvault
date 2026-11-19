@@ -95,7 +95,7 @@
     <string name="settings_ratings_title">Показываемые рейтинги</string>
     <string name="settings_ratings_hint">У Shimmie2 и обычных веб-страниц нет рейтингов: чтобы видеть их посты, включите «Без рейтинга».</string>
     <string name="settings_blacklist">Чёрный список</string>
-    <string name="settings_blacklist_hint">Одно правило на строку. Пост скрывается, если у него есть все теги правила, например «gore» или «rating:explicit male».</string>
+    <string name="settings_blacklist_hint">Одно правило на строку, записанное как поиск: пост скрывается, если он соответствует правилу целиком. -tag исключает, ~tag задаёт варианты, * заменяет любые символы, а rating:g, s, q, e или u указывает рейтинг. Например «gore», «rating:e male -solo» или «*_focus».</string>
     <string name="settings_grid_size">Размер сетки</string>
     <string name="settings_page_size">Результатов на странице</string>
     <string name="settings_viewer_original">Оригиналы в просмотрщике</string>

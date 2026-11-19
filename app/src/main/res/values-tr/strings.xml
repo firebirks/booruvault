@@ -91,7 +91,7 @@
     <string name="settings_ratings_title">Gösterilen derecelendirmeler</string>
     <string name="settings_ratings_hint">Shimmie2 ve sıradan web sayfalarında derecelendirme yoktur: gönderilerini görmek için “Derecelendirmesiz” seçeneğini açın.</string>
     <string name="settings_blacklist">Kara liste</string>
-    <string name="settings_blacklist_hint">Her satıra bir kural. Bir gönderi, bir kuralın tüm etiketlerine sahipse gizlenir; ör. “gore” veya “rating:explicit male”.</string>
+    <string name="settings_blacklist_hint">Her satıra bir kural, arama gibi yazılır: bir gönderi bir kuralın tamamına uyduğunda gizlenir. -tag hariç tutar, ~tag seçenekleri belirtir, * herhangi harflerin yerini tutar ve rating:g, s, q, e veya u bir derecelendirme belirtir. Ör. “gore”, “rating:e male -solo” veya “*_focus”.</string>
     <string name="settings_grid_size">Izgara boyutu</string>
     <string name="settings_page_size">Sayfa başına sonuç</string>
     <string name="settings_viewer_original">Görüntüleyicide orijinaller</string>
