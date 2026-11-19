@@ -33,6 +33,15 @@ object Kdf {
             params.parallelism in 1..MAX_PARALLELISM &&
             runCatching { params.salt.fromBase64().size >= 8 }.getOrDefault(false)
 
+    /**
+     * Whether this process's heap, of at most [maxHeap] bytes, can hold the memory Argon2 asks
+     * for with [params], with room for the rest of the app. BouncyCastle keeps all of it on the
+     * heap, a little over a KiB for each KiB; one that does not fit would end the app at the
+     * unlock rather than say the vault cannot be opened here.
+     */
+    fun fits(params: KdfParams, maxHeap: Long = Runtime.getRuntime().maxMemory()): Boolean =
+        params.memoryKiB.toLong() * 1024 * 9 / 8 <= maxHeap / 4 * 3
+
     const val MIN_MEMORY_KIB = 1024
     const val MAX_MEMORY_KIB = 256 * 1024
     const val MAX_ITERATIONS = 10

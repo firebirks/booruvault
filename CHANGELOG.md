@@ -14,6 +14,8 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 - The previews in the list of downloads are kept, sealed like the rest of the vault, for as long as their rows are listed: the list opened again after a lock, or after the app has been in the background, no longer asks the sites for every one of them anew. A download done saves as its thumbnail the preview its row already has, instead of asking for it a second time. A row taken off the list takes its preview with it.
 
 ### Fixed
+- An image or GIF opened from the vault is decrypted as it is decoded, instead of whole into memory first: a very large one no longer ends the app for want of memory.
+- A vault header altered to ask Argon2 for more memory than the phone gives the app, though no more than the ceiling allows, makes the unlock say the vault cannot be opened, instead of ending the app.
 - A download whose transfer ends without a word short of the length its host announced, as an HTTP/2 stream may, is taken for cut, and taken up where it stopped or reported, instead of being saved cut short for good.
 - A download queued just as the vault locks, a page of a search being collected for one, no longer goes out behind the locked vault when the queue is not allowed to run there. Downloads allowed to run behind the lock whose last one finished just as it came are no longer kept in memory until the next unlock.
 - The service that keeps downloads alive is no longer stopped by a list of downloads that had just finished while new ones were being queued, which could end the app.

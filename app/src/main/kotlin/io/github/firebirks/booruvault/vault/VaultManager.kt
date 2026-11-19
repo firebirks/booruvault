@@ -411,12 +411,16 @@ class VaultManager(
     }
 
     private fun unwrapWithPassword(current: VaultHeader, password: CharArray): ByteArray? {
-        if (!Kdf.sane(current.kdf)) {
+        // Parameters this app would not write, or that ask for more memory than the phone gives
+        // the app: the header was altered, and the unlock must say so rather than end the app.
+        if (!Kdf.sane(current.kdf) || !Kdf.fits(current.kdf)) {
             Secrets.wipe(password)
-            throw VaultHeaderException()
+            throw VaultHeaderException("the vault's key derivation asks for more than this app would")
         }
         val kek = try {
             derive(password, current.kdf)
+        } catch (e: OutOfMemoryError) {
+            throw VaultHeaderException("the vault's key derivation asks for more memory than the app has")
         } finally {
             Secrets.wipe(password)
         }
