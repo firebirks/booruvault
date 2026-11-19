@@ -200,7 +200,7 @@ private fun BatchRow(batch: BatchJob, onCancel: () -> Unit, onRetry: () -> Unit,
         },
         supportingContent = {
             Column {
-                Text(stringResource(R.string.batch_progress, batch.source.name, batch.found, batch.target))
+                Text(pluralStringResource(R.plurals.batch_progress, batch.found, batch.source.name, batch.found, batch.target))
                 val problem = batch.problem
                 when {
                     problem != null -> Text(problemText(problem), color = MaterialTheme.colorScheme.error)

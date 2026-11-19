@@ -170,12 +170,22 @@
     <string name="password_current">Поточний пароль</string>
     <string name="password_new">Новий пароль</string>
     <string name="password_new_confirm">Підтвердьте новий пароль</string>
-    <string name="password_too_short">Щонайменше %d символів</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Щонайменше %d символ</item>
+        <item quantity="few">Щонайменше %d символи</item>
+        <item quantity="many">Щонайменше %d символів</item>
+        <item quantity="other">Щонайменше %d символу</item>
+    </plurals>
     <string name="password_changed">Пароль оновлено</string>
     <string name="password_change_rekey_note">Ключ сховища також замінюється. Потім кожен файл у фоні запечатується заново новим ключем; доки це не завершиться, стара копія сховища, відкрита старим паролем, усе ще може прочитати ще не перезапечатані файли. Біометричне розблокування вимикається, його можна увімкнути знову.</string>
     <string name="rekey_title">Перезапечатування сховища новим ключем</string>
     <string name="repad_title">Файли запечатуються знову, щоб приховати їхній розмір</string>
-    <string name="rekey_progress">%1$d із %2$d файлів. Блокування призупиняє; наступне розблокування продовжує.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d із %2$d файлу. Блокування призупиняє; наступне розблокування продовжує.</item>
+        <item quantity="few">%1$d із %2$d файлів. Блокування призупиняє; наступне розблокування продовжує.</item>
+        <item quantity="many">%1$d із %2$d файлів. Блокування призупиняє; наступне розблокування продовжує.</item>
+        <item quantity="other">%1$d із %2$d файлу. Блокування призупиняє; наступне розблокування продовжує.</item>
+    </plurals>
     <string name="password_current_wrong">Поточний пароль неправильний</string>
     <string name="delete_vault_title">Видалити сховище?</string>
     <string name="delete_vault_text">Усі файли сховища та його ключ буде стерто. Відновити їх неможливо.</string>
@@ -410,7 +420,12 @@
         <item quantity="many">%1$d файлів експортовано без шифрування до %2$s</item>
         <item quantity="other">%1$d файлу експортовано без шифрування до %2$s</item>
     </plurals>
-    <string name="vault_export_partial">Експортовано без шифрування %1$d з %2$d файлів до %3$s. Решту не вдалося записати: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">Експортовано без шифрування %1$d з %2$d файлу до %3$s. Решту не вдалося записати: %4$s</item>
+        <item quantity="few">Експортовано без шифрування %1$d з %2$d файлів до %3$s. Решту не вдалося записати: %4$s</item>
+        <item quantity="many">Експортовано без шифрування %1$d з %2$d файлів до %3$s. Решту не вдалося записати: %4$s</item>
+        <item quantity="other">Експортовано без шифрування %1$d з %2$d файлу до %3$s. Решту не вдалося записати: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">теки</string>
     <string name="vault_exported_one">Експортовано без шифрування</string>
     <string name="vault_details">Подробиці</string>
@@ -449,7 +464,12 @@
     <string name="downloads_empty_text">Натисніть кнопку завантаження на дописі або утримуйте, щоб вибрати кілька.</string>
     <string name="batch_title">Збирання «%1$s»</string>
     <string name="batch_everything">усе</string>
-    <string name="batch_progress">%1$s · знайдено %2$d (щонайбільше %3$d)</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · знайдено %2$d (щонайбільше %3$d)</item>
+        <item quantity="few">%1$s · знайдено %2$d (щонайбільше %3$d)</item>
+        <item quantity="many">%1$s · знайдено %2$d (щонайбільше %3$d)</item>
+        <item quantity="other">%1$s · знайдено %2$d (щонайбільше %3$d)</item>
+    </plurals>
     <string name="batch_stop">Зупинити</string>
     <string name="task_queued">У черзі</string>
     <string name="task_progress">%1$s з %2$s</string>

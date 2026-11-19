@@ -158,12 +158,16 @@
     <string name="password_current">Sandi saat ini</string>
     <string name="password_new">Sandi baru</string>
     <string name="password_new_confirm">Konfirmasi sandi baru</string>
-    <string name="password_too_short">Minimal %d karakter</string>
+    <plurals name="password_too_short">
+        <item quantity="other">Minimal %d karakter</item>
+    </plurals>
     <string name="password_changed">Sandi diperbarui</string>
     <string name="password_change_rekey_note">Kunci brankas juga diganti. Setiap berkas lalu disegel ulang dengan kunci baru di latar belakang; sampai selesai, salinan lama brankas yang dibuka dengan sandi lama masih dapat membaca berkas yang belum disegel ulang. Buka kunci biometrik dimatikan dan dapat diaktifkan kembali.</string>
     <string name="rekey_title">Menyegel ulang brankas dengan kunci barunya</string>
     <string name="repad_title">Menyegel ulang file untuk menyembunyikan ukurannya</string>
-    <string name="rekey_progress">%1$d dari %2$d berkas. Mengunci menjedanya; buka kunci berikutnya melanjutkannya.</string>
+    <plurals name="rekey_progress">
+        <item quantity="other">%1$d dari %2$d berkas. Mengunci menjedanya; buka kunci berikutnya melanjutkannya.</item>
+    </plurals>
     <string name="password_current_wrong">Sandi saat ini salah</string>
     <string name="delete_vault_title">Hapus brankas?</string>
     <string name="delete_vault_text">Semua file di brankas beserta kuncinya akan dihapus. Tidak ada cara untuk memulihkannya.</string>
@@ -359,7 +363,9 @@
     <plurals name="vault_exported_to">
         <item quantity="other">%1$d file diekspor tanpa enkripsi ke %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d dari %2$d file diekspor tanpa enkripsi ke %3$s. Sisanya tidak dapat ditulis: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="other">%1$d dari %2$d file diekspor tanpa enkripsi ke %3$s. Sisanya tidak dapat ditulis: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">folder</string>
     <string name="vault_exported_one">Diekspor tanpa enkripsi</string>
     <string name="vault_details">Detail</string>
@@ -389,7 +395,9 @@
     <string name="downloads_empty_text">Ketuk tombol unduh pada postingan, atau tekan lama untuk memilih lebih dari satu.</string>
     <string name="batch_title">Mengumpulkan “%1$s”</string>
     <string name="batch_everything">semuanya</string>
-    <string name="batch_progress">%1$s · %2$d dari maksimal %3$d ditemukan</string>
+    <plurals name="batch_progress">
+        <item quantity="other">%1$s · %2$d dari maksimal %3$d ditemukan</item>
+    </plurals>
     <string name="batch_stop">Hentikan</string>
     <string name="task_queued">Dalam antrean</string>
     <string name="task_progress">%1$s dari %2$s</string>

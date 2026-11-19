@@ -166,12 +166,20 @@
     <string name="password_current">Contraseña actual</string>
     <string name="password_new">Contraseña nueva</string>
     <string name="password_new_confirm">Confirmar contraseña nueva</string>
-    <string name="password_too_short">Al menos %d caracteres</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Al menos %d carácter</item>
+        <item quantity="many">Al menos %d caracteres</item>
+        <item quantity="other">Al menos %d caracteres</item>
+    </plurals>
     <string name="password_changed">Contraseña actualizada</string>
     <string name="password_change_rekey_note">También se sustituye la clave de la bóveda. Después, cada archivo se vuelve a sellar con la nueva clave en segundo plano; hasta que termine, una copia antigua de la bóveda abierta con la contraseña anterior aún puede leer los archivos que falten. El desbloqueo biométrico se desactiva y puede activarse de nuevo.</string>
     <string name="rekey_title">Resellando la bóveda con su nueva clave</string>
     <string name="repad_title">Volviendo a sellar los archivos para ocultar su tamaño</string>
-    <string name="rekey_progress">%1$d de %2$d archivos. Bloquear lo pausa; el siguiente desbloqueo lo reanuda.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d de %2$d archivo. Bloquear lo pausa; el siguiente desbloqueo lo reanuda.</item>
+        <item quantity="many">%1$d de %2$d archivos. Bloquear lo pausa; el siguiente desbloqueo lo reanuda.</item>
+        <item quantity="other">%1$d de %2$d archivos. Bloquear lo pausa; el siguiente desbloqueo lo reanuda.</item>
+    </plurals>
     <string name="password_current_wrong">La contraseña actual es incorrecta</string>
     <string name="delete_vault_title">¿Eliminar la bóveda?</string>
     <string name="delete_vault_text">Se borrarán todos los archivos de la bóveda y su clave. No hay forma de recuperarlos.</string>
@@ -393,7 +401,11 @@
         <item quantity="many">%1$d archivos exportados sin cifrar en %2$s</item>
         <item quantity="other">%1$d archivos exportados sin cifrar en %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d de %2$d archivos exportados sin cifrar en %3$s. Los demás no se pudieron escribir: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%1$d de %2$d archivo exportado sin cifrar en %3$s. Los demás no se pudieron escribir: %4$s</item>
+        <item quantity="many">%1$d de %2$d archivos exportados sin cifrar en %3$s. Los demás no se pudieron escribir: %4$s</item>
+        <item quantity="other">%1$d de %2$d archivos exportados sin cifrar en %3$s. Los demás no se pudieron escribir: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">la carpeta</string>
     <string name="vault_exported_one">Exportado sin cifrar</string>
     <string name="vault_details">Detalles</string>
@@ -429,7 +441,11 @@
     <string name="downloads_empty_text">Toca el botón de descarga en un post o mantén pulsado para seleccionar varios.</string>
     <string name="batch_title">Recopilando “%1$s”</string>
     <string name="batch_everything">todo</string>
-    <string name="batch_progress">%1$s · %2$d encontrados de un máximo de %3$d</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d encontrado de un máximo de %3$d</item>
+        <item quantity="many">%1$s · %2$d encontrados de un máximo de %3$d</item>
+        <item quantity="other">%1$s · %2$d encontrados de un máximo de %3$d</item>
+    </plurals>
     <string name="batch_stop">Detener</string>
     <string name="task_queued">En cola</string>
     <string name="task_progress">%1$s de %2$s</string>

@@ -158,12 +158,16 @@
     <string name="password_current">현재 비밀번호</string>
     <string name="password_new">새 비밀번호</string>
     <string name="password_new_confirm">새 비밀번호 확인</string>
-    <string name="password_too_short">%d자 이상</string>
+    <plurals name="password_too_short">
+        <item quantity="other">%d자 이상</item>
+    </plurals>
     <string name="password_changed">비밀번호가 변경되었습니다</string>
     <string name="password_change_rekey_note">금고의 키도 교체됩니다. 이후 모든 파일이 백그라운드에서 새 키로 다시 봉인됩니다. 완료될 때까지는 이전 비밀번호로 연 금고의 오래된 사본으로 아직 다시 봉인되지 않은 파일을 읽을 수 있습니다. 생체 인식 잠금 해제는 꺼지며 다시 켤 수 있습니다.</string>
     <string name="rekey_title">새 키로 금고를 다시 봉인하는 중</string>
     <string name="repad_title">크기를 숨기기 위해 파일을 다시 봉인하는 중</string>
-    <string name="rekey_progress">%2$d개 중 %1$d개 파일. 잠그면 일시 중지되고 다음 잠금 해제 때 이어집니다.</string>
+    <plurals name="rekey_progress">
+        <item quantity="other">%2$d개 중 %1$d개 파일. 잠그면 일시 중지되고 다음 잠금 해제 때 이어집니다.</item>
+    </plurals>
     <string name="password_current_wrong">현재 비밀번호가 틀렸습니다</string>
     <string name="delete_vault_title">보관함을 삭제할까요?</string>
     <string name="delete_vault_text">보관함의 모든 파일과 키가 지워집니다. 복구할 방법은 없습니다.</string>
@@ -359,7 +363,9 @@
     <plurals name="vault_exported_to">
         <item quantity="other">파일 %1$d개를 암호화 없이 내보냈습니다 (%2$s로)</item>
     </plurals>
-    <string name="vault_export_partial">파일 %2$d개 중 %1$d개를 암호화 없이 %3$s로 내보냈습니다. 나머지는 쓸 수 없었습니다: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="other">파일 %2$d개 중 %1$d개를 암호화 없이 %3$s로 내보냈습니다. 나머지는 쓸 수 없었습니다: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">선택한 폴더</string>
     <string name="vault_exported_one">암호화 없이 내보냈습니다</string>
     <string name="vault_details">세부정보</string>
@@ -389,7 +395,9 @@
     <string name="downloads_empty_text">게시물의 다운로드 버튼을 누르거나, 길게 눌러 여러 개를 선택하세요.</string>
     <string name="batch_title">‘%1$s’ 수집 중</string>
     <string name="batch_everything">전체</string>
-    <string name="batch_progress">%1$s · 최대 %3$d개 중 %2$d개 찾음</string>
+    <plurals name="batch_progress">
+        <item quantity="other">%1$s · 최대 %3$d개 중 %2$d개 찾음</item>
+    </plurals>
     <string name="batch_stop">중지</string>
     <string name="task_queued">대기 중</string>
     <string name="task_progress">%1$s / %2$s</string>

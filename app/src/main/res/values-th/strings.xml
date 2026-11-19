@@ -158,12 +158,16 @@
     <string name="password_current">รหัสผ่านปัจจุบัน</string>
     <string name="password_new">รหัสผ่านใหม่</string>
     <string name="password_new_confirm">ยืนยันรหัสผ่านใหม่</string>
-    <string name="password_too_short">อย่างน้อย %d ตัวอักษร</string>
+    <plurals name="password_too_short">
+        <item quantity="other">อย่างน้อย %d ตัวอักษร</item>
+    </plurals>
     <string name="password_changed">อัปเดตรหัสผ่านแล้ว</string>
     <string name="password_change_rekey_note">กุญแจของห้องนิรภัยจะถูกเปลี่ยนด้วย จากนั้นทุกไฟล์จะถูกผนึกใหม่ด้วยกุญแจใหม่ในเบื้องหลัง จนกว่าจะเสร็จ สำเนาเก่าของห้องนิรภัยที่เปิดด้วยรหัสผ่านเดิมยังอ่านไฟล์ที่ยังไม่ได้ผนึกใหม่ได้ การปลดล็อกด้วยชีวมิติจะถูกปิดและเปิดใหม่ได้</string>
     <string name="rekey_title">กำลังผนึกห้องนิรภัยใหม่ด้วยกุญแจใหม่</string>
     <string name="repad_title">กำลังผนึกไฟล์ใหม่เพื่อซ่อนขนาด</string>
-    <string name="rekey_progress">%1$d จาก %2$d ไฟล์ การล็อกจะหยุดชั่วคราว การปลดล็อกครั้งถัดไปจะทำต่อ</string>
+    <plurals name="rekey_progress">
+        <item quantity="other">%1$d จาก %2$d ไฟล์ การล็อกจะหยุดชั่วคราว การปลดล็อกครั้งถัดไปจะทำต่อ</item>
+    </plurals>
     <string name="password_current_wrong">รหัสผ่านปัจจุบันไม่ถูกต้อง</string>
     <string name="delete_vault_title">ลบคลังนิรภัยใช่ไหม</string>
     <string name="delete_vault_text">ไฟล์ทั้งหมดในคลังนิรภัยและคีย์ของคลังจะถูกลบ และไม่มีทางกู้คืนได้</string>
@@ -359,7 +363,9 @@
     <plurals name="vault_exported_to">
         <item quantity="other">ส่งออก %1$d ไฟล์แบบไม่เข้ารหัสแล้วไปยัง %2$s</item>
     </plurals>
-    <string name="vault_export_partial">ส่งออก %1$d จาก %2$d ไฟล์แบบไม่เข้ารหัสไปยัง %3$s แล้ว ที่เหลือเขียนไม่ได้: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="other">ส่งออก %1$d จาก %2$d ไฟล์แบบไม่เข้ารหัสไปยัง %3$s แล้ว ที่เหลือเขียนไม่ได้: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">โฟลเดอร์</string>
     <string name="vault_exported_one">ส่งออกแบบไม่เข้ารหัสแล้ว</string>
     <string name="vault_details">รายละเอียด</string>
@@ -389,7 +395,9 @@
     <string name="downloads_empty_text">แตะปุ่มดาวน์โหลดบนโพสต์ หรือกดค้างเพื่อเลือกหลายรายการ</string>
     <string name="batch_title">กำลังรวบรวม “%1$s”</string>
     <string name="batch_everything">ทั้งหมด</string>
-    <string name="batch_progress">%1$s · พบ %2$d จากสูงสุด %3$d</string>
+    <plurals name="batch_progress">
+        <item quantity="other">%1$s · พบ %2$d จากสูงสุด %3$d</item>
+    </plurals>
     <string name="batch_stop">หยุด</string>
     <string name="task_queued">อยู่ในคิว</string>
     <string name="task_progress">%1$s จาก %2$s</string>

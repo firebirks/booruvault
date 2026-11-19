@@ -162,12 +162,18 @@
     <string name="password_current">Mevcut parola</string>
     <string name="password_new">Yeni parola</string>
     <string name="password_new_confirm">Yeni parolayı onaylayın</string>
-    <string name="password_too_short">En az %d karakter</string>
+    <plurals name="password_too_short">
+        <item quantity="one">En az %d karakter</item>
+        <item quantity="other">En az %d karakter</item>
+    </plurals>
     <string name="password_changed">Parola güncellendi</string>
     <string name="password_change_rekey_note">Kasanın anahtarı da değiştirilir. Ardından her dosya arka planda yeni anahtarla yeniden mühürlenir; bu bitene kadar eski parolayla açılan eski bir kasa kopyası, henüz yeniden mühürlenmemiş dosyaları okuyabilir. Biyometrik kilit açma kapatılır ve yeniden açılabilir.</string>
     <string name="rekey_title">Kasa yeni anahtarıyla yeniden mühürleniyor</string>
     <string name="repad_title">Boyutlarını gizlemek için dosyalar yeniden mühürleniyor</string>
-    <string name="rekey_progress">%2$d dosyadan %1$d. Kilitlemek duraklatır; sonraki kilit açma sürdürür.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%2$d dosyadan %1$d. Kilitlemek duraklatır; sonraki kilit açma sürdürür.</item>
+        <item quantity="other">%2$d dosyadan %1$d. Kilitlemek duraklatır; sonraki kilit açma sürdürür.</item>
+    </plurals>
     <string name="password_current_wrong">Mevcut parola yanlış</string>
     <string name="delete_vault_title">Kasa silinsin mi?</string>
     <string name="delete_vault_text">Kasadaki tüm dosyalar ve kasanın anahtarı silinecek. Bunları kurtarmanın hiçbir yolu yok.</string>
@@ -376,7 +382,10 @@
         <item quantity="one">%2$s klasörüne %1$d dosya şifresiz dışa aktarıldı</item>
         <item quantity="other">%2$s klasörüne %1$d dosya şifresiz dışa aktarıldı</item>
     </plurals>
-    <string name="vault_export_partial">%3$s klasörüne %2$d dosyadan %1$d tanesi şifresiz dışa aktarıldı. Diğerleri yazılamadı: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%3$s klasörüne %2$d dosyadan %1$d tanesi şifresiz dışa aktarıldı. Diğerleri yazılamadı: %4$s</item>
+        <item quantity="other">%3$s klasörüne %2$d dosyadan %1$d tanesi şifresiz dışa aktarıldı. Diğerleri yazılamadı: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">seçilen klasör</string>
     <string name="vault_exported_one">Şifresiz dışa aktarıldı</string>
     <string name="vault_details">Ayrıntılar</string>
@@ -409,7 +418,10 @@
     <string name="downloads_empty_text">Bir gönderideki indirme düğmesine dokunun veya birden fazlasını seçmek için uzun basın.</string>
     <string name="batch_title">“%1$s” toplanıyor</string>
     <string name="batch_everything">her şey</string>
-    <string name="batch_progress">%1$s · %2$d bulundu (en fazla %3$d)</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d bulundu (en fazla %3$d)</item>
+        <item quantity="other">%1$s · %2$d bulundu (en fazla %3$d)</item>
+    </plurals>
     <string name="batch_stop">Durdur</string>
     <string name="task_queued">Sırada</string>
     <string name="task_progress">%1$s / %2$s</string>

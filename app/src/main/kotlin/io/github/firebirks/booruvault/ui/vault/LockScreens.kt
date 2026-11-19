@@ -58,6 +58,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.pluralStringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.firebirks.booruvault.ui.common.LocalContainer
 import io.github.firebirks.booruvault.ui.common.PasswordField
@@ -302,7 +303,7 @@ fun VaultSetupScreen(onCreated: () -> Unit) {
         PasswordField(
             value = password, onValueChange = { password = it }, label = stringResource(R.string.password),
             imeAction = ImeAction.Next, onDone = { focus.moveFocus(FocusDirection.Down) }, isError = tooShort,
-            supportingText = stringResource(R.string.password_too_short, MIN_PASSWORD),
+            supportingText = pluralStringResource(R.plurals.password_too_short, MIN_PASSWORD, MIN_PASSWORD),
             enabled = !busy, modifier = Modifier.fillMaxWidth(),
         )
         PasswordField(

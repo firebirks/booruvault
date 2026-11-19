@@ -170,12 +170,22 @@
     <string name="password_current">Obecne hasło</string>
     <string name="password_new">Nowe hasło</string>
     <string name="password_new_confirm">Potwierdź nowe hasło</string>
-    <string name="password_too_short">Minimalna liczba znaków: %d</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Minimalna liczba znaków: %d</item>
+        <item quantity="few">Minimalna liczba znaków: %d</item>
+        <item quantity="many">Minimalna liczba znaków: %d</item>
+        <item quantity="other">Minimalna liczba znaków: %d</item>
+    </plurals>
     <string name="password_changed">Zmieniono hasło</string>
     <string name="password_change_rekey_note">Klucz sejfu również zostaje zastąpiony. Każdy plik jest potem w tle pieczętowany ponownie nowym kluczem; dopóki to się nie skończy, stara kopia sejfu otwarta starym hasłem wciąż może odczytać pliki jeszcze nieprzepieczętowane. Odblokowanie biometryczne zostaje wyłączone i można je włączyć ponownie.</string>
     <string name="rekey_title">Ponowne pieczętowanie sejfu nowym kluczem</string>
     <string name="repad_title">Ponowne pieczętowanie plików, by ukryć ich rozmiar</string>
-    <string name="rekey_progress">%1$d z %2$d plików. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d z %2$d pliku. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</item>
+        <item quantity="few">%1$d z %2$d plików. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</item>
+        <item quantity="many">%1$d z %2$d plików. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</item>
+        <item quantity="other">%1$d z %2$d pliku. Zablokowanie wstrzymuje; następne odblokowanie wznawia.</item>
+    </plurals>
     <string name="password_current_wrong">Obecne hasło jest nieprawidłowe</string>
     <string name="delete_vault_title">Usunąć sejf?</string>
     <string name="delete_vault_text">Wszystkie pliki sejfu i jego klucz zostaną usunięte. Nie ma możliwości ich odzyskania.</string>
@@ -410,7 +420,12 @@
         <item quantity="many">Wyeksportowano bez szyfrowania %1$d plików do %2$s</item>
         <item quantity="other">Wyeksportowano bez szyfrowania %1$d pliku do %2$s</item>
     </plurals>
-    <string name="vault_export_partial">Wyeksportowano bez szyfrowania %1$d z %2$d plików do %3$s. Pozostałych nie udało się zapisać: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">Wyeksportowano bez szyfrowania %1$d z %2$d pliku do %3$s. Pozostałych nie udało się zapisać: %4$s</item>
+        <item quantity="few">Wyeksportowano bez szyfrowania %1$d z %2$d plików do %3$s. Pozostałych nie udało się zapisać: %4$s</item>
+        <item quantity="many">Wyeksportowano bez szyfrowania %1$d z %2$d plików do %3$s. Pozostałych nie udało się zapisać: %4$s</item>
+        <item quantity="other">Wyeksportowano bez szyfrowania %1$d z %2$d pliku do %3$s. Pozostałych nie udało się zapisać: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">folderu</string>
     <string name="vault_exported_one">Wyeksportowano bez szyfrowania</string>
     <string name="vault_details">Szczegóły</string>
@@ -449,7 +464,12 @@
     <string name="downloads_empty_text">Dotknij przycisku pobierania przy poście lub przytrzymaj go, aby zaznaczyć więcej niż jeden.</string>
     <string name="batch_title">Zbieranie: „%1$s”</string>
     <string name="batch_everything">wszystko</string>
-    <string name="batch_progress">%1$s · znaleziono %2$d z maksymalnie %3$d</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · znaleziono %2$d z maksymalnie %3$d</item>
+        <item quantity="few">%1$s · znaleziono %2$d z maksymalnie %3$d</item>
+        <item quantity="many">%1$s · znaleziono %2$d z maksymalnie %3$d</item>
+        <item quantity="other">%1$s · znaleziono %2$d z maksymalnie %3$d</item>
+    </plurals>
     <string name="batch_stop">Zatrzymaj</string>
     <string name="task_queued">W kolejce</string>
     <string name="task_progress">%1$s z %2$s</string>

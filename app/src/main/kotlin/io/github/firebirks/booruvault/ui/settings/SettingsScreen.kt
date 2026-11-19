@@ -343,7 +343,7 @@ private fun VaultSettings() {
             headlineContent = { Text(stringResource(if (progress.rekeying) R.string.rekey_title else R.string.repad_title)) },
             supportingContent = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(stringResource(R.string.rekey_progress, progress.done, progress.total))
+                    Text(pluralStringResource(R.plurals.rekey_progress, progress.total, progress.done, progress.total))
                     LinearProgressIndicator(
                         progress = { if (progress.total == 0) 0f else progress.done.toFloat() / progress.total },
                         modifier = Modifier.fillMaxWidth(),
@@ -691,7 +691,7 @@ private fun ChangePasswordDialog(onDismiss: () -> Unit) {
                 PasswordField(
                     new, { new = it }, stringResource(R.string.password_new), imeAction = ImeAction.Next, enabled = !working,
                     isError = tooShort,
-                    supportingText = stringResource(R.string.password_too_short, MIN_PASSWORD),
+                    supportingText = pluralStringResource(R.plurals.password_too_short, MIN_PASSWORD, MIN_PASSWORD),
                 )
                 PasswordField(
                     confirm, { confirm = it }, stringResource(R.string.password_new_confirm), enabled = !working,

@@ -184,7 +184,7 @@ class VaultViewModel(private val c: AppContainer) : ViewModel() {
                 if (result.failed == 0) {
                     UiText.Plural(R.plurals.vault_exported_to, result.done, listOf(result.done, folder))
                 } else {
-                    UiText.Res(R.string.vault_export_partial, listOf(result.done, result.total, folder, UiText.Of(result.firstProblem ?: Problem(Problem.Code.UNKNOWN))))
+                    UiText.Plural(R.plurals.vault_export_partial, result.total, listOf(result.done, result.total, folder, UiText.Of(result.firstProblem ?: Problem(Problem.Code.UNKNOWN))))
                 },
             )
         }

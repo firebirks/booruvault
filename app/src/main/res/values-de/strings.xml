@@ -162,12 +162,18 @@
     <string name="password_current">Aktuelles Passwort</string>
     <string name="password_new">Neues Passwort</string>
     <string name="password_new_confirm">Neues Passwort bestätigen</string>
-    <string name="password_too_short">Mindestens %d Zeichen</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Mindestens %d Zeichen</item>
+        <item quantity="other">Mindestens %d Zeichen</item>
+    </plurals>
     <string name="password_changed">Passwort geändert</string>
     <string name="password_change_rekey_note">Auch der Schlüssel des Tresors wird ersetzt. Jede Datei wird danach im Hintergrund mit dem neuen Schlüssel neu versiegelt; bis das abgeschlossen ist, kann eine alte Kopie des Tresors mit dem alten Passwort die noch nicht neu versiegelten Dateien lesen. Die biometrische Entsperrung wird ausgeschaltet und kann wieder aktiviert werden.</string>
     <string name="rekey_title">Tresor wird mit dem neuen Schlüssel neu versiegelt</string>
     <string name="repad_title">Dateien werden neu versiegelt, um ihre Größe zu verbergen</string>
-    <string name="rekey_progress">%1$d von %2$d Dateien. Sperren hält es an; das nächste Entsperren setzt es fort.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d von %2$d Datei. Sperren hält es an; das nächste Entsperren setzt es fort.</item>
+        <item quantity="other">%1$d von %2$d Dateien. Sperren hält es an; das nächste Entsperren setzt es fort.</item>
+    </plurals>
     <string name="password_current_wrong">Das aktuelle Passwort ist falsch</string>
     <string name="delete_vault_title">Tresor löschen?</string>
     <string name="delete_vault_text">Alle Dateien des Tresors und sein Schlüssel werden gelöscht. Es gibt keine Möglichkeit, sie wiederherzustellen.</string>
@@ -376,7 +382,10 @@
         <item quantity="one">%1$d Datei unverschlüsselt exportiert nach %2$s</item>
         <item quantity="other">%1$d Dateien unverschlüsselt exportiert nach %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d von %2$d Dateien unverschlüsselt nach %3$s exportiert. Die übrigen konnten nicht geschrieben werden: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%1$d von %2$d Datei unverschlüsselt nach %3$s exportiert. Die übrigen konnten nicht geschrieben werden: %4$s</item>
+        <item quantity="other">%1$d von %2$d Dateien unverschlüsselt nach %3$s exportiert. Die übrigen konnten nicht geschrieben werden: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">den Ordner</string>
     <string name="vault_exported_one">Unverschlüsselt exportiert</string>
     <string name="vault_details">Details</string>
@@ -409,7 +418,10 @@
     <string name="downloads_empty_text">Tippe bei einem Post auf den Download-Button oder halte ihn gedrückt, um mehrere auszuwählen.</string>
     <string name="batch_title">Sammeln: „%1$s“</string>
     <string name="batch_everything">alles</string>
-    <string name="batch_progress">%1$s · %2$d von höchstens %3$d gefunden</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d von höchstens %3$d gefunden</item>
+        <item quantity="other">%1$s · %2$d von höchstens %3$d gefunden</item>
+    </plurals>
     <string name="batch_stop">Anhalten</string>
     <string name="task_queued">In der Warteschlange</string>
     <string name="task_progress">%1$s von %2$s</string>

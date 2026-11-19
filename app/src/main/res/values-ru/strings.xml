@@ -170,12 +170,22 @@
     <string name="password_current">Текущий пароль</string>
     <string name="password_new">Новый пароль</string>
     <string name="password_new_confirm">Подтвердите новый пароль</string>
-    <string name="password_too_short">Не менее %d символов</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Не менее %d символа</item>
+        <item quantity="few">Не менее %d символов</item>
+        <item quantity="many">Не менее %d символов</item>
+        <item quantity="other">Не менее %d символа</item>
+    </plurals>
     <string name="password_changed">Пароль обновлён</string>
     <string name="password_change_rekey_note">Ключ хранилища тоже заменяется. Затем каждый файл в фоне запечатывается заново новым ключом; пока это не завершится, старая копия хранилища, открытая старым паролем, всё ещё может прочитать файлы, которые ещё не перезапечатаны. Биометрическая разблокировка отключается, её можно включить снова.</string>
     <string name="rekey_title">Перезапечатывание хранилища новым ключом</string>
     <string name="repad_title">Файлы запечатываются заново, чтобы скрыть их размер</string>
-    <string name="rekey_progress">%1$d из %2$d файлов. Блокировка приостанавливает; следующая разблокировка продолжает.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d из %2$d файла. Блокировка приостанавливает; следующая разблокировка продолжает.</item>
+        <item quantity="few">%1$d из %2$d файлов. Блокировка приостанавливает; следующая разблокировка продолжает.</item>
+        <item quantity="many">%1$d из %2$d файлов. Блокировка приостанавливает; следующая разблокировка продолжает.</item>
+        <item quantity="other">%1$d из %2$d файла. Блокировка приостанавливает; следующая разблокировка продолжает.</item>
+    </plurals>
     <string name="password_current_wrong">Текущий пароль неверен</string>
     <string name="delete_vault_title">Удалить хранилище?</string>
     <string name="delete_vault_text">Все файлы хранилища и его ключ будут стёрты. Восстановить их будет невозможно.</string>
@@ -410,7 +420,12 @@
         <item quantity="many">%1$d файлов экспортировано без шифрования в %2$s</item>
         <item quantity="other">%1$d файла экспортировано без шифрования в %2$s</item>
     </plurals>
-    <string name="vault_export_partial">Экспортировано без шифрования %1$d из %2$d файлов в %3$s. Остальные не удалось записать: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">Экспортировано без шифрования %1$d из %2$d файла в %3$s. Остальные не удалось записать: %4$s</item>
+        <item quantity="few">Экспортировано без шифрования %1$d из %2$d файлов в %3$s. Остальные не удалось записать: %4$s</item>
+        <item quantity="many">Экспортировано без шифрования %1$d из %2$d файлов в %3$s. Остальные не удалось записать: %4$s</item>
+        <item quantity="other">Экспортировано без шифрования %1$d из %2$d файла в %3$s. Остальные не удалось записать: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">папку</string>
     <string name="vault_exported_one">Экспортировано без шифрования</string>
     <string name="vault_details">Подробности</string>
@@ -449,7 +464,12 @@
     <string name="downloads_empty_text">Нажмите кнопку загрузки на посте или удерживайте, чтобы выбрать несколько.</string>
     <string name="batch_title">Сбор «%1$s»</string>
     <string name="batch_everything">всё</string>
-    <string name="batch_progress">%1$s · найдено %2$d (максимум %3$d)</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · найдено %2$d (максимум %3$d)</item>
+        <item quantity="few">%1$s · найдено %2$d (максимум %3$d)</item>
+        <item quantity="many">%1$s · найдено %2$d (максимум %3$d)</item>
+        <item quantity="other">%1$s · найдено %2$d (максимум %3$d)</item>
+    </plurals>
     <string name="batch_stop">Остановить</string>
     <string name="task_queued">В очереди</string>
     <string name="task_progress">%1$s из %2$s</string>

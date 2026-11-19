@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">BooruVault</string>
     <string name="problem_network">Network error: %1$s</string>
     <string name="problem_timeout">The site took too long to answer: try again.</string>
@@ -150,7 +150,8 @@
     <string name="settings_about_text">Content, settings, sources, cookies and the download queue are encrypted in the vault with AES-256-GCM, with keys derived through ECDH P-256. The private key is protected by Argon2id (64 MiB) and, if enabled, by a biometric Keystore key. Browsed images stay in memory only.</string>
     <string name="settings_page_content">Content filter</string>
     <string name="settings_page_browsing">Browsing and downloads</string>
-    <string name="settings_browsing_summary">%1$s grid · %2$d per page</string>
+    <!-- "%2$d per page" names nothing that agrees with the number, in any language: no plural. -->
+    <string name="settings_browsing_summary" tools:ignore="PluralsCandidate">%1$s grid · %2$d per page</string>
     <string name="settings_tor_off_summary">Off: connections go out directly</string>
     <string name="settings_about_licence">Free software under the GNU General Public License v3</string>
     <string name="settings_about_source">Source code and releases</string>
@@ -168,12 +169,18 @@
     <string name="password_current">Current password</string>
     <string name="password_new">New password</string>
     <string name="password_new_confirm">Confirm new password</string>
-    <string name="password_too_short">At least %d characters</string>
+    <plurals name="password_too_short">
+        <item quantity="one">At least %d character</item>
+        <item quantity="other">At least %d characters</item>
+    </plurals>
     <string name="password_changed">Password updated</string>
     <string name="password_change_rekey_note">The vault\'s key is replaced as well. Every file is then re-sealed to the new key in the background; until that is done, an old copy of the vault opened with the old password can still read the files not yet re-sealed. Biometric unlock is turned off and can be turned on again.</string>
     <string name="rekey_title">Re-sealing the vault to its new key</string>
     <string name="repad_title">Re-sealing the files to hide their sizes</string>
-    <string name="rekey_progress">%1$d of %2$d files. Locking pauses it; the next unlock resumes it.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d of %2$d file. Locking pauses it; the next unlock resumes it.</item>
+        <item quantity="other">%1$d of %2$d files. Locking pauses it; the next unlock resumes it.</item>
+    </plurals>
     <string name="password_current_wrong">The current password is wrong</string>
     <string name="delete_vault_title">Delete the vault?</string>
     <string name="delete_vault_text">All the vault\'s files and its key will be erased. There is no way to recover them.</string>
@@ -382,7 +389,10 @@
         <item quantity="one">%1$d file exported in clear to %2$s</item>
         <item quantity="other">%1$d files exported in clear to %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d of %2$d files exported in clear to %3$s. The others could not be written: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%1$d of %2$d file exported in clear to %3$s. The others could not be written: %4$s</item>
+        <item quantity="other">%1$d of %2$d files exported in clear to %3$s. The others could not be written: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">the folder</string>
     <string name="vault_exported_one">Exported in clear</string>
     <string name="vault_details">Details</string>
@@ -415,7 +425,10 @@
     <string name="downloads_empty_text">Tap the download button on a post, or long-press to select more than one.</string>
     <string name="batch_title">Collecting “%1$s”</string>
     <string name="batch_everything">everything</string>
-    <string name="batch_progress">%1$s · %2$d of at most %3$d found</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d of at most %3$d found</item>
+        <item quantity="other">%1$s · %2$d of at most %3$d found</item>
+    </plurals>
     <string name="batch_stop">Stop</string>
     <string name="task_queued">Queued</string>
     <string name="task_progress">%1$s of %2$s</string>

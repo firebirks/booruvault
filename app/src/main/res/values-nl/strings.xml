@@ -162,12 +162,18 @@
     <string name="password_current">Huidig wachtwoord</string>
     <string name="password_new">Nieuw wachtwoord</string>
     <string name="password_new_confirm">Nieuw wachtwoord bevestigen</string>
-    <string name="password_too_short">Minimaal %d tekens</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Minimaal %d teken</item>
+        <item quantity="other">Minimaal %d tekens</item>
+    </plurals>
     <string name="password_changed">Wachtwoord bijgewerkt</string>
     <string name="password_change_rekey_note">Ook de sleutel van de kluis wordt vervangen. Elk bestand wordt daarna op de achtergrond opnieuw verzegeld met de nieuwe sleutel; tot dat klaar is, kan een oude kopie van de kluis die met het oude wachtwoord is geopend de nog niet opnieuw verzegelde bestanden lezen. Biometrisch ontgrendelen wordt uitgeschakeld en kan opnieuw worden ingeschakeld.</string>
     <string name="rekey_title">Kluis wordt opnieuw verzegeld met de nieuwe sleutel</string>
     <string name="repad_title">Bestanden worden opnieuw verzegeld om hun grootte te verbergen</string>
-    <string name="rekey_progress">%1$d van %2$d bestanden. Vergrendelen pauzeert het; de volgende ontgrendeling hervat het.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d van %2$d bestand. Vergrendelen pauzeert het; de volgende ontgrendeling hervat het.</item>
+        <item quantity="other">%1$d van %2$d bestanden. Vergrendelen pauzeert het; de volgende ontgrendeling hervat het.</item>
+    </plurals>
     <string name="password_current_wrong">Het huidige wachtwoord is onjuist</string>
     <string name="delete_vault_title">Kluis verwijderen?</string>
     <string name="delete_vault_text">Alle bestanden van de kluis en de sleutel worden gewist. Ze kunnen op geen enkele manier worden hersteld.</string>
@@ -376,7 +382,10 @@
         <item quantity="one">%1$d bestand onversleuteld geëxporteerd naar %2$s</item>
         <item quantity="other">%1$d bestanden onversleuteld geëxporteerd naar %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d van %2$d bestanden onversleuteld geëxporteerd naar %3$s. De overige konden niet worden geschreven: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%1$d van %2$d bestand onversleuteld geëxporteerd naar %3$s. De overige konden niet worden geschreven: %4$s</item>
+        <item quantity="other">%1$d van %2$d bestanden onversleuteld geëxporteerd naar %3$s. De overige konden niet worden geschreven: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">de map</string>
     <string name="vault_exported_one">Onversleuteld geëxporteerd</string>
     <string name="vault_details">Details</string>
@@ -409,7 +418,10 @@
     <string name="downloads_empty_text">Tik op de downloadknop bij een post, of houd lang ingedrukt om er meer dan één te selecteren.</string>
     <string name="batch_title">Verzamelen: ‘%1$s’</string>
     <string name="batch_everything">alles</string>
-    <string name="batch_progress">%1$s · %2$d van maximaal %3$d gevonden</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d van maximaal %3$d gevonden</item>
+        <item quantity="other">%1$s · %2$d van maximaal %3$d gevonden</item>
+    </plurals>
     <string name="batch_stop">Stoppen</string>
     <string name="task_queued">In wachtrij</string>
     <string name="task_progress">%1$s van %2$s</string>

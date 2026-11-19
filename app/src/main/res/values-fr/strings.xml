@@ -166,12 +166,20 @@
     <string name="password_current">Mot de passe actuel</string>
     <string name="password_new">Nouveau mot de passe</string>
     <string name="password_new_confirm">Confirmer le nouveau mot de passe</string>
-    <string name="password_too_short">Au moins %d caractères</string>
+    <plurals name="password_too_short">
+        <item quantity="one">Au moins %d caractère</item>
+        <item quantity="many">Au moins %d caractères</item>
+        <item quantity="other">Au moins %d caractères</item>
+    </plurals>
     <string name="password_changed">Mot de passe modifié</string>
     <string name="password_change_rekey_note">La clé du coffre est également remplacée. Chaque fichier est ensuite rescellé avec la nouvelle clé en arrière-plan ; tant que ce n\'est pas terminé, une ancienne copie du coffre ouverte avec l\'ancien mot de passe peut encore lire les fichiers pas encore rescellés. Le déverrouillage biométrique est désactivé et peut être réactivé.</string>
     <string name="rekey_title">Rescellement du coffre avec sa nouvelle clé</string>
     <string name="repad_title">Nouveau scellement des fichiers pour masquer leur taille</string>
-    <string name="rekey_progress">%1$d fichiers sur %2$d. Le verrouillage le suspend ; le prochain déverrouillage le reprend.</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%1$d sur %2$d fichier. Le verrouillage le suspend ; le prochain déverrouillage le reprend.</item>
+        <item quantity="many">%1$d sur %2$d fichiers. Le verrouillage le suspend ; le prochain déverrouillage le reprend.</item>
+        <item quantity="other">%1$d sur %2$d fichiers. Le verrouillage le suspend ; le prochain déverrouillage le reprend.</item>
+    </plurals>
     <string name="password_current_wrong">Le mot de passe actuel est incorrect</string>
     <string name="delete_vault_title">Supprimer le coffre ?</string>
     <string name="delete_vault_text">Tous les fichiers du coffre et sa clé seront effacés. Il est impossible de les récupérer.</string>
@@ -393,7 +401,11 @@
         <item quantity="many">%1$d fichiers exportés en clair dans %2$s</item>
         <item quantity="other">%1$d fichiers exportés en clair dans %2$s</item>
     </plurals>
-    <string name="vault_export_partial">%1$d fichiers sur %2$d exportés en clair dans %3$s. Les autres n\'ont pas pu être écrits : %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%1$d sur %2$d fichier exporté en clair dans %3$s. Les autres n\'ont pas pu être écrits : %4$s</item>
+        <item quantity="many">%1$d sur %2$d fichiers exportés en clair dans %3$s. Les autres n\'ont pas pu être écrits : %4$s</item>
+        <item quantity="other">%1$d sur %2$d fichiers exportés en clair dans %3$s. Les autres n\'ont pas pu être écrits : %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">le dossier</string>
     <string name="vault_exported_one">Exporté en clair</string>
     <string name="vault_details">Détails</string>
@@ -429,7 +441,11 @@
     <string name="downloads_empty_text">Appuyez sur le bouton de téléchargement d\'un post, ou appuyez de manière prolongée pour en sélectionner plusieurs.</string>
     <string name="batch_title">Collecte de « %1$s »</string>
     <string name="batch_everything">tout</string>
-    <string name="batch_progress">%1$s · %2$d trouvés sur %3$d au maximum</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · %2$d trouvé sur %3$d au maximum</item>
+        <item quantity="many">%1$s · %2$d trouvés sur %3$d au maximum</item>
+        <item quantity="other">%1$s · %2$d trouvés sur %3$d au maximum</item>
+    </plurals>
     <string name="batch_stop">Arrêter</string>
     <string name="task_queued">En attente</string>
     <string name="task_progress">%1$s sur %2$s</string>

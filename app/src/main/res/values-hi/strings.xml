@@ -162,12 +162,18 @@
     <string name="password_current">मौजूदा पासवर्ड</string>
     <string name="password_new">नया पासवर्ड</string>
     <string name="password_new_confirm">नए पासवर्ड की पुष्टि करें</string>
-    <string name="password_too_short">कम से कम %d वर्ण</string>
+    <plurals name="password_too_short">
+        <item quantity="one">कम से कम %d वर्ण</item>
+        <item quantity="other">कम से कम %d वर्ण</item>
+    </plurals>
     <string name="password_changed">पासवर्ड अपडेट हो गया</string>
     <string name="password_change_rekey_note">वॉल्ट की कुंजी भी बदल दी जाती है। फिर हर फ़ाइल पृष्ठभूमि में नई कुंजी से दोबारा सील की जाती है; जब तक यह पूरा नहीं होता, पुराने पासवर्ड से खोली गई वॉल्ट की पुरानी प्रति उन फ़ाइलों को पढ़ सकती है जो अभी दोबारा सील नहीं हुईं। बायोमेट्रिक अनलॉक बंद हो जाता है और फिर से चालू किया जा सकता है।</string>
     <string name="rekey_title">वॉल्ट को नई कुंजी से दोबारा सील किया जा रहा है</string>
     <string name="repad_title">आकार छिपाने के लिए फ़ाइलें फिर से सील की जा रही हैं</string>
-    <string name="rekey_progress">%2$d में से %1$d फ़ाइलें। लॉक करने पर रुकता है; अगला अनलॉक इसे फिर शुरू करता है।</string>
+    <plurals name="rekey_progress">
+        <item quantity="one">%2$d में से %1$d फ़ाइल। लॉक करने पर रुकता है; अगला अनलॉक इसे फिर शुरू करता है।</item>
+        <item quantity="other">%2$d में से %1$d फ़ाइलें। लॉक करने पर रुकता है; अगला अनलॉक इसे फिर शुरू करता है।</item>
+    </plurals>
     <string name="password_current_wrong">मौजूदा पासवर्ड गलत है</string>
     <string name="delete_vault_title">तिजोरी मिटाएं?</string>
     <string name="delete_vault_text">तिजोरी की सभी फ़ाइलें और उसकी कुंजी मिटा दी जाएंगी। उन्हें वापस पाने का कोई तरीका नहीं है।</string>
@@ -376,7 +382,10 @@
         <item quantity="one">%1$d फ़ाइल बिना एन्क्रिप्शन के एक्सपोर्ट हुई (%2$s में)</item>
         <item quantity="other">%1$d फ़ाइलें बिना एन्क्रिप्शन के एक्सपोर्ट हुईं (%2$s में)</item>
     </plurals>
-    <string name="vault_export_partial">%2$d में से %1$d फ़ाइलें बिना एन्क्रिप्शन के %3$s में एक्सपोर्ट हुईं। बाकी लिखी नहीं जा सकीं: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="one">%2$d में से %1$d फ़ाइलें बिना एन्क्रिप्शन के %3$s में एक्सपोर्ट हुईं। बाकी लिखी नहीं जा सकीं: %4$s</item>
+        <item quantity="other">%2$d में से %1$d फ़ाइलें बिना एन्क्रिप्शन के %3$s में एक्सपोर्ट हुईं। बाकी लिखी नहीं जा सकीं: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">फ़ोल्डर</string>
     <string name="vault_exported_one">बिना एन्क्रिप्शन के एक्सपोर्ट हुआ</string>
     <string name="vault_details">विवरण</string>
@@ -409,7 +418,10 @@
     <string name="downloads_empty_text">किसी पोस्ट पर डाउनलोड बटन टैप करें, या एक से ज़्यादा चुनने के लिए देर तक दबाएं।</string>
     <string name="batch_title">“%1$s” इकट्ठा किया जा रहा है</string>
     <string name="batch_everything">सब कुछ</string>
-    <string name="batch_progress">%1$s · ज़्यादा से ज़्यादा %3$d में से %2$d मिले</string>
+    <plurals name="batch_progress">
+        <item quantity="one">%1$s · ज़्यादा से ज़्यादा %3$d में से %2$d मिला</item>
+        <item quantity="other">%1$s · ज़्यादा से ज़्यादा %3$d में से %2$d मिले</item>
+    </plurals>
     <string name="batch_stop">रोकें</string>
     <string name="task_queued">कतार में</string>
     <string name="task_progress">%2$s में से %1$s</string>

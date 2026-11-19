@@ -178,12 +178,26 @@
     <string name="password_current">كلمة المرور الحالية</string>
     <string name="password_new">كلمة المرور الجديدة</string>
     <string name="password_new_confirm">تأكيد كلمة المرور الجديدة</string>
-    <string name="password_too_short">%d أحرف على الأقل</string>
+    <plurals name="password_too_short">
+        <item quantity="zero">%d حرف على الأقل</item>
+        <item quantity="one">%d حرف على الأقل</item>
+        <item quantity="two">%d حرفين على الأقل</item>
+        <item quantity="few">%d أحرف على الأقل</item>
+        <item quantity="many">%d حرفًا على الأقل</item>
+        <item quantity="other">%d حرف على الأقل</item>
+    </plurals>
     <string name="password_changed">تم تحديث كلمة المرور</string>
     <string name="password_change_rekey_note">يُستبدل مفتاح الخزنة أيضًا. ثم يُعاد ختم كل ملف بالمفتاح الجديد في الخلفية؛ وحتى يكتمل ذلك، يمكن لنسخة قديمة من الخزنة فُتحت بكلمة المرور القديمة أن تقرأ الملفات التي لم يُعَد ختمها بعد. يُعطَّل فتح القفل بالقياسات الحيوية ويمكن تفعيله مجددًا.</string>
     <string name="rekey_title">إعادة ختم الخزنة بمفتاحها الجديد</string>
     <string name="repad_title">تتم إعادة ختم الملفات لإخفاء أحجامها</string>
-    <string name="rekey_progress">%1$d من %2$d ملفًا. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</string>
+    <plurals name="rekey_progress">
+        <item quantity="zero">%1$d من %2$d ملف. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+        <item quantity="one">%1$d من %2$d ملف. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+        <item quantity="two">%1$d من %2$d ملفين. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+        <item quantity="few">%1$d من %2$d ملفات. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+        <item quantity="many">%1$d من %2$d ملفًا. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+        <item quantity="other">%1$d من %2$d ملف. القفل يوقفها مؤقتًا؛ وفتح القفل التالي يستأنفها.</item>
+    </plurals>
     <string name="password_current_wrong">كلمة المرور الحالية غير صحيحة</string>
     <string name="delete_vault_title">حذف الخزنة؟</string>
     <string name="delete_vault_text">سيتم محو جميع ملفات الخزنة ومفتاحها. ولا توجد أي طريقة لاستعادتها.</string>
@@ -444,7 +458,14 @@
         <item quantity="many">تم تصدير %1$d ملفًا دون تشفير إلى %2$s</item>
         <item quantity="other">تم تصدير %1$d ملف دون تشفير إلى %2$s</item>
     </plurals>
-    <string name="vault_export_partial">تم تصدير %1$d من %2$d ملفًا دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="zero">تم تصدير %1$d من %2$d ملف دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+        <item quantity="one">تم تصدير %1$d من %2$d ملف دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+        <item quantity="two">تم تصدير %1$d من %2$d ملفين دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+        <item quantity="few">تم تصدير %1$d من %2$d ملفات دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+        <item quantity="many">تم تصدير %1$d من %2$d ملفًا دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+        <item quantity="other">تم تصدير %1$d من %2$d ملف دون تشفير إلى %3$s. تعذّرت كتابة البقية: %4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">المجلد</string>
     <string name="vault_exported_one">تم التصدير دون تشفير</string>
     <string name="vault_details">التفاصيل</string>
@@ -489,7 +510,14 @@
     <string name="downloads_empty_text">انقر على زر التنزيل في أي منشور، أو اضغط مطولًا لتحديد أكثر من منشور.</string>
     <string name="batch_title">جارٍ جمع «%1$s»</string>
     <string name="batch_everything">كل شيء</string>
-    <string name="batch_progress">%1$s · تم العثور على %2$d من %3$d كحد أقصى</string>
+    <plurals name="batch_progress">
+        <item quantity="zero">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+        <item quantity="one">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+        <item quantity="two">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+        <item quantity="few">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+        <item quantity="many">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+        <item quantity="other">%1$s · تم العثور على %2$d من %3$d كحد أقصى</item>
+    </plurals>
     <string name="batch_stop">إيقاف</string>
     <string name="task_queued">في قائمة الانتظار</string>
     <string name="task_progress">%1$s من %2$s</string>

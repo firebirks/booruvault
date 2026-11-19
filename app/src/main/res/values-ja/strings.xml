@@ -158,12 +158,16 @@
     <string name="password_current">現在のパスワード</string>
     <string name="password_new">新しいパスワード</string>
     <string name="password_new_confirm">新しいパスワード（確認）</string>
-    <string name="password_too_short">%d 文字以上</string>
+    <plurals name="password_too_short">
+        <item quantity="other">%d 文字以上</item>
+    </plurals>
     <string name="password_changed">パスワードを更新しました</string>
     <string name="password_change_rekey_note">保管庫の鍵も置き換えられます。その後、すべてのファイルがバックグラウンドで新しい鍵で封印し直されます。完了するまでは、古いパスワードで開いた保管庫の古いコピーから、まだ封印し直されていないファイルを読める可能性があります。生体認証によるロック解除はオフになり、再度オンにできます。</string>
     <string name="rekey_title">保管庫を新しい鍵で封印し直しています</string>
     <string name="repad_title">サイズを隠すためにファイルを封印し直しています</string>
-    <string name="rekey_progress">%2$d件中%1$d件。ロックすると一時停止し、次のロック解除で再開します。</string>
+    <plurals name="rekey_progress">
+        <item quantity="other">%2$d件中%1$d件。ロックすると一時停止し、次のロック解除で再開します。</item>
+    </plurals>
     <string name="password_current_wrong">現在のパスワードが正しくありません</string>
     <string name="delete_vault_title">保管庫を削除しますか？</string>
     <string name="delete_vault_text">保管庫のすべてのファイルとその鍵が消去されます。復元する方法はありません。</string>
@@ -359,7 +363,9 @@
     <plurals name="vault_exported_to">
         <item quantity="other">%1$d 件のファイルを暗号化せずにエクスポートしました（%2$s へ）</item>
     </plurals>
-    <string name="vault_export_partial">%2$d 件中 %1$d 件のファイルを暗号化せずに %3$s へエクスポートしました。残りは書き込めませんでした：%4$s</string>
+    <plurals name="vault_export_partial">
+        <item quantity="other">%2$d 件中 %1$d 件のファイルを暗号化せずに %3$s へエクスポートしました。残りは書き込めませんでした：%4$s</item>
+    </plurals>
     <string name="vault_export_folder_fallback">選んだフォルダー</string>
     <string name="vault_exported_one">暗号化せずにエクスポートしました</string>
     <string name="vault_details">詳細</string>
@@ -389,7 +395,9 @@
     <string name="downloads_empty_text">投稿のダウンロードボタンをタップするか、長押しして複数選択してください。</string>
     <string name="batch_title">「%1$s」を収集中</string>
     <string name="batch_everything">すべて</string>
-    <string name="batch_progress">%1$s · %2$d 件発見（最大 %3$d 件）</string>
+    <plurals name="batch_progress">
+        <item quantity="other">%1$s · %2$d 件発見（最大 %3$d 件）</item>
+    </plurals>
     <string name="batch_stop">停止</string>
     <string name="task_queued">待機中</string>
     <string name="task_progress">%1$s / %2$s</string>
