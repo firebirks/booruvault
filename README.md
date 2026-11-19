@@ -9,7 +9,11 @@ The interface follows the phone's language, with English as the fallback. See [L
 ## Installing
 
 - **Obtainium:** add `https://github.com/firebirks/booruvault` as a source; it installs the APK attached to each release and follows later ones.
-- **F-Droid client:** add the repository `https://firebirks.github.io/booruvault/fdroid/repo` with fingerprint `0DDEB006B5340592AAFC96349364A69DE0485FD1723572D7B3884414A510531A`. It carries the same APK as the release.
+- **F-Droid client:** add the repository `https://firebirks.github.io/booruvault/fdroid/repo` with fingerprint `0DDEB006B5340592AAFC96349364A69DE0485FD1723572D7B3884414A510531A`. It carries the same APK as the release. In the client, under Settings > Repositories, the add button can scan this code, which holds the address and the fingerprint together:
+
+  <img src="docs/fdroid-repo-qr.svg" alt="QR code of the BooruVault F-Droid repository, with its fingerprint" width="200">
+
+  The same, as a link to paste: `https://firebirks.github.io/booruvault/fdroid/repo?fingerprint=0DDEB006B5340592AAFC96349364A69DE0485FD1723572D7B3884414A510531A`
 - **By hand:** download `booruvault-<version>.apk` from the [releases](https://github.com/firebirks/booruvault/releases); its SHA-256 is next to it.
 
 All three are signed with the same key, so updates install over each other. A build from F-Droid's own repository, when there is one, is signed by F-Droid and will not update an APK from here, nor the other way round.
