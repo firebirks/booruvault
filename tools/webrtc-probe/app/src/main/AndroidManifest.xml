@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- As the app has it: WebRTC gathers its candidates as it would there. Nothing goes out:
+         the page names no STUN server, and loads nothing from the network. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application android:label="BooruVault WebRTC probe">
+        <activity
+            android:name=".ProbeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
