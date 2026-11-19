@@ -4,7 +4,7 @@ All notable changes to BooruVault. The format follows [Keep a Changelog](https:/
 
 Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
 
-## [Unreleased]
+## [0.6.0] - 2026-11-19
 
 ### Changed
 - The release is built by workflows whose actions are pinned to the commits of their releases, and `fdroidserver` to a version, on `ubuntu-24.04`: a tag moved to other code no longer runs next to the signing keys.
@@ -160,6 +160,7 @@ First release.
 - A built-in browser for logins and anti-bot checks.
 - 20 languages.
 
+[0.6.0]: https://github.com/firebirks/booruvault/releases/tag/v0.6.0
 [0.5.0]: https://github.com/firebirks/booruvault/releases/tag/v0.5.0
 [0.4.0]: https://github.com/firebirks/booruvault/releases/tag/v0.4.0
 [0.3.2]: https://github.com/firebirks/booruvault/releases/tag/v0.3.2
