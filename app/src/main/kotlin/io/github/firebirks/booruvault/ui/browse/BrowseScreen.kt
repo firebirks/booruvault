@@ -4,6 +4,7 @@ import io.github.firebirks.booruvault.net.TorState
 import java.util.UUID
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import io.github.firebirks.booruvault.vault.TagCollection
+import io.github.firebirks.booruvault.vault.TagQuery
 import io.github.firebirks.booruvault.ui.vault.CollectionDialog
 import androidx.compose.ui.platform.LocalResources
 import io.github.firebirks.booruvault.ui.common.problemText
@@ -388,7 +389,8 @@ fun BrowseScreen(onOpenPost: (Int) -> Unit, onNeedVault: () -> Unit, onOpenConte
     if (saveSearch) {
         CollectionDialog(
             initial = null,
-            prefillQuery = vm.input.text,
+            // In the vault's language: the board's metatags and ratings do not all mean there what they mean here.
+            prefillQuery = TagQuery.fromSearch(vm.input.text, state.source?.engine),
             onDismiss = { saveSearch = false },
             onSave = { name, query ->
                 saveSearch = false

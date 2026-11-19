@@ -1,5 +1,6 @@
 package io.github.firebirks.booruvault.vault
 
+import io.github.firebirks.booruvault.booru.BooruEngine
 import io.github.firebirks.booruvault.booru.Rating
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -50,6 +51,39 @@ class TagQueryTest {
     @Test
     fun everythingMatchesAnEmptyQuery() {
         assertEquals(items.map { it.id }, ids("  "))
+    }
+
+    @Test
+    fun aSearchFromABoardDropsWhatTheVaultDoesNotKeep() {
+        assertEquals("landscape", TagQuery.fromSearch("landscape order:score", BooruEngine.DANBOORU))
+        assertEquals("cat -dog", TagQuery.fromSearch("cat -dog score:>100 -user:someone sort:score:desc limit:40", BooruEngine.GELBOORU))
+        assertEquals("cat", TagQuery.fromSearch("cat source:*pixiv*", BooruEngine.DANBOORU))
+        // Saved from the search, the collection holds the items the search found.
+        assertEquals(listOf("a", "b"), ids(TagQuery.fromSearch("landscape order:rank id:>100", BooruEngine.DANBOORU)))
+    }
+
+    @Test
+    fun aBoardsRatingsAreNamedInFullAsTheBoardMeansThem() {
+        assertEquals("cat rating:sensitive", TagQuery.fromSearch("cat rating:s", BooruEngine.DANBOORU))
+        assertEquals("cat rating:general", TagQuery.fromSearch("cat rating:s", BooruEngine.MOEBOORU))
+        assertEquals("cat rating:general", TagQuery.fromSearch("cat rating:safe", BooruEngine.E621))
+        assertEquals("-rating:questionable,explicit", TagQuery.fromSearch("-rating:q,e", BooruEngine.DANBOORU))
+        assertEquals(listOf("c"), ids(TagQuery.fromSearch("rating:s", BooruEngine.DANBOORU)))
+        assertEquals("cat", TagQuery.fromSearch("cat rating:nonsense", BooruEngine.DANBOORU))
+    }
+
+    @Test
+    fun aBoardsFileTypesBecomeKinds() {
+        assertEquals("type:video", TagQuery.fromSearch("filetype:mp4,webm", BooruEngine.DANBOORU))
+        assertEquals("-type:gif", TagQuery.fromSearch("-type:gif", BooruEngine.E621))
+        // Kinds the vault tells apart from each other cannot be held by one term: dropped.
+        assertEquals("cat", TagQuery.fromSearch("cat filetype:png,gif", BooruEngine.DANBOORU))
+        assertEquals(listOf("d"), ids(TagQuery.fromSearch("filetype:webm", BooruEngine.DANBOORU)))
+    }
+
+    @Test
+    fun tagsWithAColonAndAlternativesAreKeptAsTheyAre() {
+        assertEquals("re:zero ~cat ~dog :o", TagQuery.fromSearch("  re:zero  ~cat ~dog :o ", BooruEngine.DANBOORU))
     }
 }
 
