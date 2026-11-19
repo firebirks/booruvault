@@ -9,15 +9,17 @@ on:
 permissions:
   contents: write
 
+# Actions are pinned to the commit of the release named beside each, and fdroidserver to its
+# version: a tag can be moved to other code, a commit cannot.
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # Gradle's cache comes from setup-java: from v6 on, setup-gradle keeps its cache in a
       # proprietary component, so only the wrapper check is taken from gradle/actions.
-      - uses: gradle/actions/wrapper-validation@v6
-      - uses: actions/setup-java@v6
+      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           distribution: temurin
           java-version: 17
@@ -70,18 +72,18 @@ jobs:
   # left alone, only fdroid/repo is rewritten.
   fdroid:
     needs: release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: gh-pages
           path: pages
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
       - name: Install fdroidserver
-        run: pip install fdroidserver
+        run: pip install fdroidserver==2.4.5
       - name: Lay out the repository working directory
         env:
           GH_TOKEN: ${{ github.token }}
