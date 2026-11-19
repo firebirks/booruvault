@@ -75,14 +75,37 @@ object TagQuery {
     }
 
     /**
-     * The exact query that shows what the [loose] one does: each plain word becomes `*word*`.
-     * Terms that already narrow, or carry a wildcard, are left as they are.
+     * The exact query that shows what the [loose] one does: each plain word becomes `*word*`,
+     * a word with a colon in it included, as "re:zero" is found inside tags as any word is. Only
+     * the terms that narrow, `type:`, `source:` and `rating:`, which mean the same loose or
+     * exact, and words that already carry a wildcard, are left as they are.
      */
-    fun widened(query: String): String = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }.joinToString(" ") { term ->
+    fun widened(query: String): String = terms(query).joinToString(" ") { term ->
         val prefix = term.takeWhile { it == '-' || it == '~' }.take(1)
         val word = term.drop(prefix.length)
-        if (word.isEmpty() || ':' in word || '*' in word) term else "$prefix*$word*"
+        if (word.isEmpty() || NARROWING.any { word.startsWith(it, ignoreCase = true) } || '*' in word) term else "$prefix*$word*"
     }
+
+    /**
+     * The query of a collection that holds what the [loose] [filter] shows within the collection
+     * whose query is [within], when one is looked at: the filter [widened], with the collection's
+     * own terms. Two sets of `~` alternatives cannot be kept apart once together, as the language
+     * has no grouping; then the filter alone, widened.
+     */
+    fun savedFilter(filter: String, within: String?): String {
+        val widened = widened(filter)
+        if (within.isNullOrBlank() || widened.isEmpty()) return widened
+        val outer = terms(within)
+        val inner = terms(widened)
+        fun List<String>.hasAlternatives() = any { it.startsWith('~') && it.length > 1 }
+        if (outer.hasAlternatives() && inner.hasAlternatives()) return widened
+        return (outer + inner).distinct().joinToString(" ")
+    }
+
+    private fun terms(query: String): List<String> = query.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
+
+    /** Terms that narrow by what an item is, alike in the loose filter and in a collection. */
+    private val NARROWING = listOf("type:", "source:", "rating:")
 
     private fun term(term: String, loose: Boolean): (QuerySubject) -> Boolean = when {
         term.startsWith("type:") -> when (term.removePrefix("type:")) {

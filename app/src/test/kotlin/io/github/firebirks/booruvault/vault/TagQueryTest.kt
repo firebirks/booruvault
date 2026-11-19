@@ -129,4 +129,40 @@ class LooseTagQueryTest {
         assertEquals(listOf("c"), exact("lands*end"))
         assertEquals(listOf("d"), exact("-*land*"))
     }
+
+    @Test
+    fun aWordWithAColonIsWidenedLikeAnyOther() {
+        val shows = listOf(
+            item("rz", listOf("re:zero_kara_hajimeru_isekai_seikatsu", "emilia")),
+            item("other", listOf("zero_two")),
+        )
+        fun exactIn(query: String) = shows.filter(TagQuery.matcher(query)).map { it.id }
+        fun looseIn(query: String) = shows.filter(TagQuery.matcher(query, loose = true)).map { it.id }
+        assertEquals(listOf("rz"), looseIn("re:zero"))
+        assertEquals("*re:zero*", TagQuery.widened("re:zero"))
+        assertEquals(looseIn("re:zero"), exactIn(TagQuery.widened("re:zero")))
+        // The terms that narrow mean the same loose or exact, and are kept.
+        assertEquals("type:video -Rating:e source:dan", TagQuery.widened("type:video -Rating:e source:dan"))
+    }
+
+    @Test
+    fun aFilterSavedWithinACollectionHoldsWhatItShowedThere() {
+        val within = "landscape -rain"
+        val shown = items.filter(TagQuery.matcher(within)).filter(TagQuery.matcher("sky", loose = true)).map { it.id }
+        val saved = TagQuery.savedFilter("sky", within)
+        assertEquals("landscape -rain *sky*", saved)
+        assertEquals(shown, exact(saved))
+        // Filtering the same outside any collection gives the whole vault's.
+        assertEquals("*sky*", TagQuery.savedFilter("sky", null))
+        assertEquals(loose("sky"), exact(TagQuery.savedFilter("sky", null)))
+    }
+
+    @Test
+    fun twoSetsOfAlternativesCannotBeKeptApartAndTheFilterIsSavedAlone() {
+        assertEquals("~*cat* ~*dog*", TagQuery.savedFilter("~cat ~dog", "~landscape ~sky"))
+        // One set alone is no trouble.
+        assertEquals("~landscape ~sky *cat*", TagQuery.savedFilter("cat", "~landscape ~sky"))
+        assertEquals("", TagQuery.savedFilter("  ", "landscape"))
+    }
 }
+

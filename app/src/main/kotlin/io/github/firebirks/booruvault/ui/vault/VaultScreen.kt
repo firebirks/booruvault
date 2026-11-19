@@ -321,11 +321,11 @@ private fun VaultContents(onOpenItem: (String) -> Unit) {
     }
 
     creating?.let { prefill ->
-        // The query is the filter widened so that the collection holds what the filter showed;
-        // the name is the filter as typed, not its wildcards.
+        // The query is the filter widened so that the collection holds what the filter showed,
+        // within the collection looked at, if any; the name is the filter as typed, not its wildcards.
         CollectionDialog(
             initial = null,
-            prefillQuery = TagQuery.widened(prefill),
+            prefillQuery = TagQuery.savedFilter(prefill, collections.firstOrNull { it.id == vm.collectionId }?.query),
             prefillName = prefill,
             onDismiss = { creating = null },
             onSave = { name, query ->

@@ -4,6 +4,11 @@ All notable changes to BooruVault. The format follows [Keep a Changelog](https:/
 
 Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
 
+## [Unreleased]
+
+### Fixed
+- A filter of the vault saved as a collection holds what the filter showed. A word with a colon in it, as `re:zero`, which the filter finds inside tags as any word, was saved as an exact tag; and a filter saved while a collection was looked at made a collection of the whole vault, without that collection's terms.
+
 ## [0.6.0] - 2026-11-19
 
 ### Changed
