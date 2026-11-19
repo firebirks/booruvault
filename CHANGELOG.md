@@ -7,6 +7,7 @@ Each release also has a short text, at most 500 characters, in `fastlane/metadat
 ## [Unreleased]
 
 ### Changed
+- The release is built by workflows whose actions are pinned to the commits of their releases, and `fdroidserver` to a version, on `ubuntu-24.04`: a tag moved to other code no longer runs next to the signing keys.
 - Each line of the blacklist is a rule written as a search, in the language of the vault's collections: `-tag` excludes, `~tag` marks alternatives, `*` stands for any letters, and `rating:` takes the initials `g`, `s`, `q`, `e` and `u` or several with commas. Only whole tags and `rating:` in full were understood, so a rule like `rating:e` or `cat -solo` was taken word for word and never hid anything. Rules written before keep hiding what they hid.
 - In the vault's filter and collections, `rating:s` is sensitive, as the app's ratings are labelled, and no longer general; `safe` in full is still general.
 - Turning on Unrated in the content filter first asks you to confirm that you are an adult, as questionable and explicit do: a site that gives no ratings, Shimmie or a plain web page, lets its explicit posts through with the rest.
