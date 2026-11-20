@@ -534,7 +534,7 @@
     <string name="collection_edit">Modifica collezione</string>
     <string name="collection_name">Nome</string>
     <string name="collection_tags">Tag</string>
-    <string name="collection_tags_hint">Tag esatti, come sui booru: -tag esclude, ~tag per alternative, * come jolly. Anche type:video, type:gif, type:image, source:nome e rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Tag esatti, come sui booru: -tag esclude, ~tag per alternative, * come jolly. Anche type:video, type:gif, type:image, source:nome e rating:g, s, q, e, u (Generale, Sensibile, Discutibile, Esplicito, Senza rating), più valori separati da virgole: rating:q,e.</string>
     <string name="collection_save">Salva come collezione</string>
     <string name="collection_delete_title">Eliminare la collezione «%1$s»?</string>
     <string name="collection_delete_text">Si elimina solo la collezione: i file restano nel vault.</string>

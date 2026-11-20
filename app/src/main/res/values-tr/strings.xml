@@ -507,7 +507,7 @@
     <string name="collection_edit">Koleksiyonu düzenle</string>
     <string name="collection_name">Ad</string>
     <string name="collection_tags">Etiketler</string>
-    <string name="collection_tags_hint">Boorulardaki gibi tam etiketler: -tag hariç tutar, ~tag alternatifler içindir, * joker karakterdir. Ayrıca type:video, type:gif, type:image, source:ad ve rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Boorulardaki gibi tam etiketler: -tag hariç tutar, ~tag alternatifler içindir, * joker karakterdir. Ayrıca type:video, type:gif, type:image, source:ad ve rating:g, s, q, e, u (Genel, Hassas, Şüpheli, Müstehcen, Derecelendirmesiz), birden fazlası virgülle: rating:q,e.</string>
     <string name="collection_save">Koleksiyon olarak kaydet</string>
     <string name="collection_delete_title">“%1$s” koleksiyonu silinsin mi?</string>
     <string name="collection_delete_text">Yalnızca koleksiyon kaldırılır: dosyaları kasada kalır.</string>

@@ -561,7 +561,7 @@
     <string name="collection_edit">Изменить коллекцию</string>
     <string name="collection_name">Название</string>
     <string name="collection_tags">Теги</string>
-    <string name="collection_tags_hint">Точные теги, как на booru-сайтах: -tag исключает, ~tag задаёт альтернативы, * — подстановочный знак. Также type:video, type:gif, type:image, source:название и rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Точные теги, как на booru-сайтах: -tag исключает, ~tag задаёт альтернативы, * — подстановочный знак. Также type:video, type:gif, type:image, source:название и rating:g, s, q, e, u (Общий, Чувствительный, Сомнительный, Откровенный, Без рейтинга), несколько через запятую: rating:q,e.</string>
     <string name="collection_save">Сохранить как коллекцию</string>
     <string name="collection_delete_title">Удалить коллекцию «%1$s»?</string>
     <string name="collection_delete_text">Удаляется только коллекция: её файлы остаются в хранилище.</string>

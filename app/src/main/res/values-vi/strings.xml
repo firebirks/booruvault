@@ -480,7 +480,7 @@
     <string name="collection_edit">Sửa bộ sưu tập</string>
     <string name="collection_name">Tên</string>
     <string name="collection_tags">Thẻ</string>
-    <string name="collection_tags_hint">Thẻ chính xác, như trên các booru: -tag để loại trừ, ~tag cho các lựa chọn thay thế, * làm ký tự đại diện. Ngoài ra còn có type:video, type:gif, type:image, source:tên và rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Thẻ chính xác, như trên các booru: -tag để loại trừ, ~tag cho các lựa chọn thay thế, * làm ký tự đại diện. Ngoài ra còn có type:video, type:gif, type:image, source:tên và rating:g, s, q, e, u (Phổ thông, Nhạy cảm, Khêu gợi, Người lớn, Chưa phân loại), nhiều giá trị cách nhau bằng dấu phẩy: rating:q,e.</string>
     <string name="collection_save">Lưu thành bộ sưu tập</string>
     <string name="collection_delete_title">Xóa bộ sưu tập “%1$s”?</string>
     <string name="collection_delete_text">Chỉ bộ sưu tập bị xóa: các tệp của nó vẫn ở trong kho.</string>

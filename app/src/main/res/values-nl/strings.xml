@@ -507,7 +507,7 @@
     <string name="collection_edit">Verzameling bewerken</string>
     <string name="collection_name">Naam</string>
     <string name="collection_tags">Tags</string>
-    <string name="collection_tags_hint">Exacte tags, zoals op de boorus: -tag sluit uit, ~tag voor alternatieven, * als jokerteken. Ook type:video, type:gif, type:image, source:naam en rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Exacte tags, zoals op de boorus: -tag sluit uit, ~tag voor alternatieven, * als jokerteken. Ook type:video, type:gif, type:image, source:naam en rating:g, s, q, e, u (Algemeen, Gevoelig, Twijfelachtig, Expliciet, Niet geclassificeerd), meerdere gescheiden door een komma: rating:q,e.</string>
     <string name="collection_save">Opslaan als verzameling</string>
     <string name="collection_delete_title">Verzameling ‘%1$s’ verwijderen?</string>
     <string name="collection_delete_text">Alleen de verzameling wordt verwijderd: de bestanden ervan blijven in de kluis.</string>

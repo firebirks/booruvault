@@ -480,7 +480,7 @@
     <string name="collection_edit">コレクションを編集</string>
     <string name="collection_name">名前</string>
     <string name="collection_tags">タグ</string>
-    <string name="collection_tags_hint">booru と同じ正確なタグを使います：-tag で除外、~tag でいずれかに一致、* でワイルドカード。type:video、type:gif、type:image、source:名前、rating:general|sensitive|questionable|explicit も使えます。</string>
+    <string name="collection_tags_hint">booru と同じ正確なタグを使います：-tag で除外、~tag でいずれかに一致、* でワイルドカード。type:video、type:gif、type:image、source:名前、rating:g, s, q, e, u（一般、センシティブ、際どい、成人向け、レーティングなし）、複数はカンマ区切り：rating:q,e も使えます。</string>
     <string name="collection_save">コレクションとして保存</string>
     <string name="collection_delete_title">コレクション「%1$s」を削除しますか？</string>
     <string name="collection_delete_text">削除されるのはコレクションだけです。ファイルは保管庫に残ります。</string>

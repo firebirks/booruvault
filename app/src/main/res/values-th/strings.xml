@@ -480,7 +480,7 @@
     <string name="collection_edit">แก้ไขคอลเลกชัน</string>
     <string name="collection_name">ชื่อ</string>
     <string name="collection_tags">แท็ก</string>
-    <string name="collection_tags_hint">แท็กแบบตรงตัว เหมือนบน booru: -tag ใช้ไม่รวม, ~tag ใช้ระบุทางเลือก (อย่างใดอย่างหนึ่ง), * ใช้เป็นไวลด์การ์ด นอกจากนี้ยังมี type:video, type:gif, type:image, source:ชื่อ และ rating:general|sensitive|questionable|explicit</string>
+    <string name="collection_tags_hint">แท็กแบบตรงตัว เหมือนบน booru: -tag ใช้ไม่รวม, ~tag ใช้ระบุทางเลือก (อย่างใดอย่างหนึ่ง), * ใช้เป็นไวลด์การ์ด นอกจากนี้ยังมี type:video, type:gif, type:image, source:ชื่อ และ rating:g, s, q, e, u (ทั่วไป, ละเอียดอ่อน, ล่อแหลม, โจ่งแจ้ง, ไม่มีเรต), หลายค่าคั่นด้วยจุลภาค: rating:q,e</string>
     <string name="collection_save">บันทึกเป็นคอลเลกชัน</string>
     <string name="collection_delete_title">ลบคอลเลกชัน “%1$s” ใช่ไหม</string>
     <string name="collection_delete_text">จะลบเฉพาะคอลเลกชันเท่านั้น: ไฟล์ยังคงอยู่ในคลังนิรภัย</string>

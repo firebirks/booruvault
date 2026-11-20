@@ -507,7 +507,7 @@
     <string name="collection_edit">संग्रह बदलें</string>
     <string name="collection_name">नाम</string>
     <string name="collection_tags">टैग</string>
-    <string name="collection_tags_hint">सटीक टैग, जैसे booru पर होते हैं: -tag बाहर रखता है, ~tag वैकल्पिक टैग के लिए, * वाइल्डकार्ड के रूप में। साथ ही type:video, type:gif, type:image, source:नाम और rating:general|sensitive|questionable|explicit भी।</string>
+    <string name="collection_tags_hint">सटीक टैग, जैसे booru पर होते हैं: -tag बाहर रखता है, ~tag वैकल्पिक टैग के लिए, * वाइल्डकार्ड के रूप में। साथ ही type:video, type:gif, type:image, source:नाम और rating:g, s, q, e, u (सामान्य, संवेदनशील, संदिग्ध, अश्लील, बिना रेटिंग), कई एक साथ अल्पविराम से: rating:q,e भी।</string>
     <string name="collection_save">संग्रह के रूप में सेव करें</string>
     <string name="collection_delete_title">संग्रह “%1$s” मिटाएं?</string>
     <string name="collection_delete_text">सिर्फ़ संग्रह हटाया जाता है: उसकी फ़ाइलें तिजोरी में ही रहती हैं।</string>

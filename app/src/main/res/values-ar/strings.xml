@@ -615,7 +615,7 @@
     <string name="collection_edit">تعديل المجموعة</string>
     <string name="collection_name">الاسم</string>
     <string name="collection_tags">الوسوم</string>
-    <string name="collection_tags_hint">وسوم بصيغتها الدقيقة كما في مواقع booru: &#x200E;-tag للاستبعاد، و&#x200E;~tag للبدائل، و* كحرف بدل. ويمكن أيضًا استخدام type:video وtype:gif وtype:image وsource:name وrating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">وسوم بصيغتها الدقيقة كما في مواقع booru: &#x200E;-tag للاستبعاد، و&#x200E;~tag للبدائل، و* كحرف بدل. ويمكن أيضًا استخدام type:video وtype:gif وtype:image وsource:name وrating:g، s، q، e، u (عام، حسّاس، مشكوك فيه، صريح، بدون تصنيف) وعدة تصنيفات مفصولة بفواصل: rating:q,e.</string>
     <string name="collection_save">حفظ كمجموعة</string>
     <string name="collection_delete_title">حذف المجموعة «%1$s»؟</string>
     <string name="collection_delete_text">تُزال المجموعة وحدها: تبقى ملفاتها في الخزنة.</string>

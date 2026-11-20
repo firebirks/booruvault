@@ -507,7 +507,7 @@
     <string name="collection_edit">Sammlung bearbeiten</string>
     <string name="collection_name">Name</string>
     <string name="collection_tags">Tags</string>
-    <string name="collection_tags_hint">Exakte Tags wie auf den Boorus: -tag schließt aus, ~tag für Alternativen, * als Platzhalter. Außerdem type:video, type:gif, type:image, source:name und rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Exakte Tags wie auf den Boorus: -tag schließt aus, ~tag für Alternativen, * als Platzhalter. Außerdem type:video, type:gif, type:image, source:name und rating:g, s, q, e, u (Allgemein, Sensibel, Fragwürdig, Explizit, Nicht eingestuft), mehrere mit Kommas: rating:q,e.</string>
     <string name="collection_save">Als Sammlung speichern</string>
     <string name="collection_delete_title">Sammlung „%1$s“ löschen?</string>
     <string name="collection_delete_text">Nur die Sammlung wird gelöscht: Die Dateien darin bleiben im Tresor.</string>

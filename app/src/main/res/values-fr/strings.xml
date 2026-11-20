@@ -534,7 +534,7 @@
     <string name="collection_edit">Modifier la collection</string>
     <string name="collection_name">Nom</string>
     <string name="collection_tags">Tags</string>
-    <string name="collection_tags_hint">Tags exacts, comme sur les boorus : -tag exclut, ~tag pour les alternatives, * comme joker. Également : type:video, type:gif, type:image, source:nom et rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Tags exacts, comme sur les boorus : -tag exclut, ~tag pour les alternatives, * comme joker. Également : type:video, type:gif, type:image, source:nom et rating:g, s, q, e, u (Général, Sensible, Douteux, Explicite, Non classé), plusieurs séparées par des virgules: rating:q,e.</string>
     <string name="collection_save">Enregistrer comme collection</string>
     <string name="collection_delete_title">Supprimer la collection « %1$s » ?</string>
     <string name="collection_delete_text">Seule la collection est supprimée : ses fichiers restent dans le coffre.</string>

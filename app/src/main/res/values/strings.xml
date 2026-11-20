@@ -514,7 +514,7 @@
     <string name="collection_edit">Edit collection</string>
     <string name="collection_name">Name</string>
     <string name="collection_tags">Tags</string>
-    <string name="collection_tags_hint">Exact tags, as on the boorus: -tag excludes, ~tag for alternatives, * as a wildcard. Also type:video, type:gif, type:image, source:name and rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Exact tags, as on the boorus: -tag excludes, ~tag for alternatives, * as a wildcard. Also type:video, type:gif, type:image, source:name and rating:g, s, q, e, u (General, Sensitive, Questionable, Explicit, Unrated), several with commas: rating:q,e.</string>
     <string name="collection_save">Save as a collection</string>
     <string name="collection_delete_title">Delete the collection “%1$s”?</string>
     <string name="collection_delete_text">Only the collection is removed: its files stay in the vault.</string>

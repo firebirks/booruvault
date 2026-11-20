@@ -480,7 +480,7 @@
     <string name="collection_edit">編輯收藏集</string>
     <string name="collection_name">名稱</string>
     <string name="collection_tags">標籤</string>
-    <string name="collection_tags_hint">與 booru 上相同的精確標籤：-tag 表示排除，~tag 表示替代選項（符合其一即可），* 為萬用字元。另外也支援 type:video、type:gif、type:image、source:名稱 和 rating:general|sensitive|questionable|explicit。</string>
+    <string name="collection_tags_hint">與 booru 上相同的精確標籤：-tag 表示排除，~tag 表示替代選項（符合其一即可），* 為萬用字元。另外也支援 type:video、type:gif、type:image、source:名稱 和 rating:g, s, q, e, u（一般、敏感、存疑、露骨、未分級）、多個以逗號分隔：rating:q,e。</string>
     <string name="collection_save">儲存為收藏集</string>
     <string name="collection_delete_title">要刪除收藏集「%1$s」嗎？</string>
     <string name="collection_delete_text">只會刪除收藏集：其中的檔案仍會保留在保險庫中。</string>

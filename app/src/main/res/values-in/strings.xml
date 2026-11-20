@@ -480,7 +480,7 @@
     <string name="collection_edit">Edit koleksi</string>
     <string name="collection_name">Nama</string>
     <string name="collection_tags">Tag</string>
-    <string name="collection_tags_hint">Tag persis seperti di booru: -tag untuk mengecualikan, ~tag untuk alternatif, * sebagai wildcard. Juga type:video, type:gif, type:image, source:nama, dan rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Tag persis seperti di booru: -tag untuk mengecualikan, ~tag untuk alternatif, * sebagai wildcard. Juga type:video, type:gif, type:image, source:nama, dan rating:g, s, q, e, u (Umum, Sensitif, Meragukan, Eksplisit, Tanpa rating), beberapa dipisahkan koma: rating:q,e.</string>
     <string name="collection_save">Simpan sebagai koleksi</string>
     <string name="collection_delete_title">Hapus koleksi “%1$s”?</string>
     <string name="collection_delete_text">Hanya koleksinya yang dihapus: file di dalamnya tetap ada di brankas.</string>

@@ -561,7 +561,7 @@
     <string name="collection_edit">Edytuj kolekcję</string>
     <string name="collection_name">Nazwa</string>
     <string name="collection_tags">Tagi</string>
-    <string name="collection_tags_hint">Dokładne tagi, jak w serwisach booru: -tag wyklucza, ~tag oznacza alternatywy, * to symbol wieloznaczny. Obsługiwane są też type:video, type:gif, type:image, source:nazwa i rating:general|sensitive|questionable|explicit.</string>
+    <string name="collection_tags_hint">Dokładne tagi, jak w serwisach booru: -tag wyklucza, ~tag oznacza alternatywy, * to symbol wieloznaczny. Obsługiwane są też type:video, type:gif, type:image, source:nazwa i rating:g, s, q, e, u (Ogólne, Wrażliwe, Wątpliwe, Dosadne, Bez klasyfikacji), kilka po przecinku: rating:q,e.</string>
     <string name="collection_save">Zapisz jako kolekcję</string>
     <string name="collection_delete_title">Usunąć kolekcję „%1$s”?</string>
     <string name="collection_delete_text">Usuwana jest tylko kolekcja: jej pliki pozostają w sejfie.</string>

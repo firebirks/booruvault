@@ -480,7 +480,7 @@
     <string name="collection_edit">编辑合集</string>
     <string name="collection_name">名称</string>
     <string name="collection_tags">标签</string>
-    <string name="collection_tags_hint">与 booru 上一致的精确标签：-tag 表示排除，~tag 表示备选（满足其一即可），* 为通配符。还支持 type:video、type:gif、type:image、source:名称 和 rating:general|sensitive|questionable|explicit。</string>
+    <string name="collection_tags_hint">与 booru 上一致的精确标签：-tag 表示排除，~tag 表示备选（满足其一即可），* 为通配符。还支持 type:video、type:gif、type:image、source:名称 和 rating:g, s, q, e, u（一般、敏感、存疑、露骨、未分级）、多个用逗号分隔：rating:q,e。</string>
     <string name="collection_save">保存为合集</string>
     <string name="collection_delete_title">删除合集“%1$s”？</string>
     <string name="collection_delete_text">只会删除合集：其中的文件仍保留在保险库中。</string>
