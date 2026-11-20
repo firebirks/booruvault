@@ -4,7 +4,7 @@ All notable changes to BooruVault. The format follows [Keep a Changelog](https:/
 
 Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
 
-## [Unreleased]
+## [0.6.1] - 2026-11-20
 
 ### Changed
 - Built against Android 17's SDK (compileSdk 37), which the current libraries ask for, with them brought up to date: OkHttp 5.5, Coil 3.6, the Compose BOM 2026.09, AndroidX Core 1.19, Activity 1.13, Lifecycle 2.11, Fragment 1.9, Media3 1.11, kotlinx.serialization 1.13, BouncyCastle 1.87 and jsoup 1.24; the build itself on Gradle 9.9, the Android Gradle plugin 9.5 and Kotlin 2.4.21. The app still targets Android 16.
@@ -176,6 +176,7 @@ First release.
 - A built-in browser for logins and anti-bot checks.
 - 20 languages.
 
+[0.6.1]: https://github.com/firebirks/booruvault/releases/tag/v0.6.1
 [0.6.0]: https://github.com/firebirks/booruvault/releases/tag/v0.6.0
 [0.5.0]: https://github.com/firebirks/booruvault/releases/tag/v0.5.0
 [0.4.0]: https://github.com/firebirks/booruvault/releases/tag/v0.4.0
