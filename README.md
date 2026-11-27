@@ -1,5 +1,11 @@
 # BooruVault
 
+[![Build](https://github.com/firebirks/booruvault/actions/workflows/build.yml/badge.svg)](https://github.com/firebirks/booruvault/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/firebirks/booruvault)](https://github.com/firebirks/booruvault/releases/latest)
+[![F-Droid repository](https://img.shields.io/badge/F--Droid-own_repository-1976D2)](https://firebirks.github.io/booruvault/fdroid/repo?fingerprint=0DDEB006B5340592AAFC96349364A69DE0485FD1723572D7B3884414A510531A)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3DDC84)
+
 Your collection, encrypted and reached through Tor. BooruVault is an Android app that browses booru image boards and keeps what you save in a vault only your password opens.
 
 Everything the app stores about you is encrypted: the files you download, your settings, your sources and their API keys, site cookies and the download queue. Downloads are sealed to the vault's public key as they stream, so they can land even while the vault is locked and plaintext never touches storage. Choose Tor at first start and every connection goes through it, by way of Orbot, with no direct fallback; what sites hand out along one route is never shown along the other.
