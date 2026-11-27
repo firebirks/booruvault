@@ -238,7 +238,7 @@ app/src/main/kotlin/io/github/firebirks/booruvault/
 └── util/
 ```
 
-`site/` is the project's web site: three pages of plain HTML and one stylesheet, with no scripts, web fonts or anything fetched from elsewhere, an azure palette with a light and a dark theme taken from the reader's system. It is not published yet; its screenshots are still to be taken.
+`site/` holds the page at the root of the project's Pages site, plain HTML with nothing fetched from elsewhere: the release workflow deploys it there, beside the F-Droid repository under `fdroid/repo`.
 
 ## Limitations
 
