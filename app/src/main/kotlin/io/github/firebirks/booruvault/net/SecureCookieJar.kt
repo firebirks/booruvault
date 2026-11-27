@@ -119,6 +119,7 @@ class SecureCookieJar(
                                     jar.kept += it.key()
                                 }
                                 jar.userAgents.putAll(share.userAgents)
+                                jar.dropAgentsWithoutCookies()
                             }
                             loaded = true
                         }
@@ -169,7 +170,7 @@ class SecureCookieJar(
         if (!loaded) return emptyList()
         val jar = jars.getValue(route)
         val now = System.currentTimeMillis()
-        jar.cookies.removeAll { it.expiresAt <= now }
+        if (jar.cookies.removeAll { it.expiresAt <= now }) jar.dropAgentsWithoutCookies()
         jar.cookies.filter { it.matches(url) }
     }
 
@@ -212,18 +213,21 @@ class SecureCookieJar(
     }
 
     /**
-     * Keeps what the user earned in the challenge WebView, which loaded along [route], for that
-     * route; then the WebView's own copy is wiped.
+     * Keeps what the user earned in the built-in browser, which loaded along [route], for that
+     * route; the browser's own copy goes with its session. The browser's [userAgent] goes with
+     * the site's cookies, and only with some: a visit that brought nothing back, a cookie read
+     * that failed among them, leaves the site's requests under their own name.
      */
     fun recordClearance(route: Route, host: String, userAgent: String, webCookies: List<Cookie>) {
         synchronized(lock) {
             if (!loaded) return
             val jar = jars.getValue(route)
-            jar.userAgents[siteOf(host)] = userAgent
+            val site = siteOf(host)
             webCookies.forEach {
                 jar.put(it)
                 jar.kept += it.key()
             }
+            if (jar.cookies.any { it.key() in jar.kept && siteOf(it.domain) == site }) jar.userAgents[site] = userAgent
         }
         saves.trySend(Unit)
     }
@@ -241,28 +245,48 @@ class SecureCookieJar(
         }
     }
 
-    /** The kept cookies of [route] for [url], as Set-Cookie strings for the hidden browser. */
-    fun browserCookies(route: Route, url: HttpUrl): List<String> = synchronized(lock) {
+    /** The kept cookies of [route] for [url], for the hidden browser's session. */
+    fun keptCookies(route: Route, url: HttpUrl): List<Cookie> = synchronized(lock) {
         if (!loaded) return emptyList()
         val jar = jars.getValue(route)
-        jar.cookies.filter { it.key() in jar.kept && it.matches(url) }.map { it.toString() }
+        jar.cookies.filter { it.key() in jar.kept && it.matches(url) }
     }
 
     /**
-     * Keeps what a hidden visit along [route] renewed: cookies already kept and a fresh clearance.
+     * Keeps what a hidden visit to [host] along [route] renewed. A cookie already kept, the very
+     * one by name, domain and path, takes the visit's value within the scope and the deadline
+     * its copy had, as when the site renews it in an answer. A clearance the visit earned is a
+     * new pass, if the visit [settled] on a page of the site's own: kept as it is, with
+     * [userAgent], the name it was earned under and is bound to. One from a visit that ended on a
+     * check, an error or a wait run out is the one Cloudflare sets while its check is still on.
      * Whatever else the site set during the visit is not kept.
      */
-    fun renewFromBrowser(route: Route, host: String, webCookies: List<Cookie>) {
-        val renewed = synchronized(lock) {
+    fun renewFromBrowser(route: Route, host: String, userAgent: String, webCookies: List<Cookie>, settled: Boolean) {
+        val site = siteOf(host)
+        val changed = synchronized(lock) {
             if (!loaded) return
             val jar = jars.getValue(route)
-            val keptNames = jar.cookies.filter { it.key() in jar.kept }.mapTo(HashSet()) { it.name }
-            webCookies.filter { it.name in keptNames || it.name == Challenge.CLEARANCE_COOKIE }.onEach {
-                jar.put(it)
-                jar.kept += it.key()
+            var changed = false
+            for (cookie in webCookies) {
+                val kept = jar.cookies.firstOrNull { it.key() in jar.kept && it.key() == cookie.key() }
+                when {
+                    kept?.value == cookie.value -> Unit
+                    cookie.name == Challenge.CLEARANCE_COOKIE -> {
+                        if (!settled || siteOf(cookie.domain) != site) continue
+                        jar.put(cookie)
+                        jar.kept += cookie.key()
+                        jar.userAgents[site] = userAgent
+                        changed = true
+                    }
+                    kept != null -> {
+                        jar.put(cookie.renewing(kept))
+                        changed = true
+                    }
+                }
             }
+            changed
         }
-        if (renewed.isNotEmpty()) saves.trySend(Unit)
+        if (changed) saves.trySend(Unit)
     }
 
     fun clear() {
@@ -272,7 +296,20 @@ class SecureCookieJar(
         saves.trySend(Unit)
     }
 
+    /**
+     * Forgets the browser's name for each site none of whose kept cookies is left: what the
+     * browser earned under it has run out, and the name, which tells the Android version, would
+     * otherwise stay on the site's requests for good.
+     */
+    private fun RouteJar.dropAgentsWithoutCookies() {
+        if (userAgents.isEmpty()) return
+        val sites = cookies.filter { it.key() in kept }.mapTo(HashSet()) { siteOf(it.domain) }
+        userAgents.keys.retainAll(sites)
+    }
+
     private fun RouteJar.put(cookie: Cookie) {
+        // One the client could not send is not taken: see Challenge.sendable.
+        if (!Challenge.sendable(cookie.name, cookie.value)) return
         cookies.removeAll { it.name == cookie.name && it.domain == cookie.domain && it.path == cookie.path }
         if (cookie.expiresAt > System.currentTimeMillis()) cookies += cookie
     }
@@ -308,7 +345,8 @@ class SecureCookieJar(
 
     private fun Cookie.toStored() = StoredCookie(name, value, expiresAt, domain, path, secure, httpOnly, hostOnly)
 
-    private fun StoredCookie.toCookie(): Cookie? = runCatching {
+    // One kept before the client's rule was there, and that it could not send, is left behind.
+    private fun StoredCookie.toCookie(): Cookie? = if (!Challenge.sendable(name, value)) null else runCatching {
         Cookie.Builder().name(name).value(value).expiresAt(expiresAt).path(path)
             .apply {
                 if (hostOnly) hostOnlyDomain(domain) else domain(domain)

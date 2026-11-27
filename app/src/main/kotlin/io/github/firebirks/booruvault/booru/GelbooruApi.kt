@@ -3,10 +3,10 @@ package io.github.firebirks.booruvault.booru
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
 import org.jsoup.parser.Parser
 
 /**
@@ -19,7 +19,7 @@ import org.jsoup.parser.Parser
  */
 class GelbooruApi(
     source: BooruSource,
-    client: OkHttpClient,
+    client: Call.Factory,
     json: Json,
     private val htmlOnly: Boolean = false,
 ) : BaseBooruApi(source, client, json) {

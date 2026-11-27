@@ -4,9 +4,9 @@ import io.github.firebirks.booruvault.util.Problem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
@@ -30,7 +30,7 @@ interface BooruApi {
 
 abstract class BaseBooruApi(
     protected val source: BooruSource,
-    protected val client: OkHttpClient,
+    protected val client: Call.Factory,
     protected val json: Json,
 ) : BooruApi {
     protected val base: HttpUrl by lazy {
@@ -70,10 +70,10 @@ abstract class BaseBooruApi(
 }
 
 object BooruApiFactory {
-    fun create(source: BooruSource, client: OkHttpClient, json: Json, pages: HtmlFetcher? = null): BooruApi =
+    fun create(source: BooruSource, client: Call.Factory, json: Json, pages: HtmlFetcher? = null): BooruApi =
         OffMainThread(engine(source, client, json).also { (it as? BaseBooruApi)?.pages = pages })
 
-    private fun engine(source: BooruSource, client: OkHttpClient, json: Json): BooruApi = when (source.engine) {
+    private fun engine(source: BooruSource, client: Call.Factory, json: Json): BooruApi = when (source.engine) {
         BooruEngine.DANBOORU -> DanbooruApi(source, client, json)
         BooruEngine.MOEBOORU -> MoebooruApi(source, client, json)
         BooruEngine.GELBOORU -> GelbooruApi(source, client, json)

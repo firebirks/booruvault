@@ -5,13 +5,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.longOrNull
+import okhttp3.Call
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 /** Shimmie2 sites (rule34.paheal and many small boorus), read through their web pages. */
-class ShimmieApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+class ShimmieApi(source: BooruSource, client: Call.Factory, json: Json) : BaseBooruApi(source, client, json) {
 
     override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
         val builder = base.newBuilder().addPathSegments("post/list")

@@ -82,7 +82,7 @@ class TorFailuresTest {
     private val losses = java.util.concurrent.atomic.AtomicInteger()
 
     private fun client(port: Int, torConnectTimeoutMs: Int, clientConnectTimeoutMs: Long = 5_000) = OkHttpClient.Builder()
-        .proxySelector(TorProxySelector({ true }, { port }))
+        .proxy(orbotProxy(port))
         .dns(TorAwareDns { true })
         .addInterceptor(TorFailures({ true }, { port }, torConnectTimeoutMs, onListenerLost = { losses.incrementAndGet() }))
         .connectTimeout(clientConnectTimeoutMs, TimeUnit.MILLISECONDS)

@@ -6,7 +6,8 @@ import org.junit.Test
 
 /**
  * The built-in browser opened on a guarded file never fetches it: the first request asks for a
- * range past its end, and the request made once the check is passed is answered empty.
+ * range past its end, and the request made once the check is passed, which the browser tells by
+ * [Challenge.isGuardedFile], is refused.
  */
 class GuardedFileTest {
     private val file = "https://cdn.donmai.us/original/36/0c/360cf286248a3f253df7155558f92d98.jpg"
@@ -26,22 +27,16 @@ class GuardedFileTest {
     }
 
     @Test
-    fun `the file is answered empty only once the check is passed`() {
-        assertFalse(Challenge.answersEmpty(file, file) { false })
-        assertTrue(Challenge.answersEmpty(file, "$file?__cf_chl_rt_tk=abc") { true })
-    }
-
-    @Test
-    fun `the clearance is not even looked up for requests that are not the file`() {
-        var asked = false
-        assertFalse(Challenge.answersEmpty(file, "https://challenges.cloudflare.com/x") { asked = true; true })
-        assertFalse(asked)
-    }
-
-    @Test
     fun `the first request asks for a range that starts past the end of any file`() {
         val start = Challenge.NO_BYTES_RANGE.removePrefix("bytes=").removeSuffix("-").toLong()
         assertTrue(Challenge.NO_BYTES_RANGE.matches(Regex("bytes=\\d+-")))
         assertTrue("past a terabyte", start >= 1L shl 40)
+    }
+
+    @Test
+    fun `the page's own request for the file goes through only when the session is known to hold no clearance`() {
+        assertTrue("a clearance: asked again for no byte, and the browser closes on the answer", Challenge.refusesOwnRequest(true))
+        assertTrue("the engine did not say: it may hold one, and the file would come whole", Challenge.refusesOwnRequest(null))
+        assertFalse("none: a host that asked for no check", Challenge.refusesOwnRequest(false))
     }
 }

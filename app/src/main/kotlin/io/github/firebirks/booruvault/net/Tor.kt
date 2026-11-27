@@ -33,11 +33,8 @@ import okhttp3.Response
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
-import java.net.ProxySelector
-import java.net.SocketAddress
 import java.net.SocketException
 import java.net.SocketTimeoutException
-import java.net.URI
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
@@ -65,8 +62,9 @@ const val DEFAULT_SOCKS_PORT = 9050
 /**
  * Routes the app through Tor via Orbot's SOCKS proxy.
  *
- * Fail-closed: while enabled, the proxy selector offers only Orbot's port, with no direct
- * fallback, so if Orbot is not running every connection fails instead of going out in clear.
+ * Fail-closed: while enabled, the app's client has Orbot's port as its only proxy, with no direct
+ * fallback (see [RoutedClient]), so if Orbot is not running every connection fails instead of
+ * going out in clear.
  * Host names reach the proxy unresolved, so DNS goes through Tor as well.
  *
  * The on/off flag and the port are the settings kept outside the vault (`network.xml`): they
@@ -126,7 +124,8 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
     /** The route new connections take. */
     val route: Route get() = Route.of(enabled)
 
-    val proxySelector: ProxySelector = TorProxySelector({ enabled }, { _state.value.socksPort })
+    /** [client] made along the route in force at each call: see [RoutedClient]. */
+    fun routed(client: OkHttpClient): RoutedClient = RoutedClient(client, { enabled }, { _state.value.socksPort })
 
     val dns: okhttp3.Dns = TorAwareDns { enabled }
 
@@ -300,7 +299,7 @@ class TorManager(private val context: Context, private val scope: CoroutineScope
      * verdict belongs to the listener it went through: a port changed meanwhile, Tor switched
      * off, or the listener found gone, drops it, since what answers now has not been checked.
      */
-    suspend fun verify(client: OkHttpClient, json: Json) = withContext(Dispatchers.IO) {
+    suspend fun verify(client: Call.Factory, json: Json) = withContext(Dispatchers.IO) {
         if (!verifying.compareAndSet(false, true)) return@withContext
         val port = _state.value.socksPort
         val losses = listenerLosses.get()
@@ -429,12 +428,53 @@ class TorAwareDns(private val enabled: () -> Boolean) : okhttp3.Dns {
     }
 }
 
-/** Orbot's SOCKS port while enabled, and nothing else: no direct route to fall back on. */
-class TorProxySelector(private val enabled: () -> Boolean, private val port: () -> Int) : ProxySelector() {
-    override fun select(uri: URI?): List<Proxy> =
-        if (enabled()) listOf(Proxy(Proxy.Type.SOCKS, InetSocketAddress("127.0.0.1", port()))) else listOf(Proxy.NO_PROXY)
+/** Orbot's SOCKS port, the one way out while Tor is on: there is no direct route to fall back on. */
+fun orbotProxy(port: Int): Proxy = Proxy(Proxy.Type.SOCKS, InetSocketAddress("127.0.0.1", port))
 
-    override fun connectFailed(uri: URI?, address: SocketAddress?, e: IOException?) = Unit
+/**
+ * The app's HTTP client as its callers see it: each call is made by the client of the route in
+ * force when it is made, with Tor on one whose only proxy is Orbot's SOCKS port, with Tor off one
+ * that connects directly. Both are [base] otherwise, and share its dispatcher, pool, interceptors
+ * and listener.
+ *
+ * The proxy is fixed in each client rather than chosen by a ProxySelector. OkHttp asks a selector
+ * only about a URL in which java.net.URI finds a host, and sends any other out directly; for one
+ * made of digits and dots, as "1.2.772" or "12.34", it then asks the platform's resolver itself,
+ * past the client's own DNS. A site could put such a host in a file URL or a redirect and have
+ * the phone ask its network about it, outside Tor. A fixed proxy is taken before the host is
+ * looked at, and the name reaches Orbot unresolved.
+ *
+ * A call made while Tor was off and started once it is on is refused before any route is chosen.
+ * Calls already under way are cancelled by the route change itself (see [TorManager.onRouteChanged]),
+ * and until then [TorRouteGuard] and [TorAwareDns] refuse what would leave directly.
+ */
+class RoutedClient(
+    private val base: OkHttpClient,
+    private val enabled: () -> Boolean,
+    private val port: () -> Int,
+) : Call.Factory {
+    private val direct = base.newBuilder()
+        .proxy(Proxy.NO_PROXY)
+        .addInterceptor { chain ->
+            if (enabled()) throw TorUnreachableException(IOException("connection does not go through Orbot"))
+            chain.proceed(chain.request())
+        }
+        .build()
+
+    @Volatile
+    private var orbotClient: OkHttpClient? = null
+
+    /** The client a call made now is made by. */
+    val current: OkHttpClient
+        get() = if (enabled()) throughOrbot(port()) else direct
+
+    override fun newCall(request: Request): Call = current.newCall(request)
+
+    private fun throughOrbot(port: Int): OkHttpClient {
+        val proxy = orbotProxy(port)
+        orbotClient?.takeIf { it.proxy == proxy }?.let { return it }
+        return base.newBuilder().proxy(proxy).build().also { orbotClient = it }
+    }
 }
 
 /**

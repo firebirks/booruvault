@@ -52,9 +52,7 @@ data class AppSettings(
      * their cookies must then stay in memory until it drains.
      */
     val downloadWhileLocked: Boolean = false,
-    /** Google Safe Browsing in the built-in browser. Off: no URL hashes go to Google. */
-    val webSafeBrowsing: Boolean = false,
-    /** Read pages that keep demanding an anti-bot check through a hidden WebView. */
+    /** Read pages that keep demanding an anti-bot check through a hidden browser. */
     val hiddenBrowser: Boolean = false,
     /** With Tor on and no Tor Browser, let a link open in a normal browser after a warning. */
     val linksOutsideTor: Boolean = false,
@@ -173,7 +171,6 @@ class SettingsRepository(root: File, private val vault: VaultManager, json: Json
     suspend fun setAutoLock(seconds: Int) = edit { it.copy(autoLockSeconds = seconds) }
     suspend fun setSecureScreen(value: Boolean) = edit { it.copy(secureScreen = value) }
     suspend fun setDownloadWhileLocked(value: Boolean) = edit { it.copy(downloadWhileLocked = value) }
-    suspend fun setWebSafeBrowsing(value: Boolean) = edit { it.copy(webSafeBrowsing = value) }
     suspend fun setHiddenBrowser(value: Boolean) = edit { it.copy(hiddenBrowser = value) }
     suspend fun setLinksOutsideTor(value: Boolean) = edit { it.copy(linksOutsideTor = value) }
 

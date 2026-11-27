@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Salida de Tor aún sin verificar: comprobando que las conexiones salen de verdad por Tor.</string>
     <string name="problem_challenge">El sitio pide una verificación antibots (Cloudflare): toca “Verificar en el navegador” para superarla.</string>
     <string name="problem_challenge_pass_refused">La verificación se superó, pero el sitio la vuelve a pedir cuando la app descarga este archivo: una verificación superada en el navegador no vale para las descargas, así que repetirla no servirá.</string>
-    <string name="problem_challenge_pass_refused_tor">La verificación se superó, pero el sitio la vuelve a pedir: con Tor activado, el navegador integrado y las descargas llegan al sitio por salidas de Tor distintas, y una verificación superada desde una no vale para la otra. Repetirla no servirá mientras Tor esté activado.</string>
+    <string name="problem_challenge_pass_refused_tor">La verificación se superó, pero el sitio la vuelve a pedir cuando la app descarga este archivo. Con Tor, un sitio puede vincular una verificación a la salida de Tor desde la que se superó, y Tor pasa a otras salidas con el tiempo: inténtalo más tarde y vuelve a superar la verificación si el sitio la pide.</string>
     <string name="problem_access_denied">Acceso denegado (%1$s): puede que esta fuente necesite iniciar sesión y una clave de API.</string>
     <string name="problem_not_found">Dirección no encontrada (404): comprueba la URL y el tipo de motor.</string>
     <string name="problem_gone">La página ya no está disponible: el sitio limita hasta qué página puedes avanzar.</string>
@@ -118,10 +118,6 @@
     <string name="settings_secure_screen">Proteger la pantalla</string>
     <string name="settings_secure_screen_hint">Bloquea las capturas y grabaciones de pantalla y oculta la vista previa en las apps recientes. Siempre activo mientras la app está bloqueada.</string>
     <string name="settings_section_network">Red y navegador integrado</string>
-    <string name="settings_safe_browsing">Google Safe Browsing en el navegador integrado</string>
-    <string name="settings_safe_browsing_unavailable">No disponible: en la WebView, Safe Browsing funciona a través de los servicios de Google Play, que este teléfono no tiene. De todos modos, no se envía ninguna dirección a Google.</string>
-    <string name="settings_safe_browsing_on">Activado. Para cada dirección que abre el navegador integrado (incluidas páginas, imágenes, scripts y anuncios), los servicios de Google Play calculan una huella criptográfica y la comparan con una lista guardada en el teléfono. Cuando el inicio de la huella coincide con una entrada de la lista, envían ese fragmento de unos pocos bytes a los servidores de Google para confirmarlo. Google no recibe la dirección en claro, pero ve tu IP, la hora y el fragmento; la solicitud sale de los servicios de Google del teléfono, así que puede vincularse al dispositivo, y NO pasa por Tor aunque Tor esté activado. A cambio, una página conocida por malware, phishing o software no deseado se bloquea con una advertencia.</string>
-    <string name="settings_safe_browsing_off">Desactivado: el navegador integrado no consulta a Google y no se le envía ningún dato sobre las direcciones que visitas. No recibes ninguna advertencia si una página es conocida por malware o phishing. Esto solo afecta al navegador integrado: las búsquedas, las imágenes y las descargas de la app nunca usan Safe Browsing.</string>
     <string name="settings_cookies">Cookies de los sitios</string>
     <string name="settings_cookies_hint">Verificaciones antibots superadas y sesiones, cifradas en la bóveda</string>
     <string name="settings_cookies_cleared">Cookies eliminadas</string>
@@ -312,7 +308,7 @@
     <string name="browser_blocked_outside">Este navegador se queda en %1$s: no se abrió un enlace a otro sitio.</string>
     <string name="browser_tor_unverified">Tor está activado pero aún sin verificar: el navegador se abre cuando una comprobación confirma que las conexiones salen por Tor.</string>
     <string name="challenge_hint">El sitio quiere comprobar que eres una persona. Completa la verificación de abajo: cuando la página del sitio se abra con normalidad, BooruVault volverá a intentarlo automáticamente.</string>
-    <string name="browser_tor_unsupported">Con Tor activado, el navegador integrado no se abre: la WebView de este teléfono no puede enrutarse por completo a través de Tor. Actualiza “Android System WebView”.</string>
+    <string name="browser_engine_refused">El navegador integrado no se abre: su motor no aceptó los ajustes que mantienen las páginas en la conexión elegida, así que no se cargó nada. Cierra la app y vuelve a abrirla para intentarlo de nuevo.</string>
     <string name="notification_channel">Descargas</string>
     <string name="notification_channel_description">Progreso de las descargas a la bóveda</string>
     <string name="notification_progress_title">Descargando en la bóveda</string>

@@ -8,7 +8,7 @@ coreKtx = "1.19.1"
 fragment = "1.9.1"
 biometric = "1.1.0"
 documentfile = "1.1.0"
-webkit = "1.18.0"
+geckoview = "161.0.20261118180411"
 media3 = "1.11.1"
 materialIconsExtended = "1.7.8"
 coil = "3.6.3"
@@ -19,6 +19,8 @@ coroutines = "1.11.0"
 bouncycastle = "1.87"
 jsoup = "1.24.1"
 junit = "4.13.2"
+# The parser GeckoView reads its configuration file with, at the version it asks for.
+snakeyaml = "2.2"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -29,7 +31,7 @@ lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel
 lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle" }
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 documentfile = { module = "androidx.documentfile:documentfile", version.ref = "documentfile" }
-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
+geckoview = { module = "org.mozilla.geckoview:geckoview", version.ref = "geckoview" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
@@ -50,6 +52,7 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junit" }
+snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

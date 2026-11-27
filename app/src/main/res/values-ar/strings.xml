@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">لم يُتحقق من مخرج Tor بعد: يجري التأكد من أن الاتصالات تخرج فعلًا عبر Tor.</string>
     <string name="problem_challenge">يطلب الموقع تحققًا مضادًا للروبوتات (Cloudflare): انقر على «التحقق في المتصفح» لاجتيازه.</string>
     <string name="problem_challenge_pass_refused">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا عندما ينزّل التطبيق هذا الملف: التحقق الذي يُجتاز في المتصفح لا يسري على التنزيلات، لذا لن تفيد إعادته.</string>
-    <string name="problem_challenge_pass_refused_tor">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا: عند تشغيل Tor يصل المتصفح المدمج والتنزيلات إلى الموقع عبر مخارج Tor مختلفة، والتحقق الذي يُجتاز من أحدها لا يسري على الآخر. لن تفيد إعادته ما دام Tor مشغّلًا.</string>
+    <string name="problem_challenge_pass_refused_tor">تم اجتياز التحقق، لكن الموقع يطلبه مجددًا عندما ينزّل التطبيق هذا الملف. عبر Tor قد يربط الموقع التحقق بمخرج Tor الذي اجتيز منه، وTor ينتقل مع الوقت إلى مخارج أخرى: أعد المحاولة لاحقًا واجتز التحقق مجددًا إن طلبه الموقع.</string>
     <string name="problem_access_denied">تم رفض الوصول (%1$s): قد يتطلب هذا المصدر تسجيل الدخول ومفتاح API.</string>
     <string name="problem_not_found">العنوان غير موجود (404): تحقّق من عنوان URL ونوع المحرّك.</string>
     <string name="problem_gone">لم تعد الصفحة متاحة: يحدّ الموقع من عدد الصفحات التي يمكنك التنقل إليها.</string>
@@ -124,10 +124,6 @@
     <string name="settings_secure_screen">حماية الشاشة</string>
     <string name="settings_secure_screen_hint">يمنع لقطات الشاشة وتسجيلها ويُخفي المعاينة في التطبيقات الحديثة. مفعّل دائمًا أثناء قفل التطبيق.</string>
     <string name="settings_section_network">الشبكة والمتصفح المدمج</string>
-    <string name="settings_safe_browsing">Google Safe Browsing في المتصفح المدمج</string>
-    <string name="settings_safe_browsing_unavailable">غير متاح: في WebView، يعمل Safe Browsing عبر خدمات Google Play، وهي غير موجودة على هذا الهاتف. وفي كل الأحوال، لا يُرسَل أي عنوان إلى Google.</string>
-    <string name="settings_safe_browsing_on">مفعّل. لكل عنوان يفتحه المتصفح المدمج (بما في ذلك الصفحات والصور والنصوص البرمجية والإعلانات)، تحسب خدمات Google Play بصمة تشفيرية وتقارنها بقائمة محفوظة على الهاتف. وعندما تطابق بداية البصمة أحد إدخالات القائمة، ترسل ذلك الجزء المكوّن من بضعة بايتات إلى خوادم Google للتأكيد. لا تتلقى Google العنوان بنص واضح، لكنها ترى عنوان IP الخاص بك والوقت وذلك الجزء؛ ويصدر الطلب من خدمات Google على الهاتف، لذا يمكن ربطه بالجهاز، ولا يمرّ عبر Tor حتى عندما يكون Tor مفعّلًا. في المقابل، تُحظر الصفحة المعروفة بالبرامج الضارة أو التصيّد الاحتيالي أو البرامج غير المرغوب فيها مع عرض تحذير.</string>
-    <string name="settings_safe_browsing_off">متوقف: لا يستشير المتصفح المدمج Google، ولا تُرسَل إليها أي بيانات عن العناوين التي تزورها. لن تتلقى أي تحذير إذا كانت الصفحة معروفة بالبرامج الضارة أو التصيّد الاحتيالي. يخص هذا الإعداد المتصفح المدمج فقط: لا تستخدم عمليات البحث والصور والتنزيلات في التطبيق Safe Browsing أبدًا.</string>
     <string name="settings_cookies">ملفات تعريف الارتباط للمواقع</string>
     <string name="settings_cookies_hint">عمليات التحقق المضادة للروبوتات التي اجتزتها والجلسات، مشفّرة في الخزنة</string>
     <string name="settings_cookies_cleared">تم حذف ملفات تعريف الارتباط</string>
@@ -333,7 +329,7 @@
     <string name="browser_blocked_outside">يبقى هذا المتصفح على %1$s: لم يُفتح رابط إلى موقع آخر.</string>
     <string name="browser_tor_unverified">Tor مفعّل لكنه لم يُتحقق منه بعد: يفتح المتصفح عندما يؤكد فحص أن الاتصالات تخرج عبر Tor.</string>
     <string name="challenge_hint">يريد الموقع التحقق من أنك إنسان. أكمل التحقق أدناه: بمجرد أن تُفتح صفحة الموقع بشكل طبيعي، سيعيد BooruVault المحاولة تلقائيًا.</string>
-    <string name="browser_tor_unsupported">عند تفعيل Tor، لا يُفتح المتصفح المدمج: لا يمكن توجيه WebView في هذا الهاتف بالكامل عبر Tor. حدّث «Android System WebView».</string>
+    <string name="browser_engine_refused">لا يُفتح المتصفح المدمج: لم يقبل محركه الإعدادات التي تُبقي الصفحات على الاتصال المختار، لذا لم يُحمَّل شيء. أغلق التطبيق وافتحه مجددًا لإعادة المحاولة.</string>
     <string name="notification_channel">التنزيلات</string>
     <string name="notification_channel_description">تقدّم التنزيلات إلى الخزنة</string>
     <string name="notification_progress_title">جارٍ التنزيل إلى الخزنة</string>

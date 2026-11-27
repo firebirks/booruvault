@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Keluaran Tor belum diverifikasi: memeriksa bahwa koneksi benar-benar keluar lewat Tor.</string>
     <string name="problem_challenge">Situs meminta pemeriksaan anti-bot (Cloudflare): ketuk “Verifikasi di browser” untuk menyelesaikannya.</string>
     <string name="problem_challenge_pass_refused">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi saat aplikasi mengunduh file ini: pemeriksaan yang diselesaikan di browser tidak berlaku untuk unduhan, jadi mengulanginya tidak akan membantu.</string>
-    <string name="problem_challenge_pass_refused_tor">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi: dengan Tor aktif, browser bawaan dan unduhan mencapai situs lewat keluaran Tor yang berbeda, dan pemeriksaan yang diselesaikan dari satu keluaran tidak berlaku untuk yang lain. Mengulanginya tidak akan membantu selama Tor aktif.</string>
+    <string name="problem_challenge_pass_refused_tor">Pemeriksaan sudah diselesaikan, tetapi situs memintanya lagi saat aplikasi mengunduh file ini. Lewat Tor, situs bisa mengaitkan pemeriksaan dengan keluaran Tor tempat pemeriksaan itu diselesaikan, dan Tor berpindah ke keluaran lain seiring waktu: coba lagi nanti, dan selesaikan pemeriksaan lagi jika situs memintanya.</string>
     <string name="problem_access_denied">Akses ditolak (%1$s): sumber ini mungkin memerlukan login dan kunci API.</string>
     <string name="problem_not_found">Alamat tidak ditemukan (404): periksa URL dan jenis mesin.</string>
     <string name="problem_gone">Halaman tidak lagi tersedia: situs membatasi seberapa jauh Anda bisa berpindah halaman.</string>
@@ -114,10 +114,6 @@
     <string name="settings_secure_screen">Lindungi layar</string>
     <string name="settings_secure_screen_hint">Memblokir screenshot dan rekaman layar serta menyembunyikan pratinjau di aplikasi terbaru. Selalu aktif saat aplikasi terkunci.</string>
     <string name="settings_section_network">Jaringan dan browser bawaan</string>
-    <string name="settings_safe_browsing">Google Safe Browsing di browser bawaan</string>
-    <string name="settings_safe_browsing_unavailable">Tidak tersedia: di WebView, Safe Browsing bekerja melalui layanan Google Play, yang tidak ada di ponsel ini. Bagaimanapun juga, tidak ada alamat yang dikirim ke Google.</string>
-    <string name="settings_safe_browsing_on">Aktif. Untuk setiap alamat yang dibuka browser bawaan (termasuk halaman, gambar, skrip, dan iklan), layanan Google Play menghitung sidik jari kriptografis dan membandingkannya dengan daftar yang disimpan di ponsel. Jika awal sidik jari cocok dengan salah satu entri daftar, layanan tersebut mengirim potongan beberapa byte itu ke server Google untuk konfirmasi. Google tidak menerima alamat dalam bentuk teks biasa, tetapi melihat IP Anda, waktunya, dan potongan tersebut; permintaan dikirim dari layanan Google di ponsel, sehingga dapat dikaitkan dengan perangkat, dan TIDAK melewati Tor meskipun Tor aktif. Sebagai gantinya, halaman yang dikenal mengandung malware, phishing, atau software yang tidak diinginkan akan diblokir dengan peringatan.</string>
-    <string name="settings_safe_browsing_off">Nonaktif: browser bawaan tidak menghubungi Google dan tidak ada data tentang alamat yang Anda kunjungi yang dikirim ke Google. Anda tidak mendapat peringatan jika suatu halaman dikenal mengandung malware atau phishing. Ini hanya berlaku untuk browser bawaan: pencarian, gambar, dan unduhan aplikasi tidak pernah menggunakan Safe Browsing.</string>
     <string name="settings_cookies">Cookie situs</string>
     <string name="settings_cookies_hint">Pemeriksaan anti-bot yang lolos dan sesi, terenkripsi di brankas</string>
     <string name="settings_cookies_cleared">Cookie dihapus</string>
@@ -298,7 +294,7 @@
     <string name="browser_blocked_outside">Peramban ini tetap di %1$s: tautan ke situs lain tidak dibuka.</string>
     <string name="browser_tor_unverified">Tor aktif tetapi belum diverifikasi: peramban terbuka setelah pemeriksaan memastikan koneksi keluar lewat Tor.</string>
     <string name="challenge_hint">Situs ingin memastikan bahwa Anda manusia. Selesaikan pemeriksaan di bawah: setelah halaman situs terbuka seperti biasa, BooruVault akan mencoba lagi secara otomatis.</string>
-    <string name="browser_tor_unsupported">Saat Tor aktif, browser bawaan tidak dapat dibuka: WebView di ponsel ini tidak dapat dirutekan sepenuhnya melalui Tor. Perbarui “Android System WebView”.</string>
+    <string name="browser_engine_refused">Browser bawaan tidak dapat dibuka: mesinnya tidak menerima pengaturan yang menjaga halaman tetap di koneksi yang dipilih, jadi tidak ada yang dimuat. Tutup aplikasi lalu buka lagi untuk mencoba sekali lagi.</string>
     <string name="notification_channel">Unduhan</string>
     <string name="notification_channel_description">Progres unduhan ke brankas</string>
     <string name="notification_progress_title">Mengunduh ke brankas</string>

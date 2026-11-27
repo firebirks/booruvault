@@ -3,13 +3,13 @@ package io.github.firebirks.booruvault.booru
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
 import okhttp3.Request
 
 /** Danbooru and its forks. Credentials travel as HTTP Basic auth, so the key never sits in a URL. */
-class DanbooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+class DanbooruApi(source: BooruSource, client: Call.Factory, json: Json) : BaseBooruApi(source, client, json) {
 
     override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
         .apply { if (source.hasCredentials) header("Authorization", Credentials.basic(source.login.trim(), source.apiKey.trim(), Charsets.UTF_8)) }

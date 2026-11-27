@@ -4,6 +4,7 @@ import io.github.firebirks.booruvault.util.moveOver
 import io.github.firebirks.booruvault.vault.crypto.Aead
 import io.github.firebirks.booruvault.vault.crypto.EcKeys
 import io.github.firebirks.booruvault.vault.crypto.EciesBox
+import io.github.firebirks.booruvault.vault.crypto.FileLocks
 import io.github.firebirks.booruvault.vault.crypto.Kdf
 import io.github.firebirks.booruvault.vault.crypto.KdfParams
 import io.github.firebirks.booruvault.vault.crypto.Recipient
@@ -473,13 +474,18 @@ class VaultManager(
         return read
     }
 
+    // Under the header's lock, which the store's start-up sweep takes before it deletes a
+    // vault.json.tmp left by an interrupted write: one being written now is not a leftover.
     private fun writeHeader(value: VaultHeader, dir: File = root) {
-        val tmp = File(dir, "vault.json.tmp")
-        tmp.outputStream().use { out ->
-            out.write(json.encodeToString(VaultHeader.serializer(), value).toByteArray())
-            out.fd.sync()
+        val target = File(dir, headerFile.name)
+        synchronized(FileLocks.of(target)) {
+            val tmp = File(dir, "vault.json.tmp")
+            tmp.outputStream().use { out ->
+                out.write(json.encodeToString(VaultHeader.serializer(), value).toByteArray())
+                out.fd.sync()
+            }
+            if (!tmp.moveOver(target)) throw java.io.IOException("cannot write vault header")
         }
-        if (!tmp.moveOver(File(dir, headerFile.name))) throw java.io.IOException("cannot write vault header")
     }
 
     private companion object {

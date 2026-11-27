@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Tor 출구가 아직 확인되지 않았습니다. 연결이 정말 Tor를 통해 나가는지 확인 중입니다.</string>
     <string name="problem_challenge">사이트에서 봇 방지 확인(Cloudflare)을 요구합니다. ‘브라우저에서 확인’을 눌러 완료하세요.</string>
     <string name="problem_challenge_pass_refused">확인을 완료했지만 앱이 이 파일을 다운로드할 때 사이트가 다시 확인을 요구합니다. 브라우저에서 완료한 확인은 다운로드에 적용되지 않으므로 다시 해도 소용없습니다.</string>
-    <string name="problem_challenge_pass_refused_tor">확인을 완료했지만 사이트가 다시 확인을 요구합니다. Tor가 켜져 있으면 내장 브라우저와 다운로드가 서로 다른 Tor 출구를 통해 사이트에 접속하므로, 한쪽에서 완료한 확인은 다른 쪽에 적용되지 않습니다. Tor가 켜져 있는 동안에는 다시 해도 소용없습니다.</string>
+    <string name="problem_challenge_pass_refused_tor">확인을 완료했지만 앱이 이 파일을 다운로드할 때 사이트가 다시 확인을 요구합니다. Tor를 통하면 사이트가 확인을 완료한 Tor 출구에 묶어 둘 수 있고, Tor는 시간이 지나면 다른 출구로 바뀝니다. 나중에 다시 시도하고, 사이트가 요구하면 확인을 다시 완료하세요.</string>
     <string name="problem_access_denied">접근이 거부되었습니다(%1$s). 이 소스는 로그인과 API 키가 필요할 수 있습니다.</string>
     <string name="problem_not_found">주소를 찾을 수 없습니다(404). URL과 엔진 유형을 확인하세요.</string>
     <string name="problem_gone">더 이상 사용할 수 없는 페이지입니다. 사이트에서 넘겨 볼 수 있는 페이지 범위를 제한합니다.</string>
@@ -114,10 +114,6 @@
     <string name="settings_secure_screen">화면 보호</string>
     <string name="settings_secure_screen_hint">스크린샷과 화면 녹화를 차단하고 최근 앱 화면에서 미리보기를 숨깁니다. 앱이 잠겨 있는 동안에는 항상 켜져 있습니다.</string>
     <string name="settings_section_network">네트워크 및 내장 브라우저</string>
-    <string name="settings_safe_browsing">내장 브라우저에서 Google Safe Browsing 사용</string>
-    <string name="settings_safe_browsing_unavailable">사용할 수 없음: WebView의 Safe Browsing은 Google Play 서비스를 통해 작동하지만, 이 휴대전화에는 Google Play 서비스가 없습니다. 어떤 경우에도 주소는 Google에 전송되지 않습니다.</string>
-    <string name="settings_safe_browsing_on">켜짐. 내장 브라우저가 여는 모든 주소(페이지, 이미지, 스크립트, 광고 포함)에 대해 Google Play 서비스가 암호학적 지문을 계산하여 휴대전화에 저장된 목록과 비교합니다. 지문의 앞부분이 목록의 항목과 일치하면, 확인을 위해 몇 바이트 길이의 해당 조각을 Google 서버로 보냅니다. Google은 주소를 평문으로 받지는 않지만 사용자의 IP, 시각, 조각을 볼 수 있습니다. 요청은 휴대전화의 Google 서비스에서 보내지므로 기기와 연결될 수 있으며, Tor가 켜져 있어도 Tor를 거치지 않습니다. 그 대신 악성코드, 피싱 또는 원치 않는 소프트웨어로 알려진 페이지는 경고와 함께 차단됩니다.</string>
-    <string name="settings_safe_browsing_off">꺼짐: 내장 브라우저는 Google에 조회하지 않으며, 방문한 주소에 관한 데이터는 Google에 전송되지 않습니다. 페이지가 악성코드나 피싱으로 알려져 있어도 경고를 받지 않습니다. 이 설정은 내장 브라우저에만 해당하며, 앱의 검색, 이미지, 다운로드는 절대 Safe Browsing을 사용하지 않습니다.</string>
     <string name="settings_cookies">사이트 쿠키</string>
     <string name="settings_cookies_hint">통과한 봇 방지 확인과 세션, 보관함에 암호화되어 저장됨</string>
     <string name="settings_cookies_cleared">쿠키를 삭제했습니다</string>
@@ -298,7 +294,7 @@
     <string name="browser_blocked_outside">이 브라우저는 %1$s에 머뭅니다. 다른 사이트로 가는 링크는 열지 않았습니다.</string>
     <string name="browser_tor_unverified">Tor가 켜져 있지만 아직 확인되지 않았습니다. 연결이 Tor를 통해 나가는 것이 확인되면 브라우저가 열립니다.</string>
     <string name="challenge_hint">사이트에서 사용자가 사람인지 확인하려고 합니다. 아래 확인을 완료하세요. 사이트 페이지가 정상적으로 열리면 BooruVault가 자동으로 다시 시도합니다.</string>
-    <string name="browser_tor_unsupported">Tor가 켜져 있으면 내장 브라우저가 열리지 않습니다. 이 휴대전화의 WebView는 모든 트래픽을 Tor로 라우팅할 수 없습니다. ‘Android System WebView’를 업데이트하세요.</string>
+    <string name="browser_engine_refused">내장 브라우저가 열리지 않습니다. 엔진이 페이지를 선택한 연결에 머물게 하는 설정을 받아들이지 않아 아무것도 불러오지 않았습니다. 앱을 닫았다가 다시 열어 다시 시도하세요.</string>
     <string name="notification_channel">다운로드</string>
     <string name="notification_channel_description">보관함으로의 다운로드 진행 상황</string>
     <string name="notification_progress_title">보관함으로 다운로드 중</string>

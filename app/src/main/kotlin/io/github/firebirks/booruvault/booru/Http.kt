@@ -26,7 +26,6 @@ import okhttp3.Callback
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
@@ -35,10 +34,13 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 /**
- * What the app calls itself to sites: Chrome on Android, in the reduced form Chrome itself sends,
- * which names no phone model or Android version. The app's traffic then reads like a phone
- * browsing, and nothing about the device travels with it. The Chrome version is read from the
- * phone's WebView at start-up, so it keeps up without a release.
+ * What the app's HTTP client calls itself to sites: Chrome on Android, in the reduced form Chrome
+ * itself sends, which names no phone model or Android version. The app's traffic then reads like
+ * a phone browsing, and nothing about the device travels with it. The Chrome version is read from
+ * the system's WebView at start-up, so it keeps up without a release. The built-in browsers are
+ * another engine and go by its own name; a site whose check was passed in one is then asked
+ * under that name (see [withSiteHeaders]). The two names are a choice: Firefox's carries the
+ * phone's Android version, which this one hides (docs/geckoview-migration.md, "Two names").
  */
 object UserAgents {
     /** Chrome's major version; [DEFAULT_CHROME] until the WebView has been asked. */
@@ -49,10 +51,6 @@ object UserAgents {
     val browser: String
         get() = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$chrome.0.0.0 Mobile Safari/537.36"
 
-    /** The same name as Chrome's WebView sends it, for the built-in browser. */
-    val webView: String
-        get() = "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/$chrome.0.0.0 Mobile Safari/537.36"
-
     /**
      * The name for [source]'s site. e621 asks API clients for a name of their own, with the
      * account's in it, so for it the app's name and version ride along at the end, and on a
@@ -60,12 +58,9 @@ object UserAgents {
      * form e621 gives: "(by name on site)". Not on what goes out unsigned, images and files above
      * all: the account would tag every one of them. Danbooru boards get the app's name alone,
      * without a version: Cloudflare on cdn.donmai.us puts a check in front of original files for a
-     * client that calls itself Chrome and is not, and lets one that names itself through. The
-     * built-in browser is a browser and says so on every site, as its name reaches every page and
-     * script it loads.
+     * client that calls itself Chrome and is not, and lets one that names itself through.
      */
-    fun forSource(source: BooruSource?, webView: Boolean = false, signed: Boolean = false): String {
-        if (webView) return this.webView
+    fun forSource(source: BooruSource?, signed: Boolean = false): String {
         return when (source?.engine) {
             BooruEngine.DANBOORU -> APP
             BooruEngine.E621 -> {
@@ -97,7 +92,9 @@ fun withSiteHeaders(request: Request, passedAgent: String?, cleared: Boolean, co
     val agent = own?.takeIf { it == UserAgents.APP && !cleared } ?: passedAgent ?: own ?: UserAgents.browser
     val builder = request.newBuilder().header("User-Agent", agent)
     if (request.header("Referer") == null) builder.header("Referer", "${request.url.scheme}://${request.url.host}/")
-    if (cookies.isNotEmpty()) builder.header("Cookie", cookies.joinToString("; ") { "${it.name}=${it.value}" })
+    // A cookie the header cannot carry is left out rather than thrown on: see Challenge.sendable.
+    val sent = cookies.filter { Challenge.sendable(it.name, it.value) }
+    if (sent.isNotEmpty()) builder.header("Cookie", sent.joinToString("; ") { "${it.name}=${it.value}" })
     return builder.build()
 }
 
@@ -194,7 +191,7 @@ suspend fun <T> Call.withResponse(block: suspend (Response) -> T): T = coroutine
 }
 
 /** GETs a page as text, turning the usual booru failure modes into readable messages. */
-suspend fun OkHttpClient.getText(request: Request, json: Json): String = withContext(Dispatchers.IO) {
+suspend fun Call.Factory.getText(request: Request, json: Json): String = withContext(Dispatchers.IO) {
     val response = try {
         newCall(request).await()
     } catch (e: IOException) {
@@ -242,7 +239,7 @@ fun ResponseBody.bytesUpTo(max: Long): ByteArray? {
 }
 
 /** GETs JSON. Null for an empty body. */
-suspend fun OkHttpClient.getJson(request: Request, json: Json): JsonElement? {
+suspend fun Call.Factory.getJson(request: Request, json: Json): JsonElement? {
     val trimmed = getText(request, json).trim()
     if (trimmed.isEmpty()) return null
     if (trimmed.startsWith("<")) {

@@ -76,7 +76,7 @@ class CookieRenewalTest {
         val session = jar.session()
         assertEquals("renewed", session.value)
         assertEquals(deadline, session.expiresAt)
-        assertTrue("still kept, sealed in the vault", jar.browserCookies(Route.DIRECT, board).any { it.startsWith("session=renewed") })
+        assertTrue("still kept, sealed in the vault", jar.keptCookies(Route.DIRECT, board).any { it.name == "session" && it.value == "renewed" })
     }
 
     @Test
@@ -119,6 +119,94 @@ class CookieRenewalTest {
         jar.answer("session=fresh; Path=/")
 
         assertEquals("fresh", jar.session().value)
-        assertTrue("not kept", jar.browserCookies(Route.DIRECT, board).isEmpty())
+        assertTrue("not kept", jar.keptCookies(Route.DIRECT, board).isEmpty())
+    }
+
+    private val elsewhere = "https://other.example/".toHttpUrl()
+
+    private fun browserCookie(name: String, value: String, url: okhttp3.HttpUrl, domain: String? = null) =
+        Cookie.Builder().name(name).value(value).path("/").expiresAt(System.currentTimeMillis() + 60L * 86_400_000L).secure()
+            .apply { if (domain != null) domain(domain) else hostOnlyDomain(url.host) }
+            .build()
+
+    @Test
+    fun aHiddenVisitRenewsAKeptCookieWithinItsDeadline() = runBlocking {
+        val deadline = inThirtyDays
+        val jar = jarWithLogin(deadline)
+
+        jar.renewFromBrowser(Route.DIRECT, board.host, "gecko", listOf(browserCookie("session", "renewed", board)), settled = true)
+
+        assertEquals("renewed", jar.session().value)
+        assertEquals(deadline, jar.session().expiresAt)
+        assertEquals("the name kept with the pass stays", "webview", jar.userAgentFor(Route.DIRECT, board.host))
+    }
+
+    @Test
+    fun aHiddenVisitKeepsNoCookieThatOnlySharesAKeptCookiesName() = runBlocking {
+        val jar = jarWithLogin(inThirtyDays)
+
+        jar.renewFromBrowser(
+            Route.DIRECT,
+            elsewhere.host,
+            "gecko",
+            listOf(browserCookie("session", "theirs", elsewhere), browserCookie("tracker", "1", elsewhere)),
+            settled = true,
+        )
+        jar.renewFromBrowser(Route.DIRECT, board.host, "gecko", listOf(browserCookie("session", "wide", board, domain = "donmai.us")), settled = true)
+
+        assertTrue(jar.keptCookies(Route.DIRECT, elsewhere).isEmpty())
+        assertTrue(jar.cookiesFor(Route.DIRECT, elsewhere).isEmpty())
+        assertEquals("login", jar.session().value)
+        assertFalse(jar.cookiesFor(Route.DIRECT, sibling).any { it.name == "session" })
+    }
+
+    @Test
+    fun aHiddenVisitKeepsTheClearanceItEarnedUnderTheNameItWasEarnedWith() = runBlocking {
+        val jar = jarWithLogin(inThirtyDays)
+
+        jar.renewFromBrowser(Route.DIRECT, board.host, "gecko", listOf(browserCookie("cf_clearance", "pass", board, domain = "donmai.us")), settled = true)
+
+        assertTrue(jar.keptCookies(Route.DIRECT, board).any { it.name == "cf_clearance" && it.value == "pass" })
+        assertEquals("gecko", jar.userAgentFor(Route.DIRECT, board.host))
+    }
+
+    @Test
+    fun aHiddenVisitKeepsNoClearanceOfAnotherSite() = runBlocking {
+        val jar = jarWithLogin(inThirtyDays)
+
+        jar.renewFromBrowser(Route.DIRECT, board.host, "gecko", listOf(browserCookie("cf_clearance", "pass", elsewhere, domain = "other.example")), settled = true)
+
+        assertTrue(jar.keptCookies(Route.DIRECT, elsewhere).isEmpty())
+        assertEquals("webview", jar.userAgentFor(Route.DIRECT, board.host))
+    }
+
+    @Test
+    fun aHiddenVisitThatDidNotGetPastTheCheckKeepsNoClearance() = runBlocking {
+        val jar = jarWithLogin(inThirtyDays)
+
+        jar.renewFromBrowser(Route.DIRECT, board.host, "gecko", listOf(browserCookie("cf_clearance", "half", board, domain = "donmai.us")), settled = false)
+
+        assertFalse(jar.keptCookies(Route.DIRECT, board).any { it.name == "cf_clearance" })
+        assertEquals("the name kept with the login stays", "webview", jar.userAgentFor(Route.DIRECT, board.host))
+    }
+
+    @Test
+    fun theBrowsersNameGoesWithTheLastKeptCookieOfTheSite() = runBlocking {
+        val jar = jarWithLogin(System.currentTimeMillis() + 1_000)
+        assertEquals("webview", jar.userAgentFor(Route.DIRECT, board.host))
+        delay(1_200)
+
+        assertTrue(jar.cookiesFor(Route.DIRECT, board).isEmpty())
+        assertEquals("the site's requests go under their own name again", null, jar.userAgentFor(Route.DIRECT, board.host))
+    }
+
+    @Test
+    fun aVisitThatBroughtNothingBackLeavesNoName() = runBlocking {
+        val jar = jarWithLogin(inThirtyDays)
+
+        jar.recordClearance(Route.DIRECT, elsewhere.host, "gecko", emptyList())
+
+        assertEquals(null, jar.userAgentFor(Route.DIRECT, elsewhere.host))
+        assertEquals("webview", jar.userAgentFor(Route.DIRECT, board.host))
     }
 }

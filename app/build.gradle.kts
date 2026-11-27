@@ -14,14 +14,16 @@ val keystoreProperties: Properties? = rootProject.file("keystore.properties").ta
 
 android {
     namespace = "io.github.firebirks.booruvault"
+    // GeckoView asks to be compiled against 37.2.
     compileSdk = 37
+    compileSdkMinor = 2
 
     defaultConfig {
         applicationId = "io.github.firebirks.booruvault"
         minSdk = 26
         targetSdk = 36
-        versionCode = 10
-        versionName = "0.6.1"
+        versionCode = 11
+        versionName = "0.7.0"
     }
 
     signingConfigs {
@@ -47,6 +49,17 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release")
         }
+        // The release build as R8 leaves it, for trying on a phone what only a shrunk build can
+        // get wrong: beside the release and the debug build, with a vault of its own, signed with
+        // the debug key. Not debuggable: R8 renames nothing in a debuggable build, and what it
+        // renames is what a release can get wrong. Its files are out of adb's reach, as a
+        // release's are; the debug build is the one to read them in.
+        create("staging") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".staging"
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += "release"
+        }
     }
 
     compileOptions {
@@ -64,8 +77,34 @@ android {
         buildConfig = true
     }
 
+    // GeckoView's native code is about 100 MB for each ABI: one APK for each.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86_64")
+            isUniversalApk = false
+        }
+    }
+
     packaging {
+        // Compressed in the APK, which halves the download; Android unpacks them at install.
+        jniLibs.useLegacyPackaging = true
         resources.excludes += setOf("META-INF/versions/9/OSGI-INF/MANIFEST.MF", "META-INF/DEPENDENCIES")
+    }
+}
+
+// An APK for each ABI needs a version code for each: F-Droid tells the APKs of one version apart
+// by it. The code in defaultConfig is the release's own, raised by one each time; an APK's is
+// that times ten plus its ABI's digit, in the order F-Droid's own builds use.
+val abiDigits = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86_64" to 4)
+androidComponents {
+    onVariants { variant ->
+        val release = android.defaultConfig.versionCode ?: 0
+        variant.outputs.forEach { output ->
+            val abi = output.filters.firstOrNull { it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI }?.identifier
+            abiDigits[abi]?.let { output.versionCode.set(release * 10 + it) }
+        }
     }
 }
 
@@ -78,7 +117,10 @@ dependencies {
     implementation(libs.lifecycle.process)
     implementation(libs.biometric)
     implementation(libs.documentfile)
-    implementation(libs.webkit)
+    implementation(libs.geckoview) {
+        // Google Play services, for WebAuthn: the app has no dependency on them.
+        exclude(group = "com.google.android.gms")
+    }
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
@@ -104,4 +146,5 @@ dependencies {
     implementation(libs.jsoup)
 
     testImplementation(libs.junit)
+    testImplementation(libs.snakeyaml)
 }

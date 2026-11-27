@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Tor-uitgang nog niet gecontroleerd: er wordt gecontroleerd of verbindingen echt via Tor naar buiten gaan.</string>
     <string name="problem_challenge">De site vraagt om een anti-botcontrole (Cloudflare): tik op ‘Controleren in browser’ om die te doorstaan.</string>
     <string name="problem_challenge_pass_refused">De controle is doorstaan, maar de site vraagt er opnieuw om wanneer de app dit bestand downloadt: een controle die in de browser is doorstaan, geldt niet voor downloads, dus opnieuw proberen helpt niet.</string>
-    <string name="problem_challenge_pass_refused_tor">De controle is doorstaan, maar de site vraagt er opnieuw om: met Tor aan bereiken de ingebouwde browser en de downloads de site via verschillende Tor-uitgangen, en een controle die via de ene is doorstaan, geldt niet voor de andere. Opnieuw proberen helpt niet zolang Tor aan staat.</string>
+    <string name="problem_challenge_pass_refused_tor">De controle is doorstaan, maar de site vraagt er opnieuw om wanneer de app dit bestand downloadt. Via Tor kan een site een controle koppelen aan de Tor-uitgang waarlangs die is doorstaan, en Tor stapt na verloop van tijd over op andere uitgangen: probeer het later opnieuw en doorsta de controle nog eens als de site erom vraagt.</string>
     <string name="problem_access_denied">Toegang geweigerd (%1$s): deze bron heeft mogelijk een login en een API-sleutel nodig.</string>
     <string name="problem_not_found">Adres niet gevonden (404): controleer de URL en het enginetype.</string>
     <string name="problem_gone">Pagina niet meer beschikbaar: de site beperkt hoe ver je kunt bladeren.</string>
@@ -116,10 +116,6 @@
     <string name="settings_secure_screen">Scherm beschermen</string>
     <string name="settings_secure_screen_hint">Blokkeert screenshots en schermopnamen en verbergt het voorbeeld bij recente apps. Altijd aan zolang de app vergrendeld is.</string>
     <string name="settings_section_network">Netwerk en ingebouwde browser</string>
-    <string name="settings_safe_browsing">Google Safe Browsing in de ingebouwde browser</string>
-    <string name="settings_safe_browsing_unavailable">Niet beschikbaar: in de WebView werkt Safe Browsing via Google Play-services, die deze telefoon niet heeft. Er wordt in geen geval een adres naar Google gestuurd.</string>
-    <string name="settings_safe_browsing_on">Aan. Voor elk adres dat de ingebouwde browser opent (pagina\'s, afbeeldingen, scripts, advertenties inbegrepen) berekent Google Play-services een cryptografische vingerafdruk en vergelijkt die met een lijst op de telefoon. Als het begin van de vingerafdruk overeenkomt met een item in de lijst, stuurt het dat fragment van een paar bytes ter bevestiging naar de servers van Google. Google ontvangt het adres niet in leesbare vorm, maar ziet je IP, het tijdstip en het fragment; het verzoek komt van de Google-services van de telefoon, dus het kan aan het apparaat worden gekoppeld, en het gaat NIET via Tor, ook niet als Tor aan staat. In ruil daarvoor wordt een pagina die bekendstaat om malware, phishing of ongewenste software met een waarschuwing geblokkeerd.</string>
-    <string name="settings_safe_browsing_off">Uit: de ingebouwde browser raadpleegt Google niet en er worden geen gegevens over de adressen die je bezoekt naar Google gestuurd. Je krijgt geen waarschuwing als een pagina bekendstaat om malware of phishing. Dit geldt alleen voor de ingebouwde browser: de zoekopdrachten, afbeeldingen en downloads van de app gebruiken nooit Safe Browsing.</string>
     <string name="settings_cookies">Cookies van sites</string>
     <string name="settings_cookies_hint">Geslaagde anti-botcontroles en sessies, versleuteld in de kluis</string>
     <string name="settings_cookies_cleared">Cookies verwijderd</string>
@@ -305,7 +301,7 @@
     <string name="browser_blocked_outside">Deze browser blijft op %1$s: een link naar een andere site is niet geopend.</string>
     <string name="browser_tor_unverified">Tor staat aan maar is nog niet gecontroleerd: de browser opent zodra een controle bevestigt dat verbindingen via Tor naar buiten gaan.</string>
     <string name="challenge_hint">De site wil controleren of je een mens bent. Voltooi de controle hieronder: zodra de pagina van de site normaal opent, probeert BooruVault het vanzelf opnieuw.</string>
-    <string name="browser_tor_unsupported">Met Tor aan opent de ingebouwde browser niet: de WebView van deze telefoon kan niet volledig via Tor worden geleid. Update ‘Android System WebView’.</string>
+    <string name="browser_engine_refused">De ingebouwde browser opent niet: de engine ervan heeft de instellingen die pagina\'s op de gekozen verbinding houden niet overgenomen, dus er is niets geladen. Sluit de app en open hem opnieuw om het nog eens te proberen.</string>
     <string name="notification_channel">Downloads</string>
     <string name="notification_channel_description">Voortgang van downloads naar de kluis</string>
     <string name="notification_progress_title">Downloaden naar de kluis</string>

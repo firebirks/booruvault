@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Tor 出口尚未驗證：正在確認連線確實經由 Tor。</string>
     <string name="problem_challenge">網站要求進行防機器人驗證（Cloudflare）：請輕觸「在瀏覽器中驗證」完成驗證。</string>
     <string name="problem_challenge_pass_refused">驗證已通過，但應用程式下載此檔案時網站仍再次要求驗證：在瀏覽器中通過的驗證對下載無效，因此再驗證一次也無濟於事。</string>
-    <string name="problem_challenge_pass_refused_tor">驗證已通過，但網站仍再次要求驗證：開啟 Tor 時，內建瀏覽器和下載會經由不同的 Tor 出口連到網站，從一個出口通過的驗證對另一個無效。只要 Tor 保持開啟，再驗證一次也無濟於事。</string>
+    <string name="problem_challenge_pass_refused_tor">驗證已通過，但應用程式下載此檔案時網站再次要求驗證。透過 Tor 時，網站可能將驗證與通過它的 Tor 出口綁定，而 Tor 會隨時間切換到其他出口：請稍後再試，如果網站要求，請再次完成驗證。</string>
     <string name="problem_access_denied">存取遭拒（%1$s）：這個來源可能需要登入和 API 金鑰。</string>
     <string name="problem_not_found">找不到網址（404）：請檢查 URL 和引擎類型。</string>
     <string name="problem_gone">頁面已無法使用：網站限制了可翻頁的深度。</string>
@@ -114,10 +114,6 @@
     <string name="settings_secure_screen">保護螢幕</string>
     <string name="settings_secure_screen_hint">封鎖螢幕截圖和螢幕錄影，並在最近使用的應用程式中隱藏預覽畫面。應用程式鎖定時一律開啟。</string>
     <string name="settings_section_network">網路與內建瀏覽器</string>
-    <string name="settings_safe_browsing">內建瀏覽器中的 Google Safe Browsing</string>
-    <string name="settings_safe_browsing_unavailable">無法使用：在 WebView 中，Safe Browsing 須透過 Google Play 服務運作，但這支手機沒有該服務。無論如何都不會傳送任何網址給 Google。</string>
-    <string name="settings_safe_browsing_on">開啟。內建瀏覽器開啟的每個網址（包括網頁、圖片、指令碼和廣告），Google Play 服務都會計算出其密碼學指紋，並與手機上儲存的清單比對。當指紋的開頭與清單中的某個項目相符時，就會將這段只有幾個位元組的片段傳送到 Google 的伺服器進行確認。Google 不會收到明文網址，但會看到你的 IP、時間和該片段；這個要求是由手機上的 Google 服務發出，因此可能與裝置產生關聯，而且即使開啟了 Tor，也不會經過 Tor。相對地，已知含有惡意軟體、網路釣魚或垃圾軟體的網頁會遭到封鎖並顯示警告。</string>
-    <string name="settings_safe_browsing_off">關閉：內建瀏覽器不會查詢 Google，也不會傳送任何與你造訪的網址相關的資料給 Google。如果某個網頁已知含有惡意軟體或網路釣魚內容，你不會收到警告。這只與內建瀏覽器有關：應用程式的搜尋、圖片和下載絕不會使用 Safe Browsing。</string>
     <string name="settings_cookies">網站 Cookie</string>
     <string name="settings_cookies_hint">已通過的防機器人驗證和登入工作階段，加密儲存在保險庫中</string>
     <string name="settings_cookies_cleared">Cookie 已刪除</string>
@@ -298,7 +294,7 @@
     <string name="browser_blocked_outside">此瀏覽器只停留在 %1$s：指向其他網站的連結未開啟。</string>
     <string name="browser_tor_unverified">Tor 已開啟但尚未驗證：確認連線經由 Tor 後，瀏覽器才會開啟。</string>
     <string name="challenge_hint">網站想確認你是真人。請完成下方的驗證：網站頁面正常開啟後，BooruVault 會自動重試。</string>
-    <string name="browser_tor_unsupported">開啟 Tor 時無法開啟內建瀏覽器：這支手機的 WebView 無法完全透過 Tor 路由。請更新「Android System WebView」。</string>
+    <string name="browser_engine_refused">無法開啟內建瀏覽器：其引擎未接受讓頁面保持在所選連線上的設定，因此沒有載入任何內容。請關閉應用程式後重新開啟再試。</string>
     <string name="notification_channel">下載</string>
     <string name="notification_channel_description">下載到保險庫的進度</string>
     <string name="notification_progress_title">正在下載到保險庫</string>

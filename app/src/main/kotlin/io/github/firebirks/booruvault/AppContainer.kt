@@ -19,10 +19,13 @@ import io.github.firebirks.booruvault.download.DownloadService
 import io.github.firebirks.booruvault.download.QueuePreviewFetcher
 import io.github.firebirks.booruvault.download.QueuePreviewKeyer
 import io.github.firebirks.booruvault.net.Challenge
+import io.github.firebirks.booruvault.net.GeckoEngine
 import io.github.firebirks.booruvault.net.HiddenBrowser
 import io.github.firebirks.booruvault.net.RouteChoiceGate
 import io.github.firebirks.booruvault.net.RouteTls
+import io.github.firebirks.booruvault.net.RoutedClient
 import io.github.firebirks.booruvault.net.SecureCookieJar
+import io.github.firebirks.booruvault.net.SocksCredential
 import io.github.firebirks.booruvault.net.TorExitGate
 import io.github.firebirks.booruvault.net.TorFailures
 import io.github.firebirks.booruvault.net.TorListenerWatch
@@ -30,6 +33,8 @@ import io.github.firebirks.booruvault.net.TorManager
 import io.github.firebirks.booruvault.net.TorRouteGuard
 import io.github.firebirks.booruvault.settings.SettingsRepository
 import io.github.firebirks.booruvault.util.LibraryBuffers
+import io.github.firebirks.booruvault.util.NoImages
+import io.github.firebirks.booruvault.util.debugNoImages
 import io.github.firebirks.booruvault.util.SensitiveClipboard
 import io.github.firebirks.booruvault.vault.AutoLock
 import io.github.firebirks.booruvault.vault.BackupRunner
@@ -69,8 +74,9 @@ import java.util.concurrent.TimeUnit
  * the download queue are sealed in the vault next to its contents, and the image cache is memory
  * only. In clear are the vault header, which holds no user data, and what must be read before an
  * unlock: the route (`network.xml`: Tor on or off, Orbot's port, whether the route was chosen)
- * and, before Android 13, the app's language (`ui.xml`). The built-in browser's WebView keeps
- * files of its own.
+ * and, before Android 13, the app's language (`ui.xml`). The built-in browsers' engine keeps
+ * a profile of its own (`files/mozilla`) and its preferences (`files/gecko-config.yaml`); its
+ * sessions are private ones, which store nothing of a visit there.
  */
 class AppContainer(private val context: Context) {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -89,16 +95,19 @@ class AppContainer(private val context: Context) {
     // An install that already has a vault is not asked how to connect: it chose long ago.
     val tor = TorManager(context, scope, hasVault = vault.state.value != VaultState.Missing)
     val cookies = SecureCookieJar(vaultDir, vault, json, scope)
+
+    /** The engine the built-in browsers are moving to; nothing of it starts until one opens. */
+    val gecko = GeckoEngine(context)
     private val tls = RouteTls()
 
     /**
      * The app's only HTTP client: API calls, images (Coil), video (Media3), downloads. With Tor on
-     * it can reach the network only through Orbot, and cannot resolve names itself.
+     * it can reach the network only through Orbot, and cannot resolve names itself. Callers get it
+     * as [http], which makes each call along the route in force; its proxy is set there.
      */
-    val http: OkHttpClient = OkHttpClient.Builder()
+    private val httpBase: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
-        .proxySelector(tor.proxySelector)
         .dns(tor.dns)
         // A TLS session cache for the direct route alone, and cookies put on by SiteHeaders once the route is known.
         .socketFactory(tls.socketFactory)
@@ -117,17 +126,21 @@ class AppContainer(private val context: Context) {
         .eventListener(TorListenerWatch(tor::listenerLost))
         .build()
 
+    val http: RoutedClient = tor.routed(httpBase)
+
     /**
      * The same client for API calls and page reads, with a queue of its own: OkHttp runs a few
      * calls per host and queues the rest, and a grid of slow thumbnails would otherwise hold a
      * search or a tag suggestion back until they drained, which over Tor is a long time.
      */
-    val apiHttp: OkHttpClient = http.newBuilder()
+    private val apiBase: OkHttpClient = httpBase.newBuilder()
         .dispatcher(Dispatcher().apply {
             maxRequests = 16
             maxRequestsPerHost = 8
         })
         .build()
+
+    val apiHttp: RoutedClient = tor.routed(apiBase)
 
     val vaultStore = VaultStore(vaultDir, vault, json, scope)
     val rekeyer = VaultRekeyer(vaultDir, vault, scope)
@@ -135,7 +148,7 @@ class AppContainer(private val context: Context) {
     val backups = BackupRunner(context, VaultBackup(vaultDir, vault, json), vault, scope) {
         ContextCompat.startForegroundService(context, Intent(context, BackupService::class.java))
     }
-    val hiddenBrowser = HiddenBrowser(context, tor, cookies, settings, json)
+    val hiddenBrowser = HiddenBrowser(gecko, tor, cookies)
     val downloads = DownloadManager(
         { ContextCompat.startForegroundService(context, Intent(context, DownloadService::class.java)) }, { api(it) }, http, { tor.enabled }, { host, since -> cookies.passExpiredSince(tor.route, host, since) },
         vaultStore, vault, settings, json, vaultDir, scope, awaitTorVerdict = { tor.awaitVerdict() },
@@ -144,6 +157,8 @@ class AppContainer(private val context: Context) {
     val clipboard = SensitiveClipboard.of(context)
 
     init {
+        // Before the first connection through Orbot: the client and the engine say the same there.
+        SocksCredential.install()
         // The exit check needs the client, which needs the manager: wired here, then started.
         tor.onVerifyNeeded = { scope.launch { tor.verify(http, json) } }
         tor.refreshStatus()
@@ -152,10 +167,12 @@ class AppContainer(private val context: Context) {
         // is not allowed to do; until the pool is empty the route guard refuses the old ones.
         tor.onRouteChanged = {
             downloads.routeChanged()
+            // The engine leaves the old route too, until a browser applies the new one.
+            scope.launch(Dispatchers.Main) { gecko.park() }
             scope.launch(Dispatchers.IO) {
-                http.dispatcher.cancelAll()
-                apiHttp.dispatcher.cancelAll()
-                http.connectionPool.evictAll()
+                httpBase.dispatcher.cancelAll()
+                apiBase.dispatcher.cancelAll()
+                httpBase.connectionPool.evictAll()
                 // Only now can a request be made that the cancellation will not take with it.
                 tor.routeSettled()
             }
@@ -167,6 +184,7 @@ class AppContainer(private val context: Context) {
 
     val imageLoader: ImageLoader = ImageLoader.Builder(context)
         .components {
+            if (debugNoImages(context)) add(NoImages)
             add(OkHttpNetworkFetcherFactory(callFactory = { http }))
             add(VaultImageFetcher.Factory(vaultStore))
             add(VaultImageKeyer())
@@ -200,7 +218,7 @@ class AppContainer(private val context: Context) {
             override fun onStart(owner: LifecycleOwner) =
                 tor.cameBack(if (leftAt == 0L) 0 else SystemClock.elapsedRealtime() - leftAt)
         })
-        // The names the app goes by carry the phone's Chrome version; the WebView knows it.
+        // The names the app's client goes by carry the phone's Chrome version; the system's WebView knows it.
         scope.launch(Dispatchers.Main) { Challenge.learnChromeVersion(context) }
         scope.launch(Dispatchers.IO) {
             removeLegacyPlaintext()
@@ -227,11 +245,19 @@ class AppContainer(private val context: Context) {
      * narrows the window rather than guaranteeing it.
      * Browsing requests are cancelled by their own screens; downloads the user lets run are not.
      */
+    /**
+     * Closes the connections waiting to be used again. After a check is passed in the browser,
+     * the app's next request opens a new one, which Tor puts on the circuit its credential is
+     * on now, the browser's: one opened long before may still be on an older circuit, whose
+     * exit is another.
+     */
+    suspend fun freshConnections() = withContext(Dispatchers.IO) { httpBase.connectionPool.evictAll() }
+
     private suspend fun forgetSession() {
         withContext(Dispatchers.Main) { clipboard.forget() }
         GelbooruApi.forgetSession()
         imageLoader.memoryCache?.clear()
-        http.connectionPool.evictAll()
+        httpBase.connectionPool.evictAll()
         // Let cancelled transfers unwind and the UI drop its state first.
         delay(500)
         LibraryBuffers.wipeOkioSegments()

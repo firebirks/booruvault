@@ -1,0 +1,9 @@
+{
+  "manifest_version": 2,
+  "name": "BooruVault",
+  "version": "1.5",
+  "browser_specific_settings": { "gecko": { "id": "browser@booruvault" } },
+  "background": { "scripts": ["background.js"] },
+  "content_scripts": [{ "matches": ["<all_urls>"], "js": ["page.js"], "run_at": "document_start" }],
+  "permissions": ["cookies", "proxy", "webRequest", "nativeMessaging", "nativeMessagingFromContent", "geckoViewAddons", "<all_urls>"]
+}

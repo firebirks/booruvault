@@ -1,0 +1,54 @@
+# A Firefox security release reaches the built-in browsers only with a release of the app. Each
+# day this compares the GeckoView release Mozilla publishes with the one the app is built with,
+# and opens an issue when Mozilla's is newer and none is open for it yet. It holds no secret but
+# the run's own token, and runs nothing of the repository's.
+name: GeckoView release check
+
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+# Actions are pinned to the commit of the release named beside each: a tag can be moved to other
+# code, a commit cannot.
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Compare the engine with Mozilla's latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          used=$(sed -n 's/^geckoview = "\(.*\)"$/\1/p' gradle/libs.versions.toml)
+          latest=$(curl -fsS --retry 3 https://maven.mozilla.org/maven2/org/mozilla/geckoview/geckoview/maven-metadata.xml \
+            | sed -n 's:.*<release>\(.*\)</release>.*:\1:p')
+          if [ -z "$used" ] || [ -z "$latest" ]; then
+            echo "could not read the versions: used '$used', latest '$latest'" >&2
+            exit 1
+          fi
+          echo "built with $used, Mozilla's latest release is $latest"
+          [ "$used" = "$latest" ] && exit 0
+          # Newer by its build id, the date and time after the version.
+          newer=$(printf '%s\n%s\n' "$used" "$latest" | sort -t. -k1,1n -k3,3n | tail -n 1)
+          [ "$newer" = "$latest" ] || exit 0
+          title="GeckoView $latest is out (the app is built with $used)"
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"GeckoView $latest\" in:title" --json number --jq length)
+          [ "$open" = "0" ] || exit 0
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(cat <<EOF
+          Mozilla has published GeckoView $latest; the app is built with $used. Firefox's security
+          fixes reach the built-in browsers only with a release of the app.
+
+          - Read Mozilla's advisories for the Firefox version: https://www.mozilla.org/security/advisories/
+          - Set the version in gradle/libs.versions.toml and write the new checksums into
+            gradle/verification-metadata.xml (see the README, under Building).
+          - Check every name in app/src/main/kotlin/io/github/firebirks/booruvault/net/GeckoPrefs.kt
+            against the new engine, run tools/gecko-probe on a phone, and release.
+          EOF
+          )"

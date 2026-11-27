@@ -2,13 +2,13 @@ package io.github.firebirks.booruvault.booru
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
 import okhttp3.Request
 
 /** e621 / e926. Their API asks clients to name themselves, and the account; [UserAgents.forSource] does. */
-class E621Api(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+class E621Api(source: BooruSource, client: Call.Factory, json: Json) : BaseBooruApi(source, client, json) {
 
     override fun request(url: HttpUrl): Request = super.request(url).newBuilder()
         .apply {

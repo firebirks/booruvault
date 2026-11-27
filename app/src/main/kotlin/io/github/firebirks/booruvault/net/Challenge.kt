@@ -2,13 +2,7 @@ package io.github.firebirks.booruvault.net
 
 import android.content.Context
 import android.net.Uri
-import android.webkit.CookieManager
 import android.webkit.WebSettings
-import android.webkit.WebResourceResponse
-import android.webkit.WebStorage
-import android.webkit.WebView
-import android.webkit.WebViewDatabase
-import io.github.firebirks.booruvault.booru.BooruSource
 import io.github.firebirks.booruvault.booru.UserAgents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,21 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import java.io.ByteArrayInputStream
 
-/** The WebView side of anti-bot checks. The WebView keeps nothing once a check is over. */
+/** What the built-in browsers share: where a session may go, and what a guarded file is. */
 object Challenge {
     /**
-     * The built-in browser's User-Agent: Chrome's WebView form of the app's own name, with the
-     * real Chrome version but "Android 10; K" in place of the phone model and Android version.
-     * It is also what the app presents to a site after its check is passed.
+     * Reads the phone's Chrome version off the system's WebView once, for the names the app's
+     * HTTP client goes by (see [UserAgents]). Nothing is loaded in a WebView: the app has none.
      */
-    fun userAgent(context: Context, source: BooruSource?): String {
-        learnChromeVersion(context)
-        return UserAgents.forSource(source, webView = true)
-    }
-
-    /** Reads the phone's Chrome version off the WebView once, for every name the app uses. */
     fun learnChromeVersion(context: Context) {
         if (learned) return
         val default = runCatching { WebSettings.getDefaultUserAgent(context) }.getOrNull() ?: return
@@ -44,8 +30,8 @@ object Challenge {
     private val _visibleOpen = MutableStateFlow(false)
 
     /**
-     * Whether the built-in browser is on screen. The WebView's cookie store is one for the whole
-     * process: while the user is at a check in that browser, nothing else fills or empties it.
+     * Whether the built-in browser is on screen. The engine's private sessions share one cookie
+     * store: while the user is at a check in that browser, nothing else fills or empties it.
      * The [HiddenBrowser] waits for it to close, and gives way to it.
      */
     val visibleOpen: StateFlow<Boolean> = _visibleOpen.asStateFlow()
@@ -74,15 +60,20 @@ object Challenge {
         return host == CHALLENGE_HOST || SecureCookieJar.siteOf(host) == site
     }
 
-    fun hasClearance(url: String): Boolean =
-        runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull()?.contains("cf_clearance=") == true
-
     /**
      * Sent with the browser's first request for a guarded file: a range that starts past the end of
      * any file. A host that puts a check in front of it answers with the check's page; one that lets
      * the browser through answers 416, without a byte of the file.
      */
     const val NO_BYTES_RANGE = "bytes=1099511627776-"
+
+    /**
+     * Whether the page's own request for a guarded file is refused and made again with
+     * [NO_BYTES_RANGE], given whether the session holds a clearance ([held], null when the engine
+     * did not say). Only a session known to hold none is let through, as a host that asked for no
+     * check: one that did not say may hold one, and the file would then come whole.
+     */
+    fun refusesOwnRequest(held: Boolean?): Boolean = held != false
 
     /** Whether [url] asks for the very file at [target]: same host and path, whatever query a check adds. */
     fun isGuardedFile(target: String, url: String): Boolean {
@@ -92,50 +83,19 @@ object Challenge {
     }
 
     /**
-     * Whether the browser answers [url] itself, with nothing: the guarded file asked for once its
-     * check is passed. The file then never reaches the browser, its cache or the screen.
+     * The cookie [name] that a browser session holds for [url] of [site], as the app keeps it: a
+     * clearance for the whole site, whose other hosts check it too, anything else on the host of
+     * the address it was found at. Secure when the page was, so that a board served over plain
+     * http is sent back what it set, as a browser would send it. A clearance counts only
+     * [httpOnly], as Cloudflare sets it: one a page's script could reach is one it may have
+     * written, and kept it would be sent as a pass, under the browser's name, for thirty days.
      */
-    fun answersEmpty(target: String, url: String, cleared: () -> Boolean): Boolean = isGuardedFile(target, url) && cleared()
-
-    /** That empty answer. */
-    fun emptyResponse(): WebResourceResponse =
-        WebResourceResponse("text/plain", "utf-8", 204, "No Content", mapOf("Cache-Control" to "no-store"), ByteArrayInputStream(ByteArray(0)))
-
-    /**
-     * The cookies the WebView holds for [urls] of [site]. CookieManager tells only names and
-     * values, so the rest is chosen as narrowly as the app can afford: Cloudflare's clearance
-     * is a domain cookie, since the image hosts of a site check it too; every other cookie is
-     * bound to the very host it was read from, as a login would be. The real expiry is hidden
-     * as well, so they are kept for thirty days: a session the site has ended by then is simply
-     * refused, and a preference can be set again. A URL outside [site] contributes nothing.
-     */
-    fun cookiesFor(site: String, vararg urls: String): List<Cookie> {
-        val found = LinkedHashMap<String, Cookie>()
-        val expires = System.currentTimeMillis() + KEEP_DAYS * 24 * 60 * 60 * 1000
-        // A site may scope its pass to the challenged path; asking for each page gathers it too.
-        for (url in urls) {
-            val httpUrl = url.toHttpUrlOrNull() ?: continue
-            val host = httpUrl.host.lowercase()
-            if (SecureCookieJar.siteOf(host) != site) continue
-            val header = runCatching { CookieManager.getInstance().getCookie(url) }.getOrNull() ?: continue
-            header.split(';').forEach { part ->
-                val name = part.substringBefore('=').trim()
-                val value = part.substringAfter('=', "").trim()
-                if (name.isEmpty()) return@forEach
-                browserCookie(name, value, httpUrl, site, expires)?.let { found["$name|${it.domain}"] = it }
-            }
-        }
-        return found.values.toList()
-    }
-
-    /**
-     * The cookie [name] that the built-in browser holds for [url] of [site], as the app keeps it:
-     * see [cookiesFor]. Secure when the page was, so that a board served over plain http is sent
-     * back what it set, as a browser would send it.
-     */
-    internal fun browserCookie(name: String, value: String, url: HttpUrl, site: String, expires: Long): Cookie? = runCatching {
+    internal fun browserCookie(name: String, value: String, url: HttpUrl, site: String, expires: Long, httpOnly: Boolean): Cookie? = runCatching {
+        if (!sendable(name, value)) return null
+        if (name == CLEARANCE_COOKIE && !httpOnly) return null
         Cookie.Builder().name(name).value(value).path("/").expiresAt(expires)
             .apply {
+                if (httpOnly) httpOnly()
                 if (url.isHttps) secure()
                 if (name == CLEARANCE_COOKIE) domain(site) else hostOnlyDomain(url.host.lowercase())
             }
@@ -143,11 +103,20 @@ object Challenge {
     }.getOrNull()
 
     const val CLEARANCE_COOKIE = "cf_clearance"
-    private const val KEEP_DAYS = 30L
 
     /**
-     * Deletes the WebView's directories from disk. Only safe before a WebView is created in this
-     * process; run at start-up, it clears whatever a crash left behind mid-session.
+     * Whether a cookie [name] with [value] can go out in a request: printable ASCII, and no `;`,
+     * which would end it. The client writes headers in nothing else, and throws on anything else,
+     * which on its own threads ends the app. The engine takes a cookie with bytes past ASCII, as a
+     * page's script may set it: kept, it would end every request to its site.
+     */
+    internal fun sendable(name: String, value: String): Boolean =
+        name.isNotEmpty() && name.all { it in '!'..'~' && it != '=' && it != ';' } && value.all { it in ' '..'~' && it != ';' }
+
+    /**
+     * Deletes from disk the directories the system's WebView leaves: a version of the app that
+     * had its browsers on it may have left a session's there, and asking it for Chrome's version
+     * makes them again. Run at start-up.
      */
     fun wipeLeftovers(context: Context) {
         listOf(
@@ -156,22 +125,4 @@ object Challenge {
             java.io.File(context.cacheDir, "WebView"),
         ).forEach { it.deleteRecursively() }
     }
-
-    /** Leaves the WebView's storage as empty as the platform allows. */
-    fun wipe(context: Context, webView: WebView?) {
-        runEach(
-            { webView?.clearCache(true) },
-            { webView?.clearHistory() },
-            { webView?.clearFormData() },
-            {
-                CookieManager.getInstance().removeAllCookies(null)
-                CookieManager.getInstance().flush()
-            },
-            { WebStorage.getInstance().deleteAllData() },
-            { WebViewDatabase.getInstance(context).clearHttpAuthUsernamePassword() },
-        )
-    }
 }
-
-/** Runs every step, each on its own: one that throws keeps none of the others from running. */
-internal fun runEach(vararg steps: () -> Unit) = steps.forEach { runCatching(it) }

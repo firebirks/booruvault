@@ -28,11 +28,6 @@ class UserAgentTest {
     }
 
     @Test
-    fun `the built-in browser stays a browser on a danbooru board`() {
-        assertEquals(UserAgents.webView, UserAgents.forSource(safebooru, webView = true))
-    }
-
-    @Test
     fun `other boards still see chrome, and e926 also the app's name and version`() {
         assertEquals(UserAgents.browser, UserAgents.forSource(konachan))
         assertEquals(UserAgents.browser, UserAgents.forSource(null))
@@ -48,15 +43,11 @@ class UserAgentTest {
     }
 
     @Test
-    fun `nothing unsigned carries the account, and the built-in browser not even the app's`() {
-        // In the name of an image or a file, fetched without the account, it would tag every one;
-        // from the built-in browser it would reach every page and script it loads.
+    fun `nothing unsigned carries the account`() {
+        // In the name of an image or a file, fetched without the account, it would tag every one.
         val account = e926.copy(login = "someone", apiKey = "key")
         assertTrue(UserAgents.forSource(account).endsWith("BooruVault/${BuildConfig.VERSION_NAME}"))
         assertTrue(UserAgents.forSource(e926, signed = true).endsWith("BooruVault/${BuildConfig.VERSION_NAME}"))
-        assertEquals(UserAgents.webView, UserAgents.forSource(account, webView = true))
-        assertEquals(UserAgents.webView, UserAgents.forSource(account, webView = true, signed = true))
-        assertEquals(UserAgents.webView, UserAgents.forSource(e926, webView = true))
     }
 
     @Test
@@ -89,7 +80,7 @@ class UserAgentTest {
     fun `a request that names the app keeps its name while the site holds no clearance`() {
         val request = Request.Builder().url("https://cdn.donmai.us/original/a.jpg").header("User-Agent", UserAgents.forSource(safebooru)).build()
         assertEquals("BooruVault", withSiteHeaders(request, passedAgent = null, cleared = false).header("User-Agent"))
-        assertEquals("BooruVault", withSiteHeaders(request, passedAgent = UserAgents.webView, cleared = false).header("User-Agent"))
+        assertEquals("BooruVault", withSiteHeaders(request, passedAgent = BROWSER, cleared = false).header("User-Agent"))
     }
 
     @Test
@@ -97,15 +88,20 @@ class UserAgentTest {
         // Cloudflare binds the clearance to the browser that passed the check; under the app's
         // name it would be refused, and the download would be sent back to the check for ever.
         val request = Request.Builder().url("https://cdn.donmai.us/original/a.jpg").header("User-Agent", UserAgents.forSource(safebooru)).build()
-        assertEquals(UserAgents.webView, withSiteHeaders(request, passedAgent = UserAgents.webView, cleared = true).header("User-Agent"))
+        assertEquals(BROWSER, withSiteHeaders(request, passedAgent = BROWSER, cleared = true).header("User-Agent"))
     }
 
     @Test
     fun `a request that passes as a browser takes the recorded pass, as before`() {
         val request = Request.Builder().url("https://e926.net/posts.json").header("User-Agent", UserAgents.forSource(e926)).build()
-        val passed = UserAgents.forSource(e926, webView = true)
+        val passed = BROWSER
         assertEquals(passed, withSiteHeaders(request, passedAgent = passed, cleared = true).header("User-Agent"))
         val image = Request.Builder().url("https://cdn.donmai.us/180x180/a.jpg").build()
-        assertEquals(UserAgents.webView, withSiteHeaders(image, passedAgent = UserAgents.webView, cleared = false).header("User-Agent"))
+        assertEquals(BROWSER, withSiteHeaders(image, passedAgent = BROWSER, cleared = false).header("User-Agent"))
+    }
+
+    private companion object {
+        /** The name a built-in browser passed a check under: the engine's own. */
+        const val BROWSER = "Mozilla/5.0 (Android 17; Mobile; rv:161.0) Gecko/161.0 Firefox/161.0"
     }
 }

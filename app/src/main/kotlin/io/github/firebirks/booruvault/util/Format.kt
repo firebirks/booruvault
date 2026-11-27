@@ -4,14 +4,6 @@ import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 
-/** Whether Google Play services are on the phone; the app itself never needs them. */
-fun hasGooglePlayServices(context: android.content.Context): Boolean = try {
-    context.packageManager.getPackageInfo("com.google.android.gms", 0)
-    true
-} catch (_: android.content.pm.PackageManager.NameNotFoundException) {
-    false
-}
-
 object Mime {
     private val byExtension = mapOf(
         "jpg" to "image/jpeg", "jpeg" to "image/jpeg", "png" to "image/png", "gif" to "image/gif",

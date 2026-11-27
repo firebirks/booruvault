@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>hidden</title>
+<p id="first">first</p>
+<img src="pixel.png" alt="">
+<script>
+  // What a page adds after its load, and the cookies it sees: both must be in what the app reads.
+  setTimeout(function () {
+    var p = document.createElement("p");
+    p.id = "late";
+    p.textContent = "late [" + document.cookie + "]";
+    document.body.appendChild(p);
+  }, 300);
+</script>

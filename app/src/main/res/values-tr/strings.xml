@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Tor çıkışı henüz doğrulanmadı: bağlantıların gerçekten Tor üzerinden çıktığı denetleniyor.</string>
     <string name="problem_challenge">Site bir anti-bot doğrulaması (Cloudflare) istiyor: geçmek için “Tarayıcıda doğrula” düğmesine dokunun.</string>
     <string name="problem_challenge_pass_refused">Doğrulama geçildi ama uygulama bu dosyayı indirirken site onu yeniden istiyor: tarayıcıda geçilen doğrulama indirmeler için geçerli değil, bu yüzden yeniden denemek işe yaramaz.</string>
-    <string name="problem_challenge_pass_refused_tor">Doğrulama geçildi ama site onu yeniden istiyor: Tor açıkken yerleşik tarayıcı ve indirmeler siteye farklı Tor çıkışlarından ulaşır ve birinden geçilen doğrulama diğeri için geçerli değildir. Tor açık olduğu sürece yeniden denemek işe yaramaz.</string>
+    <string name="problem_challenge_pass_refused_tor">Doğrulama geçildi ama uygulama bu dosyayı indirirken site onu yeniden istiyor. Tor üzerinden bir site, doğrulamayı geçildiği Tor çıkışına bağlayabilir ve Tor zamanla başka çıkışlara geçer: daha sonra yeniden deneyin ve site isterse doğrulamayı yeniden geçin.</string>
     <string name="problem_access_denied">Erişim reddedildi (%1$s): bu kaynak oturum açmayı ve bir API anahtarını gerektirebilir.</string>
     <string name="problem_not_found">Adres bulunamadı (404): URL\'yi ve motor türünü kontrol edin.</string>
     <string name="problem_gone">Sayfa artık mevcut değil: site ne kadar ileri sayfalanabileceğini sınırlıyor.</string>
@@ -116,10 +116,6 @@
     <string name="settings_secure_screen">Ekranı koru</string>
     <string name="settings_secure_screen_hint">Ekran görüntülerini ve ekran kayıtlarını engeller, son uygulamalarda önizlemeyi gizler. Uygulama kilitliyken her zaman açıktır.</string>
     <string name="settings_section_network">Ağ ve yerleşik tarayıcı</string>
-    <string name="settings_safe_browsing">Yerleşik tarayıcıda Google Safe Browsing</string>
-    <string name="settings_safe_browsing_unavailable">Kullanılamıyor: WebView\'da Safe Browsing, bu telefonda bulunmayan Google Play hizmetleri üzerinden çalışır. Her durumda Google\'a hiçbir adres gönderilmez.</string>
-    <string name="settings_safe_browsing_on">Açık. Yerleşik tarayıcının açtığı her adres için (sayfalar, görseller, betikler ve reklamlar dahil) Google Play hizmetleri kriptografik bir parmak izi hesaplar ve bunu telefonda tutulan bir listeyle karşılaştırır. Parmak izinin başı listedeki bir girişle eşleşirse, birkaç baytlık o parçayı doğrulama için Google\'ın sunucularına gönderir. Google adresi açık metin olarak almaz, ancak IP\'nizi, zamanı ve parçayı görür; istek telefonun Google hizmetlerinden gelir, bu yüzden cihazla ilişkilendirilebilir ve Tor açık olsa bile Tor üzerinden GEÇMEZ. Karşılığında, kötü amaçlı yazılım, kimlik avı veya istenmeyen yazılımla bilinen bir sayfa bir uyarıyla engellenir.</string>
-    <string name="settings_safe_browsing_off">Kapalı: yerleşik tarayıcı Google\'a danışmaz ve ziyaret ettiğiniz adreslerle ilgili hiçbir veri ona gönderilmez. Bir sayfa kötü amaçlı yazılım veya kimlik avıyla biliniyorsa uyarı almazsınız. Bu yalnızca yerleşik tarayıcıyı ilgilendirir: uygulamanın aramaları, görselleri ve indirmeleri hiçbir zaman Safe Browsing kullanmaz.</string>
     <string name="settings_cookies">Site çerezleri</string>
     <string name="settings_cookies_hint">Geçilen anti-bot doğrulamaları ve oturumlar, kasada şifreli</string>
     <string name="settings_cookies_cleared">Çerezler silindi</string>
@@ -305,7 +301,7 @@
     <string name="browser_blocked_outside">Bu tarayıcı %1$s üzerinde kalır: başka bir siteye giden bağlantı açılmadı.</string>
     <string name="browser_tor_unverified">Tor açık ama henüz doğrulanmadı: bağlantıların Tor üzerinden çıktığı doğrulanınca tarayıcı açılır.</string>
     <string name="challenge_hint">Site, insan olduğunuzu doğrulamak istiyor. Aşağıdaki doğrulamayı tamamlayın: sitenin sayfası normal şekilde açıldığında BooruVault kendiliğinden yeniden dener.</string>
-    <string name="browser_tor_unsupported">Tor açıkken yerleşik tarayıcı açılmaz: bu telefonun WebView\'ı tamamen Tor üzerinden yönlendirilemiyor. “Android System WebView” uygulamasını güncelleyin.</string>
+    <string name="browser_engine_refused">Yerleşik tarayıcı açılmıyor: motoru, sayfaları seçilen bağlantıda tutan ayarları almadı, bu yüzden hiçbir şey yüklenmedi. Yeniden denemek için uygulamayı kapatıp tekrar açın.</string>
     <string name="notification_channel">İndirmeler</string>
     <string name="notification_channel_description">Kasaya yapılan indirmelerin ilerlemesi</string>
     <string name="notification_progress_title">Kasaya indiriliyor</string>

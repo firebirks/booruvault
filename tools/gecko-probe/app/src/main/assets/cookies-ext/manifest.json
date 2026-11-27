@@ -1,0 +1,8 @@
+{
+  "manifest_version": 2,
+  "name": "Probe cookies",
+  "version": "1.0",
+  "browser_specific_settings": { "gecko": { "id": "cookies@probe.booruvault" } },
+  "background": { "scripts": ["background.js"] },
+  "permissions": ["cookies", "nativeMessaging", "geckoViewAddons", "<all_urls>"]
+}

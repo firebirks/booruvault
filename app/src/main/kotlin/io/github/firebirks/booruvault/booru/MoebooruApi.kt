@@ -3,14 +3,14 @@ package io.github.firebirks.booruvault.booru
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import okhttp3.Call
 import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
 
 /**
  * yande.re, konachan and other Moebooru sites. Credentials are the user name and the password
  * hash the site expects, which [passwordHash] computes; the password itself is never kept.
  */
-class MoebooruApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+class MoebooruApi(source: BooruSource, client: Call.Factory, json: Json) : BaseBooruApi(source, client, json) {
 
     companion object {
         /** Moebooru's `password_hash`: SHA-1 of the password inside the salt every Moebooru site uses. */

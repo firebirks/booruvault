@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Lối ra Tor chưa được xác minh: đang kiểm tra kết nối có thật sự đi ra qua Tor.</string>
     <string name="problem_challenge">Trang web yêu cầu kiểm tra chống bot (Cloudflare): nhấn “Xác minh trong trình duyệt” để hoàn tất.</string>
     <string name="problem_challenge_pass_refused">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu khi ứng dụng tải tệp này: kiểm tra đã vượt qua trong trình duyệt không áp dụng cho các lượt tải xuống, nên làm lại cũng không giúp được.</string>
-    <string name="problem_challenge_pass_refused_tor">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu: khi bật Tor, trình duyệt tích hợp và các lượt tải xuống đến trang web qua các lối ra Tor khác nhau, và kiểm tra đã vượt qua từ lối này không áp dụng cho lối kia. Làm lại cũng không giúp được khi Tor còn bật.</string>
+    <string name="problem_challenge_pass_refused_tor">Đã vượt qua kiểm tra, nhưng trang web lại yêu cầu khi ứng dụng tải tệp này xuống. Qua Tor, trang web có thể gắn kiểm tra với lối ra Tor đã dùng khi vượt qua, và Tor sẽ chuyển sang lối ra khác theo thời gian: hãy thử lại sau, và vượt qua kiểm tra lần nữa nếu trang web yêu cầu.</string>
     <string name="problem_access_denied">Truy cập bị từ chối (%1$s): nguồn này có thể cần đăng nhập và khóa API.</string>
     <string name="problem_not_found">Không tìm thấy địa chỉ (404): hãy kiểm tra URL và loại nền tảng.</string>
     <string name="problem_gone">Trang không còn khả dụng: trang web giới hạn số trang bạn có thể xem tiếp.</string>
@@ -114,10 +114,6 @@
     <string name="settings_secure_screen">Bảo vệ màn hình</string>
     <string name="settings_secure_screen_hint">Chặn chụp ảnh màn hình, quay màn hình và ẩn bản xem trước trong danh sách ứng dụng gần đây. Luôn bật khi ứng dụng bị khóa.</string>
     <string name="settings_section_network">Mạng và trình duyệt tích hợp</string>
-    <string name="settings_safe_browsing">Google Safe Browsing trong trình duyệt tích hợp</string>
-    <string name="settings_safe_browsing_unavailable">Không khả dụng: trong WebView, Safe Browsing hoạt động qua Dịch vụ Google Play, mà điện thoại này không có. Dù thế nào, không có địa chỉ nào được gửi tới Google.</string>
-    <string name="settings_safe_browsing_on">Bật. Với mỗi địa chỉ mà trình duyệt tích hợp mở (kể cả trang, hình ảnh, script, quảng cáo), Dịch vụ Google Play tính một dấu vân tay mật mã và so sánh với một danh sách lưu trên điện thoại. Khi phần đầu của dấu vân tay khớp với một mục trong danh sách, dịch vụ gửi đoạn dài vài byte đó tới máy chủ của Google để xác nhận. Google không nhận được nguyên văn địa chỉ, nhưng thấy IP của bạn, thời điểm và đoạn đó; yêu cầu xuất phát từ dịch vụ Google trên điện thoại nên có thể liên kết với thiết bị, và yêu cầu này KHÔNG đi qua Tor ngay cả khi Tor đang bật. Đổi lại, trang được biết là chứa phần mềm độc hại, lừa đảo (phishing) hoặc phần mềm không mong muốn sẽ bị chặn kèm cảnh báo.</string>
-    <string name="settings_safe_browsing_off">Tắt: trình duyệt tích hợp không hỏi Google và không có dữ liệu nào về các địa chỉ bạn truy cập được gửi tới Google. Bạn sẽ không nhận được cảnh báo nếu một trang được biết là chứa phần mềm độc hại hoặc lừa đảo. Điều này chỉ áp dụng cho trình duyệt tích hợp: tìm kiếm, hình ảnh và tải xuống của ứng dụng không bao giờ dùng Safe Browsing.</string>
     <string name="settings_cookies">Cookie của trang web</string>
     <string name="settings_cookies_hint">Các lần kiểm tra chống bot đã vượt qua và phiên đăng nhập, được mã hóa trong kho</string>
     <string name="settings_cookies_cleared">Đã xóa cookie</string>
@@ -298,7 +294,7 @@
     <string name="browser_blocked_outside">Trình duyệt này ở lại %1$s: liên kết đến trang khác không được mở.</string>
     <string name="browser_tor_unverified">Tor đang bật nhưng chưa được xác minh: trình duyệt mở khi kiểm tra xác nhận kết nối đi ra qua Tor.</string>
     <string name="challenge_hint">Trang web muốn xác minh rằng bạn là người. Hãy hoàn tất kiểm tra bên dưới: khi trang web mở bình thường, BooruVault sẽ tự thử lại.</string>
-    <string name="browser_tor_unsupported">Khi bật Tor, trình duyệt tích hợp không mở được: WebView trên điện thoại này không thể định tuyến hoàn toàn qua Tor. Hãy cập nhật “Android System WebView”.</string>
+    <string name="browser_engine_refused">Trình duyệt tích hợp không mở được: công cụ của nó không nhận các cài đặt giữ trang trên kết nối đã chọn, nên chưa tải gì cả. Hãy đóng ứng dụng rồi mở lại để thử lần nữa.</string>
     <string name="notification_channel">Tải xuống</string>
     <string name="notification_channel_description">Tiến trình tải xuống vào kho</string>
     <string name="notification_progress_title">Đang tải xuống vào kho</string>

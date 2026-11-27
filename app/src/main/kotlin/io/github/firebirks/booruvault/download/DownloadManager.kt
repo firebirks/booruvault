@@ -47,8 +47,8 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import okhttp3.Call
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
@@ -140,7 +140,7 @@ class DownloadManager(
     /** Starts [DownloadService], which keeps the process alive while there is work. */
     private val wakeService: () -> Unit,
     private val api: (BooruSource) -> BooruApi,
-    private val client: OkHttpClient,
+    private val client: Call.Factory,
     private val torEnabled: () -> Boolean,
     /** Whether a host's site refused, since a time, a clearance that had worked: see [downloadProblem]. */
     private val passExpiredSince: (host: String, since: Long) -> Boolean,
@@ -842,8 +842,9 @@ internal fun challengedKeys(tasks: List<DownloadTask>, sourceId: String): List<L
  * What a failed download reports. A check met again within [CHECK_HOLDS_MS] of the user passing
  * the source's check in the browser ([checkedAt]) is not offered once more, whether the download
  * was queued again on the way back or retried by hand: the site does not take the pass from the
- * app, and another round in the browser would end the same way. With Tor on, the likely reason is
- * that the browser and the app reach the site from different exits. Unless the pass worked and then
+ * app, and another round in the browser would end the same way. With Tor on, the browser and the
+ * app leave by the same circuits, but a site may tie the pass to the exit, and Tor moves on to
+ * others over time: later, the check may be passed again. Unless the pass worked and then
  * stopped ([passExpired]): it ran out or the address changed, and a new one will work again.
  */
 internal fun downloadProblem(problem: Problem, checkedAt: Long?, passExpired: Boolean, now: Long, tor: Boolean): Problem = when {

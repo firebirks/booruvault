@@ -9,7 +9,7 @@
     <string name="problem_tor_unverified">Tor exit not verified yet: checking that connections really leave through Tor.</string>
     <string name="problem_challenge">The site asks for an anti-bot check (Cloudflare): tap “Verify in the browser” to pass it.</string>
     <string name="problem_challenge_pass_refused">The check was passed, but the site asks for it again when the app downloads this file: a check passed in the browser does not count for downloads, so passing it again will not help.</string>
-    <string name="problem_challenge_pass_refused_tor">The check was passed, but the site asks for it again: with Tor on, the built-in browser and the downloads reach the site through different Tor exits, and a check passed from one does not count for the other. Passing it again will not help while Tor is on.</string>
+    <string name="problem_challenge_pass_refused_tor">The check was passed, but the site asks for it again when the app downloads this file. Through Tor a site may tie a check to the exit it was passed from, and Tor moves to other exits over time: try again later, and pass the check again if the site asks for it.</string>
     <string name="problem_access_denied">Access denied (%1$s): this source may need a login and an API key.</string>
     <string name="problem_not_found">Address not found (404): check the URL and the engine type.</string>
     <string name="problem_gone">Page no longer available: the site limits how far you can page.</string>
@@ -121,10 +121,6 @@
     <string name="settings_secure_screen">Protect the screen</string>
     <string name="settings_secure_screen_hint">Blocks screenshots and screen recordings and hides the preview in recent apps. Always on while the app is locked.</string>
     <string name="settings_section_network">Network and built-in browser</string>
-    <string name="settings_safe_browsing">Google Safe Browsing in the built-in browser</string>
-    <string name="settings_safe_browsing_unavailable">Unavailable: in the WebView, Safe Browsing works through Google Play services, which this phone does not have. No address is sent to Google either way.</string>
-    <string name="settings_safe_browsing_on">On. For every address the built-in browser opens (pages, images, scripts, ads included) Google Play services computes a cryptographic fingerprint and compares it with a list kept on the phone. When the start of the fingerprint matches an entry in the list, it sends that fragment of a few bytes to Google\'s servers for confirmation. Google does not receive the address in clear, but sees your IP, the time and the fragment; the request comes from the phone\'s Google services, so it can be linked to the device, and it does NOT go through Tor even when Tor is on. In return, a page known for malware, phishing or unwanted software is blocked with a warning.</string>
-    <string name="settings_safe_browsing_off">Off: the built-in browser does not consult Google and no data about the addresses you visit is sent to it. You get no warning if a page is known for malware or phishing. This only concerns the built-in browser: the app\'s searches, images and downloads never use Safe Browsing.</string>
     <string name="settings_cookies">Site cookies</string>
     <string name="settings_cookies_hint">Passed anti-bot checks and sessions, encrypted in the vault</string>
     <string name="settings_cookies_cleared">Cookies deleted</string>
@@ -312,7 +308,7 @@
     <string name="browser_blocked_outside">This browser stays on %1$s: a link to another site was not opened.</string>
     <string name="browser_tor_unverified">Tor is on but not yet verified: the browser opens once a check confirms that connections leave through Tor.</string>
     <string name="challenge_hint">The site wants to check that you are a person. Complete the check below: once the site\'s page opens normally, BooruVault tries again by itself.</string>
-    <string name="browser_tor_unsupported">With Tor on, the built-in browser does not open: this phone\'s WebView cannot be routed entirely through Tor. Update “Android System WebView”.</string>
+    <string name="browser_engine_refused">The built-in browser does not open: its engine did not take the settings that keep pages on the chosen connection, so nothing was loaded. Close the app and open it again to try once more.</string>
     <string name="notification_channel">Downloads</string>
     <string name="notification_channel_description">Progress of downloads into the vault</string>
     <string name="notification_progress_title">Downloading into the vault</string>

@@ -3,6 +3,7 @@ package io.github.firebirks.booruvault.net
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -15,7 +16,6 @@ import java.net.Proxy
 import java.net.ServerSocket
 import java.net.SocketException
 import java.net.SocketTimeoutException
-import java.net.URI
 import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
@@ -63,12 +63,28 @@ class TorRoutingTest {
         return server
     }
 
-    private fun client(enabled: () -> Boolean, port: () -> Int) = OkHttpClient.Builder()
-        .proxySelector(TorProxySelector(enabled, port))
-        .dns(TorAwareDns(enabled))
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
-        .build()
+    private fun client(enabled: () -> Boolean, port: () -> Int) = RoutedClient(
+        OkHttpClient.Builder()
+            .dns(TorAwareDns(enabled))
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build(),
+        enabled,
+        port,
+    )
+
+    /** A server that counts the connections it is offered, as a site reached directly would. */
+    private fun countingListener(count: AtomicInteger): ServerSocket {
+        val server = ServerSocket(0, 4, InetAddress.getByName("127.0.0.1"))
+        thread(isDaemon = true) {
+            while (!server.isClosed) {
+                val socket = runCatching { server.accept() }.getOrNull() ?: break
+                count.incrementAndGet()
+                socket.close()
+            }
+        }
+        return server
+    }
 
     @Test
     fun hostNamesTravelInsideTheSocksRequest() {
@@ -96,9 +112,7 @@ class TorRoutingTest {
         } catch (e: IOException) {
             // expected
         }
-        val proxies = TorProxySelector({ true }, { closed }).select(URI("https://example.com/"))
-        assertEquals(1, proxies.size)
-        assertEquals(Proxy.Type.SOCKS, proxies.single().type())
+        assertEquals(orbotProxy(closed), client({ true }, { closed }).current.proxy)
     }
 
     @Test
@@ -111,7 +125,64 @@ class TorRoutingTest {
             assertTrue(e.message!!.contains("Tor"))
         }
         assertEquals("127.0.0.1", dns.lookup("127.0.0.1").single().hostAddress)
-        assertEquals(Proxy.NO_PROXY, TorProxySelector({ false }, { 9050 }).select(URI("https://example.com/")).single())
+        assertEquals(Proxy.NO_PROXY, client({ false }, { 9050 }).current.proxy)
+    }
+
+    @Test
+    fun aHostJavaFindsNoHostInStillReachesOrbotAsAName() {
+        // OkHttp takes these hosts, java.net.URI finds none in them: OkHttp would ask no proxy
+        // selector about them and would look them up with the platform's resolver itself.
+        for (host in listOf("127.1", "1.2.772", "12.34", "4815162342.1234567890.42")) {
+            val direct = AtomicInteger()
+            countingListener(direct).use { site ->
+                var recorded: Recorded? = null
+                fakeSocks { recorded = it }.use { socks ->
+                    client({ true }, { socks.localPort })
+                        .newCall(Request.Builder().url("http://$host:${site.localPort}/a.jpg").build())
+                        .execute()
+                        .use { assertEquals("ok", it.body.string()) }
+                }
+                val request = recorded!!
+                assertEquals("$host must reach Orbot as a domain (ATYP 3), not resolved locally", 3, request.addressType)
+                assertEquals(host, request.host)
+                assertEquals(site.localPort, request.port)
+            }
+            assertEquals("nothing reached $host directly", 0, direct.get())
+        }
+    }
+
+    @Test
+    fun eachCallTakesTheRouteInForceWhenItIsMade() {
+        var enabled = false
+        var port = 9050
+        val routed = client({ enabled }, { port })
+        assertEquals(Proxy.NO_PROXY, routed.current.proxy)
+        enabled = true
+        val first = routed.current
+        assertEquals(orbotProxy(9050), first.proxy)
+        assertSame("one client while the port stays", first, routed.current)
+        port = 9150
+        assertEquals(orbotProxy(9150), routed.current.proxy)
+        enabled = false
+        assertEquals(Proxy.NO_PROXY, routed.current.proxy)
+    }
+
+    @Test
+    fun aCallMadeBeforeTorWasSwitchedOnDoesNotLeave() {
+        var enabled = false
+        val direct = AtomicInteger()
+        val closed = ServerSocket(0).use { it.localPort }
+        countingListener(direct).use { site ->
+            val call = client({ enabled }, { closed }).newCall(Request.Builder().url("http://127.1:${site.localPort}/").build())
+            enabled = true
+            try {
+                call.execute().close()
+                fail("a call made directly must not leave once Tor is on")
+            } catch (e: TorUnreachableException) {
+                // expected
+            }
+        }
+        assertEquals("nothing reached the site directly", 0, direct.get())
     }
 
     @Test
@@ -167,9 +238,9 @@ class TorRoutingTest {
     @Test
     fun aDirectConnectionIsNotReusedOnceTorIsOn() {
         var enabled = false
-        val closed = ServerSocket(0).use { it.localPort }
+        // The direct client, as a call made before the switch was made by: the guard stops it.
         val client = OkHttpClient.Builder()
-            .proxySelector(TorProxySelector({ enabled }, { closed }))
+            .proxy(Proxy.NO_PROXY)
             .dns(TorAwareDns { enabled })
             .addNetworkInterceptor(TorRouteGuard({ enabled }))
             .connectTimeout(5, TimeUnit.SECONDS)
@@ -221,13 +292,12 @@ class TorRoutingTest {
         // Past the call-level gate already: the route guard runs for each attempt, on the connection.
         var verified = true
         val client = OkHttpClient.Builder()
-            .proxySelector(TorProxySelector({ true }, { 0 }))
             .addNetworkInterceptor(TorRouteGuard({ true }, { verified }))
             .connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
             .build()
         fakeSocks { }.use { socks ->
-            val through = client.newBuilder().proxySelector(TorProxySelector({ true }, { socks.localPort })).build()
+            val through = client.newBuilder().proxy(orbotProxy(socks.localPort)).build()
             verified = false
             try {
                 through.newCall(Request.Builder().url("http://booru.example.invalid/posts.json").build()).execute().close()
@@ -237,7 +307,7 @@ class TorRoutingTest {
             }
         }
         fakeSocks { }.use { socks ->
-            val through = client.newBuilder().proxySelector(TorProxySelector({ true }, { socks.localPort })).build()
+            val through = client.newBuilder().proxy(orbotProxy(socks.localPort)).build()
             // The check itself is the one request allowed through an unverified listener.
             through.newCall(Request.Builder().url("http://${TorManager.VERIFY_HOST}/api/ip").build()).execute().use { assertEquals("ok", it.body.string()) }
         }
@@ -248,7 +318,7 @@ class TorRoutingTest {
         val lost = AtomicInteger()
         val closed = ServerSocket(0).use { it.localPort }
         val client = OkHttpClient.Builder()
-            .proxySelector(TorProxySelector({ true }, { closed }))
+            .proxy(orbotProxy(closed))
             .dns(TorAwareDns { true })
             .eventListener(TorListenerWatch { lost.incrementAndGet() })
             .connectTimeout(5, TimeUnit.SECONDS)
@@ -293,7 +363,7 @@ class TorRoutingTest {
                 }
             }
             val client = OkHttpClient.Builder()
-                .proxySelector(TorProxySelector({ true }, { silent.localPort }))
+                .proxy(orbotProxy(silent.localPort))
                 .dns(TorAwareDns { true })
                 .eventListener(TorListenerWatch { lost.incrementAndGet() })
                 .connectTimeout(10, TimeUnit.SECONDS)

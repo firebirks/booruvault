@@ -2,7 +2,47 @@
 
 All notable changes to BooruVault. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
-Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`: it is what F-Droid shows and what the GitHub release says.
+Each release also has a short text, at most 500 characters, in `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, under the release's own version code: it is what F-Droid shows and what the GitHub release says.
+
+## [Unreleased]
+
+## [0.7.0] - 2026-11-27
+
+### Security
+- Those who had the hidden browser on in 0.6.x may still hold cookies it kept by mistake, under the name of a kept one, until their thirty days are over: Site cookies in Settings deletes them at once, with every other kept cookie.
+- A route switch takes the browsers' engine off the route it had at once, back to a proxy that leads nowhere until a browser applies the new one; it kept the old route until the next browser opened.
+- Nothing a session holds goes on into the next: the private sessions' cookies are now emptied too, which the engine's own wipe left while another private session was open, and the hidden browser waits for the built-in one to be closed and wiped, however it was left, before its next visit.
+- While the app is not on screen the built-in browser's page is a background one: it plays nothing, holds no wake lock and is slowed down, rather than run on behind another app until the vault locks. It is drawn into the app's window, under its screen protection, which a screen recording on Android 8 and 9 could otherwise get past. The bar names what is shown when it is not the site, as a large `data:` document.
+- The hidden browser reads no page larger than the app's client reads of any page, and looks it over off the main thread: a page that grew without end could exhaust the app's memory.
+- A check in front of a file no longer lets the file through when the browser could not tell whether it holds a clearance, nor in a frame.
+- The browsers' pages run in processes Android isolates, with no network, none of the app's files and none of its services. A page that took its process over through a flaw of the engine would otherwise have been the app itself: it could have connected around Orbot, read the app's settings, or rewritten the engine's configuration so that it started without its protections.
+- The built-in browser's name no longer stays on a site for good. Once a site had been visited in the browser, the app asked it under the browser's name, which tells the Android version, even after everything the visit brought back had run out, and even when the visit brought nothing back at all. The name now goes with the cookies the visit brought back, and with the last of them.
+- The hidden browser no longer keeps a clearance cookie as an anti-bot pass unless it got past the check, and neither browser takes one a page's script could have written. A visit that ran out of time on a check kept the cookie Cloudflare sets while its check is still on, and a script of the site's page could write its own: either was sent for thirty days as a pass, under the browser's name. A clearance now counts only if it is HttpOnly, as Cloudflare sets it, and from a visit that settled on the site's own page. The cookies the vault keeps are handed to the hidden browser out of the reach of the pages' scripts, third-party ones included, which could read a kept login.
+- A page can no longer crash the app for a month with a cookie. A script of a site's own page could set, in the built-in or the hidden browser, a cookie with a character past ASCII, which the engine takes and the app's client cannot send: kept, it threw at every request to the site, which ended the app seconds after every unlock until it expired. Such a cookie is now neither kept nor sent.
+- The browsers open no page unless their engine holds the preferences the app starts it with. GeckoView reads them from a file and, should it fail to, goes on with its own, saying nothing: WebRTC on, a proxy with ways around it, connections to Mozilla. A browser would then have opened, gone through Orbot and passed a check as before. The engine is now asked for each of them before its first page, and the last route it kept from an earlier start no longer stands in for the proxy that leads nowhere.
+- The browsers' engine no longer writes the address of every page it loads, nor the errors of the pages' scripts, to the system log, where adb, a bug report or an app allowed to read the log would find them.
+- A page read by the hidden browser no longer leaves a cookie in the vault for carrying the name of one kept elsewhere, nor pushes the deadline of the cookies kept thirty days on. What the browser held after a visit was kept whenever its name matched any kept cookie of the route: a site setting its own `session` or `PHPSESSID` had it kept and sent back on every later visit, where a login from another site was kept under that name. Now a cookie is renewed only if that very one, by name, domain and path, was kept, and within the deadline it had; an anti-bot pass the visit earns is kept for the site visited alone.
+- With Tor on, a site can no longer have a name looked up outside Tor. A host made of digits and dots that is not an address, as `1.2.772`, put in a file URL, a thumbnail or a redirect, was taken out directly by the HTTP client, which then had the phone ask its network's resolver for it, past the app's refusal of local lookups. No connection followed, since Android reads no such name as an address, but the question left from the home network with a name the site chose. The client's proxy is now fixed to Orbot's port while Tor is on, so every name reaches Orbot unresolved.
+- The built-in browser and the hidden one now run on GeckoView, Firefox's engine, shipped inside the app, where they ran on the phone's WebView. With Tor on, a page could reach WebRTC, whose connections go around the proxy and would tell a server the phone's own address: the WebView has no setting that turns it off, and the script that removed it from pages could be got past in more ways than a script can cover. The engine leaves WebRTC out by a preference, in every frame, with no script at all.
+- With Tor on, the browsers no longer reach the phone's own addresses directly. Chromium sends localhost and the loopback and link-local addresses around a proxy unless told otherwise, so a page could reach a service listening on the phone, or tell which apps it has, outside Tor. The engine's proxy takes every request, resolves every name through Tor, and has no direct way to fall back on; nothing leaves the engine before the route is set, and it makes no connection of its own.
+- Nothing a site stores in the browsers outlives the session: sessions are private ones. The WebView's wipe left Cache Storage and service workers, where a site could keep a mark and find it in a later session, along the other route as well.
+- A session in the built-in browser stays on its site whatever the method of a navigation: a form posted to another site was followed.
+
+### Changed
+- The APK is one for each processor architecture, arm64-v8a and armeabi-v7a, and about 95 MB, where it was one of 5 MB for all: the browsers' engine is inside it. Each has a version code of its own, the release's with a digit after it. The project's F-Droid repository carries the latest release alone. A Firefox security release reaches the built-in browsers with a release of the app.
+- The built-in browsers present themselves as Firefox, and a site whose check was passed in one is then asked by the app under that name.
+- Over Tor, the app and the built-in browsers leave by the same circuits: they give Orbot the same credential, where the browser gave none and Tor kept it apart from the app. A check passed in the browser is then followed by the app's request from the same exit, which sites that look again at a request from another exit would refuse.
+- Through Tor the built-in browsers ask pages in English, and tell their scripts English and the UTC time zone, as Tor Browser does for everyone: the phone's language and time zone told a site something the exit hides. A site's pages, and an anti-bot check, are then in English there; on a direct connection they are in the phone's languages as before.
+- Passkeys (WebAuthn) are not available in the built-in browser: the engine reaches them through Google Play services, which the app does not include, and they are turned off. Left on, a page asking whether a passkey was there would have taken the app down.
+- The browsers offer pages no speech synthesis, no screen wake lock and no DRM. Speech is spoken by the phone's speech app, which may send a page's text out itself, outside Tor; a page holding the screen awake kept the phone, and with it the app's auto-lock, from locking; DRM fetches its keys around the proxy.
+
+### Fixed
+- Two texts gave the WebView's reasons. The one shown when a site asks again for a check just passed through Tor said that the browser and the downloads leave by different exits and that passing it again would not help while Tor was on: they leave by the same circuits now, and a later try may well pass. The one shown when the built-in browser cannot open told the user to update Android System WebView; it now says that the engine did not take its settings, and that nothing was loaded.
+- A check in the built-in browser is no longer taken as passed while it is still on. The browser closed by itself as soon as it held a clearance cookie and the page's title was no longer "Just a moment...": Cloudflare sets such a cookie before a check is over, and gives the title in the phone's language, so on a phone not set to English the browser could close on a check still running, and the app was asked to pass it again, over and over. It now closes once the site has answered with a page of its own; for a check in front of a file, once the host has answered the browser's request for no byte of it.
+- The sweep of temporary files at start also waits for the vault's header being written, which 0.6.1 left out: a password changed, a fingerprint turned on or off, or a re-seal ending just as the vault opened could fail, the copy it was writing deleted under it.
+
+### Removed
+- The risky option "Google Safe Browsing in the built-in browser". It had the phone's Google Play services check the addresses the WebView opened; the browsers' engine has no such way, only lists of its own to fetch from Google, which the app does not let it do. The app no longer asks the phone whether Play services are there.
 
 ## [0.6.1] - 2026-11-20
 
@@ -176,6 +216,7 @@ First release.
 - A built-in browser for logins and anti-bot checks.
 - 20 languages.
 
+[0.7.0]: https://github.com/firebirks/booruvault/releases/tag/v0.7.0
 [0.6.1]: https://github.com/firebirks/booruvault/releases/tag/v0.6.1
 [0.6.0]: https://github.com/firebirks/booruvault/releases/tag/v0.6.0
 [0.5.0]: https://github.com/firebirks/booruvault/releases/tag/v0.5.0

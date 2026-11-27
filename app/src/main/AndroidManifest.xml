@@ -7,11 +7,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
-    <!-- Orbot: to find it and ask it to start, for routing through Tor. Google Play services:
-         only to tell whether Safe Browsing can work at all on this phone. -->
+    <!-- Orbot: to find it and ask it to start, for routing through Tor. -->
     <queries>
         <package android:name="org.torproject.android" />
-        <package android:name="com.google.android.gms" />
         <!-- Tor Browser: external links open there while Tor is on. -->
         <package android:name="org.torproject.torbrowser" />
         <package android:name="org.torproject.torbrowser_alpha" />
@@ -35,8 +33,9 @@
         android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.BooruVault">
 
-        <!-- The built-in browser sends no usage statistics, and checks URLs with Google only when
-             the user turns Safe Browsing on (per WebView, which takes precedence over this). -->
+        <!-- The app has no WebView: its browsers run on GeckoView. It asks the system's WebView
+             for Chrome's version alone, and that sends no usage statistics and checks nothing
+             with Google. -->
         <meta-data
             android:name="android.webkit.WebView.MetricsOptOut"
             android:value="true" />

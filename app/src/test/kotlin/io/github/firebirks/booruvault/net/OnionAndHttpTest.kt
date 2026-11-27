@@ -51,7 +51,7 @@ class OnionAndHttpTest {
     @Test
     fun `a cookie from a page served over http goes back to it`() {
         val url = "http://booru.example.org/index.php".toHttpUrl()
-        val cookie = Challenge.browserCookie("session", "login", url, "example.org", System.currentTimeMillis() + 60_000)!!
+        val cookie = Challenge.browserCookie("session", "login", url, "example.org", System.currentTimeMillis() + 60_000, httpOnly = false)!!
         assertFalse(cookie.secure)
         assertTrue(cookie.matches(url))
         assertTrue(cookie.hostOnly)
@@ -61,10 +61,10 @@ class OnionAndHttpTest {
     @Test
     fun `a cookie from a page served over https stays on https`() {
         val url = "https://booru.example.org/index.php".toHttpUrl()
-        val cookie = Challenge.browserCookie("session", "login", url, "example.org", System.currentTimeMillis() + 60_000)!!
+        val cookie = Challenge.browserCookie("session", "login", url, "example.org", System.currentTimeMillis() + 60_000, httpOnly = false)!!
         assertTrue(cookie.secure)
         assertFalse(cookie.matches("http://booru.example.org/index.php".toHttpUrl()))
-        val clearance = Challenge.browserCookie(Challenge.CLEARANCE_COOKIE, "pass", url, "example.org", System.currentTimeMillis() + 60_000)!!
+        val clearance = Challenge.browserCookie(Challenge.CLEARANCE_COOKIE, "pass", url, "example.org", System.currentTimeMillis() + 60_000, httpOnly = true)!!
         assertTrue("the clearance is the whole site's", clearance.matches("https://img.example.org/a.jpg".toHttpUrl()))
     }
 }

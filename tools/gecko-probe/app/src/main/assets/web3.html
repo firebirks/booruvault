@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>WEB-3</title></head><body>
+<script>
+function report(n, v) { console.log('PROBE ' + n + ' ' + v); }
+var phase = new URLSearchParams(location.search || location.hash.slice(1)).get('phase');
+var TOKEN = 'token-web3';
+function idb() {
+  return new Promise(function (ok, ko) {
+    var r = indexedDB.open('probe', 1);
+    r.onupgradeneeded = function () { r.result.createObjectStore('s'); };
+    r.onsuccess = function () { ok(r.result); };
+    r.onerror = function () { ko(r.error); };
+  });
+}
+report('web3.origin', location.origin + ' secure=' + window.isSecureContext + ' caches=' + (typeof caches));
+if (phase === 'write') {
+  var steps = [];
+  try { localStorage.setItem('id', TOKEN); report('web3.localStorage', 'written'); } catch (e) { report('web3.localStorage', 'error ' + e.name); }
+  if (window.caches) {
+    steps.push(caches.open('v').then(function (c) { return c.put('/id', new Response(TOKEN)); })
+      .then(function () { report('web3.cache', 'written'); }, function (e) { report('web3.cache', 'error ' + e.name); }));
+  } else report('web3.cache', 'no caches API');
+  steps.push(idb().then(function (db) {
+    return new Promise(function (ok, ko) {
+      var t = db.transaction('s', 'readwrite');
+      t.objectStore('s').put(TOKEN, 'id');
+      t.oncomplete = function () { db.close(); ok(); };
+      t.onerror = function () { ko(t.error); };
+    });
+  }).then(function () { report('web3.idb', 'written'); }, function (e) { report('web3.idb', 'error ' + e.name); }));
+  Promise.all(steps).then(function () { report('web3.written', 'ok'); });
+} else {
+  var reads = [];
+  report('web3.after.localStorage', String(localStorage.getItem('id')));
+  if (window.caches) {
+    reads.push(caches.keys().then(function (k) { report('web3.after.cacheKeys', JSON.stringify(k)); return caches.match('/id'); })
+      .then(function (r) { return r ? r.text() : null; })
+      .then(function (t) { report('web3.after.cache', String(t)); }, function (e) { report('web3.after.cache', 'error ' + e.name); }));
+  }
+  reads.push(idb().then(function (db) {
+    return new Promise(function (ok) {
+      var g = db.transaction('s', 'readonly').objectStore('s').get('id');
+      g.onsuccess = function () { ok(g.result); };
+      g.onerror = function () { ok('error'); };
+    });
+  }).then(function (v) { report('web3.after.idb', String(v)); }, function (e) { report('web3.after.idb', 'error ' + e.name); }));
+  Promise.all(reads).then(function () { report('SUMMARY web3', 'done'); });
+}
+</script>
+</body></html>

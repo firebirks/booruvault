@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>WebRTC probe</title></head><body>
+<!--
+  Looks for RTCPeerConnection wherever a page can reach a new frame, and tries each one it finds:
+  a host candidate, gathered with no server at all, proves a peer connection works there. With a
+  STUN server it would tell the server the phone's own address, around any proxy. Each finding is
+  one line, "PROBE <name> <result>", and the last two say what was found:
+  "PROBE SUMMARY leaks <names|none>" and "PROBE SUMMARY natives <ok|NOT ...>".
+-->
+<script>
+var leaks = [];
+var unnatural = [];
+function report(name, value) { console.log('PROBE ' + name + ' ' + value); }
+function check(name, w) {
+  var t;
+  try { t = typeof w.RTCPeerConnection; } catch (e) { report(name, 'error:' + e.name); return; }
+  report(name, t);
+  if (t !== 'function') return;
+  try {
+    var pc = new w.RTCPeerConnection({ iceServers: [] });
+    pc.createDataChannel('probe');
+    pc.onicecandidate = function (e) {
+      if (e.candidate && leaks.indexOf(name) < 0) { leaks.push(name); report(name + '.LEAK', e.candidate.candidate.split(' ').slice(4, 8).join(' ')); }
+    };
+    pc.createOffer().then(function (o) { return pc.setLocalDescription(o); });
+  } catch (e) { report(name + '.construct', 'error:' + e.name); }
+}
+window.addEventListener('message', function (e) { report('msg', e.data); });
+check('top', window);
+</script>
+
+<!-- A frame the parser makes, and a script right after it. -->
+<iframe></iframe>
+<script>check('parser', frames[0]);</script>
+<script>document.write('<iframe></iframe>');</script>
+<script>check('document.write', frames[frames.length - 1]);</script>
+
+<script>
+// Frames made by script, looked into at once, through the index and through the element.
+var f1 = document.createElement('iframe');
+document.body.appendChild(f1);
+check('appendChild', frames[frames.length - 1]);
+check('contentWindow', f1.contentWindow);
+
+var holder = document.createElement('div');
+document.body.appendChild(holder);
+holder.innerHTML = '<iframe></iframe>';
+check('innerHTML', frames[frames.length - 1]);
+
+document.body.insertAdjacentHTML('beforeend', '<iframe></iframe>');
+check('insertAdjacentHTML', frames[frames.length - 1]);
+
+var host = document.createElement('div');
+document.body.appendChild(host);
+host.attachShadow({ mode: 'open' }).innerHTML = '<iframe></iframe>';
+check('shadowRoot', frames[frames.length - 1]);
+
+try {
+  var inner = f1.contentDocument.createElement('iframe');
+  f1.contentDocument.body.appendChild(inner);
+  check('nested', f1.contentWindow[0]);
+} catch (e) { report('nested', 'error:' + e.name); }
+
+// Code of the page's own that runs during an insertion, before the call returns.
+var f2 = document.createElement('iframe');
+f2.onload = function () { check('syncLoad', frames[frames.length - 1]); };
+document.body.appendChild(f2);
+
+customElements.define('probe-x', class extends HTMLElement {
+  connectedCallback() { check('customElement', frames[frames.length - 1]); }
+});
+var box = document.createElement('div');
+box.appendChild(document.createElement('iframe'));
+box.appendChild(document.createElement('probe-x'));
+document.body.appendChild(box);
+
+var editable = document.createElement('div');
+editable.contentEditable = 'true';
+document.body.appendChild(editable);
+editable.focus();
+var before = frames.length;
+try { document.execCommand('insertHTML', false, '<iframe></iframe>'); } catch (e) { report('execCommand', 'error:' + e.name); }
+if (frames.length > before) check('execCommand', frames[frames.length - 1]); else report('execCommand', 'made no frame');
+
+// A frame sent to about:blank, and one with a document of its own.
+var f3 = document.createElement('iframe');
+document.body.appendChild(f3);
+var i3 = frames.length - 1;
+f3.src = 'about:blank';
+f3.addEventListener('load', function () { check('aboutBlank.load', frames[i3]); });
+
+var f4 = document.createElement('iframe');
+f4.srcdoc = '<script>parent.postMessage("srcdoc " + typeof RTCPeerConnection, "*")<\/script>';
+document.body.appendChild(f4);
+
+var opened = null;
+try { opened = window.open('about:blank'); } catch (e) { report('open', 'error:' + e.name); }
+if (opened) check('open', opened); else report('open', 'no window');
+
+// What an anti-bot check may look at: natives a script has replaced.
+function looksNative(label, f, name, length) {
+  var text = Function.prototype.toString.call(f);
+  var constructs = true;
+  try { new f(); } catch (e) { constructs = false; }
+  var ok = /\[native code\]/.test(text) && f.name === name && f.length === length && !('prototype' in f) && !constructs;
+  if (!ok) unnatural.push(label + ' ' + JSON.stringify({ text: text.slice(0, 60), name: f.name, length: f.length, prototype: 'prototype' in f, constructs: constructs }));
+}
+looksNative('appendChild', Node.prototype.appendChild, 'appendChild', 1);
+looksNative('insertAdjacentHTML', Element.prototype.insertAdjacentHTML, 'insertAdjacentHTML', 2);
+looksNative('write', Document.prototype.write, 'write', 0);
+looksNative('execCommand', Document.prototype.execCommand, 'execCommand', 1);
+looksNative('define', CustomElementRegistry.prototype.define, 'define', 2);
+looksNative('open', window.open, 'open', 0);
+looksNative('toString', Function.prototype.toString, 'toString', 0);
+looksNative('contentWindow', Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentWindow').get, 'get contentWindow', 0);
+looksNative('innerHTML', Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set, 'set innerHTML', 1);
+[[Node.prototype, 'appendChild', true], [window, 'open', true], [Function.prototype, 'toString', false], [CustomElementRegistry.prototype, 'define', true]].forEach(function (c) {
+  var d = Object.getOwnPropertyDescriptor(c[0], c[1]);
+  if (!d.writable || d.enumerable !== c[2] || !d.configurable) unnatural.push(c[1] + ' attributes ' + JSON.stringify(d));
+});
+
+// Called once the queued tests at the end of the page are over.
+function summary() {
+  setTimeout(function () {
+    report('SUMMARY leaks', leaks.length ? leaks.join(',') : 'none');
+    report('SUMMARY natives', unnatural.length ? 'NOT ' + unnatural.join('; ') : 'ok');
+  }, 5000);
+}
+</script>
+
+<!-- A frame and a script inserted together: the script runs inside the insertion, before it
+     returns. Each frame's src is a local listener that never answers, so the frame stays on its
+     first, empty document and has no load of its own to give it away; a site would use a slow
+     server of its own. -->
+<script>
+var hangUrl = 'http://127.0.0.1:' + (new URLSearchParams(location.search || location.hash.slice(1)).get('port') || '9') + '/hang';
+// One document.write: the script it writes runs inside the write.
+document.write('<iframe src="' + hangUrl + '"></iframe><script>check("writeInline", frames[frames.length - 1]);<\/script>');
+</script>
+<script>
+// One fragment: the script runs inside appendChild.
+var frag = document.createDocumentFragment();
+var fa = document.createElement('iframe');
+fa.src = hangUrl;
+var sa = document.createElement('script');
+sa.textContent = 'check("fragmentScript", frames[frames.length - 1]);';
+frag.appendChild(fa);
+frag.appendChild(sa);
+document.body.appendChild(frag);
+</script>
+<script>
+// Into a shadow root by DocumentFragment.prototype.append, then into the document by moveBefore,
+// which keeps the frame's first document.
+try {
+  var sh = document.createElement('div');
+  document.body.appendChild(sh);
+  var sr = sh.attachShadow({ mode: 'open' });
+  var fb = document.createElement('iframe');
+  var n0 = frames.length;
+  sr.append(fb);
+  if (frames.length > n0) check('shadowAppend', frames[frames.length - 1]);
+  if (typeof document.body.moveBefore === 'function') {
+    document.body.moveBefore(fb, null);
+    check('shadowMove', frames[frames.length - 1]);
+  } else report('shadowMove', 'no moveBefore');
+} catch (e) { report('shadowMove', 'error:' + e.name); }
+</script>
+<!-- More ways a page can get its code to run while a new frame is still unguarded. -->
+<script>
+// A custom element's constructor, run by an upgrade inside an innerHTML assignment.
+customElements.define('probe-ctor-a', class extends HTMLElement {
+  constructor() { super(); check('ctorInnerHTML', frames[frames.length - 1]); }
+});
+customElements.define('probe-ctor-b', class extends HTMLElement {
+  constructor() { super(); check('ctorWrite', frames[frames.length - 1]); }
+});
+var holder2 = document.createElement('div');
+document.body.appendChild(holder2);
+holder2.innerHTML = '<iframe src="' + hangUrl + '"></iframe><probe-ctor-a></probe-ctor-a>';
+</script>
+<script>
+// A custom element's constructor, run by the parser inside one document.write.
+document.write('<iframe src="' + hangUrl + '"></iframe><probe-ctor-b></probe-ctor-b>');
+</script>
+<script>
+// An SVG script, run inside one document.write.
+document.write('<iframe src="' + hangUrl + '"></iframe><svg><script>check("svgScriptWrite", frames[frames.length - 1]);<\/script></svg>');
+</script>
+<script>
+// writeln, as write.
+document.writeln('<iframe src="' + hangUrl + '"></iframe><script>check("writelnInline", frames[frames.length - 1]);<\/script>');
+</script>
+<script>
+// A fragment parsed with its scripts left runnable, then inserted.
+document.body.appendChild(document.createRange().createContextualFragment('<iframe src="' + hangUrl + '"></iframe><script>check("contextualFragment", frames[frames.length - 1]);<\/script>'));
+</script>
+<script>
+// Builtins the guarding script may call while it looks the new frame over.
+(function () {
+  var idx = frames.length, grabbed;
+  function grab() { if (!grabbed) { try { var w = window[idx]; if (w) grabbed = w.RTCPeerConnection; } catch (e) {} } }
+  var forEach = Array.prototype.forEach, gopd = Object.getOwnPropertyDescriptor, dp = Object.defineProperty;
+  Array.prototype.forEach = function () { grab(); return forEach.apply(this, arguments); };
+  Object.getOwnPropertyDescriptor = function () { grab(); return gopd.apply(Object, arguments); };
+  Object.defineProperty = function () { grab(); return dp.apply(Object, arguments); };
+  var f = document.createElement('iframe');
+  f.src = hangUrl;
+  document.body.appendChild(f);
+  Array.prototype.forEach = forEach;
+  Object.getOwnPropertyDescriptor = gopd;
+  Object.defineProperty = dp;
+  check('builtinPoison', { RTCPeerConnection: grabbed });
+})();
+</script>
+<script>
+// More natives a guarding script may replace.
+looksNative('fragment.append', DocumentFragment.prototype.append, 'append', 0);
+looksNative('writeln', Document.prototype.writeln, 'writeln', 0);
+looksNative('insertBefore', Node.prototype.insertBefore, 'insertBefore', 2);
+if (Element.prototype.moveBefore) looksNative('moveBefore', Element.prototype.moveBefore, 'moveBefore', 2);
+(function () {
+  var t = Function.prototype.toString.call(HTMLElement);
+  var keys = Object.getOwnPropertyNames(HTMLElement).join(',');
+  var d = Object.getOwnPropertyDescriptor(HTMLElement, 'prototype');
+  var threw = false;
+  try { new HTMLElement(); } catch (e) { threw = e instanceof TypeError; }
+  var calledThrew = false;
+  try { HTMLElement(); } catch (e) { calledThrew = e instanceof TypeError; }
+  var ok = /\[native code\]/.test(t) && HTMLElement.name === 'HTMLElement' && HTMLElement.length === 0 &&
+    keys === 'length,name,prototype' && HTMLElement.prototype.constructor === HTMLElement && !d.writable &&
+    Object.getPrototypeOf(HTMLElement) === Element && threw && calledThrew &&
+    document.createElement('probe-ctor-a') instanceof HTMLElement;
+  if (!ok) unnatural.push('HTMLElement ' + JSON.stringify({ t: t.slice(0, 50), keys: keys, ctor: HTMLElement.prototype.constructor === HTMLElement, threw: threw, calledThrew: calledThrew }));
+})();
+</script>
+<!-- Frames with documents of their own, and code a page gets run inside a DOM call by other means. -->
+<script>
+// Frames with documents of their own that test themselves and report back.
+window.addEventListener('message', function (e) {
+  var d = String(e.data);
+  if (d.indexOf('frame:') === 0 && d.indexOf(' LEAK') > 0) { var n = d.split(' ')[0].slice(6); if (leaks.indexOf(n) < 0) leaks.push(n); }
+});
+function selfTest(name) {
+  return '<script>(function(){var t=typeof RTCPeerConnection;parent.postMessage("frame:' + name + ' typeof="+t,"*");if(t!=="function")return;' +
+    'try{var pc=new RTCPeerConnection({iceServers:[]});pc.createDataChannel("p");pc.onicecandidate=function(e){if(e.candidate)parent.postMessage("frame:' + name + ' LEAK","*")};' +
+    'pc.createOffer().then(function(o){return pc.setLocalDescription(o)})}catch(e){parent.postMessage("frame:' + name + ' error:"+e.name,"*")}})()<\/script>';
+}
+function addFrame(tag, attr, value, sandbox) {
+  try {
+    var el = document.createElement(tag);
+    if (sandbox) el.setAttribute('sandbox', sandbox);
+    el.setAttribute(attr, value);
+    document.body.appendChild(el);
+  } catch (e) { report(tag + '.' + attr, 'error:' + e.name); }
+}
+addFrame('iframe', 'src', 'data:text/html,' + encodeURIComponent(selfTest('dataFrame')));
+addFrame('iframe', 'srcdoc', selfTest('sandboxSrcdoc'), 'allow-scripts');
+addFrame('iframe', 'src', 'data:text/html,' + encodeURIComponent(selfTest('sandboxData')), 'allow-scripts');
+try { addFrame('iframe', 'src', URL.createObjectURL(new Blob([selfTest('blobFrame')], { type: 'text/html' }))); } catch (e) { report('blobFrame', 'error:' + e.name); }
+addFrame('iframe', 'src', 'javascript:' + encodeURIComponent(JSON.stringify(selfTest('javascriptUrl'))));
+addFrame('object', 'data', 'data:text/html,' + encodeURIComponent(selfTest('objectData')));
+addFrame('embed', 'src', 'data:text/html,' + encodeURIComponent(selfTest('embedData')));
+</script>
+<script>
+// A customized built-in element, whose constructor extends HTMLButtonElement, not HTMLElement.
+try {
+  customElements.define('probe-btn', class extends HTMLButtonElement {
+    constructor() { super(); check('customizedBuiltin', frames[frames.length - 1]); }
+  }, { extends: 'button' });
+  var h3 = document.createElement('div');
+  document.body.appendChild(h3);
+  h3.innerHTML = '<iframe src="' + hangUrl + '"></iframe><button is="probe-btn"></button>';
+} catch (e) { report('customizedBuiltin', 'error:' + e.name); }
+</script>
+<script>
+// A connectedCallback on a frozen prototype, which a guarding script cannot wrap in place.
+try {
+  (function () {
+    class Frozen extends HTMLElement { connectedCallback() { check('frozenCallback', frames[frames.length - 1]); } }
+    Object.freeze(Frozen.prototype);
+    customElements.define('probe-frozen', Frozen);
+    var frag = document.createDocumentFragment();
+    var f = document.createElement('iframe');
+    f.src = hangUrl;
+    frag.appendChild(f);
+    frag.appendChild(document.createElement('probe-frozen'));
+    document.body.appendChild(frag);
+  })();
+} catch (e) { report('frozenCallback', 'error:' + e.name); }
+</script>
+<script>
+// A form-associated custom element: its formAssociatedCallback runs when it is put in a form.
+try {
+  (function () {
+    class FA extends HTMLElement {
+      static get formAssociated() { return true; }
+      formAssociatedCallback() { check('formAssociated', frames[frames.length - 1]); }
+    }
+    customElements.define('probe-fa', FA);
+    var form = document.createElement('form');
+    document.body.appendChild(form);
+    var el = document.createElement('probe-fa');
+    var frag = document.createDocumentFragment();
+    var f = document.createElement('iframe');
+    f.src = hangUrl;
+    frag.appendChild(f);
+    frag.appendChild(el);
+    form.appendChild(frag);
+  })();
+} catch (e) { report('formAssociated', 'error:' + e.name); }
+</script>
+<script>
+// An error reported to the window inside an insertion: an import map that does not parse.
+(function () {
+  var idx = frames.length, grabbed, fired = false;
+  function onError() { fired = true; if (!grabbed) { try { var w = window[idx]; if (w) grabbed = w.RTCPeerConnection; } catch (e) {} } return true; }
+  window.addEventListener('error', onError, true);
+  var frag = document.createDocumentFragment();
+  var f = document.createElement('iframe');
+  f.src = hangUrl;
+  var s = document.createElement('script');
+  s.type = 'importmap';
+  s.textContent = '{ not json';
+  frag.appendChild(f);
+  frag.appendChild(s);
+  document.body.appendChild(frag);
+  window.removeEventListener('error', onError, true);
+  report('importmapError.fired', String(fired));
+  check('importmapError', { RTCPeerConnection: grabbed });
+})();
+</script>
+<script>
+// What else of WebRTC, or of UDP, a page can reach; in a worker too.
+(function () {
+  var names = ['RTCIceTransport', 'RTCDtlsTransport', 'RTCRtpTransceiver', 'RTCRtpSender', 'RTCRtpReceiver', 'RTCSctpTransport',
+    'RTCCertificate', 'RTCRtpScriptTransform', 'RTCEncodedVideoFrame', 'RTCPeerConnectionIceEvent', 'RTCDataChannel',
+    'RTCSessionDescription', 'RTCIceCandidate', 'webkitRTCPeerConnection', 'WebTransport', 'ShadowRealm', 'HTMLFencedFrameElement'];
+  var out = [];
+  for (var i = 0; i < names.length; i++) out.push(names[i] + '=' + typeof window[names[i]]);
+  report('interfaces', out.join(' '));
+  if (typeof RTCIceTransport === 'function') {
+    try {
+      var t = new RTCIceTransport();
+      report('iceTransport.construct', 'ok gather=' + typeof t.gather);
+      if (typeof t.gather === 'function') {
+        t.onicecandidate = function (e) { if (e.candidate && leaks.indexOf('iceTransport') < 0) { leaks.push('iceTransport'); report('iceTransport.LEAK', e.candidate.candidate); } };
+        t.gather({ iceServers: [] });
+      }
+    } catch (e) { report('iceTransport.construct', 'error:' + e.name); }
+  }
+  try {
+    var src = 'postMessage("worker " + ["RTCPeerConnection","RTCIceTransport","RTCDataChannel","RTCRtpScriptTransform","WebTransport"].map(function (n) { return n + "=" + typeof self[n]; }).join(" "))';
+    var wk = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+    wk.onmessage = function (e) { report('worker', e.data); };
+  } catch (e) { report('worker', 'error:' + e.name); }
+})();
+</script>
+<script>
+// The input event an editing command fires before it returns.
+(function () {
+  var idx = frames.length, grabbed;
+  var ed = document.createElement('div');
+  ed.contentEditable = 'true';
+  document.body.appendChild(ed);
+  ed.focus();
+  ed.addEventListener('input', function () { if (!grabbed) { try { var w = window[idx]; if (w) grabbed = w.RTCPeerConnection; } catch (e) {} } });
+  try { document.execCommand('insertHTML', false, '<iframe src="' + hangUrl + '"></iframe>'); } catch (e) { report('execCommandInput', 'error:' + e.name); }
+  report('execCommandInput.frame', String(frames.length > idx));
+  check('execCommandInput', { RTCPeerConnection: grabbed });
+})();
+</script>
+<script>
+// Mutation events, if the engine still fires them, run inside the insertion.
+(function () {
+  var idx = frames.length, grabbed, fired = false;
+  function grab() { fired = true; if (!grabbed) { try { var w = window[idx]; if (w) grabbed = w.RTCPeerConnection; } catch (e) {} } }
+  document.addEventListener('DOMNodeInserted', grab, true);
+  var f = document.createElement('iframe');
+  f.src = hangUrl;
+  document.body.appendChild(f);
+  document.removeEventListener('DOMNodeInserted', grab, true);
+  report('mutationEvent.fired', String(fired));
+  check('mutationEvent', { RTCPeerConnection: grabbed });
+})();
+</script>
+<script>
+// The other element constructors a customized built-in may extend.
+(function () {
+  [['HTMLButtonElement', HTMLElement], ['HTMLDivElement', HTMLElement], ['HTMLAudioElement', HTMLMediaElement], ['HTMLMediaElement', HTMLElement]].forEach(function (c) {
+    var C = window[c[0]];
+    var t = Function.prototype.toString.call(C);
+    var keys = Object.getOwnPropertyNames(C).join(',');
+    var ok = /\[native code\]/.test(t) && C.name === c[0] && keys.indexOf('length,name,prototype') === 0 && C.prototype.constructor === C && Object.getPrototypeOf(C) === c[1];
+    if (!ok) unnatural.push(c[0] + ' ' + JSON.stringify({ t: t.slice(0, 40), keys: keys, ctor: C.prototype.constructor === C, parent: Object.getPrototypeOf(C) === c[1] }));
+  });
+  if (!(document.createElement('button') instanceof HTMLButtonElement)) unnatural.push('button instanceof');
+  if (HTMLMediaElement.NETWORK_EMPTY !== 0 || HTMLMediaElement.HAVE_ENOUGH_DATA !== 4) unnatural.push('HTMLMediaElement constants');
+  var cd = Object.getOwnPropertyDescriptor(HTMLMediaElement, 'HAVE_ENOUGH_DATA');
+  if (!cd || cd.writable || cd.configurable || !cd.enumerable) unnatural.push('HTMLMediaElement constant attributes ' + JSON.stringify(cd));
+})();
+</script>
+<script>
+// A frame already loaded, sent to about:blank, and looked into again and again while it goes.
+(function () {
+  var f = document.createElement('iframe');
+  f.srcdoc = '<p>x</p>';
+  var idx = frames.length, sent = false, done = false;
+  f.addEventListener('load', function () {
+    if (sent) return;
+    sent = true;
+    try { window[idx].location.replace('about:blank'); } catch (e) { report('navigateAboutBlank', 'error:' + e.name); return; }
+    poll(0);
+  });
+  document.body.appendChild(f);
+  function poll(n) {
+    if (done) return;
+    try {
+      var w = window[idx];
+      if (w && w.location.href === 'about:blank') { done = true; check('navigateAboutBlank', w); return; }
+    } catch (e) {}
+    if (n < 500) setTimeout(function () { poll(n + 1); }, 0); else report('navigateAboutBlank', 'never reached about:blank');
+  }
+})();
+</script>
+<!-- Ways found on 2026-11-25, by reading the script for what it does not hook or cannot see. -->
+<script>
+// A frame of the page's own to work in, its window taken by index at once.
+function container() {
+  var c = document.createElement('iframe');
+  document.body.appendChild(c);
+  return frames[frames.length - 1];
+}
+function hangFrame(doc) { var f = doc.createElement('iframe'); f.src = hangUrl; return f; }
+function attempt(name, fn) { try { fn(); } catch (e) { report(name, 'error:' + e.name + ':' + e.message); } }
+// Whatever frame the call made, looked into before the call's caller does anything else.
+function madeBy(name, w, fn) {
+  var n = 0;
+  while (w[n]) n++;
+  fn();
+  if (w[n]) check(name, w[n]); else report(name, 'made no frame');
+}
+
+// Insertions through setters and methods of single elements, none of them a Node or Element method.
+attempt('tableTHead', function () {
+  var table = document.createElement('table');
+  document.body.appendChild(table);
+  var thead = document.createElement('thead'), tr = document.createElement('tr'), td = document.createElement('td');
+  td.appendChild(hangFrame(document)); tr.appendChild(td); thead.appendChild(tr);
+  madeBy('tableTHead', window, function () { table.tHead = thead; });
+  var caption = document.createElement('caption');
+  caption.appendChild(hangFrame(document));
+  madeBy('tableCaption', window, function () { table.caption = caption; });
+});
+attempt('selectAdd', function () {
+  var select = document.createElement('select');
+  document.body.appendChild(select);
+  function option() { var o = document.createElement('option'); o.appendChild(hangFrame(document)); return o; }
+  var o1 = option(), o2 = option(), o3 = option();
+  madeBy('selectAdd', window, function () { select.add(o1); });
+  madeBy('optionsAdd', window, function () { select.options.add(o2); });
+  madeBy('selectIndex', window, function () { select[select.length] = o3; });
+});
+attempt('bodySetter', function () {
+  var W = container(), d = W.document;
+  var body = d.createElement('body');
+  body.appendChild(hangFrame(d));
+  madeBy('bodySetter', W, function () { d.body = body; });
+});
+attempt('doctypeAfter', function () {
+  var W = container(), d = W.document;
+  var doctype = d.implementation.createDocumentType('html', '', '');
+  d.insertBefore(doctype, d.documentElement);
+  d.removeChild(d.documentElement);
+  var f = hangFrame(d);
+  madeBy('doctypeAfter', W, function () { doctype.after(f); });
+});
+
+// A callback the registry reads from the prototype after the guarding script has looked at it.
+attempt('defineGetter', function () {
+  class Late extends HTMLElement {}
+  var reads = 0;
+  Object.defineProperty(Late.prototype, 'connectedCallback', {
+    configurable: true,
+    get: function () { reads++; return reads === 1 ? undefined : function () { check('defineGetter', frames[frames.length - 1]); }; },
+  });
+  customElements.define('probe-late', Late);
+  var frag = document.createDocumentFragment();
+  frag.appendChild(hangFrame(document));
+  frag.appendChild(document.createElement('probe-late'));
+  document.body.appendChild(frag);
+  report('defineGetter.reads', String(reads));
+});
+
+// document.open() takes every listener off the document and its window, the guarding script's
+// included: an empty frame's load, fired inside its insertion, is then the page's alone.
+attempt('docOpenLoad', function () {
+  var W = container(), d = W.document;
+  d.open();
+  var html = d.createElement('html'), body = d.createElement('body');
+  html.appendChild(body);
+  d.appendChild(html);
+  var f = d.createElement('iframe');
+  f.onload = function () { check('docOpenLoad', W[0]); };
+  body.appendChild(f);
+});
+</script>
+<script>
+// Documents with a parser of their own, which test themselves and report back.
+var PRELUDE = 'function check(name,w){var t;try{t=typeof w.RTCPeerConnection}catch(e){parent.postMessage("frame:"+name+" error:"+e.name,"*");return}' +
+  'parent.postMessage("frame:"+name+" typeof="+t,"*");if(t!=="function")return;' +
+  'try{var pc=new w.RTCPeerConnection({iceServers:[]});pc.createDataChannel("p");pc.onicecandidate=function(e){if(e.candidate)parent.postMessage("frame:"+name+" LEAK","*")};' +
+  'pc.createOffer().then(function(o){return pc.setLocalDescription(o)})}catch(e){parent.postMessage("frame:"+name+" construct:"+e.name,"*")}}';
+function blobUrl(text, type) { return URL.createObjectURL(new Blob([text], { type: type })); }
+function srcdocFrame(html) { var f = document.createElement('iframe'); f.srcdoc = html; document.body.appendChild(f); }
+function urlFrame(url) { var f = document.createElement('iframe'); f.src = url; document.body.appendChild(f); }
+var HANG = '<iframe src="' + hangUrl + '"></iframe>';
+
+// A declarative shadow root: the parser puts the frame and the script in it, and an observer on
+// the document sees nothing of what goes on inside a shadow tree. The first script is there to
+// use up the microtask the host's own insertion queued.
+['open', 'closed'].forEach(function (mode) {
+  srcdocFrame('<script>' + PRELUDE + '<\/script><div><template shadowrootmode="' + mode + '"><script>void 0<\/script>' + HANG +
+    '<script>check("shadowParsed-' + mode + '", frames[0])<\/script></template></div>');
+});
+
+// The end of parsing: the frame is the last thing the parser makes, and readystatechange, the
+// deferred scripts and DOMContentLoaded follow in the same task.
+srcdocFrame('<script>' + PRELUDE + ';document.addEventListener("readystatechange",function(){if(document.readyState==="interactive")check("readyState",frames[0])})<\/script>' +
+  '<script src="' + blobUrl('void 0', 'text/javascript') + '"><\/script>' + HANG);
+srcdocFrame('<script>' + PRELUDE + '<\/script><script defer src="' + blobUrl('check("deferScript",frames[0])', 'text/javascript') + '"><\/script>' +
+  '<script src="' + blobUrl('void 0', 'text/javascript') + '"><\/script>' + HANG);
+srcdocFrame('<script>' + PRELUDE + ';document.addEventListener("DOMContentLoaded",function(){check("domContentLoaded",frames[0])})<\/script>' +
+  '<script src="' + blobUrl('void 0', 'text/javascript') + '"><\/script>' + HANG);
+
+// XML documents: their parser runs a script as its end tag is read.
+urlFrame(blobUrl('<html xmlns="http://www.w3.org/1999/xhtml"><head><script><![CDATA[' + PRELUDE + ';check("xhtmlSelf",window)]]><\/script></head><body><script>void 0;<\/script>' +
+  '<iframe src="' + hangUrl + '"></iframe><script><![CDATA[check("xhtmlParsed",frames[0])]]><\/script></body></html>', 'application/xhtml+xml'));
+urlFrame(blobUrl('<svg xmlns="http://www.w3.org/2000/svg"><script><![CDATA[' + PRELUDE + ';check("svgSelf",window)]]><\/script><script>void 0;<\/script>' +
+  '<foreignObject width="50" height="50"><iframe xmlns="http://www.w3.org/1999/xhtml" src="' + hangUrl + '"></iframe></foreignObject>' +
+  '<script><![CDATA[check("svgParsed",frames[0])]]><\/script></svg>', 'image/svg+xml'));
+// A document an XSLT stylesheet makes, where the engine still applies one.
+(function () {
+  var xsl = blobUrl('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:output method="html"/><xsl:template match="/">' +
+    '<html><head><script><![CDATA[' + PRELUDE + ';check("xsltSelf",window)]]><\/script></head><body><script>void 0;<\/script><iframe src="' + hangUrl + '"></iframe>' +
+    '<script><![CDATA[check("xsltParsed",frames[0])]]><\/script></body></html></xsl:template></xsl:stylesheet>', 'text/xsl');
+  urlFrame(blobUrl('<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="' + xsl + '"?><r/>', 'text/xml'));
+})();
+</script>
+<script>
+// One at a time, and nothing else going on: each of these waits for the engine to make a frame,
+// or to move one, with no DOM call of the page's own that the guarding script could hook.
+var queue = [];
+function later(fn) { queue.push(fn); }
+function next() { var fn = queue.shift(); if (fn) { try { fn(next); } catch (e) { report('queue', 'error:' + e.name + ':' + e.message); next(); } } }
+// The first frame inside w, found by index alone.
+function whenChild(name, w, done) {
+  var n = 0;
+  (function poll() {
+    var c;
+    try { c = w[0]; } catch (e) {}
+    if (c) { check(name, c); done(); return; }
+    if (++n < 200) setTimeout(poll, 10); else { report(name, 'made no frame'); done(); }
+  })();
+}
+
+// <object> and <embed> make their frame when they are laid out, not when they are inserted.
+later(function (done) {
+  var W = container(), o = W.document.createElement('object');
+  o.type = 'text/html'; o.data = hangUrl;
+  W.document.body.appendChild(o);
+  whenChild('objectLazy', W, done);
+});
+later(function (done) {
+  var W = container(), o = W.document.createElement('embed');
+  o.type = 'text/html'; o.src = hangUrl;
+  W.document.body.appendChild(o);
+  whenChild('embedLazy', W, done);
+});
+// One already in the page, given its address later.
+later(function (done) {
+  var W = container(), o = W.document.createElement('object');
+  W.document.body.appendChild(o);
+  setTimeout(function () { o.type = 'text/html'; o.data = hangUrl; whenChild('objectAttribute', W, done); }, 200);
+});
+// And one made to load at once, by asking it for a property of its content.
+later(function (done) {
+  var W = container(), o = W.document.createElement('object');
+  o.type = 'text/html'; o.data = hangUrl;
+  W.document.body.appendChild(o);
+  try { void o.probe; void o.offsetWidth; } catch (e) {}
+  if (W[0]) check('objectSync', W[0]); else report('objectSync', 'made no frame');
+  done();
+});
+
+// A frame inside a frame of another origin, which neither document's script can sweep once the
+// page sends it to about:blank: the document it gets is the page's own.
+function nested(name, inner) {
+  later(function (done) {
+    var a = document.createElement('iframe');
+    a.src = 'data:text/html,' + encodeURIComponent(inner);
+    document.body.appendChild(a);
+    var A = frames[frames.length - 1], n = 0, sent = false;
+    (function poll() {
+      var child;
+      try { child = A[0]; } catch (e) {}
+      if (child && !sent && n > 30) { sent = true; try { child.location = 'about:blank'; } catch (e) { report(name, 'error:' + e.name); done(); return; } }
+      if (sent) {
+        var reached = false;
+        try { void child.document; reached = true; } catch (e) {}
+        if (reached) { check(name, child); done(); return; }
+      }
+      if (++n < 300) setTimeout(poll, 10); else { report(name, sent ? 'never the page\'s own' : 'no inner frame'); done(); }
+    })();
+  });
+}
+nested('nestedBlank', '<iframe src="' + hangUrl + '"></iframe>');
+nested('nestedBlankLoaded', '<iframe src="data:text/html,x"></iframe>');
+
+// A javascript: address that replaces a document already loaded.
+later(function (done) {
+  var f = document.createElement('iframe'), sent = false;
+  f.srcdoc = '<p>x</p>';
+  f.addEventListener('load', function () {
+    if (sent) return;
+    sent = true;
+    try { f.src = 'javascript:' + encodeURIComponent(JSON.stringify(selfTest('javascriptUrlLoaded'))); } catch (e) { report('javascriptUrlLoaded', 'error:' + e.name); }
+    setTimeout(done, 500);
+  });
+  document.body.appendChild(f);
+});
+
+// Last, as it takes frames.length away: a window's length replaced, so that a script counting
+// frames by it finds none. The new frame is looked into a moment later.
+later(function (done) {
+  var idx = frames.length;
+  window.length = 0;
+  var f = document.createElement('iframe');
+  f.src = hangUrl;
+  document.body.appendChild(f);
+  setTimeout(function () { check('lengthPoison', window[idx]); done(); }, 500);
+});
+later(function () { summary(); });
+setTimeout(next, 2500);
+</script>
+</body></html>

@@ -8,7 +8,7 @@
     <string name="problem_tor_unverified">Tor の出口がまだ確認されていません。接続が本当に Tor 経由か確認中です。</string>
     <string name="problem_challenge">サイトがボット対策の確認（Cloudflare）を求めています。「ブラウザで確認」をタップして完了してください。</string>
     <string name="problem_challenge_pass_refused">確認は完了しましたが、アプリがこのファイルをダウンロードするとサイトが再び確認を求めます。ブラウザで完了した確認はダウンロードには適用されないため、もう一度行っても解決しません。</string>
-    <string name="problem_challenge_pass_refused_tor">確認は完了しましたが、サイトが再び確認を求めています。Tor がオンのときは、内蔵ブラウザとダウンロードが異なる Tor の出口からサイトに接続するため、一方で完了した確認はもう一方には適用されません。Tor がオンの間は、もう一度行っても解決しません。</string>
+    <string name="problem_challenge_pass_refused_tor">確認は完了しましたが、アプリがこのファイルをダウンロードするとサイトが再び確認を求めています。Tor 経由では、サイトが確認を完了した Tor の出口に結び付けることがあり、Tor は時間がたつと別の出口に切り替わります。しばらくしてからもう一度試し、サイトに求められたら確認をもう一度完了してください。</string>
     <string name="problem_access_denied">アクセスが拒否されました（%1$s）。このソースにはログインと API キーが必要な場合があります。</string>
     <string name="problem_not_found">アドレスが見つかりません（404）。URL とエンジンの種類を確認してください。</string>
     <string name="problem_gone">このページはもう利用できません。サイトがページ送りできる範囲を制限しています。</string>
@@ -114,10 +114,6 @@
     <string name="settings_secure_screen">画面を保護</string>
     <string name="settings_secure_screen_hint">スクリーンショットと画面録画をブロックし、最近使ったアプリの画面でプレビューを非表示にします。アプリのロック中は常にオンです。</string>
     <string name="settings_section_network">ネットワークと内蔵ブラウザ</string>
-    <string name="settings_safe_browsing">内蔵ブラウザで Google Safe Browsing を使用</string>
-    <string name="settings_safe_browsing_unavailable">利用できません：WebView の Safe Browsing は Google Play 開発者サービスを通じて動作しますが、このスマートフォンには搭載されていません。いずれにしても、アドレスが Google に送信されることはありません。</string>
-    <string name="settings_safe_browsing_on">オン。内蔵ブラウザが開くすべてのアドレス（ページ、画像、スクリプト、広告も含む）について、Google Play 開発者サービスが暗号学的なフィンガープリントを計算し、スマートフォンに保存されたリストと照合します。フィンガープリントの先頭部分がリストの項目と一致すると、その数バイトの断片を確認のために Google のサーバーへ送信します。Google がアドレスを平文で受け取ることはありませんが、あなたの IP、時刻、断片は Google に伝わります。リクエストはスマートフォンの Google サービスから送信されるため、デバイスと結び付けられる可能性があります。また、このリクエストは Tor がオンのときでも Tor を経由しません。その代わり、マルウェア、フィッシング、望ましくないソフトウェアで知られるページは警告とともにブロックされます。</string>
-    <string name="settings_safe_browsing_off">オフ：内蔵ブラウザは Google に問い合わせず、アクセスしたアドレスに関するデータは Google に一切送信されません。ページがマルウェアやフィッシングで知られていても警告は表示されません。この設定は内蔵ブラウザにのみ関係します。アプリの検索、画像、ダウンロードで Safe Browsing が使用されることは決してありません。</string>
     <string name="settings_cookies">サイトの Cookie</string>
     <string name="settings_cookies_hint">通過したボット対策の確認とセッション。保管庫内で暗号化されています</string>
     <string name="settings_cookies_cleared">Cookie を削除しました</string>
@@ -298,7 +294,7 @@
     <string name="browser_blocked_outside">このブラウザーは %1$s にとどまります。他のサイトへのリンクは開きませんでした。</string>
     <string name="browser_tor_unverified">Tor はオンですがまだ確認されていません。接続が Tor 経由であることを確認でき次第ブラウザーが開きます。</string>
     <string name="challenge_hint">サイトは、あなたが人間かどうかを確認しようとしています。下の確認を完了してください。サイトのページが正常に開いたら、BooruVault が自動的に再試行します。</string>
-    <string name="browser_tor_unsupported">Tor がオンの場合、内蔵ブラウザは開きません。このスマートフォンの WebView では、すべての通信を Tor 経由にすることができません。「Android System WebView」を更新してください。</string>
+    <string name="browser_engine_refused">内蔵ブラウザは開きません。エンジンが、ページを選択した接続にとどめる設定を受け付けなかったため、何も読み込まれていません。アプリを閉じてから開き直し、もう一度お試しください。</string>
     <string name="notification_channel">ダウンロード</string>
     <string name="notification_channel_description">保管庫へのダウンロードの進行状況</string>
     <string name="notification_progress_title">保管庫にダウンロード中</string>

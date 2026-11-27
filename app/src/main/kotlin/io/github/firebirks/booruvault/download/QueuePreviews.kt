@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
+import okhttp3.Call
 import okio.Buffer
 import java.io.File
 import java.io.FileOutputStream
@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap
  * They are a cache: one that will not open is deleted and fetched again, none is in a backup,
  * and each goes with its row.
  */
-class QueuePreviews(root: File, private val vault: VaultManager, private val client: OkHttpClient) {
+class QueuePreviews(root: File, private val vault: VaultManager, private val client: Call.Factory) {
     private val dir = File(root, DIR)
 
     /** One fetch at a time for each preview: the row and the download may want it at once. */

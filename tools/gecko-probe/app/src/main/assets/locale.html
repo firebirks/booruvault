@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>locale</title>
+<script>
+// What a page's scripts read of the phone's language and time zone; the header the page was
+// asked with is in the page server's line.
+function report(n, v) { console.log('PROBE ' + n + ' ' + v); }
+const date = new Intl.DateTimeFormat().resolvedOptions();
+report('locale.navigator.language', navigator.language);
+report('locale.navigator.languages', navigator.languages.join(','));
+report('locale.intl', date.locale + ' ' + new Intl.NumberFormat().resolvedOptions().locale);
+report('locale.timeZone', date.timeZone + ' offset=' + new Date().getTimezoneOffset());
+report('locale.date', new Date(0).toLocaleString());
+report('SUMMARY', 'locale done');
+</script>

@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import okhttp3.Call
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -28,6 +29,7 @@ import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -128,26 +130,32 @@ class RouteSeparationTest {
 
     /** The jar reads the vault on a thread of its own once it is open; until then it keeps nothing. */
     private suspend fun SecureCookieJar.awaitLoaded() = withTimeout(5_000) {
+        // The agent goes with a cookie of the site: a marker of the jar's own.
+        val marker = Cookie.Builder().name("ready").value("1").path("/").expiresAt(System.currentTimeMillis() + 3_600_000L)
+            .hostOnlyDomain("ready.invalid").build()
         while (userAgentFor(Route.DIRECT, "ready.invalid") == null) {
-            recordClearance(Route.DIRECT, "ready.invalid", "ready", emptyList())
+            recordClearance(Route.DIRECT, "ready.invalid", "ready", listOf(marker))
             delay(20)
         }
     }
 
-    private fun client(jar: SecureCookieJar, tor: () -> Boolean, socksPort: Int, before: () -> Unit = {}) = OkHttpClient.Builder()
-        .proxySelector(TorProxySelector(tor, { socksPort }))
-        .dns(TorAwareDns(tor))
-        .addInterceptor { chain ->
-            before()
-            chain.proceed(chain.request())
-        }
-        .addInterceptor(DefaultUserAgent)
-        .addNetworkInterceptor(SiteHeaders(jar))
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
-        .build()
+    private fun client(jar: SecureCookieJar, tor: () -> Boolean, socksPort: Int, before: () -> Unit = {}) = RoutedClient(
+        OkHttpClient.Builder()
+            .dns(TorAwareDns(tor))
+            .addInterceptor { chain ->
+                before()
+                chain.proceed(chain.request())
+            }
+            .addInterceptor(DefaultUserAgent)
+            .addNetworkInterceptor(SiteHeaders(jar))
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build(),
+        tor,
+        { socksPort },
+    )
 
-    private fun OkHttpClient.get(url: String, agent: String? = null) =
+    private fun Call.Factory.get(url: String, agent: String? = null) =
         newCall(Request.Builder().url(url).apply { agent?.let { header("User-Agent", it) } }.build()).execute().use { it.body.string() }
 
     @Test
@@ -210,11 +218,35 @@ class RouteSeparationTest {
                 val jar = openJar()
                 val url = "http://127.0.0.1:${site.localPort}/posts.json"
                 client(jar, { tor }, socks.localPort).get(url)
-                // The request starts along Tor; the switch is flipped before its connection is made.
+                // The request is made along Tor; the switch is flipped before its connection is
+                // made. It keeps to the route it was made on, with what that route was given.
                 client(jar, { tor }, socks.localPort, before = { tor = false }).get(url)
 
-                assertEquals(1, atExit.size)
-                assertNull("it left directly, with nothing the Tor exit was given", atHome.single().cookie)
+                assertEquals(listOf(null, "session=tor"), atExit.map { it.cookie })
+                assertTrue("nothing reached the site from home", atHome.isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun aRequestMadeDirectlyDoesNotLeaveOnceTorIsOn() = runBlocking {
+        val atHome = Collections.synchronizedList(mutableListOf<Seen>())
+        val atExit = Collections.synchronizedList(mutableListOf<Seen>())
+        home(atHome).use { site ->
+            torExit(atExit).use { socks ->
+                var tor = false
+                val jar = openJar()
+                val url = "http://127.0.0.1:${site.localPort}/posts.json"
+                // The request is made directly; Tor is switched on before its connection is made.
+                try {
+                    client(jar, { tor }, socks.localPort, before = { tor = true }).get(url)
+                    fail("a request made directly must not leave once Tor is on")
+                } catch (e: TorUnreachableException) {
+                    // expected
+                }
+
+                assertTrue("nothing reached the site from home", atHome.isEmpty())
+                assertTrue("nor through the exit, along a route it was not made on", atExit.isEmpty())
             }
         }
     }

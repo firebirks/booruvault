@@ -2,8 +2,8 @@ package io.github.firebirks.booruvault.booru
 
 import io.github.firebirks.booruvault.util.Problem
 import kotlinx.serialization.json.Json
+import okhttp3.Call
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.net.URLEncoder
@@ -12,7 +12,7 @@ import java.net.URLEncoder
  * Any web page: the images and videos on it. The address may contain `{tags}` (the search,
  * URL-encoded) and `{page}` (from 1); without `{page}` there is a single page.
  */
-class GenericHtmlApi(source: BooruSource, client: OkHttpClient, json: Json) : BaseBooruApi(source, client, json) {
+class GenericHtmlApi(source: BooruSource, client: Call.Factory, json: Json) : BaseBooruApi(source, client, json) {
 
     override suspend fun posts(tags: String, page: Int, limit: Int): List<Post> {
         val template = source.baseUrl.trim()

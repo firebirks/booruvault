@@ -97,7 +97,6 @@ import io.github.firebirks.booruvault.ui.common.LocalLinkOpener
 import io.github.firebirks.booruvault.ui.common.problemText
 import io.github.firebirks.booruvault.ui.vault.MIN_PASSWORD
 import io.github.firebirks.booruvault.ui.vault.enrollBiometric
-import io.github.firebirks.booruvault.util.hasGooglePlayServices
 import io.github.firebirks.booruvault.vault.BiometricKey
 import io.github.firebirks.booruvault.util.Problem
 import io.github.firebirks.booruvault.vault.VaultHeaderException
@@ -189,7 +188,7 @@ private fun SettingsMain(onOpen: (String) -> Unit) {
                 if (tor.enabled) torStatusText(tor) else stringResource(R.string.settings_tor_off_summary),
             ) { onOpen("network") }
 
-            val riskyOn = listOf(settings.downloadWhileLocked, settings.hiddenBrowser, settings.linksOutsideTor, settings.webSafeBrowsing).count { it }
+            val riskyOn = listOf(settings.downloadWhileLocked, settings.hiddenBrowser, settings.linksOutsideTor).count { it }
             HubRow(
                 Icons.Outlined.WarningAmber, stringResource(R.string.settings_risky),
                 if (riskyOn == 0) stringResource(R.string.settings_risky_hint) else pluralStringResource(R.plurals.settings_risky_on, riskyOn, riskyOn),
@@ -527,9 +526,7 @@ private fun RiskySettings(onBack: () -> Unit) {
     val container = LocalContainer.current
     val repo = container.settings
     val settings by repo.settings.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val gms = remember { hasGooglePlayServices(context) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -566,22 +563,6 @@ private fun RiskySettings(onBack: () -> Unit) {
                 offText = stringResource(R.string.settings_links_outside_tor_off),
                 checked = settings.linksOutsideTor,
             ) { scope.launch { repo.setLinksOutsideTor(it) } }
-            HorizontalDivider()
-            if (!gms) {
-                SwitchRow(
-                    stringResource(R.string.settings_safe_browsing),
-                    stringResource(R.string.settings_safe_browsing_unavailable),
-                    checked = false,
-                    enabled = false,
-                ) {}
-            } else {
-                RiskySwitch(
-                    stringResource(R.string.settings_safe_browsing),
-                    onText = stringResource(R.string.settings_safe_browsing_on),
-                    offText = stringResource(R.string.settings_safe_browsing_off),
-                    checked = settings.webSafeBrowsing,
-                ) { scope.launch { repo.setWebSafeBrowsing(it) } }
-            }
         }
     }
 }

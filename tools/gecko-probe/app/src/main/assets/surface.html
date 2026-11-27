@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>surface</title>
+<script>
+// What a page finds of the phone through the engine: each of these is turned off by the app's
+// preferences. A page asking for a passkey ends an app built without Google Play services, so it
+// is asked last, once everything else is reported.
+function report(n, v) { console.log('PROBE ' + n + ' ' + v); }
+report('surface.secure', String(window.isSecureContext));
+report('surface.PublicKeyCredential', typeof window.PublicKeyCredential);
+report('surface.wakeLock', String('wakeLock' in navigator));
+report('surface.speechSynthesis', String('speechSynthesis' in window));
+report('surface.requestMediaKeySystemAccess', typeof navigator.requestMediaKeySystemAccess);
+report('surface.RTCPeerConnection', typeof window.RTCPeerConnection);
+(async function () {
+  if (navigator.requestMediaKeySystemAccess) {
+    try {
+      await navigator.requestMediaKeySystemAccess('com.widevine.alpha', [{ initDataTypes: ['cenc'], videoCapabilities: [{ contentType: 'video/mp4; codecs="avc1.42E01E"' }] }]);
+      report('surface.eme', 'granted');
+    } catch (e) { report('surface.eme', e.name); }
+  }
+  if (window.PublicKeyCredential && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+    report('surface.uvpaa', 'asking');
+    try { report('surface.uvpaa', String(await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())); } catch (e) { report('surface.uvpaa', 'error ' + e.name); }
+  }
+  report('SUMMARY', 'surface done');
+})();
+</script>

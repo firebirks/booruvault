@@ -83,7 +83,7 @@ class SiteHeadersTest {
     fun anExpiredClearanceIsDroppedAndTheBoardIsAskedUnderTheAppsNameAgain() {
         val agents = Collections.synchronizedList(mutableListOf<String>())
         cloudflare(agents).use { server ->
-            val passes = Passes(agent = UserAgents.webView, clearance = "stale")
+            val passes = Passes(agent = "Mozilla/5.0 (Android 17; Mobile; rv:161.0) Gecko/161.0 Firefox/161.0", clearance = "stale")
             val client = client(passes)
             val file = "http://127.0.0.1:${server.localPort}/original/a.jpg"
             client.newCall(downloadRequest(file, safebooru)).execute().use { assertEquals(403, it.code) }
@@ -91,7 +91,7 @@ class SiteHeadersTest {
             assertEquals("a refused clearance has not worked", emptyList<String>(), passes.worked)
             assertNull("the agent goes with the clearance", passes.agent)
             client.newCall(downloadRequest(file, safebooru)).execute().use { assertEquals(200, it.code) }
-            assertEquals(listOf(UserAgents.webView, UserAgents.APP), agents)
+            assertEquals(listOf("Mozilla/5.0 (Android 17; Mobile; rv:161.0) Gecko/161.0 Firefox/161.0", UserAgents.APP), agents)
         }
     }
 

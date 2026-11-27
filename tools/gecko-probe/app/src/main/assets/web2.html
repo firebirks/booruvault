@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>WEB-2</title></head><body>
+<script>
+function report(n, v) { console.log('PROBE ' + n + ' ' + v); }
+var port = new URLSearchParams(location.search || location.hash.slice(1)).get('port');
+var base = 'http://127.0.0.1:' + port;
+report('web2.origin', location.origin + ' secure=' + window.isSecureContext);
+fetch(base + '/fetch', { mode: 'no-cors' }).then(function () { report('web2.fetch', 'resolved'); }, function (e) { report('web2.fetch', 'rejected ' + e.name + ' ' + e.message); });
+try {
+  var ws = new WebSocket('ws://127.0.0.1:' + port + '/ws');
+  ws.onerror = function () { report('web2.ws', 'error'); };
+} catch (e) { report('web2.ws', 'throw ' + e.name); }
+var img = new Image();
+img.onerror = function () { report('web2.img', 'error'); };
+img.src = base + '/img';
+if (new URLSearchParams(location.search || location.hash.slice(1)).get('domain')) {
+  fetch('https://site.invalid/x', { mode: 'no-cors' }).then(function () { report('web2.domain', 'resolved'); }, function (e) { report('web2.domain', 'rejected ' + e.name); });
+}
+setTimeout(function () { report('SUMMARY web2', 'done'); }, 6000);
+</script>
+</body></html>
