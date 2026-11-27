@@ -19,9 +19,9 @@ Changelog: https://github.com/firebirks/booruvault/releases
 
 AutoName: BooruVault
 
-# Questionable and explicit ratings can be turned on, behind an adult's confirmation.
-AntiFeatures:
-  - NSFW
+# No anti-feature for adult content: the boards offered by name are safe ones, and only general
+# posts are shown until the user turns other ratings on, behind an adult's confirmation. Any other
+# board is added from its address, as a browser opens any site.
 
 RepoType: git
 Repo: https://github.com/firebirks/booruvault.git
