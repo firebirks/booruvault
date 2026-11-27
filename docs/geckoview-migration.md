@@ -209,7 +209,10 @@ Done on 2026-11-26:
   2026-11-27: the two APKs signed with the project's key, codes 111 and 112, and the repository
   on Pages with them alone. Its first try met a runner image whose Maven Central gave 404s, its
   second a unit test that a fast runner could get past the moment it looked at (fixed since); run
-  again, the job published nothing twice.
+  again, the job published nothing twice. Its index gave the two APKs no changelog: fdroidserver
+  gives a version one only when the metadata has a build entry for its code, and the recipe's
+  stop at 0.6.1. The job now adds one for each APK to its own copy of the metadata, with no build
+  steps; tried locally with fdroidserver 2.4.5 on the published APKs.
 - Lint is clean again: the engine class opts in to `GeckoPreferenceController`, which GeckoView
   marks experimental.
 
@@ -217,10 +220,6 @@ Still to do:
 
 - F-Droid's own repository: a build recipe for an engine that comes prebuilt from Mozilla's Maven
   repository, with an entry and a version code for each ABI.
-- The changelog under each APK in the repository's index: fdroidserver gives a version its
-  "what's new" only when the metadata has a build entry for its code, and the entries stop at
-  0.6.1. The index of the older format, which carries it for the app, has it; the newer one has
-  none for 0.7.0.
 
 ## English through Tor, decided on 2026-11-26
 

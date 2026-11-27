@@ -141,6 +141,22 @@ jobs:
             cp "fastlane/metadata/android/en-US/changelogs/$code.txt" \
               "work/metadata/io.github.firebirks.booruvault/en-US/changelogs/$code$digit.txt"
           done
+          # fdroidserver puts a version's changelog in the index only if the metadata has a build
+          # entry for its code, and the recipe's stop at the last release of one APK for all (see
+          # the recipe). This copy of it gets one for each APK published, with no build steps.
+          python - "${GITHUB_REF_NAME#v}" "$code" <<'EOF'
+          import sys
+          from ruamel.yaml import YAML
+          name, code = sys.argv[1], int(sys.argv[2])
+          path = 'work/metadata/io.github.firebirks.booruvault.yml'
+          yaml = YAML()
+          with open(path) as f:
+              app = yaml.load(f)
+          for digit in (1, 2):
+              app['Builds'].append({'versionName': name, 'versionCode': code * 10 + digit, 'commit': 'v' + name})
+          with open(path, 'w') as f:
+              yaml.dump(app, f)
+          EOF
           cp fastlane/metadata/android/en-US/images/icon.png work/icon.png
           echo "$FDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/fdroid.p12"
           cat > work/config.yml <<EOF
