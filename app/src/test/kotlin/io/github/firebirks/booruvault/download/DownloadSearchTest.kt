@@ -17,6 +17,7 @@ import io.github.firebirks.booruvault.vault.crypto.Kdf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -293,7 +294,9 @@ class DownloadSearchTest {
 
     @Test
     fun `removing what is finished keeps a collection that was stopped, which can be retried`() = runBlocking {
-        val downloads = manager(FakeApi(sized(42, 100, 37)))
+        // The second page waits for the stop: a collection of fake pages could otherwise end, and
+        // leave the list, before it is stopped.
+        val downloads = manager(FakeApi({ page -> if (page == 2) awaitCancellation() }, sized(42, 100, 37)))
         downloads.downloadSearch(source, "pikachu", 500)
         downloads.cancelAll()
         assertTrue(downloads.settled().single().stopped)
