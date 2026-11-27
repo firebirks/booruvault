@@ -205,7 +205,11 @@ Done on 2026-11-26:
   own repository, and a file in it may not pass 100 MiB. A Pages deployment took a file of
   120 MiB; a site may not pass 1 GB. The workflows install the SDK platform 37.2 themselves. They
   ran whole on 2026-11-26 in a private copy of the repository with throwaway keys, and the Pages
-  deployment on 2026-11-27 in a public one.
+  deployment on 2026-11-27 in a public one. 0.7.0 was the first release they made, on
+  2026-11-27: the two APKs signed with the project's key, codes 111 and 112, and the repository
+  on Pages with them alone. Its first try met a runner image whose Maven Central gave 404s, its
+  second a unit test that a fast runner could get past the moment it looked at (fixed since); run
+  again, the job published nothing twice.
 - Lint is clean again: the engine class opts in to `GeckoPreferenceController`, which GeckoView
   marks experimental.
 
@@ -213,8 +217,10 @@ Still to do:
 
 - F-Droid's own repository: a build recipe for an engine that comes prebuilt from Mozilla's Maven
   repository, with an entry and a version code for each ABI.
-- A first release made by the changed workflow, watched: the names, the two version codes in the
-  index, the branch's single commit.
+- The changelog under each APK in the repository's index: fdroidserver gives a version its
+  "what's new" only when the metadata has a build entry for its code, and the entries stop at
+  0.6.1. The index of the older format, which carries it for the app, has it; the newer one has
+  none for 0.7.0.
 
 ## English through Tor, decided on 2026-11-26
 
@@ -326,7 +332,10 @@ Not available to a stock GeckoView:
   nothing of a visit there, but what it does hold is to be looked at, and it may have to be deleted
   at start as the WebView's folders are.
 
-- Whether the screen protection (`FLAG_SECURE`) covers GeckoView's surface, as for video.
+- A screen recording with a page shown, on Android 9 and on a recent version. The browser draws
+  on GeckoView's TextureView backend, inside the window and its screen protection: a SurfaceView's
+  layer carries a flag of its own, which GeckoView never sets, and on Android 8 and 9 a recording
+  could show the page.
 - Which of the three permissions GeckoView's manifest adds (`ACCESS_NETWORK_STATE`, `WAKE_LOCK`,
   `MODIFY_AUDIO_SETTINGS`) can be removed without harm.
 - Whether a clearance earned in Gecko is taken for API calls and on the file hosts, and on other
